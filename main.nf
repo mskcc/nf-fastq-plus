@@ -17,22 +17,22 @@ println """\
          .stripIndent()
 
 process process_runs {
-  publishDir PIPELINE_OUT, mode:'move'
- 
   input:
-  file runs_to_demux_file
+  stdin runs_to_demux
+
+  publishDir PIPELINE_OUT, mode:'move'
 
   output:
   path "${RUNS_TO_DEMUX_FILE}"
 
   script:
   """
-  echo "Outputting ${runs_to_demux_file}"
+  cat - > ${RUNS_TO_DEMUX_FILE}
   """
 }
 
 workflow {
-  DETECT_RUNS()
-  process_runs( DETECT_RUNS.out )
+  main:
+    DETECT_RUNS()
+    process_runs( DETECT_RUNS.out.filter { it != "" } )
 }
- 

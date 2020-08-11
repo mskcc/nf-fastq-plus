@@ -4,8 +4,8 @@ SEQUENCER_DIR=config.SEQUENCER_DIR
 RUNS_TO_DEMUX_FILE=config.RUNS_TO_DEMUX_FILE
 
 process DETECT_RUNS {
-  output: 
-  file "${RUNS_TO_DEMUX_FILE}"
+  output:
+  stdout()
 
   shell:
   '''
@@ -26,5 +26,7 @@ process DETECT_RUNS {
   for file in ${sequencer_files[@]}; do
     find $(ls $file) -mmin -!{RUN_AGE} >> !{RUNS_TO_DEMUX_FILE}
   done
+
+  cat !{RUNS_TO_DEMUX_FILE}
   '''
 }
