@@ -1,2 +1,6 @@
 .nextflow
 .nextflow.log*
+
+# Run outputs
+pipeline_out
+work
