@@ -1,10 +1,11 @@
-RUN_AGE=60
-RUNS_TO_DEMUX_FILE="Run_to_Demux.txt"
-SEQUENCER_DIR="/igo/sequencers"
+// Import configs
+RUN_AGE=config.RUN_AGE
+SEQUENCER_DIR=config.SEQUENCER_DIR
+RUNS_TO_DEMUX_FILE=config.RUNS_TO_DEMUX_FILE
 
 process DETECT_RUNS {
   output: 
-  file "Run_to_Demux.txt"
+  file "${RUNS_TO_DEMUX_FILE}"
 
   shell:
   '''

@@ -1,10 +1,19 @@
 nextflow.preview.dsl=2
 
 include DETECT_RUNS from './detect_runs_module';
-params.outdir = './results'
+
+println """\
+         I G O  P I P E L I N E
+         ===================================
+         SEQUENCER_DIR="${config.SEQUENCER_DIR}"
+         RUNS_TO_DEMUX_FILE="${config.RUNS_TO_DEMUX_FILE}"
+
+         Output=${config.RESULTS_DIR}
+         """
+         .stripIndent()
 
 process process_runs {
-  publishDir params.outdir, mode:'move'
+  publishDir config.RESULTS_DIR, mode:'move'
  
   input:
   file "Run_to_Demux.txt"
