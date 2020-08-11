@@ -1,6 +1,6 @@
 nextflow.preview.dsl=2
 
-include DETECT_RUNS from './detect_runs_module';
+include DETECT_RUNS from './modules/detect_runs';
 
 println """\
          I G O  P I P E L I N E
