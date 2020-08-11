@@ -28,11 +28,11 @@ process process_runs {
   script:
   """
   cat - > ${RUNS_TO_DEMUX_FILE}
+  echo "Outputing New Runs to ${PIPELINE_OUT}"
+  echo ${RUNS_TO_DEMUX_FILE}
   """
 }
 
 workflow {
-  main:
-    DETECT_RUNS()
-    process_runs( DETECT_RUNS.out.filter { it != "" } )
+  DETECT_RUNS | filter { it != "" } | process_runs
 }
