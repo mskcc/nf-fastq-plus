@@ -2,10 +2,6 @@ nextflow.preview.dsl=2
 
 include DETECT_RUNS from './modules/detect_runs';
 
-RUNS_TO_DEMUX_FILE=config.RUNS_TO_DEMUX_FILE
-SEQUENCER_DIR=config.SEQUENCER_DIR
-PIPELINE_OUT=config.RESULTS_DIR
-
 println """\
          I G O  P I P E L I N E
          ===================================
