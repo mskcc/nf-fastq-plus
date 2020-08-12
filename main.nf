@@ -3,8 +3,8 @@ nextflow.preview.dsl=2
 include DETECT_RUNS from './modules/detect_runs';
 
 println """\
-         I G O  P I P E L I N E
-         ===================================
+                  I G O   P I P E L I N E
+         ==========================================
          SEQUENCER_DIR="${SEQUENCER_DIR}"
          RUNS_TO_DEMUX_FILE="${RUNS_TO_DEMUX_FILE}"
 
