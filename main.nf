@@ -1,6 +1,6 @@
 nextflow.preview.dsl=2
 
-include DETECT_RUNS from './modules/detect_runs';
+include detect_runs from './modules/detect_runs';
 
 println """\
                   I G O   P I P E L I N E
@@ -9,28 +9,20 @@ println """\
          RUNS_TO_DEMUX_FILE="${RUNS_TO_DEMUX_FILE}"
 
          Output=${PIPELINE_OUT}
+         Log=${LOG_FILE}
          """
          .stripIndent()
 
-process process_runs {
+process log_out {
   input:
-  stdin runs_to_demux
-
-  publishDir PIPELINE_OUT, mode:'move'
-
-  output:
-  path "${RUNS_TO_DEMUX_FILE}"
+  stdin out
 
   script:
   """
-  cat - > ${RUNS_TO_DEMUX_FILE}
-  echo "Outputing New Runs to ${PIPELINE_OUT}"
-  echo ${RUNS_TO_DEMUX_FILE}
+  cat - >> ${LOG_FILE}
   """
 }
 
 workflow {
-  DETECT_RUNS  \
-    | filter { it != "" } \
-    | process_runs
+  detect_runs()
 }

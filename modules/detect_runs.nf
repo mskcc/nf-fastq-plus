@@ -1,6 +1,8 @@
-process DETECT_RUNS {
+process detect_runs {
+  publishDir PIPELINE_OUT, mode:'move'
+
   output:
-  stdout()
+  path "${RUNS_TO_DEMUX_FILE}"
 
   shell:
   template 'detect_runs.sh'
