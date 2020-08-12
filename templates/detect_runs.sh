@@ -33,16 +33,16 @@ done
 
 NUM_RUNS=$(cat ${DONE_FILE} | wc -l)
 
-echo "Detected ${NUM_RUNS} new runs" >> ${LOG_FILE}
+echo "Detected ${NUM_RUNS} new runs"
 
 foo()
 
 if [[ $NUM_RUNS -eq 0 ]]; then
-  echo "Exiting. No new runs"  >> ${LOG_FILE}
+  echo "Exiting. No new runs" 
   exit
 fi
 
-echo "Outputting new runs to ${PIPELINE_OUT}" >> ${LOG_FILE}
+echo "Outputting new runs to ${PIPELINE_OUT}"
 
 for x in $(cat ${DONE_FILE}) ; do
   #Deletes shortest match of $substring '/*Complet*' from back of $x
@@ -55,10 +55,10 @@ for x in $(cat ${DONE_FILE}) ; do
 
   RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
   if [ -z "$RUNNAME" ] ; then
-    echo "WARNING: Could not parse out run from RUNNAME: $RUNNAME" >> ${LOG_FILE}
+    echo "WARNING: Could not parse out run from RUNNAME: $RUNNAME"
   fi
 
-  echo "Processing RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE" >> ${LOG_FILE}
+  echo "Processing RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
 
   # If the run has already been demuxed, then it will be in the FASTQ directory.
   # TODO - While we should have this check, this won't work since we append suffixes to runs that need to be re-demuxed

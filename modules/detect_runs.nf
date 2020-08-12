@@ -3,6 +3,7 @@ process detect_runs {
 
   output:
   path "${RUNS_TO_DEMUX_FILE}"
+  stdout()
 
   shell:
   template 'detect_runs.sh'

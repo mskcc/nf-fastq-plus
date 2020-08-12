@@ -15,7 +15,8 @@ println """\
 
 process log_out {
   input:
-  stdin out
+  stdin detect_runs 
+  // Add "stdin {PROCESS}" (Note: does NOT need to process name)
 
   script:
   """
@@ -25,4 +26,5 @@ process log_out {
 
 workflow {
   detect_runs()
+  log_out( detect_runs.out[1] )
 }
