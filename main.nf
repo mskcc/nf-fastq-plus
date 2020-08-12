@@ -30,5 +30,7 @@ process process_runs {
 }
 
 workflow {
-  DETECT_RUNS | filter { it != "" } | process_runs
+  DETECT_RUNS  \
+    | filter { it != "" } \
+    | process_runs
 }
