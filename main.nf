@@ -11,6 +11,10 @@ println """\
          SEQUENCER_DIR="${SEQUENCER_DIR}"
          RUNS_TO_DEMUX_FILE="${RUNS_TO_DEMUX_FILE}"
 
+         VERSIONS
+         BWA: ${bwa}
+         PICARD: ${picard}
+
          Output=${PIPELINE_OUT}
          Log=${LOG_FILE}
          """

@@ -4,22 +4,27 @@ Generate IGO fastqs, bams, stats and fingerprinting
 ## Run
 ### Run Pipeline
 ```
-$ make run
-nextflow run main.nf
+$ nextflow run main.nf
 N E X T F L O W  ~  version 19.10.0
-Launching `main.nf` [mighty_goodall] - revision: 4a409265bd
+Launching `main.nf` [maniac_cajal] - revision: 112a09ed91
 WARN: DSL 2 IS AN EXPERIMENTAL FEATURE UNDER DEVELOPMENT -- SYNTAX MAY CHANGE IN FUTURE RELEASE
          I G O   P I P E L I N E
 ==========================================
 SEQUENCER_DIR="/igo/sequencers"
 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt"
 
+VERSIONS
+BWA: /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa
+PICARD: /home/igo/resources/picard2.21.8
+
 Output=./pipeline_out
 Log=/home/streidd/work/nf-fastq-plus/igo-pipeline.log
 
-executor >  local (2)
-[df/1c58be] process > detect_runs [100%] 1 of 1 ✔
-[2e/a33df3] process > log_out     [100%] 1 of 1 ✔
+executor >  local (4)
+[7a/6413ee] process > get_software_versions [100%] 1 of 1 ✔
+[d3/5c433a] process > detect_runs           [100%] 1 of 1 ✔
+[d3/8c45f5] process > gsw_log               [100%] 1 of 1 ✔
+[3a/59375a] process > dr_log                [100%] 1 of 1 ✔
 ```
 
 ### Clean outputs
