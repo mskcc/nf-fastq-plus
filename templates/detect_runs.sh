@@ -1,14 +1,15 @@
 #!/bin/bash
 #
 # Script that reads done files from sequencing directories and outputs paths
-# to run directories that should be submitted to the pipeline 
-# 
+# to run directories that should be submitted to the pipeline. 
 # Arguments:
 #   SEQUENCER_DIR: Parent directory of done files
 #   RUN_AGE: Maxmimum age of recent write to done folder
 #   RUNS_TO_DEMUX_FILE: Output file to write runs recently completed
+#   PIPELINE_OUT: (OPTIONAL)  Output directory where outputs will be written in nextflow
 # Outputs (STD OUT):
-#   Absolute paths to run dierectorIES
+#   Absolute paths to run dierectories
+# Run: SEQUENCER_DIR="/igo/sequencers" RUN_AGE=6000 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./templates/detect_runs.sh
 
 DONE_FILE="Run_Done.txt"
 touch ${RUNS_TO_DEMUX_FILE}
