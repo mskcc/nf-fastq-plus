@@ -13,6 +13,7 @@
 DONE_FILE="Run_Done.txt"
 touch ${RUNS_TO_DEMUX_FILE}
 
+echo "Searching for runs completed in past ${RUN_AGE} minutes"
 sequencer_files=( ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
   ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
   ${SEQUENCER_DIR}/kim/*/RTAComplete.txt
@@ -26,7 +27,6 @@ sequencer_files=( ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
   ${SEQUENCER_DIR}/scott/*/RunCompletionStatus.xml
   ${SEQUENCER_DIR}/ayyan/*/RTAComplete.txt
 )
-
 for file in ${sequencer_files[@]}; do
   find $(ls $file) -mmin -${RUN_AGE} >> ${DONE_FILE}
 done
@@ -35,14 +35,12 @@ NUM_RUNS=$(cat ${DONE_FILE} | wc -l)
 
 echo "Detected ${NUM_RUNS} new runs"
 
-foo()
-
 if [[ $NUM_RUNS -eq 0 ]]; then
   echo "Exiting. No new runs" 
-  exit
+  exit 0
 fi
 
-echo "Outputting new runs to ${PIPELINE_OUT}"
+echo "Outputting new runs to ${PIPELINE_OUT} and checking ${FASTQ_DIR} for existing runs"
 
 for x in $(cat ${DONE_FILE}) ; do
   #Deletes shortest match of $substring '/*Complet*' from back of $x
@@ -57,14 +55,15 @@ for x in $(cat ${DONE_FILE}) ; do
   if [ -z "$RUNNAME" ] ; then
     echo "WARNING: Could not parse out run from RUNNAME: $RUNNAME"
   fi
-
-  echo "Processing RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
-
+  
   # If the run has already been demuxed, then it will be in the FASTQ directory.
   # TODO - While we should have this check, this won't work since we append suffixes to runs that need to be re-demuxed
-  demuxed_run="" # $(ls /ifs/input/GCL/hiseq/FASTQ/ | grep "$RUNNAME")
-
+  demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}" )
   # echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
-
-  echo $RUNPATH >> ${RUNS_TO_DEMUX_FILE}
+  if [ "${demuxed_run}" == "" ]; then
+    echo "New Run (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
+    echo $RUNPATH >> ${RUNS_TO_DEMUX_FILE}
+  else
+    echo "Old Run (Skipping): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
+  fi
 done
