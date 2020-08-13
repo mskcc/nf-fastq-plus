@@ -18,10 +18,13 @@ process log_out {
   stdin detect_runs 
   // Add "stdin {PROCESS}" (Note: does NOT need to process name)
 
-  script:
-  """
-  cat - >> ${LOG_FILE}
-  """
+  shell:
+  '''
+  # Read ech line from stdin & write to log file w/ timestamp
+  while IFS='$\n' read -r line; do
+    echo "$(date): $line" >> ${LOG_FILE}
+  done
+  '''
 }
 
 workflow {
