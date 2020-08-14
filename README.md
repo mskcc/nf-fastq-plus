@@ -6,7 +6,7 @@ Generate IGO fastqs, bams, stats and fingerprinting
 ```
 $ nextflow run main.nf
 N E X T F L O W  ~  version 19.10.0
-Launching `main.nf` [maniac_cajal] - revision: 112a09ed91
+Launching `main.nf` [ridiculous_mendel] - revision: 32a294cd4c
 WARN: DSL 2 IS AN EXPERIMENTAL FEATURE UNDER DEVELOPMENT -- SYNTAX MAY CHANGE IN FUTURE RELEASE
          I G O   P I P E L I N E
 ==========================================
@@ -21,10 +21,10 @@ Output=./pipeline_out
 Log=/home/streidd/work/nf-fastq-plus/igo-pipeline.log
 
 executor >  local (4)
-[7a/6413ee] process > get_software_versions [100%] 1 of 1 ✔
-[d3/5c433a] process > detect_runs           [100%] 1 of 1 ✔
-[d3/8c45f5] process > gsw_log               [100%] 1 of 1 ✔
-[3a/59375a] process > dr_log                [100%] 1 of 1 ✔
+[04/539326] process > get_software_versions_wkflw:get_software_versions [100%] 1 of 1 ✔
+[df/6fd847] process > get_software_versions_wkflw:log_out               [100%] 1 of 1 ✔
+[46/54abf0] process > detect_runs_wkflw:detect_runs                     [100%] 1 of 1 ✔
+[d1/b30dac] process > detect_runs_wkflw:log_out                         [100%] 1 of 1 ✔
 ```
 
 ### Clean outputs
