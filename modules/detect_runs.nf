@@ -1,6 +1,6 @@
-include log_out from './log_out'
+include log_out as out from './log_out'
 
-process detect_runs {
+process task {
   publishDir PIPELINE_OUT, mode:'move'
 
   output:
@@ -13,8 +13,8 @@ process detect_runs {
 
 workflow detect_runs_wkflw {
   main:
-    detect_runs()
-    log_out( detect_runs.out[1] )
+    task()
+    out( task.out[1] )
 }
 
 

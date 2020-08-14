@@ -2,9 +2,9 @@
  * Retrieves versions of software defined in nextflow.config
  */
 
-include log_out from './log_out'
-
-process get_software_versions {
+include log_out as out from './log_out'
+ 
+process task {
   output:
   stdout()
 
@@ -18,5 +18,5 @@ process get_software_versions {
 
 workflow get_software_versions_wkflw {
   main:
-    get_software_versions | log_out
+    task | out
 }

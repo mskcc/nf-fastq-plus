@@ -95,3 +95,27 @@ process {PROCESS_NAME} {
     └── process.sh
 ```
 * Write whatever script with the appropriate header (e.g. `#!/bin/bash`)
+
+3) (Optional) Add logging
+
+In the modules, convert the exported member to a workflow that calls an included `log_out` process to log everything sent to stdout by the process. See below,
+```
+include log_out as out from './log_out'
+
+process task {
+  output:
+  stdout()		// Add this to your outputs
+  ...
+
+  shell:
+  '''
+  echo "Hello World" 	// Example sent to STD OUT
+  ...
+  '''
+}
+
+workflow task_wkflw { 	// This is what will actually be exported
+  main:
+    task | out
+}
+```
