@@ -1,6 +1,8 @@
 import unittest
-from setup_stats import get_sample_type_from_recipe, get_reference_configs, get_recipe_options
-from stat_config import GENOME, REFERENCE, REF_FLAT, RIBO_INTER, BAIT, TARGET, CAPTURE
+import sys
+sys.path.append('../../templates')
+from generate_run_params import get_sample_type_from_recipe, get_reference_configs, get_recipe_options
+from run_param_config import GENOME, REFERENCE, REF_FLAT, RIBO_INTER, BAIT, TARGET, CAPTURE
 
 class TestSetupStats(unittest.TestCase):
     def test_get_sample_type_from_recipe(self):

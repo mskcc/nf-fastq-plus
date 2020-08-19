@@ -2,7 +2,7 @@
  * Retrieves versions of software defined in nextflow.config
  */
 
-include log_out as out from './log_out'
+include { log_out as out } from './log_out'
  
 process task {
   output:

@@ -45,6 +45,7 @@ else
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
     echo "Project: ${PROJECT}, Species: ${SPECIES}, Recipe: ${RECIPE}"
+    generate_run_params.py -r ${RECIPE} -s ${SPECIES}
   done
   IFS=' \t\n'
   

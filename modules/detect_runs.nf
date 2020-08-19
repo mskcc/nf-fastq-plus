@@ -1,7 +1,10 @@
-include log_out as out from './log_out'
+include { log_out as out } from './log_out'
 
 process task {
   publishDir PIPELINE_OUT, mode:'move'
+
+  input:
+  env DEMUX_ALL
 
   output:
   path "${RUNS_TO_DEMUX_FILE}"
@@ -12,9 +15,13 @@ process task {
 }
 
 workflow detect_runs_wkflw {
+  take:
+    DEMUX_ALL
   main:
-    task()
+    task( DEMUX_ALL )
     out( task.out[1] )
+  emit:
+    task.out[0]
 }
 
 

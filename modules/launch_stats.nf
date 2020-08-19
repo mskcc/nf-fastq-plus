@@ -1,4 +1,4 @@
-include log_out as out from './log_out'
+include { log_out as out } from './log_out'
 
 process task {
   output:

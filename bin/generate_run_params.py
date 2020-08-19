@@ -9,6 +9,7 @@ Usage: python generate_run_params.py -r HemeBrainPACT_v1 -s Human
 import re
 import sys
 import getopt
+from collections import OrderedDict
 from run_param_config import DEFAULT, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping
 
 def find_mapping(mapping, target):
@@ -153,3 +154,4 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+

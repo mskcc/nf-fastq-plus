@@ -14,7 +14,13 @@
 DONE_FILE="Run_Done.txt"
 touch ${RUNS_TO_DEMUX_FILE}
 
-echo "Searching for runs completed in past ${RUN_AGE} minutes"
+DEMUX_ALL=$(("${DEMUX_ALL}" == "true"))
+if [[ ${DEMUX_ALL} ]]; then
+  echo "Demuxing all detected runs in past ${RUN_AGE} minutes. Even those with FASTQs in ${FASTQ_DIR}"
+else
+  echo "Searching for new runs completed in past ${RUN_AGE} minutes"
+fi
+
 sequencer_files=( ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
   ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
   ${SEQUENCER_DIR}/kim/*/RTAComplete.txt
@@ -60,10 +66,10 @@ for x in $(cat ${DONE_FILE}) ; do
   # If the run has already been demuxed, then it will be in the FASTQ directory.
   demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
   # echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
-  if [ "${demuxed_run}" == "" ]; then
-    echo "New Run (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
+  if [ "${demuxed_run}" == "" || ${DEMUX_ALL} ]; then
+    echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
     echo $RUNPATH >> ${RUNS_TO_DEMUX_FILE}
   else
-    echo "Old Run (Skipping): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
+    echo "Has Been Demuxed (Skip): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
   fi
 done
