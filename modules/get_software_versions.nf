@@ -19,4 +19,7 @@ process task {
 workflow get_software_versions_wkflw {
   main:
     task | out
+  
+  emit:
+    "DONE" // Emits for downstream dependency, i.e. force other processes to come after
 }

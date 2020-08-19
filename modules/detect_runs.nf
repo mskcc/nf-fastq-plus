@@ -17,6 +17,7 @@ process task {
 workflow detect_runs_wkflw {
   take:
     DEMUX_ALL
+    IS_READY	// Dependency input, used to make previous workflow go first
   main:
     task( DEMUX_ALL )
     out( task.out[1] )
