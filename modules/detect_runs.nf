@@ -1,7 +1,7 @@
 include { log_out as out } from './log_out'
 
 process task {
-  publishDir PIPELINE_OUT, mode:'move'
+  publishDir PIPELINE_OUT, mode:'copy'
 
   input:
   env DEMUX_ALL

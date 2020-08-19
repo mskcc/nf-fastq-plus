@@ -16,7 +16,7 @@ touch ${RUNS_TO_DEMUX_FILE}
 
 DEMUX_ALL=$(("${DEMUX_ALL}" == "true"))
 if [[ ${DEMUX_ALL} ]]; then
-  echo "Demuxing all detected runs in past ${RUN_AGE} minutes. Even those with FASTQs in ${FASTQ_DIR}"
+  echo "FORCE DEMUX: Processing all detected runs in past ${RUN_AGE} minutes."
 else
   echo "Searching for new runs completed in past ${RUN_AGE} minutes"
 fi

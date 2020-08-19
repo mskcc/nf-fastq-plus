@@ -8,7 +8,7 @@ process task {
     stdout()
 
   shell:
-    template 'detect_runs.sh'
+    template 'demultiplex.sh'
 }
 
 workflow demultiplex_wkflw {

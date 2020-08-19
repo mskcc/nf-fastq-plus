@@ -37,7 +37,6 @@ println """\
 
 workflow {
   get_software_versions_wkflw()
-  // TODO: Weird issue where detect run workflow runs twice 
   detect_runs_wkflw( DEMUX_ALL )
   demultiplex_wkflw( detect_runs_wkflw.out[0] )
   launch_stats_wkflw()
