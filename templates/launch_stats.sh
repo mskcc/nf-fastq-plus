@@ -1,10 +1,16 @@
 # !/bin/bash
-#
-# STATSDIR=/igo/stats RUN=MICHELLE_0246_BHG7L2DSXY SAMPLE_SHEET_DIR=/home/igo/SampleSheetCopies templates/launch_stats.sh
-# Launching RunName: 0246_BHG7L2DSXY, Run: MICHELLE_0246_BHG7L2DSXY, SampleSheet: /home/igo/SampleSheetCopies/SampleSheet_200804_MICHELLE_0246_BHG7L2DSXY.csv, RunType: PE, Dual Index: 71
+# Configures FASTQ stats from input Runname
+# Nextflow Inputs:
+#   DEMUXED_RUN (Input): Name of run that has been demultiplexed
+#   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
+#   STATS_DIR (Config): Absolute path to where stats should be written
+# Nextflow Outputs:
+#   TODO
+# Run: 
+#   STATSDIR=/igo/stats RUN=MICHELLE_0246_BHG7L2DSXY SAMPLE_SHEET_DIR=/home/igo/SampleSheetCopies templates/launch_stats.sh
 
 STATSDIR=${STATS_DIR}
-RUN=${RUN}
+RUN=${DEMUXED_RUN}	
 
 SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {

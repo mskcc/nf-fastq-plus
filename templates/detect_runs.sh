@@ -9,7 +9,8 @@
 #   PIPELINE_OUT: (OPTIONAL)  Output directory where outputs will be written in nextflow
 # Outputs (STD OUT):
 #   Absolute paths to run dierectories
-# Run: SEQUENCER_DIR="/igo/sequencers" RUN_AGE=6000 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./templates/detect_runs.sh
+# Run: 
+#   SEQUENCER_DIR="/igo/sequencers" RUN_AGE=6000 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./templates/detect_runs.sh
 
 DONE_FILE="Run_Done.txt"
 touch ${RUNS_TO_DEMUX_FILE}

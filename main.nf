@@ -38,6 +38,6 @@ println """\
 workflow {
   get_software_versions_wkflw()
   detect_runs_wkflw( DEMUX_ALL )
-  demultiplex_wkflw( detect_runs_wkflw.out[0] )
-  launch_stats_wkflw()
+  demultiplex_wkflw( detect_runs_wkflw.out )
+  launch_stats_wkflw( demultiplex_wkflw.out )
 }
