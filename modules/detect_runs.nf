@@ -5,6 +5,7 @@ process task {
 
   input:
   env DEMUX_ALL
+  env IS_READY
 
   output:
   path "${RUNS_TO_DEMUX_FILE}"
@@ -19,7 +20,7 @@ workflow detect_runs_wkflw {
     DEMUX_ALL
     IS_READY	// Dependency input, used to make previous workflow go first
   main:
-    task( DEMUX_ALL )
+    task( DEMUX_ALL, IS_READY )
     out( task.out[1] )
   emit:
     task.out[0]

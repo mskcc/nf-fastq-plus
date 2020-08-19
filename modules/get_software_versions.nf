@@ -10,9 +10,9 @@ process task {
 
   shell:
   '''
-  printf "\nStarting Run $(date)\n"
+  echo "Starting Run $(date)"
   echo "VERSIONS: BWA $(${bwa} 2>&1 | grep "Version")"
-  echo "VERSIONS: PICARD $(echo ${picard})"
+  printf "VERSIONS: PICARD $(echo ${picard})\n\n"
   '''
 }
 
@@ -21,5 +21,5 @@ workflow get_software_versions_wkflw {
     task | out
   
   emit:
-    "DONE" // Emits for downstream dependency, i.e. force other processes to come after
+    out.out // Emits for downstream dependency, i.e. force other processes to come after
 }
