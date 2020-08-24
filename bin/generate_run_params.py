@@ -72,6 +72,25 @@ def get_reference_configs(recipe, type, species):
 
     mapping = find_mapping(genome_reference_mapping, genome)
 
+
+    """
+    SHOULD TRANSFORM,
+      DEFAULT: {
+          GENOME: "/igo/work/genomes/M.musculus/mm9/BWA_0.7.5a/mouse_mm9.fa",
+          REFERENCE: "/igo/work/genomes/M.musculus/mm9/mouse_mm9.fa"
+      },
+      "RNA": {
+          REF_FLAT: "/home/igo/resources/BED-Targets/mm9-Ref_Flat.txt",
+          RIBO_INTER: "/home/igo/resources/BED-Targets/mm9.ribosomal.interval_file"
+      }
+    TO,
+      { 
+          GENOME: "/igo/work/genomes/M.musculus/mm9/BWA_0.7.5a/mouse_mm9.fa",
+          REFERENCE: "/igo/work/genomes/M.musculus/mm9/mouse_mm9.fa"
+          REF_FLAT: "/home/igo/resources/BED-Targets/mm9-Ref_Flat.txt",
+          RIBO_INTER: "/home/igo/resources/BED-Targets/mm9.ribosomal.interval_file"
+      }
+    """
     genome_configs = mapping[DEFAULT] # Base configuration for all recipes
     overrides = {} if type not in mapping else mapping[type]
     genome_configs.update(overrides)
