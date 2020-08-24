@@ -21,7 +21,7 @@ workflow detect_runs_wkflw {
     IS_READY	// Dependency input, used to make previous workflow go first
   main:
     task( DEMUX_ALL, IS_READY )
-    out( task.out[1] )
+    out( task.out[1], "detect_runs" )
   emit:
     task.out[0]
 }

@@ -11,7 +11,7 @@ def get_ordered_dic(unordered_dic):
     """
     return OrderedDict(sorted(unordered_dic.items(), key=lambda t: -len(t[0])))
 
-""" TODO """
+""" Mapping of recipes to their type, default should be DNA """ 
 recipe_type_mapping_UNORDERED = {
     "MouseWholeGenome": "WGS",
     "ShallowWGS": "WGS",
@@ -21,12 +21,14 @@ recipe_type_mapping_UNORDERED = {
     ".*SMARTer.*": "RNA",
     "FusionDiscoverySeq": "RNA",
     ".*Ribo.*": "RNA",
-    # DEFAULT
-    ".*": "DNA"
+    # FOR NEW ENTRIES
+    # "{regex}": "{TYPE}"
+
+    ".*": "DNA"      # DEFAULT
 }
 recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 
-""" TODO """
+""" Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
     "Human": "hg19",
     "Mouse": "mm10",
@@ -43,19 +45,20 @@ species_genome_mapping_UNORDERED = {
     "S.Pombe": "pombe",
     "R.norvegicus": "rn6",
     "E.Lambda": "elambda",
-    # DEFAULT
-    ".*": "INVALID"
+    # FOR NEW ENTRIES
+    # "{regex}": "{GENOME}"
+
+    ".*": "INVALID"     # DEFAULT
 }
 species_genome_mapping = get_ordered_dic(species_genome_mapping_UNORDERED)
 
-""" TODO """
-DEFAULT = "default"
+""" Mapping of genome-type to their reference files """
+DEFAULT = "DEFAULT_TYPE"
 GENOME = "GENOME"
 REFERENCE = "REFERENCE"
 REF_FLAT = "REF_FLAT"
 RIBO_INTER = "RIBO_INTER"
 GTAG = "GTAG"
-
 genome_reference_mapping_UNORDERED = {
     "hg19": {
         DEFAULT: {
@@ -251,6 +254,7 @@ genome_reference_mapping_UNORDERED = {
 }
 genome_reference_mapping = get_ordered_dic(genome_reference_mapping_UNORDERED)
 
+""" Mapping of recipe to additional run options """
 BAIT="BAIT"
 TARGET="TARGET"
 CAPTURE="CAPTURE"
@@ -593,7 +597,9 @@ recipe_options_mapping_UNORDERED = {
         TARGET: "/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_TARGETS.interval_list",
         CAPTURE: "True"
     },
-    # DEFAULT
-    ".*": {}
+    # FOR NEW ENTRIES
+    # "{regex}": { [KEY]: "{REFERENCE_FILE}", ... }
+
+    ".*": {}     # DEFAULT
 }
 recipe_options_mapping = get_ordered_dic(recipe_options_mapping_UNORDERED)

@@ -138,8 +138,6 @@ def main(argv):
             print('usage: setup_stats.py -r <recipe> -s <species>')
             sys.exit(2)
 
-    print('Recipe: {}'.format(recipe))
-    print('Species: {}'.format(species))
     type = get_sample_type_from_recipe(recipe)
     refr = get_reference_configs(recipe, type, species)
     opts = get_recipe_options(recipe)
@@ -149,8 +147,10 @@ def main(argv):
     opts["TYPE"] = type
 
     run_params = get_ordered_dic(opts) # Want to print in same order
+    output=""
     for k,v in run_params.items():
-        print("{}: {}".format(k, v))
+        output="{} {}".format(output, "{}={}".format(k, v))
+    print(output)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

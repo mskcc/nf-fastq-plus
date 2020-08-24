@@ -94,7 +94,20 @@ process {PROCESS_NAME} {
 └── templates
     └── process.sh
 ```
-* Write whatever script with the appropriate header (e.g. `#!/bin/bash`)
+* Write whatever script with the appropriate header (e.g. `#!/bin/bash`) that includes the following
+	* `Nextflow Inputs`: Inputs defined as nextflow `Input` values. Add (Input) if defined in process `Input` or (Config) if defined in `nextflow.config
+	* `Nextflow Outputs`: Outputs that will be defined in the execution context
+	* `Run`: A sample command of how to run the script
+```
+#!/bin/bash
+# Submits demultiplexing jobs
+# Nextflow Inputs:
+#   RUN_TO_DEMUX_DIR: Absolute path to directory of the Run to demux (Defined as input in nextflow process)
+# Nextflow Outputs:
+#   DEMUXED_RUN: Name of run to demux, given by the name of @RUN_TO_DEMUX_DIR
+# Run:
+#   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
+```
 
 3) (Optional) Add logging
 

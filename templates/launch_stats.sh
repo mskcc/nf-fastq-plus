@@ -50,7 +50,7 @@ else
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
-    echo "Project: ${PROJECT}, Species: ${SPECIES}, Recipe: ${RECIPE}"
+    echo "SampleSheet Extraction - Project: ${PROJECT}, Species: ${SPECIES}, Recipe: ${RECIPE}"
     generate_run_params.py -r ${RECIPE} -s ${SPECIES} # Python scripts in bin of project root
   done
   IFS=' \t\n'

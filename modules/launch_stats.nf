@@ -15,7 +15,7 @@ workflow launch_stats_wkflw {
     DEMUXED_RUN
   main:
     task( DEMUXED_RUN )
-    out( task.out )
+    out( task.out, "stats" )
 }
 
 

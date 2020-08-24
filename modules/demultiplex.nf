@@ -20,7 +20,7 @@ workflow demultiplex_wkflw {
     // Submit each run seperately through the workflow so that each can execute independently
     runs_to_demux_path.splitText().set{ run_ch }
     task( run_ch ) 
-    out( task.out[0] )
+    out( task.out[0], "demultiplex" )
 
   emit:
     task.out[1]
