@@ -7,15 +7,15 @@ process task {
     stdout()
 
   shell:
-    template 'launch_stats.sh'
+    template 'generate_run_params.sh'
 }
 
-workflow launch_stats_wkflw {
+workflow generate_run_params_wkflw {
   take:
     DEMUXED_RUN
   main:
     task( DEMUXED_RUN )
-    out( task.out, "stats" )
+    out( task.out, "generate_run_params" )
 }
 
 

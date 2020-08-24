@@ -3,7 +3,7 @@ nextflow.preview.dsl=2
 include { dependency_check_wkflw } from './modules/dependency_check';
 include { detect_runs_wkflw } from './modules/detect_runs';
 include { demultiplex_wkflw } from './modules/demultiplex';
-include { launch_stats_wkflw } from './modules/launch_stats';
+include { generate_run_params_wkflw } from './modules/generate_run_params';
 
 /**
  * Processes input parameters that are booleans
@@ -38,5 +38,5 @@ workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( DEMUX_ALL, dependency_check_wkflw.out )
   demultiplex_wkflw( detect_runs_wkflw.out )
-  launch_stats_wkflw( demultiplex_wkflw.out )
+  generate_run_params_wkflw( demultiplex_wkflw.out )
 }
