@@ -170,6 +170,7 @@ def main(argv):
     for k,v in run_params.items():
         output="{} {}".format(output, "{}={}".format(k, v))
     print(output)
+    return output
 
 if __name__ == "__main__":
     main(sys.argv[1:])

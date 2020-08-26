@@ -257,7 +257,7 @@ genome_reference_mapping = get_ordered_dic(genome_reference_mapping_UNORDERED)
 """ Mapping of recipe to additional run options """
 BAIT="BAIT"
 TARGET="TARGET"
-CAPTURE="CAPTURE"
+CAPTURE="CAPTURE"  # todo - delete this? Really just whether it has a bait & target
 MSKQ="MSKQ"
 MARKDUPLICATES="MARKDUPLICATES"
 recipe_options_mapping_UNORDERED = {
