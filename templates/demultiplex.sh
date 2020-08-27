@@ -16,6 +16,9 @@ array=($RUNPATH)
 MACHINE="${array[3]}"
 DEMUXED_RUN="${array[4]}" # EXPORT TO NEXT NEXTFLOW PROCESS
 IFS=','
+
+# TODO - Update: Add a notification for when a DEMUX fails. VERY IMPORTANT - Some sequencers (e.g. SCOTT) delete their old data w/ each new run, i.e. $30,000 run could be deleted just b/c the copy didn't work correctly
+
 # TODO - Demultiplexing
 
 
