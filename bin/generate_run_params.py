@@ -75,6 +75,7 @@ def get_reference_configs(recipe, type, species):
 
     """
     SHOULD TRANSFORM,
+      type: RNA
       DEFAULT: {
           GENOME: "/igo/work/genomes/M.musculus/mm9/BWA_0.7.5a/mouse_mm9.fa",
           REFERENCE: "/igo/work/genomes/M.musculus/mm9/mouse_mm9.fa"
