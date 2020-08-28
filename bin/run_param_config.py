@@ -30,7 +30,7 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
-    "Human": "hg19",
+    "Human": "GRCh37",
     "Mouse": "mm10",
     "Mouse_GeneticallyModified": "mm10",
     "Drosophilia": "dm3",
@@ -302,6 +302,7 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDT_Exome_V1_IMPACT468/IDT_Exome_V1_IMPACT468_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDT_Exome_V1_IMPACT468/IDT_Exome_V1_IMPACT468_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "OCCC": {
@@ -329,42 +330,49 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "Agilent_v4_51MB_Human": {
         BAIT: "/home/igo/resources/ilist/AgilentExon_51MB_b37_v3/b37/AgilentExon_51MB_b37_v3_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/AgilentExon_51MB_b37_v3/b37/AgilentExon_51MB_b37_v3_targets.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "Agilent_MouseAllExonV1": {
         BAIT: "/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_baits.ilist",
         TARGET: "/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_targets.ilist",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_v1_FP_Viral_Probes": {
         BAIT: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_v1": {
         BAIT: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_v1_FP": {
         BAIT: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "WholeExome_v4": {
         BAIT: "/home/igo/resources/BED-Targets/IDT_Exome_v1_FP_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IDT_Exome_v1_FP_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "Twist_Exome": {
@@ -372,6 +380,7 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/Twist/Twist_Exome_Hg19_TARGETS.iList",
         TARGET: "/home/igo/resources/BED-Targets/Twist/Twist_Exome_Hg19_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "RF-OVARIAN_V2": {
@@ -449,24 +458,28 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "BRAINPACT_v1": {
      	BAIT: "/home/igo/resources/BED-Targets/BRAINPACT_V1/BRAINPACT_V1_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/BRAINPACT_V1/BRAINPACT_V1_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "ADCC1_v2": {
      	BAIT: "/home/igo/resources/BED-Targets/ADCC1_V2/ADCC1_V2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/ADCC1_V2/ADCC1_V2_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "ADCC1_v3": {
         BAIT: "/igo/work/nabors/bed_files/ADCC1_v3/ADCC1_v3_capture_targets_BAITS.interval_list",
         TARGET: "/igo/work/nabors/bed_files/ADCC1_v3/ADCC1_v3_primary_targets_TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "RDM": {
@@ -537,101 +550,120 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/IonAmpliseqCancerHotspotv2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IonAmpliseqCancerHotspotv2_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "no"
     },
     "PanCancerV2": {
         BAIT: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "MSK-ACCESS_v1": {
         BAIT: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "CH_v1": {
         BAIT: "/home/igo/resources/BED-Targets/CH_v1/CH_v1_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "MissionBio-Heme": {
         BAIT: "/home/igo/resources/BED-Targets/Mission_Bio/AML_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/Mission_Bio/AML_TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "AmpliSeq": {
         BAIT: "/home/igo/resources/BED-Targets/AmpliSeq.ComprehensiveCancerPanel/ComprehensiveCancer.dna_manifest.20180509.BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/AmpliSeq.ComprehensiveCancerPanel/ComprehensiveCancer.dna_manifest.20180509.TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "PCFDDR_v1": {
         BAIT: "/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "HemeBrainPACT_v1": {
         BAIT: "/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "MouseWholeGenome": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type WGS --md $MARKDUPLICATES --mskq $MSKQ
     },
     "ShallowWGS": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type WGS --md $MARKDUPLICATES --mskq $MSKQ
     },
     "10X_Genomics_WGS": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type WGS --md $MARKDUPLICATES --mskq $MSKQ
     },
     "CustomAmplificationPCR": {
+        MSKQ: "no",
         MARKDUPLICATES: "no"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES --mskq $MSKQ
     },
     "AmpliconSeq": {
+        MSKQ: "no",
         MARKDUPLICATES: "no"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES --mskq $MSKQ
     },
     "CRISPRSeq": {
+        MSKQ: "no",
         MARKDUPLICATES: "no"
         # TODO
         # sh ~/Scripts/PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES --mskq $MSKQ
     },
     "FusionDiscoverySeq": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type RNA --md $MARKDUPLICATES --mskq $MSKQ
     },
     ".*RNA.*": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type RNA --md $MARKDUPLICATES --mskq $MSKQ
     },
     ".*Ribo.*": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type RNA --md $MARKDUPLICATES --mskq $MSKQ
     },
     ".*SMARTer.*": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type RNA --md $MARKDUPLICATES --mskq $MSKQ
     },
     ".*96Well_SmartSeq2.*": {
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type RNA --md $MARKDUPLICATES --mskq $MSKQ
@@ -648,6 +680,7 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     ".*06575_Hg19.*": {
@@ -671,6 +704,7 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/08035_hg19/08035_B_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/08035_hg19/08035_B_TARGETS.interval_list",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     ".*08129_Hg19.*": {
@@ -701,17 +735,22 @@ recipe_options_mapping_UNORDERED = {
         BAIT: "/home/igo/resources/BED-Targets/08382_Hg19/08382_Hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/08382_Hg19/08382_Hg19_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     ".*08428_mm10.*": {
         BAIT: "/home/igo/resources/BED-Targets/8428_mm10/8428_mm10_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/8428_mm10/8428_mm10_TARGETS.iList",
         CAPTURE: "True",
+        MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     # FOR NEW ENTRIES
     # "{regex}": { [KEY]: "{REFERENCE_FILE}", ... }
 
-    ".*": {}     # DEFAULT
+    ".*": {
+        MSKQ: "no",
+        MARKDUPLICATES: "yes"
+    }     # DEFAULT
 }
 recipe_options_mapping = get_ordered_dic(recipe_options_mapping_UNORDERED)
