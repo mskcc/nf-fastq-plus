@@ -84,7 +84,7 @@ def get_recipe_species(line, sample_sheet_path):
     line = line.split("/")
     project = line[5]
 
-    # return random.randint(0, 10), random.randint(0, 10) 
+    # return random.randint(0, 10), random.randint(0, 10)
     try:
         f = open(sample_sheet_path, "r")
     except IOError:
@@ -128,55 +128,54 @@ def get_expected_params_str(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGET
     return "        expected_params = \"{}\"".format(expected_params_str.strip())
 
 def parse(file_path):
+    RUN_COMMAND_SEPARATOR = "script=[/igo/home/igo/Scripts/Automate-Stats]"         # Separates all run commands
+    PROJECT_COMMAND_SEPARATOR = "script=[/igo/home/igo/Scripts/PicardScripts]"      # Separates all project commands
+
+    recipe_species_pairs = set()  # Keep track of all unique recipe-species pairs
+
     f = open(file_path, "r")
-    run_commands = f.read().split("script=[/igo/home/igo/Scripts/Automate-Stats]")
-
-    GENOME=""
-    RIBO_INT=""
-    REF_FLAT=""
-    BAITS=""
-    TARGETS=""
-    MSKQ=""
-    MD=""
-    REFERENCE=""
-    TYPE=""
-
-    recipe = ""
-    species = ""
-
-    rs_set = set()
-
+    run_commands = f.read().split(RUN_COMMAND_SEPARATOR)
     for run_cmd in run_commands:
-        project_commands = run_cmd.split("script=[/igo/home/igo/Scripts/PicardScripts]")
-
-    for project in project_commands:
-        lines = project.split("\n")
-        if len(lines) > 1:
-            sample_sheet = lines[2].split(" ")[0]
-            for l in lines:
-                if is_data_dir(l):
-                    line_recipe, line_species = get_recipe_species(l, sample_sheet)
-                    rs_element = "{}{}".format(recipe, species) # Only print new recipe-species combinations
-                    if (line_recipe != recipe or line_species != species) and rs_element not in rs_set:
-                        rs_set.add(rs_element)
-                        expected_params_str = get_expected_params_str(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD,TYPE)
-                        print("        params = get_recipe_species_params(\"{}\", \"{}\")".format(recipe, species))
-                        print(expected_params_str)
-                        # print("        expected_params = \"GENOME={} REFERENCE={} RIBOSOMAL_INTERVALS={} REF_FLAT={} BAITS={} TARGETS={} MSKQ={} MD={}\"".format(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD))
-                        print("        self.verify_params(params, expected_params, \"{}\", \"{}\")\n".format(recipe, species))
-                        # print("PARAMS (R: {}, S: {}):\nGENOME: {}, REFERENCE: {}, RIBO_INT: {}, REF_FLAT: {}, BAITS: {}, TARGETS: {}, MSKQ: {}, MD: {}".format(recipe, species, GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD))    
-                    species = line_species
-                    recipe = line_recipe
-                if is_alignment(l):
-                    GENOME = get_alignment_params(l)
-                if is_rna_seq_metrics(l):
-                    RIBO_INT, REF_FLAT = get_rna_seq_metrics(l)
-                if is_collect_hs_metrics(l):
-                    BAITS, TARGETS = get_collect_hs_metrics(l)
-                if is_mskq_and_md_and_type(l):
-                    MSKQ,MD,TYPE = get_mskq_and_md_and_type(l)
-                if is_alignment_metrics(l) or is_CollectWgsMetrics(l):
-                    REFERENCE=get_reference_from_opts(l)
+        project_commands = run_cmd.split(PROJECT_COMMAND_SEPARATOR)
+        for project in project_commands:
+            GENOME=""
+            RIBO_INT=""
+            REF_FLAT=""
+            BAITS=""
+            TARGETS=""
+            MSKQ=""
+            MD=""
+            REFERENCE=""
+            TYPE=""
+            recipe = ""
+            species = ""
+            lines = project.split("\n")
+            if len(lines) > 1:
+                sample_sheet = lines[2].split(" ")[0]
+                for l in lines:
+                    if is_data_dir(l):
+                        line_recipe, line_species = get_recipe_species(l, sample_sheet)
+                        rs_element = "{}{}".format(recipe, species) # Only print new recipe-species combinations
+                        if (line_recipe != recipe or line_species != species) and rs_element not in recipe_species_pairs:
+                            recipe_species_pairs.add(rs_element)
+                            expected_params_str = get_expected_params_str(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD,TYPE)
+                            print("        params = get_recipe_species_params(\"{}\", \"{}\")".format(recipe, species))
+                            print(expected_params_str)
+                            # print("        expected_params = \"GENOME={} REFERENCE={} RIBOSOMAL_INTERVALS={} REF_FLAT={} BAITS={} TARGETS={} MSKQ={} MD={}\"".format(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD))
+                            print("        self.verify_params(params, expected_params, \"{}\", \"{}\")\n".format(recipe, species))
+                            # print("PARAMS (R: {}, S: {}):\nGENOME: {}, REFERENCE: {}, RIBO_INT: {}, REF_FLAT: {}, BAITS: {}, TARGETS: {}, MSKQ: {}, MD: {}".format(recipe, species, GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD))
+                        species = line_species
+                        recipe = line_recipe
+                    if is_alignment(l):
+                        GENOME = get_alignment_params(l)
+                    if is_rna_seq_metrics(l):
+                        RIBO_INT, REF_FLAT = get_rna_seq_metrics(l)
+                    if is_collect_hs_metrics(l):
+                        BAITS, TARGETS = get_collect_hs_metrics(l)
+                    if is_mskq_and_md_and_type(l):
+                        MSKQ,MD,TYPE = get_mskq_and_md_and_type(l)
+                    if is_alignment_metrics(l) or is_CollectWgsMetrics(l):
+                        REFERENCE=get_reference_from_opts(l)
     f.close()
 
 def main(argv):
