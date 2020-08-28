@@ -23,7 +23,7 @@ def find_mapping(mapping, target):
       value (any): desired mapping of target
     """
     for key_re, val in mapping.items():
-        expr = re.compile(key_re)
+        expr = re.compile(key_re, re.IGNORECASE)
         if(expr.match(target)):
             return val
     return None
