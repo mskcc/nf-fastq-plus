@@ -162,6 +162,11 @@ def main(argv):
     refr = get_reference_configs(recipe, type, species)
     opts = get_recipe_options(recipe)
 
+    # TODO - Special Cases
+    # "MethylCaptureSeq": sh $DIR/../PicardScripts/Methylseq.sh /igo/work/FASTQ/$RUNNAME/$PROJECT/
+    # 10X_Genomics_*: sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES
+    # DLP) echo "<<< DLP SAMPLES finished demuxing >>>"
+
     # Consolidate options
     opts.update(refr)
     opts["TYPE"] = type
