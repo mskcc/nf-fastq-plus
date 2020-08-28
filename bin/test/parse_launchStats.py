@@ -61,13 +61,14 @@ def is_mskq_and_md(line):
 
 def get_type(line):
     type = ""
+    opts = line.split(" ")
     for i in range(len(opts)):
         opt = opts[i]
         if "--type" in opt:
             type = opts[i+1]
     return type
 
-def get_mskq_and_md_and_type(line):
+def get_mskq_and_md(line):
     opts = line.split(" ")
     mskq = ""
     md = ""
