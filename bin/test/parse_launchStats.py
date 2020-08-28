@@ -150,7 +150,15 @@ def parse(file_path):
         sample_sheet = run_cmd.split("\n")[2].split(" ")[0]
         project_commands = run_cmd.split(PROJECT_COMMAND_SEPARATOR)
         for project in project_commands:
-
+            GENOME=""
+            RIBO_INT=""
+            REF_FLAT=""
+            BAITS=""
+            TARGETS=""
+            MSKQ=""
+            MD=""
+            REFERENCE=""
+            TYPE=""
             recipe = ""
             species = ""
             lines = project.split("\n")
@@ -166,15 +174,6 @@ def parse(file_path):
                             print("        params = get_recipe_species_params(\"{}\", \"{}\")".format(recipe, species))
                             print(expected_params_str)
                             print("        self.verify_params(params, expected_params, \"{}\", \"{}\")\n".format(recipe, species))
-                            GENOME=""
-                            RIBO_INT=""
-                            REF_FLAT=""
-                            BAITS=""
-                            TARGETS=""
-                            MSKQ=""
-                            MD=""
-                            REFERENCE=""
-                            TYPE=""
                         species = line_species
                         recipe = line_recipe
                     if is_alignment(l):
