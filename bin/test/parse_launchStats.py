@@ -53,24 +53,31 @@ def get_reference_from_opts(line):
             return opt.split("=")[1].rstrip("\"")
     return reference
 
+def is_type(line):
+    return "--type" in line
 
-def is_mskq_and_md_and_type(line):
-    return "--md" in line and "--mskq" in line and "--type" in line
+def is_mskq_and_md(line):
+    return "--md" in line and "--mskq" in line
+
+def get_type(line):
+    type = ""
+    for i in range(len(opts)):
+        opt = opts[i]
+        if "--type" in opt:
+            type = opts[i+1]
+    return type
 
 def get_mskq_and_md_and_type(line):
     opts = line.split(" ")
     mskq = ""
     md = ""
-    type = ""
     for i in range(len(opts)):
         opt = opts[i]
         if "--md" in opt:
             md = opts[i+1]
         if "--mskq" in opt:
             mskq = opts[i+1]
-        if "--type" in opt:
-            type = opts[i+1]    
-    return mskq, md, type
+    return mskq, md
 
 # TODO - this is determined by the samplesheet PE/SE - one or two FASTQs
 
@@ -174,6 +181,15 @@ def parse(file_path):
                             print("        params = get_recipe_species_params(\"{}\", \"{}\")".format(recipe, species))
                             print(expected_params_str)
                             print("        self.verify_params(params, expected_params, \"{}\", \"{}\")\n".format(recipe, species))
+                            GENOME=""
+                            RIBO_INT=""
+                            REF_FLAT=""
+                            BAITS=""
+                            TARGETS=""
+                            MSKQ=""
+                            MD=""
+                            REFERENCE=""
+                            TYPE=""
                         species = line_species
                         recipe = line_recipe
                     if is_alignment(l):
@@ -182,8 +198,10 @@ def parse(file_path):
                         RIBO_INT, REF_FLAT = get_rna_seq_metrics(l)
                     if is_collect_hs_metrics(l):
                         BAITS, TARGETS = get_collect_hs_metrics(l)
-                    if is_mskq_and_md_and_type(l):
-                        MSKQ,MD,TYPE = get_mskq_and_md_and_type(l)
+                    if is_mskq_and_md(l):
+                        MSKQ,MD = get_mskq_and_md(l)
+                    if is_type(l):
+                        TYPE = get_type(l)
                     if is_alignment_metrics(l) or is_CollectWgsMetrics(l):
                         REFERENCE=get_reference_from_opts(l)
     f.close()
