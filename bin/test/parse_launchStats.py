@@ -135,7 +135,10 @@ def parse(file_path):
 
     f = open(file_path, "r")
     run_commands = f.read().split(RUN_COMMAND_SEPARATOR)
+    while("" in run_commands) : 
+        run_commands.remove("") 
     for run_cmd in run_commands:
+        sample_sheet = run_cmd.split("\n")[2].split(" ")[0]
         project_commands = run_cmd.split(PROJECT_COMMAND_SEPARATOR)
         for project in project_commands:
             GENOME=""
@@ -151,7 +154,7 @@ def parse(file_path):
             species = ""
             lines = project.split("\n")
             if len(lines) > 1:
-                sample_sheet = lines[2].split(" ")[0]
+                # sample_sheet = lines[2].split(" ")[0]
                 for l in lines:
                     if is_data_dir(l):
                         line_recipe, line_species = get_recipe_species(l, sample_sheet)
