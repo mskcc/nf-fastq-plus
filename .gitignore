@@ -4,3 +4,4 @@ igo-pipeline.log
 # Run outputs
 pipeline_out
 work
+*.pyc
