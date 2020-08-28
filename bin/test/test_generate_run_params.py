@@ -1,5 +1,6 @@
 import unittest
 import sys
+from collections import OrderedDict
 import json
 sys.path.append('..')
 from generate_run_params import main, get_sample_type_from_recipe, get_reference_configs, get_recipe_options
@@ -36,15 +37,15 @@ class TestSetupStats(unittest.TestCase):
 
     def test_get_reference_configs_human_dna(self):
         genome_configs = get_reference_configs("", "DNA", "Human")
-        self.assertEqual(genome_configs[GENOME], "/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa")
-        self.assertEqual(genome_configs[REFERENCE], "/igo/work/genomes/H.sapiens/hg19/human_hg19.fa")
+        self.assertEqual(genome_configs[GENOME], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
+        self.assertEqual(genome_configs[REFERENCE], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
 
     def test_get_reference_configs_human_rna(self):
         genome_configs = get_reference_configs("", "RNA", "Human")
-        self.assertEqual(genome_configs[GENOME], "/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa")
-        self.assertEqual(genome_configs[REFERENCE], "/igo/work/genomes/H.sapiens/hg19/human_hg19.fa")
-        self.assertEqual(genome_configs[REF_FLAT], "/home/igo/resources/BED-Targets/hg19-Ref_Flat.txt")
-        self.assertEqual(genome_configs[RIBO_INTER], "/igo/work//bed-targets/ucsc_hg19_rRNA.iList")
+        self.assertEqual(genome_configs[GENOME], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa')
+        self.assertEqual(genome_configs[REFERENCE], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa')
+        self.assertEqual(genome_configs[REF_FLAT], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt')
+        self.assertEqual(genome_configs[RIBO_INTER], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list')
 
     def test_main_AmpliconSeq_Bacteria(self):
         argv = [ "-r", "AmpliconSeq", "-s", "Bacteria" ]
@@ -78,6 +79,9 @@ class TestSetupStats(unittest.TestCase):
         for p in expected:
             kv = p.split("=")
             expected_dic[kv[0]] = kv[1]
+        actual_dic = OrderedDict(sorted(actual_dic.items()))
+        expected_dic = OrderedDict(sorted(expected_dic.items()))
+
         DEBUG_MSG = "\nRecipe: {}, Species: {}\nACTUAL: {}\nEXPECTED: {}".format(recipe, species, json.dumps(actual_dic), json.dumps(expected_dic))
         for k,v in expected_dic.items():
             self.assertTrue(k in actual_dic, "Missing {}{}".format(k, DEBUG_MSG))
