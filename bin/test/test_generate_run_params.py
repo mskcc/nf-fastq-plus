@@ -79,10 +79,10 @@ class TestSetupStats(unittest.TestCase):
             kv = p.split("=")
             expected_dic[kv[0]] = kv[1]
         DEBUG_MSG = "\nRecipe: {}, Species: {}\nACTUAL: {}\nEXPECTED: {}".format(recipe, species, json.dumps(actual_dic), json.dumps(expected_dic))
+        for k,v in expected_dic.items():
+            self.assertTrue(k in actual_dic, "Missing {}{}".format(k, DEBUG_MSG))
+            self.assertEqual(v, actual_dic[k], "{} not equal to {}{}".format(k,v,DEBUG_MSG))
         self.assertEqual(len(actual_dic), len(expected_dic), DEBUG_MSG)
-        for k,v in actual_dic:
-            self.assertTrue(k in expected_dic, DEBUG_MSG)
-            self.assertEqual(v, expected_dic[k], DEBUG_MSG)
 
     def test_main(self):
         params = get_recipe_species_params("RNASeq_PolyA", "Mouse")
