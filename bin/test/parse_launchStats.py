@@ -136,20 +136,21 @@ def parse(file_path):
     f = open(file_path, "r")
     run_commands = f.read().split(RUN_COMMAND_SEPARATOR)
     while("" in run_commands) : 
-        run_commands.remove("") 
+        run_commands.remove("")
+    GENOME=""
+    RIBO_INT=""
+    REF_FLAT=""
+    BAITS=""
+    TARGETS=""
+    MSKQ=""
+    MD=""
+    REFERENCE=""
+    TYPE=""
     for run_cmd in run_commands:
         sample_sheet = run_cmd.split("\n")[2].split(" ")[0]
         project_commands = run_cmd.split(PROJECT_COMMAND_SEPARATOR)
         for project in project_commands:
-            GENOME=""
-            RIBO_INT=""
-            REF_FLAT=""
-            BAITS=""
-            TARGETS=""
-            MSKQ=""
-            MD=""
-            REFERENCE=""
-            TYPE=""
+
             recipe = ""
             species = ""
             lines = project.split("\n")
@@ -164,9 +165,16 @@ def parse(file_path):
                             expected_params_str = get_expected_params_str(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD,TYPE)
                             print("        params = get_recipe_species_params(\"{}\", \"{}\")".format(recipe, species))
                             print(expected_params_str)
-                            # print("        expected_params = \"GENOME={} REFERENCE={} RIBOSOMAL_INTERVALS={} REF_FLAT={} BAITS={} TARGETS={} MSKQ={} MD={}\"".format(GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD))
                             print("        self.verify_params(params, expected_params, \"{}\", \"{}\")\n".format(recipe, species))
-                            # print("PARAMS (R: {}, S: {}):\nGENOME: {}, REFERENCE: {}, RIBO_INT: {}, REF_FLAT: {}, BAITS: {}, TARGETS: {}, MSKQ: {}, MD: {}".format(recipe, species, GENOME, REFERENCE, RIBO_INT, REF_FLAT, BAITS, TARGETS, MSKQ, MD))
+                            GENOME=""
+                            RIBO_INT=""
+                            REF_FLAT=""
+                            BAITS=""
+                            TARGETS=""
+                            MSKQ=""
+                            MD=""
+                            REFERENCE=""
+                            TYPE=""
                         species = line_species
                         recipe = line_recipe
                     if is_alignment(l):
