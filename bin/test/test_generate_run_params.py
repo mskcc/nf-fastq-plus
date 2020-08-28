@@ -85,10 +85,6 @@ class TestSetupStats(unittest.TestCase):
             self.assertEqual(v, expected_dic[k], DEBUG_MSG)
 
     def test_main(self):
-        params = get_recipe_species_params("", "")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt RIBOSOMAL_INTERVALS=/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file TYPE=RNA"
-        self.verify_params(params, expected_params, "", "")
-
         params = get_recipe_species_params("RNASeq_PolyA", "Mouse")
         expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt RIBOSOMAL_INTERVALS=/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file TYPE=RNA"
         self.verify_params(params, expected_params, "RNASeq_PolyA", "Mouse")
@@ -101,117 +97,41 @@ class TestSetupStats(unittest.TestCase):
         expected_params = "GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "RNASeq_PolyA", "Human")
 
-        params = get_recipe_species_params("ATACSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "ATACSeq", "Human")
-
-        params = get_recipe_species_params("AmpliconSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "AmpliconSeq", "Human")
-
-        params = get_recipe_species_params("ChIPSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "ChIPSeq", "Human")
-
-        params = get_recipe_species_params("ChIPSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "ChIPSeq", "Mouse")
-
         params = get_recipe_species_params("IMPACT468", "Human")
         expected_params = "BAITS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_TARGETS.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "IMPACT468", "Human")
 
         params = get_recipe_species_params("ShallowWGS", "")
-        expected_params = "BAITS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_TARGETS.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta"
         self.verify_params(params, expected_params, "ShallowWGS", "")
 
         params = get_recipe_species_params("IDT_Exome_v1_FP_Viral_Probes", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
+        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list"
         self.verify_params(params, expected_params, "IDT_Exome_v1_FP_Viral_Probes", "Human")
-
-        params = get_recipe_species_params("Agilent_MouseAllExonV1", "Mouse")
-        expected_params = "BAITS=/igo/work/interval_list_data/Agilent_MouseAllExonV1_mm10_v1_baits.ilist GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt RIBOSOMAL_INTERVALS=/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file TARGETS=/igo/work/interval_list_data/Agilent_MouseAllExonV1_mm10_v1_targets.ilist TYPE=RNA"
-        self.verify_params(params, expected_params, "Agilent_MouseAllExonV1", "Mouse")
-
-        params = get_recipe_species_params("SMARTerAmpSeq", "Human")
-        expected_params = "BAITS=/igo/work/interval_list_data/Agilent_MouseAllExonV1_mm10_v1_baits.ilist GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/igo/work/interval_list_data/Agilent_MouseAllExonV1_mm10_v1_targets.ilist TYPE=RNA"
-        self.verify_params(params, expected_params, "SMARTerAmpSeq", "Human")
-
-        params = get_recipe_species_params("CRISPRSeq", "Mouse")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "CRISPRSeq", "Mouse")
-
-        params = get_recipe_species_params("CRISPRSeq", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "CRISPRSeq", "Human")
 
         params = get_recipe_species_params("CustomCapture", "Human")
         expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "CustomCapture", "Human")
 
-        params = get_recipe_species_params("AmpliconSeq", "Mouse")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "AmpliconSeq", "Mouse")
-
-        params = get_recipe_species_params("RNASeq_RiboDeplete", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "RNASeq_RiboDeplete", "Human")
-
         params = get_recipe_species_params("MSK-ACCESS_v1", "Human")
         expected_params = "BAITS=/igo/work/interval_list_data/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/igo/work/interval_list_data/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "MSK-ACCESS_v1", "Human")
-
-        params = get_recipe_species_params("CH_v1", "Human")
-        expected_params = "BAITS=/igo/work/BED-Targets/CH_v1/CH_v1_BAITS.interval_list GENOME=/igo/work/nabors/genomes/genome_hg19/Homo_sapiens_assembly19.fasta MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/genome_hg19/Homo_sapiens_assembly19.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/igo/work/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "CH_v1", "Human")
 
         params = get_recipe_species_params("ATACSeq", "Mouse")
         expected_params = "BAITS=/igo/work/BED-Targets/CH_v1/CH_v1_BAITS.interval_list GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/igo/work/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "ATACSeq", "Mouse")
 
-        params = get_recipe_species_params("HumanWholeGenome", "Human")
-        expected_params = "BAITS=/igo/work/BED-Targets/CH_v1/CH_v1_BAITS.interval_list GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/igo/work/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "HumanWholeGenome", "Human")
-
-        params = get_recipe_species_params("ATACSeq", "Mouse_GeneticallyModified")
-        expected_params = "BAITS=/igo/work/BED-Targets/CH_v1/CH_v1_BAITS.interval_list GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/igo/work/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "ATACSeq", "Mouse_GeneticallyModified")
+        params = get_recipe_species_params("RNASeq_RiboDeplete", "Human")
+        expected_params = "GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
+        self.verify_params(params, expected_params, "RNASeq_RiboDeplete", "Human")
 
         params = get_recipe_species_params("IMPACT505", "Human")
         expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList TYPE=RNA"
         self.verify_params(params, expected_params, "IMPACT505", "Human")
 
-        params = get_recipe_species_params("WholeGenomeSequencing", "Bacteria")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList TYPE=RNA"
-        self.verify_params(params, expected_params, "WholeGenomeSequencing", "Bacteria")
-
-        params = get_recipe_species_params("ChIPSeq", "S.Cerevisae")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/S.cerevisiae/sacCer2/UCSC/BWA_0.7.5a/UCSC_sacCer2.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/S.cerevisiae/sacCer2/UCSC/BWA_0.7.5a/UCSC_sacCer2.fasta REF_FLAT=/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt RIBOSOMAL_INTERVALS=/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList TYPE=RNA"
-        self.verify_params(params, expected_params, "ChIPSeq", "S.Cerevisae")
-
-        params = get_recipe_species_params("HemeBrainPACT_v1", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_TARGETS.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "HemeBrainPACT_v1", "Human")
-
-        params = get_recipe_species_params("MouseWholeGenome", "Mouse")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_BAITS.interval_list GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_TARGETS.interval_list TYPE=WGS"
-        self.verify_params(params, expected_params, "MouseWholeGenome", "Mouse")
-
-        params = get_recipe_species_params("AmpliconSeq", "Bacteria")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "AmpliconSeq", "Bacteria")
-
-        params = get_recipe_species_params("WholeGenomeSequencing", "other")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/S.cerevisiae/sacCer2/UCSC/BWA_0.7.5a/UCSC_sacCer2.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/S.cerevisiae/sacCer2/UCSC/BWA_0.7.5a/UCSC_sacCer2.fasta REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "WholeGenomeSequencing", "other")
-
-        params = get_recipe_species_params("RNASeq_PolyA", "Zebrafish")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/D.rerio/danRer7/BWA_0.7.5a/danRer7.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/D.rerio/danRer7/BWA_0.7.5a/danRer7.fa REF_FLAT=/home/igo/resources/BED-Targets/danRer7-Ref_Flat.txt TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "RNASeq_PolyA", "Zebrafish")
-
-        params = get_recipe_species_params("RNASeq_RiboDeplete", "Tuberculosis")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/M.tuberculosis/f11/BWA_0.7.5a/mycobacterium_tuberculosis_f11__finished__4_contigs.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.tuberculosis/f11/BWA_0.7.5a/mycobacterium_tuberculosis_f11__finished__4_contigs.fasta REF_FLAT=/home/igo/resources/BED-Targets/mycobacterium_tuberculosis_f11__RefFlat.txt TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=RNA"
-        self.verify_params(params, expected_params, "RNASeq_RiboDeplete", "Tuberculosis")
+        params = get_recipe_species_params("CRISPRScreen", "Human")
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList"
+        self.verify_params(params, expected_params, "CRISPRScreen", "Human")
 
 
     def test_next(self):
