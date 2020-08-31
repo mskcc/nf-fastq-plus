@@ -51,16 +51,21 @@ else
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
-    echo "SampleSheet Extraction - Project: ${PROJECT}, Species: ${SPECIES}, Recipe: ${RECIPE}"
+
+    SAMPLE_SHEET_PARAMS="Project=${PROJECT} Species=${SPECIES} Recipe=${RECIPE}"
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
-  
-    
- 
-    # We are trying to put all relevant information for running stats into one line 
-    echo "PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} $PROJECT_PARAMS" > ${RUN_PARAMS_FILE}
+
+    SAMPLE_DIRS=$(find ${FASTQ_DIR}/${RUNNAME}/${PROJECT} -maxdepth 1 -type d)
+    for SAMPLE_DIR in $SAMPLE_DIRS; do
+      FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
+      FASTQ_PARAMS=""
+      for i in "${!FASTQS[@]}"; do
+        FASTQ_PARAMS+="FASTQ${i}=${FASTQS[$i]}"
+      done
+      echo "$SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
+    done
   done
   IFS=' \t\n'
-  
 fi
 
 
