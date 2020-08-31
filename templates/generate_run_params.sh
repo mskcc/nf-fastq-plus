@@ -30,8 +30,9 @@ function get_project_species_recipe() {
   fi
 }
 
-if [[ $(echo ${SAMPLESHEET} | wc -l) -eq 0 ]]; then
-  echo "No SampleSheet found for Run: ${RUN}"
+if [[ -z "${SAMPLESHEET}" ]]; then
+  echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
+  touch ${RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
   # TODO - Alert
 else
   RUN_TYPE=$(get_run_type)
@@ -52,8 +53,11 @@ else
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
     echo "SampleSheet Extraction - Project: ${PROJECT}, Species: ${SPECIES}, Recipe: ${RECIPE}"
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
-    echo $PROJECT_PARAMS > ${RUN_PARAMS_FILE}
-    # TODO - extract paths to FASTQs
+  
+    
+ 
+    # We are trying to put all relevant information for running stats into one line 
+    echo "PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} $PROJECT_PARAMS" > ${RUN_PARAMS_FILE}
   done
   IFS=' \t\n'
   
