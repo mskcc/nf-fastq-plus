@@ -9,17 +9,16 @@ process task {
     env GENOME
     env REFERENCE
     env REF_FLAT
-    env RIBO_INTER
+    env RIBOSOMAL_INTERVALS
     env GTAG
     env FASTQ1
     env FASTQ2
     env REFERENCE
     env GENOME
-    env BAIT
-    env TARGET
-    env CAPTURE
+    env BAITS
+    env TARGETS
     env MSKQ
-    env MARKDUPLICATES
+    env MD
 
   shell:
     template 'send_project_params.sh'
