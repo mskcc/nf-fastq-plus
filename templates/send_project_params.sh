@@ -9,6 +9,11 @@
 
 UNASSIGNED="{}"
 
+# Mandatory Parameters
+PROJECT=$UNASSIGNED
+SPECIES=$UNASSIGNED
+RECIPE=$UNASSIGNED
+
 # ALL POSSIBLE PARAMS
 TYPE=$UNASSIGNED
 # 2) Determined by genome & type (see: genome_reference_mapping)
@@ -31,6 +36,15 @@ for pv in ${PARAM_LINE}; do
   PARAM=$(echo $pv | cut -d"=" -f1)
   VALUE=$(echo $pv | cut -d"=" -f2)
   case $PARAM in
+    PROJECT)
+      PROJECT=$UNASSIGNED
+      ASSIGNED_PARAMS+="PROJECT=$VALUE ";;
+    SPECIES)
+      SPECIES=$UNASSIGNED
+      ASSIGNED_PARAMS+="SPECIES=$VALUE ";;
+    RECIPE)
+      RECIPE=$UNASSIGNED
+      ASSIGNED_PARAMS+="RECIPE=$VALUE ";;
     REFERENCE)
       REFERENCE=$VALUE
       ASSIGNED_PARAMS+="REFERENCE=$VALUE ";;

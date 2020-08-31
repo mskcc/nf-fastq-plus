@@ -22,7 +22,7 @@ else
   echo "Searching for new runs completed in past ${RUN_AGE} minutes"
 fi
 
-sequencer_files=( ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
+sequencer_files=( 
   ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
   ${SEQUENCER_DIR}/kim/*/RTAComplete.txt
   ${SEQUENCER_DIR}/momo/*/RTAComplete.txt
