@@ -51,7 +51,10 @@ else
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
     echo "SampleSheet Extraction - Project: ${PROJECT}, Species: ${SPECIES}, Recipe: ${RECIPE}"
-    generate_run_params.py -r ${RECIPE} -s ${SPECIES} # Python scripts in bin of project root
+    PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
+    echo $PROJECT_PARAMS
+    echo $PROJECT_PARAMS > ${RUN_PARAMS_FILE}
+    # TODO - extract paths to FASTQs
   done
   IFS=' \t\n'
   

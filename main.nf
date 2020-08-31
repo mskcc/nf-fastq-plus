@@ -4,6 +4,7 @@ include { dependency_check_wkflw } from './modules/dependency_check';
 include { detect_runs_wkflw } from './modules/detect_runs';
 include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
+include { send_project_params_wkflw } from './modules/send_project_params';
 
 /**
  * Processes input parameters that are booleans
@@ -39,4 +40,5 @@ workflow {
   detect_runs_wkflw( DEMUX_ALL, dependency_check_wkflw.out )
   demultiplex_wkflw( detect_runs_wkflw.out )
   generate_run_params_wkflw( demultiplex_wkflw.out )
+  send_project_params_wkflw( generate_run_params_wkflw.out )
 }
