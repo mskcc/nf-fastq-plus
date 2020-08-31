@@ -10,7 +10,7 @@
 UNASSIGNED="{}"
 
 # ALL POSSIBLE PARAMS
-TYPE = "TYPE"
+TYPE=$UNASSIGNED
 # 2) Determined by genome & type (see: genome_reference_mapping)
 GENOME=$UNASSIGNED
 REFERENCE=$UNASSIGNED
@@ -39,9 +39,9 @@ for pv in ${PARAM_LINE}; do
     REF_FLAT)
       REF_FLAT=$VALUE
       printf " REF_FLAT=$VALUE";;
-    RIBO_INTER)
-      RIBO_INTER=$VALUE
-      printf " RIBO_INTER=$VALUE";;
+    RIBOSOMAL_INTERVALS)
+      RIBOSOMAL_INTERVALS=$VALUE
+      printf " RIBOSOMAL_INTERVALS";;
     GTAG)
       GTAG=$VALUE
       printf " GTAG=$VALUE";;
@@ -57,12 +57,12 @@ for pv in ${PARAM_LINE}; do
     GENOME)
       GENOME=$VALUE
       printf " GENOME=$VALUE";;
-    BAIT)
-      BAIT=$VALUE
-      printf " BAIT=$VALUE";;
-    TARGET)
-      TARGET=$VALUE
-      printf " TARGET=$VALUE";;
+    BAITS)
+      BAITS=$VALUE
+      printf " BAITS=$VALUE";;
+    TARGETS)
+      TARGETS=$VALUE
+      printf " TARGETS=$VALUE";;
     TYPE)
       TYPE=$VALUE
       printf " TYPE=$VALUE";;
@@ -72,9 +72,9 @@ for pv in ${PARAM_LINE}; do
     MSKQ)
       MSKQ=$VALUE
       printf " MSKQ=$VALUE";;
-    MARKDUPLICATES)
-      MARKDUPLICATES=$VALUE
-      printf " MARKDUPLICATES=$VALUE";;
+    MD)
+      MD=$VALUE
+      printf " MD=$VALUE";;
     *)
       echo ""
       echo "Failed to assign param: ${PARAM} with value: ${VALUE}"
