@@ -74,6 +74,7 @@ species_genome_mapping_UNORDERED = {
     ".*uberculosis": "mtubf11",
     "S.Cerevisae": "sccer",
     "other": "sccer",
+    "Fungus": "sccer",
     "E.Coli": "ecolik12",
     "Bacteria": "ecolik12",
     "C.Elegans": "ce10",
