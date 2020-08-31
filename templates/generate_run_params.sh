@@ -52,16 +52,20 @@ else
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
 
-    SAMPLE_SHEET_PARAMS="Project=${PROJECT} Species=${SPECIES} Recipe=${RECIPE}"
+    SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
-    SAMPLE_DIRS=$(find ${FASTQ_DIR}/${RUNNAME}/${PROJECT} -maxdepth 1 -type d)
+    PROJECT_DIR=${FASTQ_DIR}/${RUNNAME}/${PROJECT}
+    SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
     for SAMPLE_DIR in $SAMPLE_DIRS; do
       FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
+      FASTQ_NUM=1
       FASTQ_PARAMS=""
-      for i in "${!FASTQS[@]}"; do
-        FASTQ_PARAMS+="FASTQ${i}=${FASTQS[$i]}"
+      for FASTQ in $FASTQS; do
+        FASTQ_PARAMS+=" FASTQ${FASTQ_NUM}=${FASTQ}"
+        FASTQ_NUM=$(( 1 + FASTQ_NUM ))
       done
+      # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
       echo "$SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
     done
   done
