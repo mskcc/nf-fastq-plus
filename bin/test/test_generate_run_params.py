@@ -4,8 +4,7 @@ from collections import OrderedDict
 import json
 sys.path.append('..')
 from generate_run_params import main, get_sample_type_from_recipe, get_reference_configs, get_recipe_options
-from run_param_config import GENOME, REFERENCE, REF_FLAT, RIBO_INTER, BAIT, TARGET, CAPTURE
-TYPE = "TYPE" 
+from run_param_config import GENOME, REFERENCE, REF_FLAT, RIBOSOMAL_INTERVALS, BAITS, TARGETS, TYPE
 
 def get_debug_msg(recipe, species, d1, d2):
         return DEBUG_MSG
@@ -25,15 +24,15 @@ def get_recipe_species_params(recipe, species):
 
 class TestSetupStats(unittest.TestCase):
     def test_get_sample_type_from_recipe(self):
-        self.assertEqual(get_sample_type_from_recipe("MouseWholeGenome"), "WGS")
-        self.assertEqual(get_sample_type_from_recipe("ShallowWGS"), "WGS")
-        self.assertEqual(get_sample_type_from_recipe("10X_Genomics_WGS"), "WGS")
-        self.assertEqual(get_sample_type_from_recipe("thisRNAhello"), "RNA")
-        self.assertEqual(get_sample_type_from_recipe("helloWorld96Well_SmartSeq2"), "RNA")
-        self.assertEqual(get_sample_type_from_recipe("helloSMARTerWorld"), "RNA")
-        self.assertEqual(get_sample_type_from_recipe("FusionDiscoverySeq"), "RNA")
-        self.assertEqual(get_sample_type_from_recipe("helloRiboWorld"), "RNA")
-        self.assertEqual(get_sample_type_from_recipe("test"), "DNA")
+        self.assertEqual(get_sample_type_from_recipe("MouseWholeGenome")[TYPE], "WGS")
+        self.assertEqual(get_sample_type_from_recipe("ShallowWGS")[TYPE], "WGS")
+        self.assertEqual(get_sample_type_from_recipe("10X_Genomics_WGS")[TYPE], "WGS")
+        self.assertEqual(get_sample_type_from_recipe("thisRNAhello")[TYPE], "RNA")
+        self.assertEqual(get_sample_type_from_recipe("helloWorld96Well_SmartSeq2")[TYPE], "RNA")
+        self.assertEqual(get_sample_type_from_recipe("helloSMARTerWorld")[TYPE], "RNA")
+        self.assertEqual(get_sample_type_from_recipe("FusionDiscoverySeq")[TYPE], "RNA")
+        self.assertEqual(get_sample_type_from_recipe("helloRiboWorld")[TYPE], "RNA")
+        self.assertEqual(get_sample_type_from_recipe("test")[TYPE], "DNA")
 
     def test_get_reference_configs_human_dna(self):
         genome_configs_dna = get_reference_configs("", "DNA", "Human")
@@ -45,7 +44,7 @@ class TestSetupStats(unittest.TestCase):
         self.assertEqual(genome_configs[GENOME], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa')
         self.assertEqual(genome_configs[REFERENCE], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa')
         self.assertEqual(genome_configs[REF_FLAT], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt')
-        self.assertEqual(genome_configs[RIBO_INTER], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list')
+        self.assertEqual(genome_configs[RIBOSOMAL_INTERVALS], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list')
 
     def test_main_AmpliconSeq_Bacteria(self):
         argv = [ "-r", "AmpliconSeq", "-s", "Bacteria" ]
@@ -218,8 +217,8 @@ class TestSetupStats(unittest.TestCase):
 
     def test_get_recipe_options(self):
         wes_options = get_recipe_options("WholeExomeSequencing")
-        self.assertEqual(wes_options[BAIT], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list")
-        self.assertEqual(wes_options[TARGET], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list")
+        self.assertEqual(wes_options[BAITS], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list")
+        self.assertEqual(wes_options[TARGETS], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list")
 
 if __name__ == '__main__':
     unittest.main()

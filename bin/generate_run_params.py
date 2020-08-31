@@ -35,9 +35,9 @@ def get_sample_type_from_recipe(recipe):
       recipe: Recipe of the project
 
     Returns:
-      type, String: Sample typeof the project
+      type, dic: Sample type of the project
       For Example:
-        "RNA", "DNA", "WGS"
+        { TYPE: "RNA" } , { TYPE: "DNA" }, { TYPE: "WGS" }
     """
     return find_mapping(recipe_type_mapping, recipe)
 
@@ -108,35 +108,17 @@ def get_recipe_options(recipe):
       dic: Contains recipe params w/ following potential keys,
         BAIT
         TARGET
-        CAPTURE
         MSKQ
         MARKDUPLICATES
 
       For Example:
-        {'CAPTURE': 'True', 'BAIT': '/path/to/HemeBrainPACT_v1_BAITS.interval_list',
+        {'BAIT': '/path/to/HemeBrainPACT_v1_BAITS.interval_list',
          'TARGET': '/path/to/HemeBrainPACT_v1_TARGETS.interval_list'}
     """
     return find_mapping(recipe_options_mapping, recipe)
 
 
 def main(argv):
-    """
-                      +-----------+
-          +----------->   opts    +-------------+
-          |           +-----------+             |
-          |                                     |
-    +-----+------+    +-----------+      +-----v------+
-    |   recipe   +---->   type    +------> run_params |
-    +-----+------+    +-----+-----+      +------^-----+
-          |                 |                   |
-          |           +-----v-----+             |
-          +----------->   refr    +-------------+
-                      +-----+-----+             |
-                            ^                   |
-    +------------+          |                   |
-    |   species  +----------+-------------------+
-    +------------+
-    """
     recipe = ''
     species = ''
     try:
@@ -159,7 +141,9 @@ def main(argv):
             print('usage: setup_stats.py -r <recipe> -s <species>')
             sys.exit(2)
 
-    type = get_sample_type_from_recipe(recipe)
+    # Order is important because some assignments are dependent on previous assignments (see run_param_config.py)
+    type_dic = get_sample_type_from_recipe(recipe)
+    type = type_dic.values()[0]     # { TYPE: "RNA" } -> "RNA"
     refr = get_reference_configs(recipe, type, species)
     opts = get_recipe_options(recipe).copy()
 
@@ -170,7 +154,7 @@ def main(argv):
 
     # Consolidate options
     opts.update(refr)
-    opts["TYPE"] = type
+    opts.update(type_dic)
 
     run_params = get_ordered_dic(opts) # Want to print in same order
     output=""
