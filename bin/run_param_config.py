@@ -44,7 +44,7 @@ def get_ordered_dic(unordered_dic):
     """
     return OrderedDict(sorted(unordered_dic.items(), key=lambda t: -len(t[0])))
 
-""" Mapping of recipes to their type, default should be DNA """ 
+""" Mapping of recipes to their type, default should be DNA """
 recipe_type_mapping_UNORDERED = {
     "MouseWholeGenome": { TYPE: "WGS" },
     "ShallowWGS": { TYPE: "WGS" },
@@ -63,6 +63,11 @@ recipe_type_mapping_UNORDERED = {
 }
 recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 
+""" Recipes that should have determine recipe (instead of species -> genome logic) """
+recipe_overrides = {
+    "ADCC1_v3": "GRCh37",
+    "CH_v1": "hg19"
+}
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
     "Human": "GRCh37",

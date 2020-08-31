@@ -1,35 +1,47 @@
 # !/bin/bash
-# Parses input line of params into each part
+# Parses param line & assigns each value to a variable in the bash execution context for downstream nextflow process
 # Nextflow Inputs:
-#   TODO
+#   PARAM_LINE (Input): param=value space-delimited line of params
+#   UNASSIGNED_PARAMETER (Config): value to default unassigned parameters to (nextflow needs to have a non-blank value)
 # Nextflow Outputs:
-#   TODO
+#   PROJECT, env
+#   SPECIES, env
+#   RECIPE, env
+#   TYPE, env
+#   GENOME, env
+#   REFERENCE, env
+#   REF_FLAT, env
+#   RIBOSOMAL_INTERVALS, env
+#   GTAG, env
+#   BAITS, env
+#   TARGETS, env
+#   MSKQ, env
+#   MD, env
+#   FASTQ1, env
+#   FASTQ2, env
 # Run:
-#   TODO
-
-UNASSIGNED="{}"
+#   UNASSIGNED_PARAMETER="." PARAM_LINE="PROJECT=P1 SPECIES=S1 RECIPE=REC1 FASTQ1=F1 FASTQ2=F2" send_project_params.sh
 
 # Mandatory Parameters
-PROJECT=$UNASSIGNED
-SPECIES=$UNASSIGNED
-RECIPE=$UNASSIGNED
+PROJECT=$UNASSIGNED_PARAMETER
+SPECIES=$UNASSIGNED_PARAMETER
+RECIPE=$UNASSIGNED_PARAMETER
+FASTQ1=$UNASSIGNED_PARAMETER
+FASTQ2=$UNASSIGNED_PARAMETER
 
-# ALL POSSIBLE PARAMS
-TYPE=$UNASSIGNED
+# Statistics Parameters
+TYPE=$UNASSIGNED_PARAMETER
 # 2) Determined by genome & type (see: genome_reference_mapping)
-GENOME=$UNASSIGNED
-REFERENCE=$UNASSIGNED
-REF_FLAT=$UNASSIGNED
-RIBOSOMAL_INTERVALS=$UNASSIGNED
-GTAG=$UNASSIGNED
+GENOME=$UNASSIGNED_PARAMETER
+REFERENCE=$UNASSIGNED_PARAMETER
+REF_FLAT=$UNASSIGNED_PARAMETER
+RIBOSOMAL_INTERVALS=$UNASSIGNED_PARAMETER
+GTAG=$UNASSIGNED_PARAMETER
 # 3) Determined by recipe (see: recipe_options_mapping)
-BAITS=$UNASSIGNED
-TARGETS=$UNASSIGNED
-MSKQ=$UNASSIGNED
-MD=$UNASSIGNED
-# 4) Files of FASTQ
-FASTQ1=$UNASSIGNED
-FASTQ2=$UNASSIGNED
+BAITS=$UNASSIGNED_PARAMETER
+TARGETS=$UNASSIGNED_PARAMETER
+MSKQ=$UNASSIGNED_PARAMETER
+MD=$UNASSIGNED_PARAMETER
 
 ASSIGNED_PARAMS=""
 for pv in ${PARAM_LINE}; do
@@ -37,13 +49,13 @@ for pv in ${PARAM_LINE}; do
   VALUE=$(echo $pv | cut -d"=" -f2)
   case $PARAM in
     PROJECT)
-      PROJECT=$UNASSIGNED
+      PROJECT=$VALUE
       ASSIGNED_PARAMS+="PROJECT=$VALUE ";;
     SPECIES)
-      SPECIES=$UNASSIGNED
+      SPECIES=$VALUE
       ASSIGNED_PARAMS+="SPECIES=$VALUE ";;
     RECIPE)
-      RECIPE=$UNASSIGNED
+      RECIPE=$VALUE
       ASSIGNED_PARAMS+="RECIPE=$VALUE ";;
     REFERENCE)
       REFERENCE=$VALUE

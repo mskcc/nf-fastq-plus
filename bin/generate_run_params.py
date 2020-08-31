@@ -10,7 +10,7 @@ import re
 import sys
 import getopt
 from collections import OrderedDict
-from run_param_config import DEFAULT, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping
+from run_param_config import DEFAULT, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping, recipe_overrides
 
 def find_mapping(mapping, target):
     """Retrieves sample type from recipe
@@ -60,11 +60,6 @@ def get_reference_configs(recipe, type, species):
       For Example:
         {'GENOME': '/path/to/hg19.fa', 'REFERENCE': '/path/to/hg19/hg19.fa'}
     """
-    # TODO - This should be deleted so that this is just dependent on the recipe
-    recipe_overrides = {
-        "ADCC1_v3": "GRCh37",
-        "CH_v1": "hg19"
-    }
     genome = None
     if recipe in recipe_overrides:
         genome = recipe_overrides[recipe]

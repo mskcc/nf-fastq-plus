@@ -3,7 +3,7 @@
 # Nextflow Inputs:
 #   RUN_TO_DEMUX_DIR: Absolute path to directory of the Run to demux (Defined as input in nextflow process)
 # Nextflow Outputs:
-#   DEMUXED_RUN: Name of run to demux, given by the name of @RUN_TO_DEMUX_DIR
+#   DEMUXED_RUN, env: Name of run to demux, given by the name of @RUN_TO_DEMUX_DIR
 # Run: 
 #   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
 

@@ -5,7 +5,7 @@
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 # Nextflow Outputs:
-#   TODO
+#   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
 # Run: 
 #   STATSDIR=/igo/stats RUN=MICHELLE_0246_BHG7L2DSXY SAMPLE_SHEET_DIR=/home/igo/SampleSheetCopies templates/launch_stats.sh
 
