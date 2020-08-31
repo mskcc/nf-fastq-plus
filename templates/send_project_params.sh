@@ -26,57 +26,57 @@ MD=$UNASSIGNED
 FASTQ1=$UNASSIGNED
 FASTQ2=$UNASSIGNED
 
+ASSIGNED_PARAMS=""
 for pv in ${PARAM_LINE}; do
-  PARAM=$(printf $pv | cut -d"=" -f1)
-  VALUE=$(printf $pv | cut -d"=" -f2)
+  PARAM=$(echo $pv | cut -d"=" -f1)
+  VALUE=$(echo $pv | cut -d"=" -f2)
   case $PARAM in
-    GENOME)
-      GENOME=$VALUE
-      printf " GENOME=$VALUE";;
     REFERENCE)
       REFERENCE=$VALUE
-      printf " REFERENCE=$VALUE";;
+      ASSIGNED_PARAMS+="REFERENCE=$VALUE ";;
     REF_FLAT)
       REF_FLAT=$VALUE
-      printf " REF_FLAT=$VALUE";;
+      ASSIGNED_PARAMS+="REF_FLAT=$VALUE ";;
     RIBOSOMAL_INTERVALS)
       RIBOSOMAL_INTERVALS=$VALUE
-      printf " RIBOSOMAL_INTERVALS";;
+      ASSIGNED_PARAMS+="RIBOSOMAL_INTERVALS=$VALUE ";;
     GTAG)
       GTAG=$VALUE
-      printf " GTAG=$VALUE";;
+      ASSIGNED_PARAMS+="GTAG=$VALUE ";;
     FASTQ1)
       FASTQ1=$VALUE
-      printf " FASTQ1=$VALUE";;
+      ASSIGNED_PARAMS+="FASTQ1=$VALUE ";;
     FASTQ2)
       FASTQ2=$VALUE
-      printf " FASTQ2=$VALUE";;
+      ASSIGNED_PARAMS+="FASTQ2=$VALUE ";;
     REFERENCE)
       REFERENCE=$VALUE
-      printf " REFERENCE=$VALUE";;
+      ASSIGNED_PARAMS+="REFERENCE=$VALUE ";;
     GENOME)
       GENOME=$VALUE
-      printf " GENOME=$VALUE";;
+      ASSIGNED_PARAMS+="GENOME=$VALUE ";;
     BAITS)
       BAITS=$VALUE
-      printf " BAITS=$VALUE";;
+      ASSIGNED_PARAMS+="BAITS=$VALUE ";;
     TARGETS)
       TARGETS=$VALUE
-      printf " TARGETS=$VALUE";;
+      ASSIGNED_PARAMS+="TARGETS=$VALUE ";;
     TYPE)
       TYPE=$VALUE
-      printf " TYPE=$VALUE";;
+      ASSIGNED_PARAMS+="TYPE=$VALUE ";;
     CAPTURE)
       CAPTURE=$VALUE
-      printf " CAPTURE=$VALUE";;
+      ASSIGNED_PARAMS+="CAPTURE=$VALUE ";;
     MSKQ)
       MSKQ=$VALUE
-      printf " MSKQ=$VALUE";;
+      ASSIGNED_PARAMS+="MSKQ=$VALUE ";;
     MD)
       MD=$VALUE
-      printf " MD=$VALUE";;
+      ASSIGNED_PARAMS+="MD=$VALUE ";;
     *)
       echo ""
       echo "Failed to assign param: ${PARAM} with value: ${VALUE}"
   esac
 done
+
+echo $ASSIGNED_PARAMS
