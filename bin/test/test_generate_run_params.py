@@ -36,9 +36,9 @@ class TestSetupStats(unittest.TestCase):
         self.assertEqual(get_sample_type_from_recipe("test"), "DNA")
 
     def test_get_reference_configs_human_dna(self):
-        genome_configs = get_reference_configs("", "DNA", "Human")
-        self.assertEqual(genome_configs[GENOME], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
-        self.assertEqual(genome_configs[REFERENCE], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
+        genome_configs_dna = get_reference_configs("", "DNA", "Human")
+        self.assertEqual(genome_configs_dna[GENOME], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
+        self.assertEqual(genome_configs_dna[REFERENCE], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
 
     def test_get_reference_configs_human_rna(self):
         genome_configs = get_reference_configs("", "RNA", "Human")
@@ -150,99 +150,76 @@ class TestSetupStats(unittest.TestCase):
 
     def test_IMPACT468(self):
         params = get_recipe_species_params("IMPACT468", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_TARGETS.interval_list"
+        expected_params = "BAITS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_TARGETS.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "IMPACT468", "Human")
 
     def test_IMPACT505(self):
         params = get_recipe_species_params("IMPACT505", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList TYPE=DNA"
         self.verify_params(params, expected_params, "IMPACT505", "Human")
 
     def test_ShallowWGS(self):
-        params = get_recipe_species_params("ShallowWGS", "")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta"
-        self.verify_params(params, expected_params, "ShallowWGS", "")
+        params = get_recipe_species_params("ShallowWGS", "Human")
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=WGS"
+        self.verify_params(params, expected_params, "ShallowWGS", "Human")
 
     def test_IDT_Exome(self):
         params = get_recipe_species_params("IDT_Exome_v1_FP_Viral_Probes", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list"
+        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "IDT_Exome_v1_FP_Viral_Probes", "Human")
 
     def test_Agilent(self):
         params = get_recipe_species_params("Agilent_MouseAllExonV1", "Mouse")
-        expected_params = "BAITS=/igo/work/interval_list_data/Agilent_MouseAllExonV1_mm10_v1_baits.ilist GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TARGETS=/igo/work/interval_list_data/Agilent_MouseAllExonV1_mm10_v1_targets.ilist"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_baits.ilist GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TARGETS=/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_targets.ilist TYPE=DNA"
         self.verify_params(params, expected_params, "Agilent_MouseAllExonV1", "Mouse")
 
     def test_CRISPRSeq(self):
         params = get_recipe_species_params("CRISPRSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=no MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa"
+        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=no MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRSeq", "Mouse")
 
         params = get_recipe_species_params("CRISPRSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=no MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=no MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRSeq", "Human")
 
     def test_CRISPRScreen(self):
         params = get_recipe_species_params("CRISPRScreen", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRScreen", "Human")
 
         params = get_recipe_species_params("CRISPRScreen", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa"
+        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRScreen", "Mouse")
 
     def test_customCapture(self):
         params = get_recipe_species_params("CustomCapture", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
         self.verify_params(params, expected_params, "CustomCapture", "Human")
 
     def test_MSK_ACCESS(self):
         params = get_recipe_species_params("MSK-ACCESS_v1", "Human")
-        expected_params = "BAITS=/igo/work/interval_list_data/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/igo/work/interval_list_data/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "MSK-ACCESS_v1", "Human")
 
     def test_CH_v1(self):
         params = get_recipe_species_params("CH_v1", "Human")
-        expected_params = "BAITS=/igo/work/BED-Targets/CH_v1/CH_v1_BAITS.interval_list GENOME=/igo/work/nabors/genomes/genome_hg19/Homo_sapiens_assembly19.fasta MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/genome_hg19/Homo_sapiens_assembly19.fasta TARGETS=/igo/work/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/CH_v1/CH_v1_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa TARGETS=/home/igo/resources/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "CH_v1", "Human")
 
     def test_HumanWholeGenome(self):
         params = get_recipe_species_params("HumanWholeGenome", "Human")
-        expected_params = "GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=WGS"
         self.verify_params(params, expected_params, "HumanWholeGenome", "Human")
 
     def test_WholeGenomeSequencing(self):
         params = get_recipe_species_params("WholeGenomeSequencing", "Bacteria")
-        expected_params = "GENOME=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa"
+        expected_params = "GENOME=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa TYPE=WGS"
         self.verify_params(params, expected_params, "WholeGenomeSequencing", "Bacteria")
-
-    def test_next(self):
-        pass
-        # GENOME, REFERENCE, REF_FLAT, RIBO_INTER, BAIT, TARGET, CAPTURE
-
-        ''' TODO - Add these
-            "Human": "hg19",
-            "Mouse": "mm10",
-            "Mouse_GeneticallyModified": "mm10",
-            "Drosophilia": "dm3",
-            "Zebrafish": "danrer7",
-            "Chicken": "galGal4",
-            ".*uberculosis": "mtubf11",
-            "S.Cerevisae": "sccer",
-            "other": "sccer",
-            "E.Coli": "ecolik12",
-            "Bacteria": "ecolik12",
-            "C.Elegans": "ce10",
-            "S.Pombe": "pombe",
-            "R.norvegicus": "rn6",
-            "E.Lambda": "elambda",
-        '''
 
     def test_get_recipe_options(self):
         wes_options = get_recipe_options("WholeExomeSequencing")
         self.assertEqual(wes_options[BAIT], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list")
         self.assertEqual(wes_options[TARGET], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list")
-        self.assertEqual(wes_options[CAPTURE], "True")
 
 if __name__ == '__main__':
     unittest.main()

@@ -16,6 +16,8 @@ recipe_type_mapping_UNORDERED = {
     "MouseWholeGenome": "WGS",
     "ShallowWGS": "WGS",
     "10X_Genomics_WGS": "WGS",
+    "WholeGenomeSequencing": "WGS",
+    "HumanWholeGenome": "WGS",
     ".*RNA.*": "RNA",
     ".*96Well_SmartSeq2": "RNA",
     ".*SMARTer.*": "RNA",
@@ -256,7 +258,7 @@ genome_reference_mapping = get_ordered_dic(genome_reference_mapping_UNORDERED)
 
 """ Mapping of recipe to additional run options """
 BAIT="BAITS"
-TARGET="TARGET"
+TARGET="TARGETS"
 CAPTURE="CAPTURE"  # todo - delete this? Really just whether it has a bait & target
 MSKQ="MSKQ"
 MARKDUPLICATES="MD"
@@ -264,14 +266,12 @@ recipe_options_mapping_UNORDERED = {
     "IMPACT341": {
         BAIT: "/home/igo/resources/ilist/IMPACT341/b37/picard_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IMPACT341/b37/picard_targets.interval_list",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "IMPACT410.*": {
         BAIT: "/home/igo/resources/ilist/IMPACT410/b37/picard_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IMPACT410/b37/picard_targets.interval_list",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -286,91 +286,78 @@ recipe_options_mapping_UNORDERED = {
         # NOTE: interval list file name "IMPACT468_BAITS" is stored in LIMS and passed to pipelines, change file name with caution
         BAIT: "/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList",
         TARGET: "/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "HemePACT_v4": {
         BAIT: "/home/igo/resources/ilist/HemePACT_v4/b37/HemePACT_v4_BAITS.ilist",
         TARGET: "/home/igo/resources/ilist/HemePACT_v4/b37/HemePACT_v4_TARGETS.ilist",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_V1_IMPACT468": {
         BAIT: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDT_Exome_V1_IMPACT468/IDT_Exome_V1_IMPACT468_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDT_Exome_V1_IMPACT468/IDT_Exome_V1_IMPACT468_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "OCCC": {
         BAIT: "/home/igo/resources/BED-Targets/OCCC_316_primary_targets.iList",
         TARGET: "/home/igo/resources/BED-Targets/OCCC_316_capture_targets.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "M-IMPACT_v1": {
         BAIT: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "CHM": {
         BAIT: "/home/igo/resources/BED-Targets/HEMEPACT/HemePACT_v4_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/HEMEPACT/HemePACT_v4_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "WholeExomeSequencing": {
         BAIT: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "Agilent_v4_51MB_Human": {
         BAIT: "/home/igo/resources/ilist/AgilentExon_51MB_b37_v3/b37/AgilentExon_51MB_b37_v3_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/AgilentExon_51MB_b37_v3/b37/AgilentExon_51MB_b37_v3_targets.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "Agilent_MouseAllExonV1": {
         BAIT: "/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_baits.ilist",
         TARGET: "/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_targets.ilist",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_v1_FP_Viral_Probes": {
         BAIT: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_v1": {
         BAIT: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "IDT_Exome_v1_FP": {
         BAIT: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGET: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "WholeExome_v4": {
         BAIT: "/home/igo/resources/BED-Targets/IDT_Exome_v1_FP_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IDT_Exome_v1_FP_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
@@ -378,14 +365,12 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/Twist/Twist_Exome_Hg19_TARGETS.iList",
         TARGET: "/home/igo/resources/BED-Targets/Twist/Twist_Exome_Hg19_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "RF-OVARIAN_V2": {
         BAIT: "/home/igo/resources/BED-Targets/RF-OVARIAN_V2-BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/RF-OVARIAN_V2-TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -399,7 +384,6 @@ recipe_options_mapping_UNORDERED = {
     "RF-BREAST_V3": {
         BAIT: "/home/igo/resources/BED-Targets/RF-BREAST_V3_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/RF-BREAST_V3_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -413,28 +397,24 @@ recipe_options_mapping_UNORDERED = {
     "Kinghamt20150202panel": {
         BAIT: "/home/igo/resources/BED-Targets/Kingham_cfDNA_5626_Updated_032015.iList",
         TARGET: "/home/igo/resources/BED-Targets/Kingham_cfDNA_5626_Updated_032015.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "Ventura_Dec2015": {
         BAIT: "/home/igo/resources/BED-Targets/VENTURA_V1_designed-probe-coords-SORTED.iList",
         TARGET: "/home/igo/resources/BED-Targets/VENTURA_V1_designed-probe-coords-SORTED.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "CCND3": {
         BAIT: "/home/igo/resources/BED-Targets/CCND3.iList",
         TARGET: "/home/igo/resources/BED-Targets/CCND3.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "King_130502_276_EZ_HX3": {
         BAIT: "/home/igo/resources/BED-Targets/04731_King_130502_276_EZ_HX3.iList",
         TARGET: "/home/igo/resources/BED-Targets/04731_King_130502_276_EZ_HX3.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -442,84 +422,72 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/130912_HG19_ReisFilho_ESOP_EZ_HX3_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/130912_HG19_ReisFilho_ESOP_EZ_HX3_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "Dlevine_27gene_v1_BED": {
         BAIT: "/home/igo/resources/BED-Targets/DLevine_27gene_probe_coverage_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/DLevine_27gene_probe_coverage_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "IDTCustom_18_20161108": {
         BAIT: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "BRAINPACT_v1": {
      	BAIT: "/home/igo/resources/BED-Targets/BRAINPACT_V1/BRAINPACT_V1_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/BRAINPACT_V1/BRAINPACT_V1_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "ADCC1_v2": {
      	BAIT: "/home/igo/resources/BED-Targets/ADCC1_V2/ADCC1_V2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/ADCC1_V2/ADCC1_V2_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "ADCC1_v3": {
         BAIT: "/igo/work/nabors/bed_files/ADCC1_v3/ADCC1_v3_capture_targets_BAITS.interval_list",
         TARGET: "/igo/work/nabors/bed_files/ADCC1_v3/ADCC1_v3_primary_targets_TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "RDM": {
         BAIT: "/home/igo/resources/BED-Targets/Rdm_Final_BAIT.iList",
         TARGET: "/home/igo/resources/BED-Targets/Rdm_Final_TARGET.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "MTM_V2": {
         BAIT: "/home/igo/resources/BED-Targets/Mtm_V2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/Mtm_V2_TARGET.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "FH_MED12": {
         BAIT: "/home/igo/resources/BED-Targets/MED12_FH.iList",
         TARGET: "/home/igo/resources/BED-Targets/MED12_FH.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "Reis-Filho_ATP_V1": {
         BAIT: "/home/igo/resources/BED-Targets/Reis-Filho_ATP_V1.iList",
         TARGET: "/home/igo/resources/BED-Targets/Reis-Filho_ATP_V1.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "FG-Lupus_V1": {
         BAIT: "/home/igo/resources/BED-Targets/FG-Lupus_V1.iList",
         TARGET: "/home/igo/resources/BED-Targets/FG-Lupus_V1.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "Treatome_V2": {
         BAIT: "/home/igo/resources/BED-Targets/Treatome_V2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/Treatome_V2_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -527,77 +495,70 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/hg19_MERTK_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/hg19_MERTK_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "myTYPE_V1": {
         BAIT: "/home/igo/resources/BED-Targets/MM_MSK_permiss_BAIT.iList",
         TARGET: "/home/igo/resources/BED-Targets/MM_MSK_permiss_TARGET.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "NR3C1": {
         BAIT: "/home/igo/resources/BED-Targets/mm10_NR3C1_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/mm10_NR3C1_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
     "IonAmpliseqCancerHotspotv2": {
         BAIT: "/home/igo/resources/BED-Targets/IonAmpliseqCancerHotspotv2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/IonAmpliseqCancerHotspotv2_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "no"
     },
     "PanCancerV2": {
         BAIT: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "MSK-ACCESS_v1": {
         BAIT: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "CH_v1": {
         BAIT: "/home/igo/resources/BED-Targets/CH_v1/CH_v1_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/CH_v1/CH_v1_TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "MissionBio-Heme": {
         BAIT: "/home/igo/resources/BED-Targets/Mission_Bio/AML_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/Mission_Bio/AML_TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "AmpliSeq": {
         BAIT: "/home/igo/resources/BED-Targets/AmpliSeq.ComprehensiveCancerPanel/ComprehensiveCancer.dna_manifest.20180509.BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/AmpliSeq.ComprehensiveCancerPanel/ComprehensiveCancer.dna_manifest.20180509.TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "PCFDDR_v1": {
         BAIT: "/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     "HemeBrainPACT_v1": {
         BAIT: "/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_TARGETS.interval_list",
-
+        MSKQ: "no",
+        MARKDUPLICATES: "yes"
+    },
+    "HumanWholeGenome": {
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
@@ -670,7 +631,6 @@ recipe_options_mapping_UNORDERED = {
     ".*HemePACT.*v3.*": {
         BAIT: "/home/igo/resources/ilist/HemePACT_v3/b37/HemePACT_v3_b37_baits.ilist",
         TARGET: "/home/igo/resources/ilist/HemePACT_v3/b37/HemePACT_v3_b37_targets.ilist",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -678,7 +638,6 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
@@ -686,7 +645,6 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/06575_Hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/06575_Hg19_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -694,7 +652,6 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/07822_Hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/07822_Hg19_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -702,14 +659,12 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/08035_hg19/08035_B_BAITS.interval_list",
         TARGET: "/home/igo/resources/BED-Targets/08035_hg19/08035_B_TARGETS.interval_list",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     ".*08129_Hg19.*": {
         BAIT: "/home/igo/resources/BED-Targets/08129_Hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/08129_Hg19_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -717,7 +672,6 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/07220_Hg19/07220_Hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/07220_Hg19/07220_Hg19_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -725,7 +679,6 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/06605_F_hg19/06605_F_hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/06605_F_hg19/06605_F_hg19_TARGETS.iList",
-
         MSKQ: "yes",
         MARKDUPLICATES: "yes"
     },
@@ -733,14 +686,12 @@ recipe_options_mapping_UNORDERED = {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAIT: "/home/igo/resources/BED-Targets/08382_Hg19/08382_Hg19_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/08382_Hg19/08382_Hg19_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },
     ".*08428_mm10.*": {
         BAIT: "/home/igo/resources/BED-Targets/8428_mm10/8428_mm10_BAITS.iList",
         TARGET: "/home/igo/resources/BED-Targets/8428_mm10/8428_mm10_TARGETS.iList",
-
         MSKQ: "no",
         MARKDUPLICATES: "yes"
     },

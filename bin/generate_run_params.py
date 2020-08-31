@@ -63,6 +63,7 @@ def get_reference_configs(recipe, type, species):
     # TODO - This should be deleted so that this is just dependent on the recipe
     recipe_overrides = {
         "ADCC1_v3": "GRCh37",
+        "CH_v1": "hg19"
     }
     genome = None
     if recipe in recipe_overrides:
@@ -92,7 +93,7 @@ def get_reference_configs(recipe, type, species):
           RIBO_INTER: "/home/igo/resources/BED-Targets/mm9.ribosomal.interval_file"
       }
     """
-    genome_configs = mapping[DEFAULT] # Base configuration for all recipes
+    genome_configs = mapping[DEFAULT].copy() # Base configuration for all recipes
     overrides = {} if type not in mapping else mapping[type]
     genome_configs.update(overrides)
 
@@ -160,7 +161,7 @@ def main(argv):
 
     type = get_sample_type_from_recipe(recipe)
     refr = get_reference_configs(recipe, type, species)
-    opts = get_recipe_options(recipe)
+    opts = get_recipe_options(recipe).copy()
 
     # TODO - Special Cases
     # "MethylCaptureSeq": sh $DIR/../PicardScripts/Methylseq.sh /igo/work/FASTQ/$RUNNAME/$PROJECT/
@@ -175,7 +176,7 @@ def main(argv):
     output=""
     for k,v in run_params.items():
         output="{} {}".format(output, "{}={}".format(k, v))
-    print(output)
+    print(output)   # Required to output to stdout for nextflow script
     return output
 
 if __name__ == "__main__":
