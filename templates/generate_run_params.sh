@@ -7,7 +7,7 @@
 # Nextflow Outputs:
 #   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
 # Run: 
-#   STATSDIR=/igo/stats RUN=MICHELLE_0246_BHG7L2DSXY SAMPLE_SHEET_DIR=/home/igo/SampleSheetCopies templates/launch_stats.sh
+#   Can't be run - relies on ./bin
 
 STATSDIR=${STATS_DIR}
 RUN=${DEMUXED_RUN}	
