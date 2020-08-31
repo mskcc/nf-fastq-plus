@@ -6,7 +6,7 @@ process task {
   input:
     env DEMUXED_RUN
   output:
-    path "${RUNS_TO_DEMUX_FILE}"
+    path "${RUN_PARAMS_FILE}"
     stdout()
 
   shell:

@@ -7,7 +7,7 @@
 # Run:
 #   TODO
 
-UNASSIGNED=""
+UNASSIGNED="{}"
 
 # ALL POSSIBLE PARAMS
 GENOME=$UNASSIGNED
@@ -26,53 +26,56 @@ MSKQ=$UNASSIGNED
 MARKDUPLICATES=$UNASSIGNED
 
 for pv in ${PARAM_LINE}; do
-  PARAM=$(echo $pv | cut -d"=" -f1)
-  VALUE=$(echo $pv | cut -d"=" -f2)
-  DEFAULT = "DEFAULT_TYPE"
+  PARAM=$(printf $pv | cut -d"=" -f1)
+  VALUE=$(printf $pv | cut -d"=" -f2)
   case $PARAM in
     GENOME)
-      GENOME=$PARAM
-      printf " GENOME=$PARAM";;
+      GENOME=$VALUE
+      printf " GENOME=$VALUE";;
     REFERENCE)
-      REFERENCE=$PARAM
-      printf " REFERENCE=$PARAM";;
+      REFERENCE=$VALUE
+      printf " REFERENCE=$VALUE";;
     REF_FLAT)
-      REF_FLAT=$PARAM
-      printf " REF_FLAT=$PARAM";;
+      REF_FLAT=$VALUE
+      printf " REF_FLAT=$VALUE";;
     RIBO_INTER)
-      RIBO_INTER=$PARAM
-      printf " RIBO_INTER=$PARAM";;
+      RIBO_INTER=$VALUE
+      printf " RIBO_INTER=$VALUE";;
     GTAG)
-      GTAG=$PARAM
-      printf " GTAG=$PARAM";;
+      GTAG=$VALUE
+      printf " GTAG=$VALUE";;
     FASTQ1)
-      FASTQ1=$PARAM
-      printf " FASTQ1=$PARAM";;
+      FASTQ1=$VALUE
+      printf " FASTQ1=$VALUE";;
     FASTQ2)
-      FASTQ2=$PARAM
-      printf " FASTQ2=$PARAM";;
+      FASTQ2=$VALUE
+      printf " FASTQ2=$VALUE";;
     REFERENCE)
-      REFERENCE=$PARAM
-      printf " REFERENCE=$PARAM";;
+      REFERENCE=$VALUE
+      printf " REFERENCE=$VALUE";;
     GENOME)
-      GENOME=$PARAM
-      printf " GENOME=$PARAM";;
+      GENOME=$VALUE
+      printf " GENOME=$VALUE";;
     BAIT)
-      BAIT=$PARAM
-      printf " BAIT=$PARAM";;
+      BAIT=$VALUE
+      printf " BAIT=$VALUE";;
     TARGET)
-      TARGET=$PARAM
-      printf " TARGET=$PARAM";;
+      TARGET=$VALUE
+      printf " TARGET=$VALUE";;
+    TYPE)
+      TYPE=$VALUE
+      printf " TYPE=$VALUE";;
     CAPTURE)
-      CAPTURE=$PARAM
-      printf " CAPTURE=$PARAM";;
+      CAPTURE=$VALUE
+      printf " CAPTURE=$VALUE";;
     MSKQ)
-      MSKQ=$PARAM
-      printf " MSKQ=$PARAM";;
+      MSKQ=$VALUE
+      printf " MSKQ=$VALUE";;
     MARKDUPLICATES)
-      MARKDUPLICATES=$PARAM
-      printf " MARKDUPLICATES=$PARAM";;
+      MARKDUPLICATES=$VALUE
+      printf " MARKDUPLICATES=$VALUE";;
     *)
+      echo ""
       echo "Failed to assign param: ${PARAM} with value: ${VALUE}"
   esac
 done
