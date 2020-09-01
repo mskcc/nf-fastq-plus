@@ -53,7 +53,7 @@ else
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
 
     if [[ "$DUAL" == "" ]]; then
-      DUAL="FALSE"
+      DUAL="FALSE" # Assign FALSE to a blank value for logging and to export environment variable to nextflow
     fi
     SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} RUN_TYPE=${RUN_TYPE} DUAL=${DUAL}"
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
