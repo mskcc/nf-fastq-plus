@@ -19,6 +19,7 @@ process task {
     env TARGETS
     env MSKQ
     env MD
+    env TYPE
 
   shell:
     template 'send_project_params.sh'
