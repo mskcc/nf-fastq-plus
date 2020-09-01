@@ -1,7 +1,11 @@
-include log_out as out from './log_out'
+include { log_out as out } from './log_out'
 
 process task {
-  publishDir PIPELINE_OUT, mode:'move'
+  publishDir PIPELINE_OUT, mode:'copy'
+
+  input:
+  env DEMUX_ALL
+  env IS_READY
 
   output:
   path "${RUNS_TO_DEMUX_FILE}"
@@ -12,9 +16,14 @@ process task {
 }
 
 workflow detect_runs_wkflw {
+  take:
+    DEMUX_ALL
+    IS_READY	// Dependency input, used to make previous workflow go first
   main:
-    task()
-    out( task.out[1] )
+    task( DEMUX_ALL, IS_READY )
+    out( task.out[1], "detect_runs" )
+  emit:
+    task.out[0]
 }
 
 
