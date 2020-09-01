@@ -7,17 +7,5 @@
 # Run:
 #   TODO
 
-echo ${GENOME}
-echo ${REFERENCE}
-echo ${REF_FLAT}
-echo ${RIBOSOMAL_INTERVALS}
-echo ${FASTQ1}
-echo ${FASTQ2}
-echo ${REFERENCE}
-echo ${GENOME}
-echo ${BAITS}
-echo ${TARGETS}
-echo ${MSKQ}
-echo ${MD}
-echo ${TYPE}
-
+echo "Will run BWA w/ $DUAL & $TYPE"
+echo "/opt/common/CentOS_7/bwa/bwa-0.7.17/bwa $REFERENCE $FASTQ1 $FASTQ2"

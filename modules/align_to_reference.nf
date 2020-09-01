@@ -6,7 +6,7 @@ process task {
     env FASTQ1
     env FASTQ2
     env TYPE
-    env PAIRED_END
+    env DUAL
 
   output:
     stdout()
@@ -21,9 +21,9 @@ workflow align_to_reference_wkflw {
     FASTQ1
     FASTQ2
     TYPE
-    PAIRED_END
+    DUAL
   main:
-    task( stats_params )
+    task( REFERENCE, FASTQ1, FASTQ2, TYPE, DUAL )
     out( task.out[0], "align_to_reference" )
 
   emit:
