@@ -42,5 +42,5 @@ workflow {
   demultiplex_wkflw( detect_runs_wkflw.out )
   generate_run_params_wkflw( demultiplex_wkflw.out )
   send_project_params_wkflw( generate_run_params_wkflw.out )
-  align_to_reference_wkflw( send_project_params_wkflw.out )
+  align_to_reference_wkflw( send_project_params_wkflw.out.FASTQ1, send_project_params_wkflw.out.FASTQ2, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.REFERENCE )
 }

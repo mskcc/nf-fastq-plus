@@ -36,7 +36,10 @@ workflow send_project_params_wkflw {
     out( task.out[0], "send_project_params" )
 
   emit:
-    task.out[1]
+    task.out.REFERENCE
+    task.out.FASTQ1
+    task.out.FASTQ2
+    task.out.TYPE
 }
 
 
