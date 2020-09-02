@@ -69,7 +69,7 @@ for x in $(cat ${DONE_FILE}) ; do
   # If the run has already been demuxed, then it will be in the FASTQ directory.
   demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
   # echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
-  if [ "${demuxed_run}" == "" || ${DEMUX_ALL} ]; then
+  if [[ "${demuxed_run}" == "" || ${DEMUX_ALL} ]]; then
     echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
     echo $RUNPATH >> ${RUNS_TO_DEMUX_FILE}
   else
