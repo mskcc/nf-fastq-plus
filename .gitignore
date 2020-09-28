@@ -5,3 +5,5 @@ igo-pipeline.log
 pipeline_out
 work
 *.pyc
+
+.idea
