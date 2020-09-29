@@ -30,9 +30,10 @@ function get_project_species_recipe() {
   fi
 }
 
+touch ${RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
+
 if [[ -z "${SAMPLESHEET}" ]]; then
   echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
-  touch ${RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
   # TODO - Alert
 else
   RUN_TYPE=$(get_run_type)
@@ -59,18 +60,23 @@ else
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
     PROJECT_DIR=${FASTQ_DIR}/${RUNNAME}/${PROJECT}
-    SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
-    for SAMPLE_DIR in $SAMPLE_DIRS; do
-      FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
-      FASTQ_NUM=1
-      FASTQ_PARAMS=""
-      for FASTQ in $FASTQS; do
-        FASTQ_PARAMS+=" FASTQ${FASTQ_NUM}=${FASTQ}"
-        FASTQ_NUM=$(( 1 + FASTQ_NUM ))
+    if [ -d "$PROJECT_DIR" ]; then
+      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
+      for SAMPLE_DIR in $SAMPLE_DIRS; do
+        FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
+        FASTQ_NUM=1
+        FASTQ_PARAMS=""
+        for FASTQ in $FASTQS; do
+          FASTQ_PARAMS+=" FASTQ${FASTQ_NUM}=${FASTQ}"
+          FASTQ_NUM=$(( 1 + FASTQ_NUM ))
+        done
+        # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
+        echo "$SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
       done
-      # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-      echo "$SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
-    done
+    else
+      echo "ERROR: Could not locate FASTQ files for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
+      # TODO - warning?
+    fi
   done
   IFS=' \t\n'
 fi
