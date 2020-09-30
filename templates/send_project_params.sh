@@ -50,6 +50,10 @@ for pv in ${PARAM_LINE}; do
   PARAM=$(echo $pv | cut -d"=" -f1)
   VALUE=$(echo $pv | cut -d"=" -f2)
   case $PARAM in
+    FASTQ*)
+      TARGET_FASTQ=$(basename $VALUE)   # Create a symbolic link to the FASTQ file
+      echo "Linking ${VALUE} to ${TARGET_FASTQ}"
+      ln -s $VALUE $TARGET_FASTQ;;
     PROJECT)
       PROJECT=$VALUE
       ASSIGNED_PARAMS+="PROJECT=$VALUE ";;
@@ -71,12 +75,6 @@ for pv in ${PARAM_LINE}; do
     GTAG)
       GTAG=$VALUE
       ASSIGNED_PARAMS+="GTAG=$VALUE ";;
-    FASTQ1)
-      FASTQ1=$VALUE
-      ASSIGNED_PARAMS+="FASTQ1=$VALUE ";;
-    FASTQ2)
-      FASTQ2=$VALUE
-      ASSIGNED_PARAMS+="FASTQ2=$VALUE ";;
     REFERENCE)
       REFERENCE=$VALUE
       ASSIGNED_PARAMS+="REFERENCE=$VALUE ";;

@@ -1,10 +1,11 @@
 include { log_out as out } from './log_out'
 
 process task {
+  memory '2 GB'
+
   input:
     env REFERENCE
-    env FASTQ1
-    env FASTQ2
+    path FASTQ_CH
     env TYPE
     env DUAL
 
@@ -18,12 +19,11 @@ process task {
 workflow align_to_reference_wkflw {
   take:
     REFERENCE
-    FASTQ1
-    FASTQ2
+    FASTQ_CH
     TYPE
     DUAL
   main:
-    task( REFERENCE, FASTQ1, FASTQ2, TYPE, DUAL )
+    task( REFERENCE, FASTQ_CH, TYPE, DUAL )
     out( task.out[0], "align_to_reference" )
 
   emit:

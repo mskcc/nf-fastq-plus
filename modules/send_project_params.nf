@@ -11,8 +11,7 @@ process task {
     env REF_FLAT, emit: REF_FLAT
     env RIBOSOMAL_INTERVALS, emit: RIBOSOMAL_INTERVALS
     env GTAG, emit: GTAG
-    env FASTQ1, emit: FASTQ1
-    env FASTQ2, emit: FASTQ2
+    path '*.fastq.gz', emit: FASTQ_CH
     env BAITS, emit: BAITS
     env TARGETS, emit: TARGETS
     env MSKQ, emit: MSKQ
@@ -41,8 +40,7 @@ workflow send_project_params_wkflw {
     REF_FLAT = task.out.REF_FLAT
     RIBOSOMAL_INTERVALS = task.out.RIBOSOMAL_INTERVALS
     GTAG = task.out.GTAG
-    FASTQ1 = task.out.FASTQ1
-    FASTQ2 = task.out.FASTQ2
+    FASTQ_CH = task.out.FASTQ_CH
     BAITS = task.out.BAITS
     TARGETS = task.out.TARGETS
     MSKQ = task.out.MSKQ
