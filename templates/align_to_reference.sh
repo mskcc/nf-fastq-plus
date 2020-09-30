@@ -8,4 +8,9 @@
 #   TODO
 
 echo "Will run BWA w/ $DUAL & $TYPE"
-echo "/opt/common/CentOS_7/bwa/bwa-0.7.17/bwa $REFERENCE $FASTQ1 $FASTQ2"
+FASTQ_LINKS=$(find . -type l -printf "%p " -name "*.fastq.gz")
+FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)	# Retrieve source of sym-links
+FASTQ_ARGS=$(echo ${FASTQS} | awk '{printf $0 " " }')	# To single-line
+CMD="/opt/common/CentOS_7/bwa/bwa-0.7.17/bwa mem -M -t 36 ${REFERENCE} ${FASTQ_ARGS}"
+echo "Running $CMD"
+# $CMD

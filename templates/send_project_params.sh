@@ -52,7 +52,7 @@ for pv in ${PARAM_LINE}; do
   case $PARAM in
     FASTQ*)
       TARGET_FASTQ=$(basename $VALUE)   # Create a symbolic link to the FASTQ file
-      ln -s $VALUE $TARGET_FASTQ
+      ln -s $VALUE $TARGET_FASTQ;;
     PROJECT)
       PROJECT=$VALUE
       ASSIGNED_PARAMS+="PROJECT=$VALUE ";;

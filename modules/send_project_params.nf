@@ -11,7 +11,7 @@ process task {
     env REF_FLAT, emit: REF_FLAT
     env RIBOSOMAL_INTERVALS, emit: RIBOSOMAL_INTERVALS
     env GTAG, emit: GTAG
-    path FASTQS from '*.fastq.gz', emit FASTQ_CH
+    path '*.fastq.gz', emit: FASTQ_CH
     env BAITS, emit: BAITS
     env TARGETS, emit: TARGETS
     env MSKQ, emit: MSKQ
