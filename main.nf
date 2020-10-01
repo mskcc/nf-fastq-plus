@@ -6,6 +6,7 @@ include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
+include { add_replace_readgroups_wkflw } from './modules/add_replace_readgroups';
 
 /**
  * Processes input parameters that are booleans
@@ -42,5 +43,6 @@ workflow {
   demultiplex_wkflw( detect_runs_wkflw.out )
   generate_run_params_wkflw( demultiplex_wkflw.out )
   send_project_params_wkflw( generate_run_params_wkflw.out )
-  align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL )
+  align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG )
+  add_replace_readgroups_wkflw( align_to_reference_wkflw.out.SAM_CH, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG )
 }
