@@ -53,8 +53,9 @@ for pv in ${PARAM_LINE}; do
   VALUE=$(echo $pv | cut -d"=" -f2)
   case $PARAM in
     FASTQ*)
-      TARGET_FASTQ=$(basename $VALUE)   # Create a symbolic link to the FASTQ file
-      echo "Linking ${VALUE} to ${TARGET_FASTQ}"
+      # Create symboli links to FASTQs so they can be sent via channel, @FASTQ_CH
+      TARGET_FASTQ=$(basename $VALUE)  
+      echo "Linking ${VALUE} to ${TARGET_FASTQ}" 
       ln -s $VALUE $TARGET_FASTQ;;
     PROJECT)
       PROJECT=$VALUE
@@ -113,7 +114,7 @@ for pv in ${PARAM_LINE}; do
   esac
 done
 
-# Check that FASTQs are present and create tags for runs
+# Check that sym-link ASTQs are present and create tags for runs
 FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")        # Sym-links
 FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)       # Retrieve source of sym-links
 SAMPLE_DIR=$(echo ${FASTQS} | xargs dirname | sort | uniq)
@@ -123,11 +124,8 @@ if [[ $(echo ${SAMPLE_DIR}| wc -l) -ne 1 ]]; then
   exit 1
 fi
 
-echo "Sample Dir: ${SAMPLE_DIR}"
 PROJECT_DIR=$(echo ${SAMPLE_DIR} | xargs dirname)
-echo "Project Dir: ${PROJECT_DIR}"
 RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
-echo "Run Dir: ${RUN_DIR}"
 
 SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
 PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
