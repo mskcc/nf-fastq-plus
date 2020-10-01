@@ -10,17 +10,18 @@
 # TODO 
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
 
-FASTQ_LINKS=$(find . -type l -name "*.fastq.gz") 	# Sym-links
+# TODO - to run this script alone, we need a way to pass in this manually
+FASTQ_LINKS="!{FASTQ_CH}" # $(find . -type l -name "*.fastq.gz") 	# Sym-links
 FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)	# Retrieve source of sym-links
 FASTQ_ARGS=$(echo ${FASTQS} | awk '{printf $0 " " }')	# To single-lines
-
-SAMPLE_NAME=$(echo ${FASTQS} | xargs dirname | xargs basename | sed 's/Sample_//g' | sort | uniq)
-if [[ $(echo ${SAMPLE_NAME}| wc -l) -ne 1 ]]; then
-  # FASTQs should come from the same directory
-  echo "Unable to determine sample name from FASTQS: ${SAMPLE_NAME}"
-  exit 1
-fi
-OUT_SAM="${SAMPLE_NAME}___TMP.sam"
+OUT_SAM="${RUN_TAG}___${OUT_BWA}.sam"
 CMD="/opt/common/CentOS_7/bwa/bwa-0.7.17/bwa mem -M -t 36 ${REFERENCE} ${FASTQ_ARGS} > ${OUT_SAM}"
-echo "BWA - Sample: ${SAMPLE_NAME}, Dual: $DUAL, Type: $TYPE, Out: ${OUT_SAM}, CMD: $CMD"
+echo "BWA Run: ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${OUT_SAM}, CMD: $CMD"
+
+# TODO
+# touch $OUT_SAM
+touch $OUT_SAM
+echo $CMD
+
 # $CMD
+

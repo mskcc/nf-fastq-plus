@@ -19,6 +19,9 @@ process task {
     env TYPE, emit: TYPE
     env RUN_TYPE, emit: RUN_TYPE
     env DUAL, emit: DUAL
+    env SAMPLE_TAG, emit: SAMPLE_TAG
+    env PROJECT_TAG, emit: PROJECT_TAG
+    env RUN_TAG, emit: RUN_TAG
 
   shell:
     template 'send_project_params.sh'
@@ -48,6 +51,9 @@ workflow send_project_params_wkflw {
     TYPE = task.out.TYPE
     RUN_TYPE = task.out.RUN_TYPE
     DUAL = task.out.DUAL
+    SAMPLE_TAG = task.out.SAMPLE_TAG
+    PROJECT_TAG = task.out.PROJECT_TAG
+    RUN_TAG = task.out.RUN_TAG
 }
 
 
