@@ -3,6 +3,8 @@
 # Nextflow Inputs:
 #   BWA
 #   PICARD
+#
+#   RUN_TAG
 # Nextflow Outputs:
 #   TODO
 # Run:
@@ -33,15 +35,23 @@ bwa_mem () {
     ENDEDNESS="Single End"
   fi
 
-  OUT_SAM="${RUN_TAG}___${LANE}___${OUT_BWA}.sam"
+  SAM_SMP="${RUN_TAG}___${LANE}___${OUT_BWA}"
+  BWA_SAM="${SAM_SMP}___TMP.sam"
+  RG_SAM="${SAM_SMP}.sam"
   # TODO - define BWA_MEM
-  CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${OUT_SAM}"
-  echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${OUT_SAM}"
-  echo $CMD
-
+  CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+  echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${BWA_SAM}"
+  
   # TODO - Replace with actually running the command
-  touch $OUT_SAM
-  # $CMD
+  echo $CMD
+  touch $BWA_SAM
+
+  # AddOrReplaceReadGroups
+  CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RG_SAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
+
+  # TODO - Replace w/ actual command
+  echo $CMD
+  touch ${RG_SAM}
 }
 
 # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")

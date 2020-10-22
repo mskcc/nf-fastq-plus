@@ -9,6 +9,8 @@ process task {
     env TYPE
     env DUAL
     env RUN_TAG
+    env PROJECT_TAG
+    env SAMPLE_TAG
 
   output:
     stdout()
@@ -25,8 +27,10 @@ workflow align_to_reference_wkflw {
     TYPE
     DUAL
     RUN_TAG
+    PROJECT_TAG
+    SAMPLE_TAG
   main:
-    task( REFERENCE, FASTQ_CH, TYPE, DUAL, RUN_TAG )
+    task( REFERENCE, FASTQ_CH, TYPE, DUAL, RUN_TAG, PROJECT_TAG, SAMPLE_TAG )
     out( task.out[0], "align_to_reference" )
 
   emit:
