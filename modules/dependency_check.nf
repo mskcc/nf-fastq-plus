@@ -11,8 +11,8 @@ process task {
   shell:
   '''
   echo "Starting Run $(date)"
-  echo "VERSIONS: BWA $(${bwa} 2>&1 | grep "Version")"
-  echo "VERSIONS: PICARD $(echo ${picard})"
+  echo "VERSIONS: BWA $(${BWA} 2>&1 | grep "Version")"
+  echo "VERSIONS: PICARD $(echo ${PICARD})"
   '''
 }
 

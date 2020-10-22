@@ -1,7 +1,8 @@
 #!/bin/bash
 # Submits an alignment to the reference
 # Nextflow Inputs:
-#   TODO
+#   BWA
+#   PICARD
 # Nextflow Outputs:
 #   TODO
 # Run:
@@ -33,7 +34,8 @@ bwa_mem () {
   fi
 
   OUT_SAM="${RUN_TAG}___${LANE}___${OUT_BWA}.sam"
-  CMD="/opt/common/CentOS_7/bwa/bwa-0.7.17/bwa mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${OUT_SAM}"
+  # TODO - define BWA_MEM
+  CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${OUT_SAM}"
   echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${OUT_SAM}"
   echo $CMD
 
@@ -60,4 +62,5 @@ else
     bwa_mem $LANE $FASTQ_ARGS
   done
 fi
+
 

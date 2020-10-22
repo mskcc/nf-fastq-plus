@@ -31,8 +31,8 @@ println """\
          Log=${LOG_FILE}
 
          VERSIONS
-         BWA: ${bwa}
-         PICARD: ${picard}
+         BWA: ${BWA}
+         PICARD: ${PICARD}
          """
          .stripIndent()
 
