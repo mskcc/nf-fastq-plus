@@ -10,7 +10,7 @@ import re
 import sys
 import getopt
 from collections import OrderedDict
-from run_param_config import DEFAULT, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping, recipe_overrides
+from run_param_config import DEFAULT, GTAG, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping, recipe_overrides
 
 def find_mapping(mapping, target):
     """Retrieves sample type from recipe
@@ -91,6 +91,7 @@ def get_reference_configs(recipe, sample_type, species):
     genome_configs = mapping[DEFAULT].copy() # Base configuration for all recipes
     overrides = {} if sample_type not in mapping else mapping[sample_type]
     genome_configs.update(overrides)
+    genome_configs.update( { GTAG: genome } ) # Need to add the GTAG mapping
 
     return genome_configs
 
@@ -138,10 +139,9 @@ def main(argv):
 
     # Order is important because some assignments are dependent on previous assignments (see run_param_config.py)
     sample_type_dic = get_sample_type_from_recipe(recipe)
-    sample_type = sample_type_dic.values()[0]     # { TYPE: "RNA" } -> "RNA"
+    sample_type = list(sample_type_dic.values())[0]     # { TYPE: "RNA" } -> "RNA"
     refr = get_reference_configs(recipe, sample_type, species)
     opts = get_recipe_options(recipe).copy()
-
     # TODO - Special Cases
     # "MethylCaptureSeq": sh $DIR/../PicardScripts/Methylseq.sh /igo/work/FASTQ/$RUNNAME/$PROJECT/
     # 10X_Genomics_*: sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES
