@@ -131,6 +131,7 @@ RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
 
 SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
 PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
+# TODO - Make "___" a delimiter
 RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}"
 
 echo $ASSIGNED_PARAMS

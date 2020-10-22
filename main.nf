@@ -6,6 +6,7 @@ include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
+include { merge_wkflw } from './modules/merge';
 
 /**
  * Processes input parameters that are booleans
@@ -43,4 +44,17 @@ workflow {
   generate_run_params_wkflw( demultiplex_wkflw.out )
   send_project_params_wkflw( generate_run_params_wkflw.out )
   align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG )
+  align_to_reference_wkflw
+    .out
+    .map { file ->
+      def sam_split = file.name.toString().split("___")
+      def project = sam_split[1]
+      def sample = sam_split[2]
+      def key = project + "___" + sample
+      return tuple( key, file )
+    }
+    .groupTuple()
+    .set{ sams_to_merge_ch }
+  sams_to_merge_ch.view()
+  merge_wkflw( sams_to_merge_ch )
 }
