@@ -4,7 +4,7 @@ Generate IGO fastqs, bams, stats and fingerprinting
 ## Run
 ### Run Pipeline
 ```
-$ nextflow run main.nf --force true
+$ nextflow run main.nf --force true 	# Also, "make run"
 N E X T F L O W  ~  version 20.07.1
 Launching `main.nf` [wise_goldstine] - revision: 9846bedd48
 WARN: DSL 2 IS AN EXPERIMENTAL FEATURE UNDER DEVELOPMENT -- SYNTAX MAY CHANGE IN FUTURE RELEASE
@@ -22,17 +22,32 @@ VERSIONS
 BWA: /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa
 PICARD: /home/igo/resources/picard2.21.8
 
-executor >  local (290)
-[4f/bb8a7e] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
-[34/e87723] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
-[c9/c05138] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
-[97/3a5c0a] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
-[17/5fd8e6] process > demultiplex_wkflw:task (2)           [100%] 2 of 2 ✔
-[e6/2ca58e] process > demultiplex_wkflw:out (1)            [100%] 2 of 2 ✔
-[73/1ba0f4] process > generate_run_params_wkflw:task (1)   [100%] 2 of 2 ✔
-[de/c38895] process > generate_run_params_wkflw:out (2)    [100%] 2 of 2 ✔
-[c6/8f5c45] process > send_project_params_wkflw:task (139) [100%] 139 of 139 ✔
-[32/9d8912] process > send_project_params_wkflw:out (139)  [100%] 139 of 139 ✔
+executor >  local (1372)
+[84/ac7cbb] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
+[a5/80e49c] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
+[a4/e885e1] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
+[0c/d20bcc] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
+[85/d8f183] process > demultiplex_wkflw:task (8)           [100%] 8 of 8 ✔
+[72/086475] process > demultiplex_wkflw:out (8)            [100%] 8 of 8 ✔
+[52/f229f3] process > generate_run_params_wkflw:task (8)   [100%] 8 of 8 ✔
+[3d/43bae2] process > generate_run_params_wkflw:out (8)    [100%] 8 of 8 ✔
+[83/768cd0] process > send_project_params_wkflw:task (334) [100%] 334 of 334 ✔
+[10/b371cf] process > send_project_params_wkflw:out (334)  [100%] 334 of 334 ✔
+[91/e5c96d] process > align_to_reference_wkflw:task (334)  [100%] 334 of 334 ✔
+[c9/cb6fb0] process > align_to_reference_wkflw:out (334)   [100%] 334 of 334 ✔
+Completed at: 22-Oct-2020 12:51:54
+Duration    : 2m 12s
+CPU hours   : (a few seconds)
+Succeeded   : 1'372
+```
+
+#### Options
+To run locally (instead of via LSF), modify the `nextflow.config` to be blank instead of `LSF`
+```
+process {
+  executor=""
+}
+...
 ```
 
 ### Clean outputs
