@@ -23,7 +23,7 @@ function get_run_type () {
 }
 
 function get_project_species_recipe() {
-  if [[ "$DUAL" == "" ]]; then
+  if [[ "$DUAL" == "$UNASSIGNED_PARAMETER" ]]; then
     awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$8,$4,$5}' | sort | uniq
   else
     awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$9,$4,$5}' | sort | uniq
