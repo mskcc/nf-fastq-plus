@@ -40,7 +40,10 @@ else
   RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
   #If dual barcode (column index2 exists) then
   DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
-
+  if [[ "$DUAL" == "" ]]; then
+    DUAL=$UNASSIGNED_PARAMETER # Assign constant that can be evaluated later in the pipeline
+  fi
+ 
   echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL}"
 
   # Tab-delimited project, species, recipe variable,
@@ -52,11 +55,8 @@ else
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
-
-    if [[ "$DUAL" == "" ]]; then
-      DUAL="FALSE" # Assign FALSE to a blank value for logging and to export environment variable to nextflow
-    fi
     SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} RUN_TYPE=${RUN_TYPE} DUAL=${DUAL}"
+
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
     PROJECT_DIR=${FASTQ_DIR}/${RUNNAME}/${PROJECT}
@@ -64,6 +64,10 @@ else
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
+        if [[ -z $FASTQS ]]; then
+          echo "No FASTQS found in $SAMPLE_DIR"
+          exit 1
+        fi
         FASTQ_NUM=1
         FASTQ_PARAMS=""
         for FASTQ in $FASTQS; do
