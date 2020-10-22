@@ -116,6 +116,8 @@ done
 
 # Check that sym-link ASTQs are present and create tags for runs
 FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")        # Sym-links
+# TODO - this is null sometimes
+echo "FASTQ_LINKS: $FASTQ_LINKS"
 FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)       # Retrieve source of sym-links
 SAMPLE_DIR=$(echo ${FASTQS} | xargs dirname | sort | uniq)
 if [[ $(echo ${SAMPLE_DIR}| wc -l) -ne 1 ]]; then

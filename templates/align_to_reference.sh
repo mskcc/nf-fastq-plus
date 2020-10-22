@@ -53,7 +53,7 @@ if [[ $(echo "$LANES" | wc -l) -eq 1 ]]; then
   FASTQ_ARGS=$(echo ${FASTQS} | awk '{printf $0 " " }')	# To single-lines
   bwa_mem "" $FASTQ_ARGS
 else
-  echo "Split Lanes: ${RUN_TAG}"
+  echo "Spliting Lanes: ${RUN_TAG}"
   for LANE in $LANES; do
     LANE_FASTQS=$(echo $FASTQS | tr ' ' '\n' | grep $LANE)
     FASTQ_ARGS=$(echo ${LANE_FASTQS} | awk '{printf $0 " " }')
