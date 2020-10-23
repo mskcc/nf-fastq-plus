@@ -6,7 +6,7 @@ include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
-include { merge_wkflw } from './modules/merge';
+include { merge_sams_wkflw } from './modules/merge_sams';
 
 /**
  * Processes input parameters that are booleans
@@ -56,5 +56,5 @@ workflow {
     .groupTuple()
     .set{ sams_to_merge_ch }
   // sams_to_merge_ch.view()
-  merge_wkflw( sams_to_merge_ch )
+  merge_sams_wkflw( sams_to_merge_ch )
 }
