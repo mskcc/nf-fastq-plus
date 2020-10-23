@@ -65,8 +65,8 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
         if [[ -z $FASTQS ]]; then
-          echo "No FASTQS found in $SAMPLE_DIR"
-          exit 1
+          echo "!{RUN_ERROR}: No FASTQS found in $SAMPLE_DIR"	# Catch this exception, but don't fail
+          exit 0
         fi
         FASTQ_NUM=1
         FASTQ_PARAMS=""
