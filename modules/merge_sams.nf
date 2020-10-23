@@ -2,7 +2,7 @@ include { log_out as out } from './log_out'
  
 process task {
   input:
-  tuple env( PRJ_SMP ), env( SAM_LIST )
+  tuple env( RUN_TAG ), env( SAM_LIST )
  
   output:
   stdout()

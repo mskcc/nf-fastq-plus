@@ -1,18 +1,24 @@
 #!/bin/bash
-# Submits an alignment to the reference
+# Performs an alignment on input @SAM_LIST
 # Nextflow Inputs:
-#   PRJ_SMP,  Key used to group all SAM files
-#   SAM_LIST, Stringified Java List of SAM files 
+#   PICARD,     Picard Command
+# 
+#   PRJ_SMP,    Key used to group all SAM files
+#   SAM_LIST,   Stringified Java List of SAM files 
 # Nextflow Outputs:
-#   TODO
+#   MERGED_BAM, Output from Picard's MergeSamFiles
 # Run:
 #   TODO
 
-# TODO
-
-echo $PRJ_SMP
 SAMS=${SAM_LIST//[,[\]]}
-# SAMS=${SAMS//]}
-for sam in $SAMS; do
-  echo $sam
+NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
+MERGED_BAM="${RUN_TAG}___MRG.bam"
+echo "Merging ${NUM_SAMS} SAM(s) for RUN_TAG: ${MERGED_BAM}"
+
+MERGE_CMD="!{PICARD} MergeSamFiles CREATE_INDEX=true O=${MERGED_BAM}"
+for SAM in $SAMS; do
+  MERGE_CMD="${MERGE_CMD} I=${SAM}"
 done
+
+echo $MERGE_CMD
+touch $MERGED_BAM

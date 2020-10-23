@@ -55,7 +55,7 @@ for pv in ${PARAM_LINE}; do
     FASTQ*)
       # Create symboli links to FASTQs so they can be sent via channel, @FASTQ_CH
       TARGET_FASTQ=$(basename $VALUE)  
-      echo "Linking ${VALUE} to ${TARGET_FASTQ}" 
+      echo "Linking ${VALUE} to $(pwd)/${TARGET_FASTQ}" 
       ln -s $VALUE $TARGET_FASTQ;;
     PROJECT)
       PROJECT=$VALUE

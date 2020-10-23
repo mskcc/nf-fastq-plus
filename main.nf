@@ -47,14 +47,11 @@ workflow {
   align_to_reference_wkflw
     .out
     .map { file ->
-      def sam_split = file.name.toString().split("___")
-      def project = sam_split[1]
-      def sample = sam_split[2]
-      def key = project + "___" + sample
+      // TODO - the "______" should be a constant somewhere
+      def key = file.name.toString().split("______")[0]		// This should be the RUN_TAG
       return tuple( key, file )
     }
     .groupTuple()
     .set{ sams_to_merge_ch }
-  // sams_to_merge_ch.view()
   merge_sams_wkflw( sams_to_merge_ch )
 }

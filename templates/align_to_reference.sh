@@ -17,7 +17,6 @@
 # Runs BWA-MEM on input FASTQs
 # Globals:
 #   REFERENCE - FASTQ reference genome
-#   OUT_BWA - Suffix (in nextflow.config)
 #   RUN_TAG - Tag for Run-Project-Sample
 # Arguments:
 #   Lane - Sequencer Lane, e.g. L001
@@ -34,24 +33,25 @@ bwa_mem () {
     # Single end runs won't have a second FASTQ
     ENDEDNESS="Single End"
   fi
-
-  SAM_SMP="${RUN_TAG}___${LANE}___${OUT_BWA}"
-  BWA_SAM="${SAM_SMP}___TMP.sam"
-  RG_SAM="${SAM_SMP}.sam"
+  
+  # TODO - "______" is the delimiter that will be used to merge all SAMS from the same lane
+  # TODO - This should be set in the config
+  SAM_SMP="${RUN_TAG}______${LANE}"
+  BWA_SAM="${SAM_SMP}___BWA.sam"
+  RGP_SAM="${SAM_SMP}___RGP.sam"
   # TODO - define BWA_MEM
   CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
   echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${BWA_SAM}"
   
   # TODO - Replace with actually running the command
   echo $CMD
-  touch $BWA_SAM
 
   # AddOrReplaceReadGroups
-  CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RG_SAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
+  CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
 
   # TODO - Replace w/ actual command
   echo $CMD
-  touch ${RG_SAM}
+  touch ${RGP_SAM}
 }
 
 # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
