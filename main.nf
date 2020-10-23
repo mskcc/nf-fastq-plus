@@ -55,6 +55,6 @@ workflow {
     }
     .groupTuple()
     .set{ sams_to_merge_ch }
-  sams_to_merge_ch.view()
+  // sams_to_merge_ch.view()
   merge_wkflw( sams_to_merge_ch )
 }
