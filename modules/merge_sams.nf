@@ -6,6 +6,8 @@ process task {
  
   output:
   stdout()
+  env RUN_TAG, emit: RUN_TAG
+  path '*.bam', emit: BAM_CH
 
   shell:
   template 'merge_sams.sh'
@@ -16,8 +18,9 @@ workflow merge_sams_wkflw {
     sam
   main:
     task( sam )
-    out( task.out, "merge_sams" )
+    out( task.out[0], "merge_sams" )
   
   emit:
-    out.out 
+    BAM_CH = task.out.BAM_CH
+    RUN_TAG = task.out.RUN_TAG
 }
