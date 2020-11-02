@@ -20,25 +20,25 @@ Log=/home/streidd/work/nf-fastq-plus/igo-pipeline.log
 
 VERSIONS
 BWA: /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa
-PICARD: /home/igo/resources/picard2.21.8
+PICARD: java -jar /home/igo/resources/picard2.21.8/picard.jar
 
-executor >  local (1372)
-[84/ac7cbb] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
-[a5/80e49c] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
-[a4/e885e1] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
-[0c/d20bcc] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
-[85/d8f183] process > demultiplex_wkflw:task (8)           [100%] 8 of 8 ✔
-[72/086475] process > demultiplex_wkflw:out (8)            [100%] 8 of 8 ✔
-[52/f229f3] process > generate_run_params_wkflw:task (8)   [100%] 8 of 8 ✔
-[3d/43bae2] process > generate_run_params_wkflw:out (8)    [100%] 8 of 8 ✔
-[83/768cd0] process > send_project_params_wkflw:task (334) [100%] 334 of 334 ✔
-[10/b371cf] process > send_project_params_wkflw:out (334)  [100%] 334 of 334 ✔
-[91/e5c96d] process > align_to_reference_wkflw:task (334)  [100%] 334 of 334 ✔
-[c9/cb6fb0] process > align_to_reference_wkflw:out (334)   [100%] 334 of 334 ✔
-Completed at: 22-Oct-2020 12:51:54
-Duration    : 2m 12s
-CPU hours   : (a few seconds)
-Succeeded   : 1'372
+executor >  local (1248)
+[a9/86fe85] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
+[74/0dac77] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
+[9f/11822a] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
+[2f/2198aa] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
+[bd/adc254] process > demultiplex_wkflw:task (1)           [100%] 1 of 1 ✔
+[ff/953c55] process > demultiplex_wkflw:out (1)            [100%] 1 of 1 ✔
+[cb/bbd50c] process > generate_run_params_wkflw:task (1)   [100%] 1 of 1 ✔
+[01/e7a250] process > generate_run_params_wkflw:out (1)    [100%] 1 of 1 ✔
+[30/ac4b83] process > send_project_params_wkflw:task (155) [100%] 155 of 155 ✔
+[32/7af71c] process > send_project_params_wkflw:out (155)  [100%] 155 of 155 ✔
+[0c/f0d74c] process > align_to_reference_wkflw:task (155)  [100%] 155 of 155 ✔
+[95/854509] process > align_to_reference_wkflw:out (155)   [100%] 155 of 155 ✔
+[37/36c29a] process > merge_sams_wkflw:task (155)          [100%] 155 of 155 ✔
+[95/ad85a0] process > merge_sams_wkflw:out (155)           [100%] 155 of 155 ✔
+[76/fa8706] process > mark_duplicates_wkflw:task (155)     [100%] 155 of 155 ✔
+[23/a16510] process > mark_duplicates_wkflw:out (155)      [100%] 155 of 155 ✔
 ```
 
 #### Options
