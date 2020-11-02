@@ -2,7 +2,8 @@ include { log_out as out } from './log_out'
  
 process task {
   input:
-  tuple env( RUN_TAG ), env( SAM_LIST )
+  env RUN_TAG
+  path SAM_LIST
  
   output:
   stdout()
@@ -15,9 +16,10 @@ process task {
 
 workflow merge_sams_wkflw {
   take:
-    sam
+    RUN_TAG
+    SAM_FILES
   main:
-    task( sam )
+    task( RUN_TAG, SAM_FILES )
     out( task.out[0], "merge_sams" )
   
   emit:

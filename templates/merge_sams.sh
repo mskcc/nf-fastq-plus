@@ -10,10 +10,11 @@
 # Run:
 #   TODO
 
-SAMS=${SAM_LIST//[,[\]]}
+echo "Example SAM_LIST: ${SAM_LIST}"
+SAMS=$(ls *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
 MERGED_BAM="${RUN_TAG}___MRG.bam"
-echo "Merging ${NUM_SAMS} SAM(s) for RUN_TAG: ${MERGED_BAM}"
+echo "Merging ${NUM_SAMS} SAM(s): ${MERGED_BAM}"
 
 MERGE_CMD="!{PICARD} MergeSamFiles CREATE_INDEX=true O=${MERGED_BAM}"
 for SAM in $SAMS; do
