@@ -9,6 +9,7 @@ include { align_to_reference_wkflw } from './modules/align_to_reference';
 include { merge_sams_wkflw } from './modules/merge_sams';
 include { mark_duplicates_wkflw } from './modules/mark_duplicates';
 include { alignment_summary_wkflw } from './modules/collect_alignment_summary_metrics';
+include { collect_hs_metrics_wkflw } from './modules/collect_hs_metrics';
 
 /**
  * Processes input parameters that are booleans
@@ -47,6 +48,8 @@ workflow {
   send_project_params_wkflw( generate_run_params_wkflw.out )
   align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG )
   merge_sams_wkflw( send_project_params_wkflw.out.RUN_TAG, align_to_reference_wkflw.out )
+  // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
   mark_duplicates_wkflw( merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.RUN_TAG, send_project_params_wkflw.out.MD, send_project_params_wkflw.out.RUNNAME )
   alignment_summary_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.RUNNAME )
+  collect_hs_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.BAITS, send_project_params_wkflw.out.TARGETS, send_project_params_wkflw.out.RUNNAME)
 }
