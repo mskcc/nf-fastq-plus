@@ -8,7 +8,7 @@ include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
 include { merge_sams_wkflw } from './modules/merge_sams';
 include { mark_duplicates_wkflw } from './modules/mark_duplicates';
-include { alignment_summary_wkflw } from './modules/collect_alignment-summary_metrics';
+include { alignment_summary_wkflw } from './modules/collect_alignment_summary_metrics';
 
 /**
  * Processes input parameters that are booleans
