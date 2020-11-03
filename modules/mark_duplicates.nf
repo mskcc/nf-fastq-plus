@@ -5,6 +5,7 @@ process task {
   path MRG_BAM
   env RUN_TAG
   env MD
+  env RUNNAME
 
   output:
   path "*MD.bam", emit: MD_BAM_CH
@@ -19,8 +20,9 @@ workflow mark_duplicates_wkflw {
     BAM_CH
     RUN_TAG
     MD
+    RUNNAME
   main:
-    task( BAM_CH, RUN_TAG, MD )
+    task( BAM_CH, RUN_TAG, MD, RUNNAME )
     out( task.out[1], "mark_duplicates" )
 
   emit:

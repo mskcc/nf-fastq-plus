@@ -75,7 +75,7 @@ else
           FASTQ_NUM=$(( 1 + FASTQ_NUM ))
         done
         # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-        echo "$SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
+        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
       done
     else
       echo "ERROR: Could not locate FASTQ files for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"

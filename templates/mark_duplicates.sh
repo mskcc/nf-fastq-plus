@@ -1,7 +1,8 @@
 #!/bin/bash
-# Performs an alignment on input @SAM_LIST
+# Performs an alignment on input @SAM_LIST,  if MD="yes"
 # Nextflow Inputs:
 #   PICARD,     Picard Command
+#   STATS_DIR,  Location to copy stats to
 # 
 #   PRJ_SMP,    Key used to group all SAM files
 #   SAM_LIST,   Stringified Java List of SAM files 
@@ -13,8 +14,10 @@
 #   TODO - Use Each?
 INPUT_BAM=$(ls)
 
+METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+mkdir -p ${METRICS_DIR}
 MD_TAG="${RUN_TAG}___MD"
-METRICS="${MD_TAG}.txt"
+METRICS_FILE="${METRICS_DIR}/${MD_TAG}.txt"
 MD_BAM="${MD_TAG}.bam"
 
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
@@ -24,7 +27,8 @@ if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
   exit 0
 fi
 
-echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}"
-CMD="!{PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${RUN_TAG}___MD.txt OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
+echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
+CMD="!{PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
 echo $CMD
 touch $MD_BAM
+touch $METRICS_FILE

@@ -22,6 +22,7 @@ process task {
     env SAMPLE_TAG, emit: SAMPLE_TAG
     env PROJECT_TAG, emit: PROJECT_TAG
     env RUN_TAG, emit: RUN_TAG
+    env RUNNAME, emit: RUNNAME
 
   shell:
     template 'send_project_params.sh'
@@ -54,6 +55,7 @@ workflow send_project_params_wkflw {
     SAMPLE_TAG = task.out.SAMPLE_TAG
     PROJECT_TAG = task.out.PROJECT_TAG
     RUN_TAG = task.out.RUN_TAG
+    RUNNAME = task.out.RUNNAME
 }
 
 
