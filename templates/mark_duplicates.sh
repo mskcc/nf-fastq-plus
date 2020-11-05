@@ -22,7 +22,7 @@ MD_BAM="${MD_TAG}.bam"
 
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
   NO_MD_BAM="${RUN_TAG}___NO_MD.bam"
-  echo "Not running Mark Duplicates (MD: ${MD}). Creating symbolic link to input - ${NO_MD_BAM}"
+  echo "Skipping Mark Duplicates (MD: ${MD}). Creating symbolic link to input - ${NO_MD_BAM}"
   ln -s ${INPUT_BAM} ${NO_MD_BAM}
   exit 0
 fi

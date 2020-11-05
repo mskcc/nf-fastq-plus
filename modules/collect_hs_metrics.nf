@@ -27,5 +27,5 @@ workflow collect_hs_metrics_wkflw {
 
   main:
     task( BAM_CH, BAITS, TARGETS, RUNNAME, RUN_TAG )
-    out( task.out[0], "collect_alignment-summary_metrics" )
+    out( task.out[0], "collect_hs_metrics" )
 }
