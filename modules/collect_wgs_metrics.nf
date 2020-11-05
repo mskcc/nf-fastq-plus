@@ -6,6 +6,7 @@ process task {
   input:
     path BAM_FILES
     env GTAG
+    env TYPE
     env REFERENCE
     env RUNNAME
     env RUN_TAG
@@ -21,11 +22,12 @@ workflow collect_wgs_metrics_wkflw {
   take:
     BAM_CH
     GTAG
+    TYPE
     REFERENCE
     RUNNAME
     RUN_TAG
 
   main:
-    task( BAM_CH, GTAG, REFERENCE, RUNNAME, RUN_TAG )
+    task( BAM_CH, GTAG, TYPE, REFERENCE, RUNNAME, RUN_TAG )
     out( task.out[0], "collect_wgs_metrics" )
 }

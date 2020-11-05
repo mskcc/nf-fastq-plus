@@ -13,9 +13,14 @@
 # Run:
 #   n/a
 
-WGS_GENOMES="mm10\|wgs\|hg19"
+WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
 if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then 
-  echo "Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES}";
+  echo "Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES} (TYPE: ${TYPE})";
+  exit 0
+fi
+
+if [ "${TYPE^^}" != "WGS" ]; then 
+  echo "Skipping CollectWgsMetrics for ${RUN_TAG}. TYPE: ${TYPE} != WGS (GTAG: ${GTAG})"
   exit 0
 fi
 
