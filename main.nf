@@ -11,6 +11,7 @@ include { mark_duplicates_wkflw } from './modules/mark_duplicates';
 include { alignment_summary_wkflw } from './modules/collect_alignment_summary_metrics';
 include { collect_hs_metrics_wkflw } from './modules/collect_hs_metrics';
 include { collect_oxoG_metrics_wkflw } from './modules/collect_oxoG_metrics';
+include { collect_wgs_metrics_wkflw } from './modules/collect_wgs_metrics';
 
 /**
  * Processes input parameters that are booleans
@@ -54,4 +55,5 @@ workflow {
   alignment_summary_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
   collect_hs_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.BAITS, send_project_params_wkflw.out.TARGETS, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
   collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.BAITS, send_project_params_wkflw.out.TARGETS, send_project_params_wkflw.out.MSKQ, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
+  collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.GTAG, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
 }
