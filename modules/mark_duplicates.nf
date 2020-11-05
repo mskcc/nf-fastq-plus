@@ -3,9 +3,9 @@ include { log_out as out } from './log_out'
 process task {
   input:
   path MRG_BAM
-  env RUN_TAG
   env MD
   env RUNNAME
+  env RUN_TAG
 
   output:
   path "*MD.bam", emit: MD_BAM_CH
@@ -18,11 +18,12 @@ process task {
 workflow mark_duplicates_wkflw {
   take:
     BAM_CH
-    RUN_TAG
     MD
     RUNNAME
+    RUN_TAG
+
   main:
-    task( BAM_CH, RUN_TAG, MD, RUNNAME )
+    task( BAM_CH, MD, RUNNAME, RUN_TAG )
     out( task.out[1], "mark_duplicates" )
 
   emit:
