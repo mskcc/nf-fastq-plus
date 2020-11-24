@@ -63,7 +63,8 @@ for x in $(cat ${DONE_FILE}) ; do
 
   RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
   if [ -z "$RUNNAME" ] ; then
-    echo "WARNING: Could not parse out run from RUNNAME: $RUNNAME"
+    echo "ERROR: Could not parse out run from RUNNAME: $RUNNAME"
+    continue
   fi
   
   # If the run has already been demuxed, then it will be in the FASTQ directory.

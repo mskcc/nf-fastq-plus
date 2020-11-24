@@ -10,9 +10,11 @@
 #   Can't be run - relies on ./bin
 
 STATSDIR=${STATS_DIR}
+
+# TODO - get run from SAMPLESHEET
 RUN=${DEMUXED_RUN}	
 
-SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
+# SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {
   ROWS=$(sed -n "/Reads/,/Settings/p" $SAMPLESHEET | wc -l)
   if [[ "$ROWS" < 5  ]]; then

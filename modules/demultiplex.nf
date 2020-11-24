@@ -1,12 +1,13 @@
 include { log_out as out } from './log_out'
 
+// Takes an input directory and outputs all sample sheets that should be individually processed
 process task {
   input:
     env RUN_TO_DEMUX_DIR
 
   output:
     stdout()
-    env DEMUXED_RUN
+    path "${PROCESSED_SAMPLE_SHEETS_FILE}"
 
   shell:
     template 'demultiplex.sh'
