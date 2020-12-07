@@ -10,7 +10,7 @@
 #   FASTQ_DIR, config: Directory to find runs w/ FASTQ files
 #   PIPELINE_OUT, config (Optional):  Output directory where outputs will be written in nextflow
 # Outputs (STD OUT):
-#   Absolute paths to run dierectories
+#   Absolute paths to run directories
 # Run: 
 #   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./detect_runs.sh
 

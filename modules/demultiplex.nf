@@ -1,6 +1,6 @@
 include { log_out as out } from './log_out'
 
-// Takes an input directory and outputs all sample sheets that should be individually processed
+// Takes the value of an input directory and outputs all sample sheets that should be individually processed
 process task {
   input:
     env RUN_TO_DEMUX_DIR
