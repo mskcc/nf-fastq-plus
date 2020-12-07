@@ -13,6 +13,7 @@ include { collect_hs_metrics_wkflw } from './modules/collect_hs_metrics';
 include { collect_oxoG_metrics_wkflw } from './modules/collect_oxoG_metrics';
 include { collect_wgs_metrics_wkflw } from './modules/collect_wgs_metrics';
 include { collect_rna_metrics_wkflw } from './modules/collect_rna_metrics';
+include { collect_gc_bias_wkflw } from './modules/collect_gc_bias_metrics';
 
 /**
  * Processes input parameters that are booleans
@@ -58,4 +59,5 @@ workflow {
   collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.BAITS, send_project_params_wkflw.out.TARGETS, send_project_params_wkflw.out.MSKQ, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
   collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.GTAG, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
   collect_rna_metrics_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.RIBOSOMAL_INTERVALS, send_project_params_wkflw.out.REF_FLAT, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
+  collect_gc_bias_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
 }
