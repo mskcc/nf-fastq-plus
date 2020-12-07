@@ -4,7 +4,7 @@ process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
-    env SAMPLESHEET
+    env FASTQ_DIR
   output:
     path "${RUN_PARAMS_FILE}"
     stdout()
@@ -15,11 +15,10 @@ process task {
 
 workflow generate_run_params_wkflw {
   take:
-    PROCESSED_SAMPLE_SHEETS_FILE
+    DEMUXED_RUN_DIRS
   main:
-  PROCESSED_SAMPLE_SHEETS_FILE
     // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
-    PROCESSED_SAMPLE_SHEETS_FILE.splitText().set{ sample_sheet_ch }
+    DEMUXED_RUN_DIRS.splitText().set{ sample_sheet_ch }
     task( sample_sheet_ch )
     out( task.out[1], "generate_run_params" )
   emit:

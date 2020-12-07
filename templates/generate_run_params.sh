@@ -1,7 +1,7 @@
 # !/bin/bash
 # Configures FASTQ stats from input Runname
 # Nextflow Inputs:
-#   DEMUXED_RUN (Input): Name of run that has been demultiplexed
+#   FASTQ_DIR (Input): Absolute path to directory that is the output of the demultiplexing
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 # Nextflow Outputs:
@@ -9,10 +9,10 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
-STATSDIR=${STATS_DIR}
+RUN=$(basename FASTQ_DIR)
+SAMPLESHEET=${RUN}/SampleSheet_*.csv # SampleSheet should have been copied from the previous nextflow module
 
-# TODO - get run from SAMPLESHEET
-RUN=${DEMUXED_RUN}	
+STATSDIR=${STATS_DIR}
 
 # SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {
@@ -32,7 +32,7 @@ function get_project_species_recipe() {
   fi
 }
 
-touch ${RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
+touch !{RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
 
 if [[ -z "${SAMPLESHEET}" ]]; then
   echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
@@ -78,7 +78,7 @@ else
           FASTQ_NUM=$(( 1 + FASTQ_NUM ))
         done
         # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
+        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> !{RUN_PARAMS_FILE}
       done
     else
       echo "ERROR: Could not locate FASTQ files for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"

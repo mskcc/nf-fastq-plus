@@ -7,7 +7,7 @@ process task {
 
   output:
     stdout()
-    path "${PROCESSED_SAMPLE_SHEETS_FILE}"
+    path "${DEMUXED_RUN_DIRS}"
 
   shell:
     template 'demultiplex.sh'

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Submits demultiplexing jobs
+# Given the sequencer directory output (of bcl files), run the
 # Nextflow Inputs:
 #   RUN_TO_DEMUX_DIR:     Absolute path to directory of the Run to demux (Defined as input in nextflow process)
 #
@@ -62,7 +62,7 @@ echo "RUN_TO_DEMUX_DIR=${RUN_TO_DEMUX_DIR} RUNPATH=${RUNPATH} MACHINE=${MACHINE}
 SAMPLESHEET="!{LAB_SAMPLE_SHEET_DIR}/SampleShee*"$RUN"*.csv"
 echo "Set samplesheet path to ${SAMPLESHEET}"
 
-OUTPUT="/igo/work/FASTQ/${RUN_TO_DEMUX}"
+OUTPUT_DIR="/igo/work/FASTQ/${RUN_TO_DEMUX}"
 echo "Set OUTPUT folder to ${OUTPUT}"
 
 mkdir -p $OUTPUT
@@ -72,13 +72,28 @@ echo "Copying sampleSheet from /pskis34 share: $SAMPLESHEET ,to:/home/igo/Sample
 cp $SAMPLESHEET /home/igo/SampleSheetCopies
 NYXSAMPLESHEET="/home/igo/SampleSheetCopies/SampleShee*"$RUN_TO_DEMUX"*.csv"
 
+SPLIT_SAMPLE_SHEETS="split_sample_sheets.txt"
+
+# Appends each split sample sheet into the DEMUXED_RUN_DIRS file
+# e.g.
+#   python create_multiple_sample_sheets.py --sample-sheet SampleSheet_201204_PITT_0527_BHK752BBXY.csv \
+#     --source-dir /home/igo/SampleSheetCopies/ \
+#     --processed-dir /home/streidd/working/nf-fastq-plus/bin \
+#     --output-file test.csv
+#  OUTPUT (saved in !{DEMUXED_RUN_DIRS}):
+#     SampleSheet_201204_PITT_0527_BHK752BBXY.csv
+#     SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv
+# TODO
+#   - If lane is a single-ended library (all i5s are the same), then MAYBE separate out
+#   - If an entire run is a single-ended library, then run w/ i5 only
+#   - Don't separate out runs b/c it messes up the undetermined
 python create_multiple_sample_sheets.py \
   --sample-sheet ${NYXSAMPLESHEET} \
   --source-dir !{SAMPLE_SHEET_DIR} \
   --processed-dir !{PROCESSED_SAMPLE_SHEET_DIR} \
-  --output-file !{PROCESSED_SAMPLE_SHEETS_FILE}
+  --output-file ${SPLIT_SAMPLE_SHEETS}
 
-# TODO - READ THE CONTENTS OF !{PROCESSED_SAMPLE_SHEETS_FILE} and for each submit a job
+# TODO - READ THE CONTENTS OF !{DEMUXED_RUN_DIRS} and for each submit a job
 # TODO - when the demux is complete, output the sample sheet of each successful as this will inform the stats parameters
 # DEFAULT JOB COMMANDS
 BSUB_CMD="echo 'No work assigned'"
@@ -86,7 +101,23 @@ JOB_NAME="NO_JOB"
 JOB_CMD="echo 'No command specified'"
 JOB_OUT="${OUTPUT}/not_assigned.txt"
 
-for SAMPLESHEET in $PROCESSED_SAMPLESHEETS; do
+JOB_ID_LIST=()      # Saves list of job IDs submitted to LSF
+
+DEMUX_OUTPUT_DIRS=()
+
+for SAMPLESHEET in ${SPLIT_SAMPLE_SHEETS}; do
+  samplesheet_file=$(basename ${SAMPLESHEET})
+
+  # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
+  RUN_BASENAME=$(do basename ${SAMPLESHEET} | grep -oP "(?<=\d)[A-Za-z_0-9]+")
+  OUTPUT_DIR=${RUN_OUTPUT_DIR}/${RUN_BASENAME}
+
+  mkdir -p $OUTPUT_DIR
+  chmod -R 775 $OUTPUT
+  cp $SAMPLESHEET $OUTPUT_DIR
+
+  DEMUX_OUTPUT_DIRS+=( $OUTPUT_DIR )
+
   if /bin/grep -q "10X_Genomics" $SAMPLESHEET; then
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     export PATH=/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin:$PATH
@@ -94,67 +125,63 @@ for SAMPLESHEET in $PROCESSED_SAMPLESHEETS; do
       echo "Running cellranger-atac mkfastq"
       JOB_NAME="mkfastq__${RUN_TO_DEMUX}"
       JOB_OUT="mkfastq__${RUN_TO_DEMUX}.log"
-      JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUNPATH} --sample-sheet ${NYXSAMPLESHEET} --output-dir ${OUTPUT} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1"
+      JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUNPATH} --sample-sheet ${NYXSAMPLESHEET} --output-dir ${OUTPUT_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1"
     else
       echo "Running cellranger-atac mkfastq"
       JOB_NAME="atac_mkfastq__${RUN_TO_DEMUX}"
       JOB_OUT="atac_mkfastq__${RUN_TO_DEMUX}.log"
-      JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUNPATH/ --sample-sheet $NYXSAMPLESHEET --output-dir $OUTPUT --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1"
+      JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUNPATH/ --sample-sheet $NYXSAMPLESHEET --output-dir ${OUTPUT_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1"
     fi
   else
-    echo "Running bcl2fastq with 1 mismatch RUN=$RUN_TO_DEMUX RUNPATH=$RUNPATH OUTPUT=$OUTPUT SAMPLESHEET=$NYXSAMPLESHEET"
+    echo "Running bcl2fastq with 1 mismatch RUN=$RUN_TO_DEMUX RUNPATH=$RUNPATH OUTPUT=${OUTPUT_DIR} SAMPLESHEET=$NYXSAMPLESHEET"
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     JOB_NAME="bcl2fastq__${RUN_TO_DEMUX}"
     JOB_OUT="bcl2fastq__${RUN_TO_DEMUX}.log"
-    JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUNPATH/ --sample-sheet $NYXSAMPLESHEET --output-dir $OUTPUT --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 2>&1 >> /home/igo/log/bcl2fastq.log"
+    JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUNPATH/ --sample-sheet $NYXSAMPLESHEET --output-dir ${OUTPUT_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 2>&1 >> /home/igo/log/bcl2fastq.log"
   fi
+
+  # TODO - Remove this line
+  JOB_CMD="echo 'Hello World'"
 
   # Fire off all demultiplexing jobs and then save the JOB ID to wait on
   BSUB_CMD="bsub -J ${JOB_NAME} -o ${JOB_OUT} -n 36 -M 6 ${JOB_CMD}"
-  echo "Submitting: ${BSUB_CMD}"
+
   SUBMIT=$(${BSUB_CMD})  # Submits and saves output
   JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}')                           # Parses out job id from output
+  JOB_ID_LIST+=( $JOB_ID )
+  echo "JOB_ID=${JOB_ID} JOB_NAME=${JOB_NAME} BSUB_CMD=${BSUB_CMD}"
 done
 
-echo "Demultiplex complete for Run: ${RUN_TO_DEMUX} (JOB ID: ${JOB_ID})"
-DEMUXED_RUN=$RUN_TO_DEMUX    # Re-assigning this parameter here makes it available for the following nextflow process
+for job_id in ${JOB_ID_LIST[@]}; do
+  echo "Waiting for ${job_id} to finish"
+  bwait -w "ended(${job_id})" &
+done
 
-# change permissions on the Fastq output folder
-chmod -R 775 $OUTPUT
+# TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed
+echo "Demultiplexing complete for Runs: ${DEMUX_OUTPUT_DIRS}"
+echo ${DEMUX_OUTPUT_DIRS} > !{DEMUXED_RUN_DIRS}
 
-UNDETERMINED_SIZE=$(du -sh  ${OUTPUT}/Undet*);
-PROJECT_SIZE=$(du -sh Proj*/*);
-FILE_OUTPUT_SIZE=$(printf "%s\n\n%s\n" "${UNDETERMINED_SIZE}" "$Proj_Size")
-REPORT="To view reports visit: ${OUTPUT}/Reports/html/index.html"
-FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
+for DEMUXED_DIR in ${DEMUX_OUTPUT_DIRS}; do
+  UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
+  PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
+  FILE_OUTPUT_SIZE=$(printf "%s\n\n%s\n" "${UNDETERMINED_SIZE}" "$Proj_Size")
+  REPORT="To view reports visit: ${DEMUXED_DIR}/Reports/html/index.html"
+  FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
 
-# TODO - Uncomment
-# echo $FULL | mail -s "IGO Cluster Done Demuxing ${DEMUXED_RUN} mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org"
+  echo "DEMUX_UPDATE: ${FULL}"
 
-
-
-
-if [ -n "$FILE_OUTPUT_SIZE" ]; then
   # TODO - Uncomment
-  # mail -s "Starting stats for run ${DEMUXED_RUN} naborsd@mskcc.org mcmanamd@mskcc.org streidd@mskcc.org"
-else
-  # TODO - Uncomment
-  # mail -s "Failed Demux Run ${RUN_TO_DEMUX}" naborsd@mskcc.org streidd@mskcc.org
-fi
+  # echo $FULL | mail -s "IGO Cluster Done Demuxing ${DEMUXED_RUN} mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org"
 
+  if [ -n "$FILE_OUTPUT_SIZE" ]; then
+    # TODO - Uncomment
+    # mail -s "Starting stats for run ${DEMUXED_RUN} naborsd@mskcc.org mcmanamd@mskcc.org streidd@mskcc.org"
+  else
+    # TODO - Uncomment
+    # mail -s "Failed Demux Run ${RUN_TO_DEMUX}" naborsd@mskcc.org streidd@mskcc.org
+  fi
 
-# TODO - Add detect stats completion
-
-
-# TODO - Demultiplexing
-# SAMPLE_SHEET=$(find /path/to/SampleSheet/*${RUN_TO_DEMUX_DIR})
-# python split_sample_sheet_code.py $SAMPLE_SHEET
-
-# TODO
-#   - If lane is a single-ended library (all i5s are the same), then MAYBE separate out
-#   - If an entire run is a single-ended library, then run w/ i5 only
-#   - Don't separate out runs b/c it messes up the undetermined
-
-# TODO - Update: Add a notification for when a DEMUX fails. VERY IMPORTANT - Some sequencers (e.g. SCOTT) delete their old data w/ each new run, i.e. $30,000 run could be deleted just b/c the copy didn't work correctly
+  # TODO - Update: Add a notification for when a DEMUX fails. VERY IMPORTANT - Some sequencers (e.g. SCOTT) delete their old data w/ each new run, i.e. $30,000 run could be deleted just b/c the copy didn't work correctly
+done
 
 
