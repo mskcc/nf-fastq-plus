@@ -21,6 +21,11 @@ IFS=','
 # SAMPLE_SHEET=$(find /path/to/SampleSheet/*${RUN_TO_DEMUX_DIR})
 # python split_sample_sheet_code.py $SAMPLE_SHEET
 
+# TODO
+#   - If lane is a single-ended library (all i5s are the same), then MAYBE separate out
+#   - If an entire run is a single-ended library, then run w/ i5 only
+#   - Don't separate out runs b/c it messes up the undetermined
+
 # TODO - Update: Add a notification for when a DEMUX fails. VERY IMPORTANT - Some sequencers (e.g. SCOTT) delete their old data w/ each new run, i.e. $30,000 run could be deleted just b/c the copy didn't work correctly
 
 
