@@ -2,6 +2,7 @@ nextflow.preview.dsl=2
 
 include { dependency_check_wkflw } from './modules/dependency_check';
 include { detect_runs_wkflw } from './modules/detect_runs';
+include { split_sample_sheet_wkflw } from './modules/split_sample_sheet';
 include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
@@ -47,8 +48,9 @@ println """\
 workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( DEMUX_ALL, dependency_check_wkflw.out )
-  demultiplex_wkflw( detect_runs_wkflw.out )
-  generate_run_params_wkflw( demultiplex_wkflw.out )
+  split_sample_sheet_wkflw( detect_runs_wkflw.out )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out )
+  generate_run_params_wkflw( demultiplex_wkflw.out.FASTQ_DIR )
   send_project_params_wkflw( generate_run_params_wkflw.out )
   align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG )
   merge_sams_wkflw( send_project_params_wkflw.out.RUN_TAG, align_to_reference_wkflw.out )

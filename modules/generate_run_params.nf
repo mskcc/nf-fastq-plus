@@ -15,11 +15,9 @@ process task {
 
 workflow generate_run_params_wkflw {
   take:
-    DEMUXED_RUN_DIRS
+    FASTQ_DIR
   main:
-    // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
-    DEMUXED_RUN_DIRS.splitText().set{ sample_sheet_ch }
-    task( sample_sheet_ch )
+    task( FASTQ_DIR )
     out( task.out[1], "generate_run_params" )
   emit:
     task.out[0]
