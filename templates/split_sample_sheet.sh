@@ -12,11 +12,11 @@
 #   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
 
 #Deletes shortest match of $substring '/*Complet*' from back of $x
-RUNPATH=$(echo ${RUN_TO_DEMUX_DIR%/*Complet*})
+RUNPATH=$(echo ${RUN_TO_DEMUX_DIR%/*Complet*})		# ../PATH/TO/sequencers/johnsawyers/201113_JOHNSAWYERS_0252_000000000-G6H72
 IFS='/'
-array=($RUNPATH)
-MACHINE="${array[3]}"
-RUN_TO_DEMUX="${array[4]}" # EXPORT TO NEXT NEXTFLOW PROCESS
+array=($RUNPATH)					# ( PATH TO sequencers johnsawyers 201113_JOHNSAWYERS_0252_000000000-G6H72 )
+MACHINE="${array[-2]}"					# johnsawyers
+RUN_TO_DEMUX="${array[-1]}" 				# 201113_JOHNSAWYERS_0252_000000000-G6H72
 IFS=','
 
 # TODO - uncomment
@@ -72,13 +72,13 @@ COPIED_SAMPLE_SHEET=!{SAMPLE_SHEET_DIR}/${SAMPLE_SHEET_FILE_NAME}
 echo "SampleSheet Copy (${SAMPLE_SHEET_FILE_NAME}): $SAMPLESHEET -> ${COPIED_SAMPLE_SHEET}"
 cp $SAMPLESHEET !{SAMPLE_SHEET_DIR}
 
-# Appends each split sample sheet into the DEMUXED_RUN_DIRS file
+# Creates the split sample sheets and appends each split sample sheet into the SPLIT_SAMPLE_SHEETS file
 # e.g.
 #   python create_multiple_sample_sheets.py --sample-sheet SampleSheet_201204_PITT_0527_BHK752BBXY.csv \
 #     --source-dir /home/igo/SampleSheetCopies/ \
 #     --processed-dir /home/streidd/working/nf-fastq-plus/bin \
 #     --output-file test.csv
-#  OUTPUT (saved in !{DEMUXED_RUN_DIRS}):
+#  OUTPUT (saved in !{SPLIT_SAMPLE_SHEETS}):
 #     SampleSheet_201204_PITT_0527_BHK752BBXY.csv
 #     SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv
 # TODO

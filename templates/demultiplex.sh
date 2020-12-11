@@ -10,7 +10,6 @@
 # Run: 
 #   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
 
-# TODO - READ THE CONTENTS OF !{DEMUXED_RUN_DIRS} and for each submit a job
 # TODO - when the demux is complete, output the sample sheet of each successful as this will inform the stats parameters
 # DEFAULT JOB COMMANDS
 BSUB_CMD="echo 'No work assigned'"
