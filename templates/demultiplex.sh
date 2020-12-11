@@ -10,48 +10,45 @@
 # Run: 
 #   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
 
+SAMPLESHEET=$(echo $SAMPLESHEET | tr -d " \t\n\r")	# Sometimes "\n" or "\t" characters can be appended 
+
 # TODO - when the demux is complete, output the sample sheet of each successful as this will inform the stats parameters
 # DEFAULT JOB COMMANDS
 BSUB_CMD="echo 'No work assigned'"
 JOB_NAME="NO_JOB"
 JOB_CMD="echo 'No command specified'"
 JOB_OUT="${OUTPUT}/not_assigned.txt"
-
 echo "Procesisng SampleSheet: ${SAMPLESHEET}"
 samplesheet_file=$(basename ${SAMPLESHEET})
 
 # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
-RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=\d)[A-Za-z_0-9]+")
+basename ${SAMPLESHEET}
+RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=\d)[A-Za-z_0-9-]+")
+echo "RUN_BASENAME: ${RUN_BASENAME}"
 DEMUXED_DIR="!{STATS_DIR}/${RUN_BASENAME}"
-
-# TODO - undo this
-DEMUXED_DIR=$(pwd)/${RUN_BASENAME}
 
 mkdir -p $DEMUXED_DIR
 chmod -R 775 $DEMUXED_DIR
 cp $SAMPLESHEET $DEMUXED_DIR
 echo "Writing FASTQ files to $DEMUXED_DIR"
+echo "SAMPLESHEET: ${SAMPLESHEET}"
 
-JOB_CMD="echo 'Job not specified'"
+JOB_CMD="echo NO_JOB_SPECIFIED"
 if /bin/grep -q "10X_Genomics" $SAMPLESHEET; then
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
   export PATH=/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin:$PATH
   if /bin/grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
     JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1"
-    echo "COMMAND - cellranger-atac mkfastq: ${JOB_CMD}"
   else
     JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1"
-    echo "COMMAND - cellranger mkfastq: ${JOB_CMD}"
   fi
 else
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
-  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 2>&1 >> /home/igo/log/bcl2fastq.log"
-  echo "Running bcl2fastq with 1 mismatch RUN=$RUN_TO_DEMUX RUN_TO_DEMUX_DIR=$RUN_TO_DEMUX_DIR OUTPUT=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}: ${JOB_CMD}"
+  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 2>&1 >> /home/igo/log/bcl2fastq.log"
 fi
 
-# TODO dd- Remove this line
-JOB_CMD="echo 'Hello World'"
-${JOB_CMD}
+echo ${JOB_CMD}
+eval ${JOB_CMD}
 
 # TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed
 # NEXTFLOW ENVIRONMENT VARIABLES - These environment variables are passed to the next nextflow process
