@@ -1,7 +1,9 @@
 # !/bin/bash
 # Configures FASTQ stats from input Runname
 # Nextflow Inputs:
-#   FASTQ_DIR (Input): Absolute path to directory that is the output of the demultiplexing
+#   DEMUXED_DIR (Input): Absolute path to directory that is the output of the demultiplexing
+#   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
+# 
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 # Nextflow Outputs:
@@ -9,9 +11,9 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
-RUN=$(basename FASTQ_DIR)
-SAMPLESHEET=${RUN}/SampleSheet_*.csv # SampleSheet should have been copied from the previous nextflow module
+echo "Received DEMUXED_DIR: ${DEMUXED_DIR}, SAMPLESHEET: ${DEMUXED_DIR}"
 
+RUN=$(basename ${DEMUXED_DIR})
 STATSDIR=${STATS_DIR}
 
 # SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
@@ -62,7 +64,7 @@ else
 
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
-    PROJECT_DIR=${FASTQ_DIR}/${RUNNAME}/${PROJECT}
+    PROJECT_DIR=${DEMUXED_DIR}/${RUNNAME}/${PROJECT}
     if [ -d "$PROJECT_DIR" ]; then
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
       for SAMPLE_DIR in $SAMPLE_DIRS; do

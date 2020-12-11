@@ -10,6 +10,7 @@ process split_sample_sheet_task {
   output:
     stdout()
     path "${SPLIT_SAMPLE_SHEETS}"
+    env RUN_TO_DEMUX_DIR, emit: RUN_TO_DEMUX_DIR
 
   shell:
     template 'split_sample_sheet.sh'
@@ -26,7 +27,8 @@ workflow split_sample_sheet_wkflw {
     out( split_sample_sheet_task.out[0], "split_sample_sheet" )
 
   emit:
-    split_sample_sheet_task.out[1]
+    SPLIT_SAMPLE_SHEETS = split_sample_sheet_task.out[1]
+    RUN_TO_DEMUX_DIR = split_sample_sheet_task.out.RUN_TO_DEMUX_DIR
 }
 
 

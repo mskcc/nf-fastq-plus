@@ -4,7 +4,8 @@ process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
-    env FASTQ_DIR
+    env DEMUXED_DIR
+    env SAMPLESHEET
   output:
     path "${RUN_PARAMS_FILE}"
     stdout()
@@ -15,9 +16,10 @@ process task {
 
 workflow generate_run_params_wkflw {
   take:
-    FASTQ_DIR
+    DEMUXED_DIR
+    SAMPLESHEET
   main:
-    task( FASTQ_DIR )
+    task( DEMUXED_DIR, SAMPLESHEET )
     out( task.out[1], "generate_run_params" )
   emit:
     task.out[0]
