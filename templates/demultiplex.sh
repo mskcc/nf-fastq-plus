@@ -12,7 +12,6 @@
 
 SAMPLESHEET=$(echo $SAMPLESHEET | tr -d " \t\n\r")	# Sometimes "\n" or "\t" characters can be appended 
 
-# TODO - when the demux is complete, output the sample sheet of each successful as this will inform the stats parameters
 # DEFAULT JOB COMMANDS
 BSUB_CMD="echo 'No work assigned'"
 JOB_NAME="NO_JOB"

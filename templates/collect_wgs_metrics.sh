@@ -13,6 +13,17 @@
 # Run:
 #   n/a
 
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$1
+  echo ${INPUT_CMD}
+  eval ${INPUT_CMD}
+}
+
 WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
 if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then 
   echo "Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES} (TYPE: ${TYPE})";
@@ -28,8 +39,7 @@ METRICS_DIR=!{STATS_DIR}/${RUNNAME}
 mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___WGS.txt"
 echo "[CollectWgsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
-touch $METRICS_FILE # TODO - delete
 
 BAM=$(ls *.bam)
 CMD="!{PICARD} CollectWgsMetrics I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
-echo $CMD
+run_cmd $CMD

@@ -11,6 +11,17 @@
 #   MERGED_BAM, Output from Picard's MergeSamFiles
 # Run:
 
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard MarkDuplicates ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$1
+  echo ${INPUT_CMD}
+  eval ${INPUT_CMD}
+}
+
 #   TODO - Use Each?
 INPUT_BAM=$(ls)
 
@@ -29,6 +40,4 @@ fi
 
 echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
 CMD="!{PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
-echo $CMD
-touch $MD_BAM
-touch $METRICS_FILE
+run_cmd $CMD

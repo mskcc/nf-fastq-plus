@@ -13,7 +13,12 @@
 # TODO 
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
 
-bwa_mem () {
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard AddOrReplaceReadGroups ..."
+#########################################
+run_cmd () {
   INPUT_CMD=$1
   echo ${INPUT_CMD}
   eval ${INPUT_CMD}
@@ -45,19 +50,13 @@ bwa_mem () {
   SAM_SMP="${RUN_TAG}______${LANE}"
   BWA_SAM="${SAM_SMP}___BWA.sam"
   RGP_SAM="${SAM_SMP}___RGP.sam"
-  # TODO - define BWA_MEM
-  CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+
+  BWA_CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
   echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${BWA_SAM}"
-  
-  # TODO - Replace with actually running the command
-  echo $CMD
+  run_cmd $BWA_CMD
 
-  # AddOrReplaceReadGroups
-  CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
-
-  # TODO - Replace w/ actual command
-  echo $CMD
-  touch ${RGP_SAM}
+  RG_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
+  run_cmd $RG_CMD
 }
 
 # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
