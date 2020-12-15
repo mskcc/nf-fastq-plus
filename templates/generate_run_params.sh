@@ -11,6 +11,7 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
+# e.g. DEMUXED_DIR: /PATH/TO/FASTQ/01113_JOHNSAWYERS_0252_000000000-G6H72
 echo "Received DEMUXED_DIR: ${DEMUXED_DIR}, SAMPLESHEET: ${DEMUXED_DIR}"
 
 RUN=$(basename ${DEMUXED_DIR})
@@ -64,7 +65,7 @@ else
 
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
-    PROJECT_DIR=${DEMUXED_DIR}/${RUNNAME}/${PROJECT}
+    PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
     if [ -d "$PROJECT_DIR" ]; then
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
       for SAMPLE_DIR in $SAMPLE_DIRS; do

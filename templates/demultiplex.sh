@@ -25,7 +25,7 @@ samplesheet_file=$(basename ${SAMPLESHEET})
 basename ${SAMPLESHEET}
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=\d)[A-Za-z_0-9-]+")
 echo "RUN_BASENAME: ${RUN_BASENAME}"
-DEMUXED_DIR="!{STATS_DIR}/${RUN_BASENAME}"
+DEMUXED_DIR="!{FASTQ_DIR}/${RUN_BASENAME}"
 
 mkdir -p $DEMUXED_DIR
 chmod -R 775 $DEMUXED_DIR
@@ -38,13 +38,16 @@ if /bin/grep -q "10X_Genomics" $SAMPLESHEET; then
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
   export PATH=/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin:$PATH
   if /bin/grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
+    echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
     JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1"
   else
+    echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
     JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1"
   fi
 else
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
-  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 2>&1 >> /home/igo/log/bcl2fastq.log"
+  echo "DEMUX CMD (${RUN_BASENAME}): bcl2fastq"
+  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 >> !{DEMUX_LOG_FILE} 2>&1"
 fi
 
 echo ${JOB_CMD}
