@@ -38,12 +38,15 @@ sequencer_files=(
   ${SEQUENCER_DIR}/ayyan/*/RTAComplete.txt
 )
 for file in ${sequencer_files[@]}; do
-  find $(ls $file) -mmin -${RUN_AGE} >> ${DONE_FILE}
+  SEQ_DONE_FILES=$(find ${file} -mmin -${RUN_AGE})
+  if [[ ! -z $SEQ_DONE_FILES ]]; then
+    echo $SEQ_DONE_FILES >> ${DONE_FILE}
+  fi
 done
 
 NUM_RUNS=$(cat ${DONE_FILE} | wc -l)
 
-echo "Detected ${NUM_RUNS} new runs"
+echo "Detected ${NUM_RUNS} new runs: $(cat ${DONE_FILE})"
 
 if [[ $NUM_RUNS -eq 0 ]]; then
   echo "Exiting. No new runs" 
@@ -61,6 +64,7 @@ for x in $(cat ${DONE_FILE}) ; do
   RUN="${array[4]}"
   IFS=','
 
+  echo $RUN
   RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
   if [ -z "$RUNNAME" ] ; then
     echo "ERROR: Could not parse out run from RUNNAME: $RUNNAME"
