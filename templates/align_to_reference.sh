@@ -13,6 +13,12 @@
 # TODO 
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
 
+bwa_mem () {
+  INPUT_CMD=$1
+  echo ${INPUT_CMD}
+  eval ${INPUT_CMD}
+}
+
 #########################################
 # Runs BWA-MEM on input FASTQs
 # Globals:
