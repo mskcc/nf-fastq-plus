@@ -16,7 +16,7 @@
 #   INPUT_CMD - string of command to run, e.g. "picard MergeSamFiles ..."
 #########################################
 run_cmd () {
-  INPUT_CMD=$1
+  INPUT_CMD=$@
   echo ${INPUT_CMD}
   eval ${INPUT_CMD}
 }
