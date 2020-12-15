@@ -7,6 +7,7 @@ include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
+include { add_or_replace_read_groups_wkflw } from './modlules/add_or_replace_read_groups';
 include { merge_sams_wkflw } from './modules/merge_sams';
 include { mark_duplicates_wkflw } from './modules/mark_duplicates';
 include { alignment_summary_wkflw } from './modules/collect_alignment_summary_metrics';
@@ -56,8 +57,9 @@ workflow {
   demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
   generate_run_params_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
   send_project_params_wkflw( generate_run_params_wkflw.out )
-  align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG )
-  merge_sams_wkflw( send_project_params_wkflw.out.RUN_TAG, align_to_reference_wkflw.out )
+  align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG )
+  add_or_replace_read_groups_wkflw( send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG, align_to_reference_wkflw.out )
+  merge_sams_wkflw( send_project_params_wkflw.out.RUN_TAG, add_or_replace_read_groups_wkflw.out )
   // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
   mark_duplicates_wkflw( merge_sams_wkflw.out.BAM_CH, send_project_params_wkflw.out.MD, send_project_params_wkflw.out.RUNNAME, merge_sams_wkflw.out.RUN_TAG )
   alignment_summary_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )
