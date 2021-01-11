@@ -2,6 +2,10 @@ include { log_out as out } from './log_out'
 
 // Takes the value of an input directory and outputs all sample sheets that should be individually processed
 process task {
+  label 'BSUB_OPTIONS_DEMUX'
+
+  clusterOptions = { "-M 6" }
+
   input:
     env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
