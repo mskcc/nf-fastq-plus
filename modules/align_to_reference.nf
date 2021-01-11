@@ -1,7 +1,7 @@
 include { log_out as out } from './log_out'
 
 process task {
-  label 'big_mem'
+  label 'BSUB_OPTIONS_BWA_MEM'
 
   input:
     env REFERENCE
