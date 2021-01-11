@@ -1,7 +1,7 @@
 include { log_out as out } from './log_out'
 
 process task {
-  memory '2 GB'
+  label 'BSUB_OPTIONS_LARGE'
 
   input:
     env RUN_TAG

@@ -25,7 +25,7 @@ run_cmd () {
   eval ${INPUT_CMD}
 }
 
-BWA_SAMS=$(ls "*.sam")    # Nextflow should pass all the SAMs in the input directory
+BWA_SAMS=$(ls *.sam)    # Nextflow should pass all the SAMs in the input directory
 
 for BWA_SAM in $BWA_SAMS; do
   RGP_SAM=${BWA_SAM/BWA/RGP}    # "${SAM_SMP}___BWA.sam" -> "${SAM_SMP}___RGP.sam"

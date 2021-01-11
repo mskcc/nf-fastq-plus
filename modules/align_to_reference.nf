@@ -1,15 +1,13 @@
 include { log_out as out } from './log_out'
 
 process task {
-  memory '2 GB'
+  label 'big_mem'
 
   input:
     env REFERENCE
     path FASTQ_CH
     env TYPE
     env DUAL
-    env PROJECT_TAG
-    env SAMPLE_TAG
     env RUN_TAG
 
   output:
@@ -26,11 +24,9 @@ workflow align_to_reference_wkflw {
     FASTQ_CH
     TYPE
     DUAL
-    PROJECT_TAG
-    SAMPLE_TAG
     RUN_TAG
   main:
-    task( REFERENCE, FASTQ_CH, TYPE, DUAL, PROJECT_TAG, SAMPLE_TAG, RUN_TAG )
+    task( REFERENCE, FASTQ_CH, TYPE, DUAL, RUN_TAG )
     out( task.out[0], "align_to_reference" )
 
   emit:

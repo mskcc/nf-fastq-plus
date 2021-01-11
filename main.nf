@@ -7,7 +7,7 @@ include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
-include { add_or_replace_read_groups_wkflw } from './modlules/add_or_replace_read_groups';
+include { add_or_replace_read_groups_wkflw } from './modules/add_or_replace_read_groups';
 include { merge_sams_wkflw } from './modules/merge_sams';
 include { mark_duplicates_wkflw } from './modules/mark_duplicates';
 include { alignment_summary_wkflw } from './modules/collect_alignment_summary_metrics';
