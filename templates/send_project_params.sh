@@ -44,6 +44,8 @@ MSKQ=$UNASSIGNED_PARAMETER
 MD=$UNASSIGNED_PARAMETER
 RUN_TYPE=$UNASSIGNED_PARAMETER
 DUAL=$UNASSIGNED_PARAMETER
+RUN_TAG=$UNASSIGNED_PARAMETER
+SAMPLE_TAG=$UNASSIGNED_PARAMETER
 
 ASSIGNED_PARAMS=""
 for pv in ${PARAM_LINE}; do
@@ -51,8 +53,9 @@ for pv in ${PARAM_LINE}; do
   VALUE=$(echo $pv | cut -d"=" -f2)
   case $PARAM in
     FASTQ*)
-      TARGET_FASTQ=$(basename $VALUE)   # Create a symbolic link to the FASTQ file
-      echo "Linking ${VALUE} to ${TARGET_FASTQ}"
+      # Create symboli links to FASTQs so they can be sent via channel, @FASTQ_CH
+      TARGET_FASTQ=$(basename $VALUE)  
+      echo "Linking ${VALUE} to $(pwd)/${TARGET_FASTQ}" 
       ln -s $VALUE $TARGET_FASTQ;;
     PROJECT)
       PROJECT=$VALUE
@@ -72,6 +75,9 @@ for pv in ${PARAM_LINE}; do
     RIBOSOMAL_INTERVALS)
       RIBOSOMAL_INTERVALS=$VALUE
       ASSIGNED_PARAMS+="RIBOSOMAL_INTERVALS=$VALUE ";;
+    RUNNAME)
+      RUNNAME=$VALUE
+      ASSIGNED_PARAMS+="RUNNAME=$VALUE ";;
     GTAG)
       GTAG=$VALUE
       ASSIGNED_PARAMS+="GTAG=$VALUE ";;
@@ -111,4 +117,24 @@ for pv in ${PARAM_LINE}; do
   esac
 done
 
-echo $ASSIGNED_PARAMS
+# Check that sym-link ASTQs are present and create tags for runs
+FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")        # Sym-links
+# TODO - this is null sometimes
+echo "FASTQ_LINKS: $FASTQ_LINKS"
+FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)       # Retrieve source of sym-links
+SAMPLE_DIR=$(echo ${FASTQS} | xargs dirname | sort | uniq)
+if [[ $(echo ${SAMPLE_DIR}| wc -l) -ne 1 ]]; then
+  # FASTQs should come from the same directory
+  echo "ERROR - FASTQ files are from different directories: ${SAMPLE_DIR}"
+  exit 1
+fi
+
+PROJECT_DIR=$(echo ${SAMPLE_DIR} | xargs dirname)
+RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
+
+SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
+# TODO - Make "___" a delimiter
+RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}"
+
+echo "RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} $ASSIGNED_PARAMS"

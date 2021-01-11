@@ -10,7 +10,7 @@ import re
 import sys
 import getopt
 from collections import OrderedDict
-from run_param_config import DEFAULT, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping, recipe_overrides
+from run_param_config import DEFAULT, GTAG, get_ordered_dic, recipe_type_mapping, species_genome_mapping, genome_reference_mapping, recipe_options_mapping, recipe_overrides
 
 def find_mapping(mapping, target):
     """Retrieves sample type from recipe
@@ -35,18 +35,18 @@ def get_sample_type_from_recipe(recipe):
       recipe: Recipe of the project
 
     Returns:
-      type, dic: Sample type of the project
+      sample_type_mapping, dic: Sample type of the project
       For Example:
         { TYPE: "RNA" } , { TYPE: "DNA" }, { TYPE: "WGS" }
     """
     return find_mapping(recipe_type_mapping, recipe)
 
-def get_reference_configs(recipe, type, species):
+def get_reference_configs(recipe, sample_type, species):
     """Retrieves sample type from recipe
 
     Args:
       recipe: Project recipe
-      type: Project sample type (E.g. "RNA", "DNA")
+      sample_type: Project sample type (E.g. "RNA", "DNA")
       species: Project species
     Returns:
       dic: Contains project params w/ following potential keys,
@@ -89,8 +89,9 @@ def get_reference_configs(recipe, type, species):
       }
     """
     genome_configs = mapping[DEFAULT].copy() # Base configuration for all recipes
-    overrides = {} if type not in mapping else mapping[type]
+    overrides = {} if sample_type not in mapping else mapping[sample_type]
     genome_configs.update(overrides)
+    genome_configs.update( { GTAG: genome } ) # Need to add the GTAG mapping
 
     return genome_configs
 
@@ -137,11 +138,10 @@ def main(argv):
             sys.exit(2)
 
     # Order is important because some assignments are dependent on previous assignments (see run_param_config.py)
-    type_dic = get_sample_type_from_recipe(recipe)
-    type = type_dic.values()[0]     # { TYPE: "RNA" } -> "RNA"
-    refr = get_reference_configs(recipe, type, species)
+    sample_type_dic = get_sample_type_from_recipe(recipe)
+    sample_type = list(sample_type_dic.values())[0]     # { TYPE: "RNA" } -> "RNA"
+    refr = get_reference_configs(recipe, sample_type, species)
     opts = get_recipe_options(recipe).copy()
-
     # TODO - Special Cases
     # "MethylCaptureSeq": sh $DIR/../PicardScripts/Methylseq.sh /igo/work/FASTQ/$RUNNAME/$PROJECT/
     # 10X_Genomics_*: sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES
@@ -149,7 +149,7 @@ def main(argv):
 
     # Consolidate options
     opts.update(refr)
-    opts.update(type_dic)
+    opts.update(sample_type_dic)
 
     run_params = get_ordered_dic(opts) # Want to print in same order
     output=""

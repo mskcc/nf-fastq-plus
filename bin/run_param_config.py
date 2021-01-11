@@ -614,7 +614,7 @@ recipe_options_mapping_UNORDERED = {
     },
     "AmpliconSeq": {
         MSKQ: "no",
-        MD: "no"
+        MD: "yes"
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES --mskq $MSKQ
     },

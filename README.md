@@ -4,7 +4,7 @@ Generate IGO fastqs, bams, stats and fingerprinting
 ## Run
 ### Run Pipeline
 ```
-$ nextflow run main.nf --force true
+$ nextflow run main.nf --force true 	# Also, "make run"
 N E X T F L O W  ~  version 20.07.1
 Launching `main.nf` [wise_goldstine] - revision: 9846bedd48
 WARN: DSL 2 IS AN EXPERIMENTAL FEATURE UNDER DEVELOPMENT -- SYNTAX MAY CHANGE IN FUTURE RELEASE
@@ -20,19 +20,34 @@ Log=/home/streidd/work/nf-fastq-plus/igo-pipeline.log
 
 VERSIONS
 BWA: /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa
-PICARD: /home/igo/resources/picard2.21.8
+PICARD: java -jar /home/igo/resources/picard2.21.8/picard.jar
 
-executor >  local (290)
-[4f/bb8a7e] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
-[34/e87723] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
-[c9/c05138] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
-[97/3a5c0a] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
-[17/5fd8e6] process > demultiplex_wkflw:task (2)           [100%] 2 of 2 ✔
-[e6/2ca58e] process > demultiplex_wkflw:out (1)            [100%] 2 of 2 ✔
-[73/1ba0f4] process > generate_run_params_wkflw:task (1)   [100%] 2 of 2 ✔
-[de/c38895] process > generate_run_params_wkflw:out (2)    [100%] 2 of 2 ✔
-[c6/8f5c45] process > send_project_params_wkflw:task (139) [100%] 139 of 139 ✔
-[32/9d8912] process > send_project_params_wkflw:out (139)  [100%] 139 of 139 ✔
+executor >  local (1248)
+[a9/86fe85] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
+[74/0dac77] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
+[9f/11822a] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
+[2f/2198aa] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
+[bd/adc254] process > demultiplex_wkflw:task (1)           [100%] 1 of 1 ✔
+[ff/953c55] process > demultiplex_wkflw:out (1)            [100%] 1 of 1 ✔
+[cb/bbd50c] process > generate_run_params_wkflw:task (1)   [100%] 1 of 1 ✔
+[01/e7a250] process > generate_run_params_wkflw:out (1)    [100%] 1 of 1 ✔
+[30/ac4b83] process > send_project_params_wkflw:task (155) [100%] 155 of 155 ✔
+[32/7af71c] process > send_project_params_wkflw:out (155)  [100%] 155 of 155 ✔
+[0c/f0d74c] process > align_to_reference_wkflw:task (155)  [100%] 155 of 155 ✔
+[95/854509] process > align_to_reference_wkflw:out (155)   [100%] 155 of 155 ✔
+[37/36c29a] process > merge_sams_wkflw:task (155)          [100%] 155 of 155 ✔
+[95/ad85a0] process > merge_sams_wkflw:out (155)           [100%] 155 of 155 ✔
+[76/fa8706] process > mark_duplicates_wkflw:task (155)     [100%] 155 of 155 ✔
+[23/a16510] process > mark_duplicates_wkflw:out (155)      [100%] 155 of 155 ✔
+```
+
+#### Options
+To run locally (instead of via LSF), modify the `nextflow.config` to be blank instead of `LSF`
+```
+process {
+  executor=""
+}
+...
 ```
 
 ### Clean outputs
