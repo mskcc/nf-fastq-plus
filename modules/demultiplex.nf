@@ -1,12 +1,19 @@
 include { log_out as out } from './log_out'
 
+// Takes the value of an input directory and outputs all sample sheets that should be individually processed
 process task {
+  label 'BSUB_OPTIONS_DEMUX'
+
+  clusterOptions = { "-M 6" }
+
   input:
+    env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
 
   output:
     stdout()
-    env DEMUXED_RUN
+    env DEMUXED_DIR, emit: DEMUXED_DIR
+    env SAMPLESHEET, emit: SAMPLESHEET
 
   shell:
     template 'demultiplex.sh'
@@ -14,16 +21,16 @@ process task {
 
 workflow demultiplex_wkflw {
   take: 
-    runs_to_demux_path
+    split_sample_sheets_path
+    RUN_TO_DEMUX_DIR
 
   main:
-    // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
-    runs_to_demux_path.splitText().set{ run_ch }
-    task( run_ch ) 
+    // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
+    split_sample_sheets_path.splitText().set{ SPLIT_SAMPLE_SHEET_CH }
+    task( SPLIT_SAMPLE_SHEET_CH, RUN_TO_DEMUX_DIR ) 
     out( task.out[0], "demultiplex" )
 
   emit:
-    task.out[1]
+    DEMUXED_DIR = task.out.DEMUXED_DIR
+    SAMPLESHEET = task.out.SAMPLESHEET
 }
-
-

@@ -10,7 +10,17 @@
 # Run:
 #   TODO
 
-echo "Example SAM_LIST: ${SAM_LIST}"
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard MergeSamFiles ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$@
+  echo ${INPUT_CMD}
+  eval ${INPUT_CMD}
+}
+
 SAMS=$(ls *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
 MERGED_BAM="${RUN_TAG}___MRG.bam"
@@ -21,5 +31,4 @@ for SAM in $SAMS; do
   MERGE_CMD="${MERGE_CMD} I=${SAM}"
 done
 
-echo $MERGE_CMD
-touch $MERGED_BAM
+run_cmd $MERGE_CMD

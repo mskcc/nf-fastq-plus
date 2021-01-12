@@ -1,13 +1,13 @@
 include { log_out as out } from './log_out'
 
 process task {
-  memory '2 GB'
+  label 'BSUB_OPTIONS_SMALL'
 
   input:
     path BAM_FILES
     env REFERENCE
-    env RUN_TAG
     env RUNNAME
+    env RUN_TAG
 
   output:
     stdout()
@@ -20,11 +20,11 @@ workflow alignment_summary_wkflw {
   take:
     BAM_FILES
     REFERENCE
-    RUN_TAG
     RUNNAME
+    RUN_TAG
 
   main:
-    task( BAM_FILES, REFERENCE, RUN_TAG, RUNNAME )
+    task( BAM_FILES, REFERENCE, RUNNAME, RUN_TAG )
     out( task.out[0], "collect_alignment-summary_metrics" )
 }
 

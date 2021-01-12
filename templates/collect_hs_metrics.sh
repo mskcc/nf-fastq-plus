@@ -12,6 +12,17 @@
 # Run:
 #   n/a
 
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$@
+  echo ${INPUT_CMD}
+  eval ${INPUT_CMD}
+}
+
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then
   echo "Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
   exit 0
@@ -20,9 +31,9 @@ fi
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}
 mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___AM.txt"
+
 echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
-touch $METRICS_FILE # TODO - delete
 
 BAM=$(ls *.bam)
 CMD="!{PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
-echo $CMD
+run_cmd $CMD

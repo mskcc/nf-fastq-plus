@@ -12,16 +12,24 @@
 # Run:
 #   n/a
 
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$@
+  echo ${INPUT_CMD}
+  eval ${INPUT_CMD}
+}
+
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}
 mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___gc_bias_metrics.txt"
 METRICS_PDF="${METRICS_DIR}/${RUN_TAG}___gc_bias_metrics.pdf"
 SUMMARY_FILE="${METRICS_DIR}/${RUN_TAG}___gc_summary_metrics.txt"
-echo "[CollectWgsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE} & ${METRICS_PDF}"
-touch $METRICS_FILE # TODO - delete
-touch $METRICS_PDF  # TODO - delete
-touch $SUMMARY_FILE # TODO - delete
+echo "[CollectGcBiasMetrics:${RUN_TAG}] Writing to ${METRICS_FILE} & ${METRICS_PDF}"
 
 BAM=$(ls *.bam)
 CMD="!{PICARD} CollectGcBiasMetrics ASSUME_SORTED=true I=${BAM} O=${METRICS_FILE} CHART=${METRICS_PDF} S=${SUMMARY_FILE} R=${REFERENCE}"
-echo $CMD
+run_cmd $CMD

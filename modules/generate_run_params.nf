@@ -4,7 +4,8 @@ process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
-    env DEMUXED_RUN
+    env DEMUXED_DIR
+    env SAMPLESHEET
   output:
     path "${RUN_PARAMS_FILE}"
     stdout()
@@ -15,9 +16,10 @@ process task {
 
 workflow generate_run_params_wkflw {
   take:
-    DEMUXED_RUN
+    DEMUXED_DIR
+    SAMPLESHEET
   main:
-    task( DEMUXED_RUN )
+    task( DEMUXED_DIR, SAMPLESHEET )
     out( task.out[1], "generate_run_params" )
   emit:
     task.out[0]

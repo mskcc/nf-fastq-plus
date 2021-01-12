@@ -2,10 +2,12 @@ nextflow.preview.dsl=2
 
 include { dependency_check_wkflw } from './modules/dependency_check';
 include { detect_runs_wkflw } from './modules/detect_runs';
+include { split_sample_sheet_wkflw } from './modules/split_sample_sheet';
 include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
 include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
+include { add_or_replace_read_groups_wkflw } from './modules/add_or_replace_read_groups';
 include { merge_sams_wkflw } from './modules/merge_sams';
 include { mark_duplicates_wkflw } from './modules/mark_duplicates';
 include { alignment_summary_wkflw } from './modules/collect_alignment_summary_metrics';
@@ -32,10 +34,14 @@ println """\
          ==========================================
          PARAMS
          DEMUX_ALL=${DEMUX_ALL}
+         RUN_AGE=${RUN_AGE}
 
          SEQUENCER_DIR="${SEQUENCER_DIR}"
-         RUNS_TO_DEMUX_FILE="${RUNS_TO_DEMUX_FILE}"
-         Output=${PIPELINE_OUT}
+         SAMPLE_SHEET_DIR=${SAMPLE_SHEET_DIR}
+         LAB_SAMPLE_SHEET_DIR=${LAB_SAMPLE_SHEET_DIR}
+         PROCESSED_SAMPLE_SHEET_DIR=${PROCESSED_SAMPLE_SHEET_DIR}
+         FASTQ_DIR=${FASTQ_DIR}
+         STATS_DIR=${STATS_DIR}
          Log=${LOG_FILE}
 
          VERSIONS
@@ -47,11 +53,13 @@ println """\
 workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( DEMUX_ALL, dependency_check_wkflw.out )
-  demultiplex_wkflw( detect_runs_wkflw.out )
-  generate_run_params_wkflw( demultiplex_wkflw.out )
+  split_sample_sheet_wkflw( detect_runs_wkflw.out )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
+  generate_run_params_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
   send_project_params_wkflw( generate_run_params_wkflw.out )
-  align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG )
-  merge_sams_wkflw( send_project_params_wkflw.out.RUN_TAG, align_to_reference_wkflw.out )
+  align_to_reference_wkflw( send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.FASTQ_CH, send_project_params_wkflw.out.TYPE, send_project_params_wkflw.out.DUAL, send_project_params_wkflw.out.RUN_TAG )
+  add_or_replace_read_groups_wkflw( send_project_params_wkflw.out.RUN_TAG, send_project_params_wkflw.out.PROJECT_TAG, send_project_params_wkflw.out.SAMPLE_TAG, align_to_reference_wkflw.out )
+  merge_sams_wkflw( send_project_params_wkflw.out.RUN_TAG, add_or_replace_read_groups_wkflw.out )
   // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
   mark_duplicates_wkflw( merge_sams_wkflw.out.BAM_CH, send_project_params_wkflw.out.MD, send_project_params_wkflw.out.RUNNAME, merge_sams_wkflw.out.RUN_TAG )
   alignment_summary_wkflw( mark_duplicates_wkflw.out, send_project_params_wkflw.out.REFERENCE, send_project_params_wkflw.out.RUNNAME, send_project_params_wkflw.out.RUN_TAG )

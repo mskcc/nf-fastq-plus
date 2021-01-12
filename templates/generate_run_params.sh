@@ -1,7 +1,9 @@
 # !/bin/bash
 # Configures FASTQ stats from input Runname
 # Nextflow Inputs:
-#   DEMUXED_RUN (Input): Name of run that has been demultiplexed
+#   DEMUXED_DIR (Input): Absolute path to directory that is the output of the demultiplexing
+#   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
+# 
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 # Nextflow Outputs:
@@ -9,10 +11,13 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
-STATSDIR=${STATS_DIR}
-RUN=${DEMUXED_RUN}	
+# e.g. DEMUXED_DIR: /PATH/TO/FASTQ/01113_JOHNSAWYERS_0252_000000000-G6H72
+echo "Received DEMUXED_DIR: ${DEMUXED_DIR}, SAMPLESHEET: ${DEMUXED_DIR}"
 
-SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
+RUN=$(basename ${DEMUXED_DIR})
+STATSDIR=${STATS_DIR}
+
+# SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {
   ROWS=$(sed -n "/Reads/,/Settings/p" $SAMPLESHEET | wc -l)
   if [[ "$ROWS" < 5  ]]; then
@@ -30,7 +35,7 @@ function get_project_species_recipe() {
   fi
 }
 
-touch ${RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
+touch !{RUN_PARAMS_FILE} # Need to write a file for output to next process or pipeline will fail
 
 if [[ -z "${SAMPLESHEET}" ]]; then
   echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
@@ -55,11 +60,12 @@ else
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
+
     SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} RUN_TYPE=${RUN_TYPE} DUAL=${DUAL}"
 
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
-    PROJECT_DIR=${FASTQ_DIR}/${RUNNAME}/${PROJECT}
+    PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
     if [ -d "$PROJECT_DIR" ]; then
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
       for SAMPLE_DIR in $SAMPLE_DIRS; do
@@ -75,7 +81,7 @@ else
           FASTQ_NUM=$(( 1 + FASTQ_NUM ))
         done
         # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> ${RUN_PARAMS_FILE}
+        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> !{RUN_PARAMS_FILE}
       done
     else
       echo "ERROR: Could not locate FASTQ files for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
