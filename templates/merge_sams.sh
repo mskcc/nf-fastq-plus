@@ -21,7 +21,6 @@ run_cmd () {
   eval ${INPUT_CMD}
 }
 
-echo "Example SAM_LIST: ${SAM_LIST}"
 SAMS=$(ls *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
 MERGED_BAM="${RUN_TAG}___MRG.bam"
