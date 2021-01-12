@@ -93,3 +93,11 @@ create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --process
 
 NUM_SHEETS=$(cat !{SPLIT_SAMPLE_SHEETS} | wc -l)
 echo "Wrote ${NUM_SHEETS} sample sheets from ${ORIGINAL_SAMPLE_SHEET} to file !{SPLIT_SAMPLE_SHEETS}: $(cat !{SPLIT_SAMPLE_SHEETS})"
+
+if (( $NUM_SHEETS == 0 )); then
+  echo "No sample sheets, copying original to !{PROCESSED_SAMPLE_SHEET_DIR}"
+  cp ${COPIED_SAMPLE_SHEET} !{PROCESSED_SAMPLE_SHEET_DIR}
+  ls !{PROCESSED_SAMPLE_SHEET_DIR}/${COPIED_SAMPLE_SHEET} >> !{SPLIT_SAMPLE_SHEETS}
+fi
+
+
