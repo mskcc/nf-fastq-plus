@@ -25,7 +25,26 @@ run_cmd () {
   eval ${INPUT_CMD}
 }
 
+#########################################
+# Reads input file and outputs param value
+# Globals:
+#   FILE - file of format "P1=V1 P2=V2 ..."
+#   PARAM_NAME - name of parameter
+# Arguments:
+#   Lane - Sequencer Lane, e.g. L001
+#   FASTQ* - absolute path to FASTQ
+#########################################
+parse_param() {
+  FILE=$1
+  PARAM_NAME=$2
+
+  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2)
+}
+
 BWA_SAMS=$(ls *.sam)    # Nextflow should pass all the SAMs in the input directory
+RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+PROJECT_TAG=$(parse_param !{RUN_PARAMS_FILE} PROJECT_TAG)
+SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG)
 
 for BWA_SAM in $BWA_SAMS; do
   RGP_SAM=${BWA_SAM/BWA/RGP}    # "${SAM_SMP}___BWA.sam" -> "${SAM_SMP}___RGP.sam"

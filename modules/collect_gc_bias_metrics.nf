@@ -4,10 +4,8 @@ process task {
   label 'BSUB_OPTIONS_LARGE'
 
   input:
+    path PARAMS
     path BAM_CH
-    env REFERENCE
-    env RUNNAME
-    env RUN_TAG
 
   output:
     stdout()
@@ -18,12 +16,10 @@ process task {
 
 workflow collect_gc_bias_wkflw {
   take:
+    PARAMS
     BAM_CH
-    REFERENCE
-    RUNNAME
-    RUN_TAG
   main:
-    task( BAM_CH, REFERENCE, RUNNAME, RUN_TAG )
+    task( PARAMS, BAM_CH )
     out( task.out[0], "collect_gc_bias" )
 }
 

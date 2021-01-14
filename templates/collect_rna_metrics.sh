@@ -24,6 +24,27 @@ run_cmd () {
   eval ${INPUT_CMD}
 }
 
+#########################################
+# Reads input file and outputs param value
+# Globals:
+#   FILE - file of format "P1=V1 P2=V2 ..."
+#   PARAM_NAME - name of parameter
+# Arguments:
+#   Lane - Sequencer Lane, e.g. L001
+#   FASTQ* - absolute path to FASTQ
+#########################################
+parse_param() {
+  FILE=$1
+  PARAM_NAME=$2
+
+  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2)
+}
+
+RIBO_INTER=$(parse_param !{RUN_PARAMS_FILE} RIBO_INTER)
+REF_FLAT=$(parse_param !{RUN_PARAMS_FILE} REF_FLAT)
+RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
+RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${RIBO_INTER} || ! -f ${REF_FLAT} ]]; then
   echo "Skipping CollectRnaSeqMetrics for ${RUN_TAG} (RIBO_INTER: ${RIBO_INTER}, REF_FLAT: ${REF_FLAT})"

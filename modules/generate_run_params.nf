@@ -7,8 +7,9 @@ process task {
     env DEMUXED_DIR
     env SAMPLESHEET
   output:
-    path "${RUN_PARAMS_FILE}"
     stdout()
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
+    path '*.fastq.gz', emit: FASTQ_CH
 
   shell:
     template 'generate_run_params.sh'
@@ -20,9 +21,10 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
   main:
     task( DEMUXED_DIR, SAMPLESHEET )
-    out( task.out[1], "generate_run_params" )
+    out( task.out[0], "generate_run_params" )
   emit:
-    task.out[0]
+    PARAMS = task.out.PARAMS
+    FASTQ_CH = task.out.FASTQ_CH
 }
 
 

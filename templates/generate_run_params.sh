@@ -74,17 +74,17 @@ else
           echo "!{RUN_ERROR}: No FASTQS found in $SAMPLE_DIR"	# Catch this exception, but don't fail
           exit 0
         fi
-        FASTQ_NUM=1
-        FASTQ_PARAMS=""
-        for FASTQ in $FASTQS; do
-          FASTQ_PARAMS+=" FASTQ${FASTQ_NUM}=${FASTQ}"
-          FASTQ_NUM=$(( 1 + FASTQ_NUM ))
+        # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
+        for SOURCE_FASTQ in $FASTQS; do
+          TARGET_FASTQ=$(basename $SOURCE_FASTQ)
+          echo "Linking ${SOURCE_FASTQ} to $(pwd)/${TARGET_FASTQ}"
+          ln -s $SOURCE_FASTQ $TARGET_FASTQ;;
         done
         # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
         echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> !{RUN_PARAMS_FILE}
       done
     else
-      echo "ERROR: Could not locate FASTQ files for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
+      echo "ERROR: Could not locate Request directory w/ FASTQs for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
       # TODO - warning?
     fi
   done
