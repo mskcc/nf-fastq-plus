@@ -37,7 +37,7 @@ parse_param() {
   FILE=$1
   PARAM_NAME=$2
 
-  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2)
+  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2
 }
 
 GTAG=$(parse_param !{RUN_PARAMS_FILE} GTAG)

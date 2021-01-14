@@ -38,7 +38,7 @@ parse_param() {
   FILE=$1
   PARAM_NAME=$2
 
-  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2)
+  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2
 }
 
 BWA_SAMS=$(ls *.sam)    # Nextflow should pass all the SAMs in the input directory

@@ -27,5 +27,5 @@ workflow mark_duplicates_wkflw {
 
   emit:
     PARAMS = task.out.PARAMS
-    task.out.MD_BAM_CH
+    MD_BAM_CH = task.out.MD_BAM_CH
 }
