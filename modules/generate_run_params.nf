@@ -15,15 +15,28 @@ process task {
     template 'generate_run_params.sh'
 }
 
+process splitParamsFile {
+  input:
+    env PARAM_LINE
+  output:
+    stdout()
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
+  script:
+    cp $PARAM_LINE > !{RUN_PARAMS_FILE}
+}
+
 workflow generate_run_params_wkflw {
   take:
     DEMUXED_DIR
     SAMPLESHEET
   main:
     task( DEMUXED_DIR, SAMPLESHEET )
+    task.out.PARAMS.splitText().set{ params_ch }
+    splitParamsFile( params_ch )
     out( task.out[0], "generate_run_params" )
+    out( splitParamsFile.out[0], "generate_run_params" )
   emit:
-    PARAMS = task.out.PARAMS
+    PARAMS = splitParamsFile.out.PARAMS
     FASTQ_CH = task.out.FASTQ_CH
 }
 
