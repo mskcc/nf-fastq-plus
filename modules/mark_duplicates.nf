@@ -4,14 +4,13 @@ process task {
   label 'BSUB_OPTIONS_LARGE'
 
   input:
-  path MRG_BAM
-  env MD
-  env RUNNAME
-  env RUN_TAG
+  path PARAMS
+  path BAM_CH
 
   output:
-  path "*MD.bam", emit: MD_BAM_CH
   stdout()
+  path "${RUN_PARAMS_FILE}", emit: PARAMS
+  path "*MD.bam", emit: MD_BAM_CH
 
   shell:
   template 'mark_duplicates.sh'
@@ -19,15 +18,14 @@ process task {
 
 workflow mark_duplicates_wkflw {
   take:
+    PARAMS
     BAM_CH
-    MD
-    RUNNAME
-    RUN_TAG
 
   main:
-    task( BAM_CH, MD, RUNNAME, RUN_TAG )
-    out( task.out[1], "mark_duplicates" )
+    task( PARAMS, BAM_CH )
+    out( task.out[0], "mark_duplicates" )
 
   emit:
-    task.out.MD_BAM_CH
+    PARAMS = task.out.PARAMS
+    MD_BAM_CH = task.out.MD_BAM_CH
 }

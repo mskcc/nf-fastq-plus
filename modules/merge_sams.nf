@@ -4,12 +4,12 @@ process task {
   label 'BSUB_OPTIONS_LARGE'
 
   input:
-  env RUN_TAG
+  path PARAMS
   path SAM_LIST
  
   output:
   stdout()
-  env RUN_TAG, emit: RUN_TAG
+  path "${RUN_PARAMS_FILE}", emit: PARAMS
   path '*.bam', emit: BAM_CH
 
   shell:
@@ -18,13 +18,14 @@ process task {
 
 workflow merge_sams_wkflw {
   take:
-    RUN_TAG
+    PARAMS
     SAM_FILES
+
   main:
-    task( RUN_TAG, SAM_FILES )
+    task( PARAMS, SAM_FILES )
     out( task.out[0], "merge_sams" )
   
   emit:
+    PARAMS = task.out.PARAMS
     BAM_CH = task.out.BAM_CH
-    RUN_TAG = task.out.RUN_TAG
 }

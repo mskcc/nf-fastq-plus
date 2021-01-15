@@ -1,4 +1,6 @@
 include { log_out as out } from './log_out'
+include { log_out as out2 } from './log_out'
+
 
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
@@ -7,11 +9,22 @@ process task {
     env DEMUXED_DIR
     env SAMPLESHEET
   output:
-    path "${RUN_PARAMS_FILE}"
     stdout()
-
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
   shell:
     template 'generate_run_params.sh'
+}
+
+process splitParamsFile {
+  input:
+    env PARAM_LINE
+  output:
+    stdout()
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
+  shell:
+    '''
+    echo ${PARAM_LINE} > !{RUN_PARAMS_FILE}
+    '''
 }
 
 workflow generate_run_params_wkflw {
@@ -20,9 +33,12 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
   main:
     task( DEMUXED_DIR, SAMPLESHEET )
-    out( task.out[1], "generate_run_params" )
+    task.out.PARAMS.splitText().set{ params_ch }
+    splitParamsFile( params_ch )
+    out( task.out[0], "generate_run_params" )
+    out2( splitParamsFile.out[0], "generate_run_params" )
   emit:
-    task.out[0]
+    PARAMS = splitParamsFile.out.PARAMS
 }
 
 

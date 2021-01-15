@@ -4,13 +4,8 @@ process task {
   label 'BSUB_OPTIONS_SMALL'
 
   input:
-    path BAM_FILES
-    env BAITS
-    env TARGETS
-    env MSKQ
-    env REFERENCE
-    env RUNNAME
-    env RUN_TAG
+    path PARAMS
+    path BAM_CH
 
   output:
     stdout()
@@ -21,15 +16,10 @@ process task {
 
 workflow collect_oxoG_metrics_wkflw {
   take:
+    PARAMS
     BAM_CH
-    BAITS
-    TARGETS
-    MSKQ
-    REFERENCE
-    RUNNAME
-    RUN_TAG
 
   main:
-    task( BAM_CH, BAITS, TARGETS, MSKQ, REFERENCE, RUNNAME, RUN_TAG )
+    task( PARAMS, BAM_CH )
     out( task.out[0], "collect_oxoG_metrics" )
 }
