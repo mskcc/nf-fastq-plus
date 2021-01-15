@@ -33,29 +33,33 @@ echo "Writing FASTQ files to $DEMUXED_DIR"
 echo "SAMPLESHEET: ${SAMPLESHEET}"
 
 JOB_CMD="echo NO_JOB_SPECIFIED"
+
+BCL_LOG="bcl2fastq.log"
+
 if /bin/grep -q "10X_Genomics" $SAMPLESHEET; then
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
   export PATH=/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin:$PATH
   if /bin/grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
     echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
-    JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1"
+    JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
   else
     echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
-    JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1"
+    JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1 ${BCL_LOG}"
   fi
 else
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
   echo "DEMUX CMD (${RUN_BASENAME}): bcl2fastq"
-  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 >> !{DEMUX_LOG_FILE} 2>&1"
+  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
 fi
 
 echo ${JOB_CMD}
 eval ${JOB_CMD}
 
+cat ${BCL_LOG} >> !{DEMUX_LOG_FILE}
+
 # TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed
 # NEXTFLOW ENVIRONMENT VARIABLES - These environment variables are passed to the next nextflow process
 echo "Demultiplexed DEMUXED_DIR: ${DEMUXED_DIR}, SAMPLESHEET: ${SAMPLESHEET}"
-
 
 UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
 PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
