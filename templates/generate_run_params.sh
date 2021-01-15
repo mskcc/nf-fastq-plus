@@ -67,8 +67,17 @@ else
 
     PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
     if [ -d "$PROJECT_DIR" ]; then
+      RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
+      PROJECT_DIR=$(basename ${PROJECT_DIR})
+
+      # TODO - Make "___" a delimiter
+      PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
+      RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}"
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
       for SAMPLE_DIR in $SAMPLE_DIRS; do
+        SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
+
         FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
         if [[ -z $FASTQS ]]; then
           echo "!{RUN_ERROR}: No FASTQS found in $SAMPLE_DIR"	# Catch this exception, but don't fail
@@ -81,7 +90,7 @@ else
           ln -s $SOURCE_FASTQ $TARGET_FASTQ
         done
         # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS" >> !{RUN_PARAMS_FILE}
+        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> !{RUN_PARAMS_FILE}
       done
     else
       echo "ERROR: Could not locate Request directory w/ FASTQs for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
