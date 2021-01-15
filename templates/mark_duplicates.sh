@@ -43,7 +43,7 @@ RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
 #   TODO - Use Each?
-INPUT_BAM=$(ls)
+INPUT_BAM=$(ls *MRG.bam)
 
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}
 mkdir -p ${METRICS_DIR}

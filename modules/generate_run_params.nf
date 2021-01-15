@@ -11,8 +11,6 @@ process task {
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
-    path '*.fastq.gz', emit: FASTQ_CH
-
   shell:
     template 'generate_run_params.sh'
 }
@@ -41,7 +39,6 @@ workflow generate_run_params_wkflw {
     out2( splitParamsFile.out[0], "generate_run_params" )
   emit:
     PARAMS = splitParamsFile.out.PARAMS
-    FASTQ_CH = task.out.FASTQ_CH
 }
 
 
