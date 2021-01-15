@@ -4,13 +4,12 @@ process task {
   label 'BSUB_OPTIONS_LARGE'
 
   input:
-    env RUN_TAG
-    env PROJECT_TAG
-    env SAMPLE_TAG
-    path SAM_LIST
+    path PARAMS
+    path SAM_CH
 
   output:
     stdout()
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.sam', emit: SAM_CH
 
   shell:
@@ -19,15 +18,12 @@ process task {
 
 workflow add_or_replace_read_groups_wkflw {
   take:
-    RUN_TAG
-    PROJECT_TAG
-    SAMPLE_TAG
-    SAM_FILES
+    PARAMS
+    SAM_CH
   main:
-    task( RUN_TAG, PROJECT_TAG, SAMPLE_TAG, SAM_FILES )
+    task( PARAMS, SAM_CH )
     out( task.out[0], "add_or_replace_read_groups" )
   emit:
+    PARAMS = task.out.PARAMS
     SAM_CH = task.out.SAM_CH
 }
-
-

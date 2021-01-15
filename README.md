@@ -132,7 +132,45 @@ process {PROCESS_NAME} {
 #   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
 ```
 
-3) (Optional) Add logging
+3) Emit PARAM file (Only if downstream processes are dependent on the output)
+* If your process is a dependency of downstream processes, emit the PARAMS file (`nextflow.config` parameter 
+`RUN_PARAMS_FILE`) so that it can be read directly by the receiving channel along w/ the process's value.
+```
+process task {
+  ...
+
+  input:
+  path PARAMS
+  path INPUT
+ 
+  output:
+  path "${RUN_PARAMS_FILE}", emit: PARAMS       # Emit the same params value passed into the task
+  path '*.bam', emit: VALUE
+
+  shell:
+  template 'task.sh'
+}
+
+workflow wkflw {
+  take:
+    PARAMS
+    INPUT
+
+  main:
+    task( PARAMS, INPUT )
+  
+  emit:
+    PARAMS = task.out.PARAMS                    # Assign PARAMS so that it's available in the main.nf
+    VALUE = task.out.VALUE
+}
+```
+* **Why?** Nextflow channels emit asynchronously. This means that upstream processes will emit and pass to the next available 
+process and not necessarily the expected one. For instance, if process A emits parameters used by all downstream 
+processes and process B emits the value that will be transformed by that parameter, process C will not necessarily 
+receive the proccess A parameters that apply to value emited by process B because each process has an independent, 
+asynchronous channel.
+ 
+4) (Optional) Add logging
 
 In the modules, convert the exported member to a workflow that calls an included `log_out` process to log everything sent to stdout by the process. See below,
 ```

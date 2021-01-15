@@ -67,24 +67,32 @@ else
 
     PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
     if [ -d "$PROJECT_DIR" ]; then
+      RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
+
+      # TODO - Make "___" a delimiter
+      PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
       for SAMPLE_DIR in $SAMPLE_DIRS; do
+        SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
+        TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
+
         FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
         if [[ -z $FASTQS ]]; then
           echo "!{RUN_ERROR}: No FASTQS found in $SAMPLE_DIR"	# Catch this exception, but don't fail
           exit 0
         fi
-        FASTQ_NUM=1
+
         FASTQ_PARAMS=""
-        for FASTQ in $FASTQS; do
-          FASTQ_PARAMS+=" FASTQ${FASTQ_NUM}=${FASTQ}"
-          FASTQ_NUM=$(( 1 + FASTQ_NUM ))
+        # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
+        for SOURCE_FASTQ in $FASTQS; do
+          FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
         done
         # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $FASTQ_PARAMS" >> !{RUN_PARAMS_FILE}
+        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> !{RUN_PARAMS_FILE}
       done
     else
-      echo "ERROR: Could not locate FASTQ files for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
+      echo "ERROR: Could not locate Request directory w/ FASTQs for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
       # TODO - warning?
     fi
   done

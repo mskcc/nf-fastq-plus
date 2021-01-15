@@ -4,12 +4,8 @@ process task {
   label 'BSUB_OPTIONS_SMALL'
 
   input:
+    path PARAMS
     path BAM_FILES
-    env GTAG
-    env TYPE
-    env REFERENCE
-    env RUNNAME
-    env RUN_TAG
 
   output:
     stdout()
@@ -20,14 +16,10 @@ process task {
 
 workflow collect_wgs_metrics_wkflw {
   take:
+    PARAMS
     BAM_CH
-    GTAG
-    TYPE
-    REFERENCE
-    RUNNAME
-    RUN_TAG
 
   main:
-    task( BAM_CH, GTAG, TYPE, REFERENCE, RUNNAME, RUN_TAG )
+    task( PARAMS, BAM_CH )
     out( task.out[0], "collect_wgs_metrics" )
 }

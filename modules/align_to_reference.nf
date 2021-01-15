@@ -4,14 +4,11 @@ process task {
   label 'BSUB_OPTIONS_BWA_MEM'
 
   input:
-    env REFERENCE
-    path FASTQ_CH
-    env TYPE
-    env DUAL
-    env RUN_TAG
+    path PARAMS
 
   output:
     stdout()
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.sam', emit: SAM_CH
 
   shell:
@@ -20,16 +17,13 @@ process task {
 
 workflow align_to_reference_wkflw {
   take:
-    REFERENCE
-    FASTQ_CH
-    TYPE
-    DUAL
-    RUN_TAG
+    PARAMS
   main:
-    task( REFERENCE, FASTQ_CH, TYPE, DUAL, RUN_TAG )
+    task( PARAMS )
     out( task.out[0], "align_to_reference" )
 
   emit:
+    PARAMS = task.out.PARAMS
     SAM_CH = task.out.SAM_CH
 }
 

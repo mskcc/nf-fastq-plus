@@ -4,11 +4,8 @@ process task {
   label 'BSUB_OPTIONS_SMALL'
 
   input:
+    path PARAMS
     path BAM_FILES
-    env RIBO_INTER
-    env REF_FLAT
-    env RUNNAME
-    env RUN_TAG
 
   output:
     stdout()
@@ -19,13 +16,10 @@ process task {
 
 workflow collect_rna_metrics_wkflw {
   take:
+    PARAMS
     BAM_CH
-    RIBO_INTER
-    REF_FLAT
-    RUNNAME
-    RUN_TAG
 
   main:
-    task( BAM_CH, RIBO_INTER, REF_FLAT, RUNNAME, RUN_TAG )
+    task( PARAMS, BAM_CH )
     out( task.out[0], "collect_rna_metrics" )
 }

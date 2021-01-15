@@ -23,6 +23,27 @@ run_cmd () {
   eval ${INPUT_CMD}
 }
 
+#########################################
+# Reads input file and outputs param value
+# Globals:
+#   FILE - file of format "P1=V1 P2=V2 ..."
+#   PARAM_NAME - name of parameter
+# Arguments:
+#   Lane - Sequencer Lane, e.g. L001
+#   FASTQ* - absolute path to FASTQ
+#########################################
+parse_param() {
+  FILE=$1
+  PARAM_NAME=$2
+
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
+}
+
+RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)
+TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)
+RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
+
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then
   echo "Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
   exit 0
