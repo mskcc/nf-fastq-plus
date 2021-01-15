@@ -39,13 +39,16 @@ bwa_mem () {
   RUN_TAG=$5
   FASTQ1=$6
   FASTQ2=$7
-
+  
+  LOG="LANE=${LANE} REFERENCE=${REFERENCE} TYPE=${TYPE} DUAL=${DUAL} RUN_TAG=${RUN_TAG} FASTQ1=${FASTQ1}"
   ENDEDNESS="Paired End"
   if [[ -z $FASTQ2 ]]; then
     # todo - test
     # Single end runs won't have a second FASTQ
     ENDEDNESS="Single End"
+    LOG="${LOG} FASTQ2=${FASTQ2}"
   fi
+  echo $LOG
   
   # TODO - "______" is the delimiter that will be used to merge all SAMS from the same lane
   # TODO - This should be set in the config
@@ -71,7 +74,7 @@ parse_param() {
   FILE=$1
   PARAM_NAME=$2
 
-  cat ${FILE}  | tr ' ' '\n' | grep ${PARAM_NAME} | cut -d '=' -f2
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
 REFERENCE_PARAM=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)
@@ -86,11 +89,11 @@ FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)	# Retrieve source of sym-links
 # Setup alignment for scatter - align each lane if lanes are present
 LANES=$(echo $FASTQS | egrep -o '_L00._' | sed 's/_//g' | sort | uniq)
 if [[ $(echo "$LANES" | wc -l) -eq 1 ]]; then
-  echo "No Split Lanes: ${RUN_TAG}"
+  echo "No Split Lanes: ${RUN_TAG_PARAM}"
   FASTQ_ARGS=$(echo ${FASTQS} | awk '{printf $0 " " }')	# To single-lines
-  bwa_mem "" $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
+  bwa_mem "X" $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
 else
-  echo "Spliting Lanes: ${RUN_TAG}"
+  echo "Spliting Lanes: ${RUN_TAG_PARAM}"
   for LANE in $LANES; do
     LANE_FASTQS=$(echo $FASTQS | tr ' ' '\n' | grep $LANE)
     FASTQ_ARGS=$(echo ${LANE_FASTQS} | awk '{printf $0 " " }')
