@@ -27,7 +27,8 @@ run_cmd () {
 # Arguments:
 #   Lane - Sequencer Lane, e.g. L001
 #   REFERENCE - FASTQ reference genome
-#   DUAL - TODO
+#   TYPE - Nucleotide (e.g. DNA/RNA)
+#   DUAL - Numeric value for dual 
 #   RUN_TAG - Tag for Run-Project-Sample
 #   FASTQ* - absolute path to FASTQ
 #########################################
@@ -54,7 +55,6 @@ bwa_mem () {
   # TODO - This should be set in the config
   SAM_SMP="${RUN_TAG}______${LANE}"
   BWA_SAM="${SAM_SMP}___BWA.sam"
-  RGP_SAM="${SAM_SMP}___RGP.sam"
 
   BWA_CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
   echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${BWA_SAM}"
