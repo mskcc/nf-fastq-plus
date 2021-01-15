@@ -5,7 +5,6 @@ process task {
 
   input:
     path PARAMS
-    path FASTQ_CH
 
   output:
     stdout()
@@ -19,9 +18,8 @@ process task {
 workflow align_to_reference_wkflw {
   take:
     PARAMS
-    FASTQ_CH
   main:
-    task( PARAMS, FASTQ_CH )
+    task( PARAMS )
     out( task.out[0], "align_to_reference" )
 
   emit:
