@@ -83,19 +83,18 @@ DUAL_PARAM=$(parse_param !{RUN_PARAMS_FILE} DUAL)
 RUN_TAG_PARAM=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
 # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
-FASTQ_LINKS="!{FASTQ_CH}" 
-FASTQS=$(echo ${FASTQ_LINKS} | xargs readlink -f)	# Retrieve source of sym-links
+FASTQ_PARAMS=$(parse_param !{RUN_PARAMS_FILE} FASTQ) # new-line separated list of FASTQs
 
 # Setup alignment for scatter - align each lane if lanes are present
 LANES=$(echo $FASTQS | egrep -o '_L00._' | sed 's/_//g' | sort | uniq)
 if [[ $(echo "$LANES" | wc -l) -eq 1 ]]; then
   echo "No Split Lanes: ${RUN_TAG_PARAM}"
-  FASTQ_ARGS=$(echo ${FASTQS} | awk '{printf $0 " " }')	# To single-lines
+  FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
   bwa_mem "X" $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
 else
   echo "Spliting Lanes: ${RUN_TAG_PARAM}"
   for LANE in $LANES; do
-    LANE_FASTQS=$(echo $FASTQS | tr ' ' '\n' | grep $LANE)
+    LANE_FASTQS=$(echo $FASTQ_PARAMS | grep $LANE)
     FASTQ_ARGS=$(echo ${LANE_FASTQS} | awk '{printf $0 " " }')
     bwa_mem $LANE $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
   done
