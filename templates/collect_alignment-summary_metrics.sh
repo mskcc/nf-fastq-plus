@@ -47,6 +47,6 @@ AM_FILE="${METRICS_DIR}/${RUN_TAG}___AM.txt"
 
 echo "Writing to ${AM_FILE}"
 
-BAM=$(ls *.bam)
+BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectAlignmentSummaryMetrics MAX_INSERT_SIZE=1000 I=${BAM} O=${AM_FILE} R=${REFERENCE}"
 run_cmd $CMD

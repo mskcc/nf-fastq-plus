@@ -39,7 +39,7 @@ parse_param() {
 
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
-SAMS=$(ls *.sam)
+SAMS=$(realpath *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
 MERGED_BAM="${RUN_TAG}___MRG.bam"
 echo "Merging ${NUM_SAMS} SAM(s): ${MERGED_BAM}"
