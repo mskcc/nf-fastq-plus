@@ -12,7 +12,7 @@
 # Run: 
 #   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./detect_runs.sh
 
-echo "RECEIVED - RUN=${RUN} DEMUX_ALL=${DEMUX_ALL}"
+echo "Received RUN=${RUN} DEMUX_ALL=${DEMUX_ALL}"
 
 # ENV variables passed on in NEXTFLOW
 RUNNAME="!{UNASSIGNED_PARAMETER}"
@@ -32,6 +32,7 @@ else
     exit 1
   fi
 fi
+
 
 NUM_RUNS=$(echo $RUNPATH | tr ' ' '\n' | wc -l)
 if [[ "$NUM_RUNS" -ne 1 ]]; then
