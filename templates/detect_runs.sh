@@ -12,7 +12,7 @@
 # Run: 
 #   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./detect_runs.sh
 
-DEMUX_ALL=$(("${DEMUX_ALL}" == "true"))
+echo "RECEIVED - RUN=${RUN} DEMUX_ALL=${DEMUX_ALL}"
 
 # ENV variables passed on in NEXTFLOW
 RUNNAME="!{UNASSIGNED_PARAMETER}"
@@ -25,11 +25,12 @@ if [ -d "${RUN}" ]; then
   RUNPATH=${RUN}
 else
   RUNNAME=${RUN}
-  RUNPATH=$(find !{SEQUENCER_DIR} -type d -name "${RUNNAME}")
-  if [[ -z "${RUNPATH}" ]];
+  # STRUCTURE: /{SEQUENCER_DIR}/{MACHINE}/{RUNNAME}
+  RUNPATH=$(find !{SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNNAME}")
+  if [[ -z "${RUNPATH}" ]]; then
     echo "Failed to find ${RUNNAME} in !{SEQUENCER_DIR}"
     exit 1
-  then
+  fi
 fi
 
 NUM_RUNS=$(echo $RUNPATH | tr ' ' '\n' | wc -l)
@@ -38,7 +39,7 @@ if [[ "$NUM_RUNS" -ne 1 ]]; then
   exit 1
 fi
 
-MACHINE=$(dirname $RUNPATH) # /igo/sequencers/jax/210119_JAX_0502_BHK72NBBXY/ -> "jax"
+MACHINE=$(basename $(dirname $RUNPATH)) # /igo/sequencers/jax/210119_JAX_0502_BHK72NBBXY/ -> "jax"
 # File written when sequencing is complete
 DONE_FILE="RTAComplete.txt" # johnsawyers kim momo toms vic ayyan
 case $MACHINE in
@@ -56,6 +57,8 @@ case $MACHINE in
     DONE_FILE="NOT_FOUND";;
 esac
 
+echo "MACHINE=${MACHINE} RUN=${RUN} RUNNAME=${RUNNAME} DONE_FILE=${DONE_FILE} RUNPATH=${RUNPATH}"
+
 DONE_FILE_PATH=${RUNPATH}/${DONE_FILE}
 if test -f "${DONE_FILE_PATH}"; then
   echo "Sequencing Complete (${RUNNAME}): ${DONE_FILE_PATH}"
@@ -64,19 +67,11 @@ else
   exit 1
 fi
 
-IFS='/'
-array=($RUNPATH)
-MACHINE="${array[3]}"
-RUN="${array[4]}"
-IFS=','
-
-echo "RUN=${RUN}"
-
 # If the run has already been demuxed, then it will be in the FASTQ directory.
 demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
 # TODO - uncomment
 # echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
-if [[ "${demuxed_run}" == "" || ${DEMUX_ALL} ]]; then
+if [[ "${demuxed_run}" == "" || "${DEMUX_ALL}" == "true" ]]; then
   echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH"
 else
   echo "Has Been Demuxed (Skip): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
