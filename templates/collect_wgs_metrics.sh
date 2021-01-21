@@ -62,6 +62,6 @@ mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___WGS.txt"
 echo "[CollectWgsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
-BAM=$(ls *.bam)
+BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectWgsMetrics I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
 run_cmd $CMD

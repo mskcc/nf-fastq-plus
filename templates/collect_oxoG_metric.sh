@@ -60,7 +60,7 @@ mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___oxoG.txt"
 echo "[CollectOxoGMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
-BAM=$(ls *.bam)
+BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectOxoGMetrics CONTEXT_SIZE=0 I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
 
 run_cmd $CMD

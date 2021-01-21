@@ -38,9 +38,11 @@ bwa_mem () {
   TYPE=$3
   DUAL=$4
   RUN_TAG=$5
-  FASTQ1=$6
-  FASTQ2=$7
-  
+  FASTQ1_INPUT=$6
+  FASTQ2_INPUT=$7
+  FASTQ1=$(realpath ${FASTQ1_INPUT})
+  FASTQ2=$(realpath ${FASTQ2_INPUT})
+
   LOG="LANE=${LANE} REFERENCE=${REFERENCE} TYPE=${TYPE} DUAL=${DUAL} RUN_TAG=${RUN_TAG} FASTQ1=${FASTQ1}"
   ENDEDNESS="Paired End"
   if [[ -z $FASTQ2 ]]; then
