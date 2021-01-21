@@ -83,7 +83,10 @@ def main(argv):
 
     mismatches = get_mismatches(f1_values_dic, f2_values_dic)
 
+    f_name = path.basename(f1)
+
     if len(mismatches.values()) == 0:
+        print("SUCCESS: {}".format(f_name))
         sys.exit(0)
     else:
         sys.exit(1)

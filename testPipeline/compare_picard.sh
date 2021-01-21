@@ -33,7 +33,7 @@ for target_file in $FILES; do
   if [[ -z "$comp_file" ]]; then
     is_gc=$(echo ${target_file} | grep "___gc_")
     if [[ -z "${is_gc}" ]]; then
-      echo "ERROR: Not Compared - $target_file"
+      echo "ERROR (Not Compared): $(basename ${target_file})"
     fi
   else
    python compare_picard_files.py ${comp_file} ${target_file}
