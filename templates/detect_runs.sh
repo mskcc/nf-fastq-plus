@@ -10,7 +10,7 @@
 # Outputs (STD OUT):
 #   Absolute paths to run directories
 # Run: 
-#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./detect_runs.sh
+#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 ./detect_runs.sh
 
 echo "Received RUN=${RUN} DEMUX_ALL=${DEMUX_ALL}"
 
