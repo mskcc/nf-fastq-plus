@@ -26,13 +26,14 @@ def process_bool(bool) {
   return bool.toBoolean()
 }
 
-
+RUN=params.run
 DEMUX_ALL=process_bool(params.force)	// Whether to demux all runs, including w/ FASTQs already generated
 
 println """\
                   I G O   P I P E L I N E
          ==========================================
-         PARAMS
+         RUN=${RUN}
+
          DEMUX_ALL=${DEMUX_ALL}
          RUN_AGE=${RUN_AGE}
 
@@ -52,10 +53,10 @@ println """\
 
 workflow {
   dependency_check_wkflw()
-  detect_runs_wkflw( DEMUX_ALL, dependency_check_wkflw.out )
-  split_sample_sheet_wkflw( detect_runs_wkflw.out )
+  detect_runs_wkflw( RUN, DEMUX_ALL )
+  split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH )
   demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
-  generate_run_params_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
+  generate_run_params_wkflw( detect_runs_wkflw.RUNNAME, demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
   align_to_reference_wkflw( generate_run_params_wkflw.out.PARAMS )
   add_or_replace_read_groups_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH )
   merge_sams_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.SAM_CH )
