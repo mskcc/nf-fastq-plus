@@ -22,8 +22,7 @@ workflow split_sample_sheet_wkflw {
 
   main:
     // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
-    runs_to_demux_path.splitText().set{ run_ch }
-    split_sample_sheet_task( run_ch ) 
+    split_sample_sheet_task( runs_to_demux_path ) 
     out( split_sample_sheet_task.out[0], "split_sample_sheet" )
 
   emit:
