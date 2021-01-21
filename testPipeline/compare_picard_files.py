@@ -29,9 +29,6 @@ def extract_values_dic(headers, lines):
     for l in lines:
         vals = l.split('\t')
         hv_stack = header_values[:]
-        if len(hv_stack) != len(vals):
-            print("File Parsing: Mismatch in header and values")
-            exit(1)
         while hv_stack and vals:
             values_dic[ hv_stack.pop() ] = vals.pop()
 
@@ -79,7 +76,7 @@ def main(argv):
     f1 = args[0]
     f2 = args[1]
 
-    print("Testing type {} with files {} & {}".format(type, f1, f2))
+    # print("Testing type {} with files {} & {}".format(type, f1, f2))
 
     f1_values_dic = get_values_dic(f1)
     f2_values_dic = get_values_dic(f1)
@@ -87,9 +84,9 @@ def main(argv):
     mismatches = get_mismatches(f1_values_dic, f2_values_dic)
 
     if len(mismatches.values()) == 0:
-        print("No mismatches in file")
+        sys.exit(0)
     else:
-        print(mismatches)
+        sys.exit(1)
 
 
 def get_mismatches(d1, d2):

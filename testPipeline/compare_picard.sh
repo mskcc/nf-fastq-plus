@@ -14,9 +14,11 @@ fi
 # Arguments:
 #   f - name of file to be compared
 #########################################
-find_file(f) {
-  fname=$(basename ${f})
-  comp_file = find ${COMP_DIR} -type f -name "${fname}"
+find_file() {
+  input_file=$1
+
+  fname=$(basename ${input_file})
+  comp_file=$(find ${COMP_DIR} -type f -name "${fname}")
 
   echo ${comp_file}
 }
@@ -26,10 +28,14 @@ COMP_DIR=$2
 echo "Print searching ${STAT_DIR}..."
 FILES=$(find ${STAT_DIR} -type f -name "*.txt")
 
-for target_file in FILES; do
+for target_file in $FILES; do
   comp_file=$(find_file ${target_file})
-  python compare_picard_files.py ${f} ${target_file}
+  if [[ -z "$comp_file" ]]; then
+    is_gc=$(echo ${target_file} | grep "___gc_")
+    if [[ -z "${is_gc}" ]]; then
+      echo "ERROR: Not Compared - $target_file"
+    fi
+  else
+   python compare_picard_files.py ${comp_file} ${target_file}
+  fi
 done
-
-
-
