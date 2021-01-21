@@ -4,7 +4,7 @@ process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
-    env RUNNAME
+    env RUN
     env DEMUX_ALL
 
   output:
@@ -18,10 +18,10 @@ process task {
 
 workflow detect_runs_wkflw {
   take:
-    RUNNAME
+    RUN
     DEMUX_ALL
   main:
-    task( RUNNAME, DEMUX_ALL )
+    task( RUN, DEMUX_ALL )
     out( task.out[0], "detect_runs" )
   emit:
     RUNNAME = task.out.RUNNAME
