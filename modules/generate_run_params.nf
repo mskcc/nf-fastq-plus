@@ -6,6 +6,7 @@ process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
+    path PARAMS
     env DEMUXED_DIR
     env SAMPLESHEET
   output:
@@ -29,10 +30,11 @@ process splitParamsFile {
 
 workflow generate_run_params_wkflw {
   take:
+    PARAMS
     DEMUXED_DIR
     SAMPLESHEET
   main:
-    task( DEMUXED_DIR, SAMPLESHEET )
+    task( PARAMS, DEMUXED_DIR, SAMPLESHEET )
     task.out.PARAMS.splitText().set{ params_ch }
     splitParamsFile( params_ch )
     out( task.out[0], "generate_run_params" )

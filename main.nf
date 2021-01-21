@@ -53,9 +53,13 @@ println """\
 workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( DEMUX_ALL, dependency_check_wkflw.out )
-  split_sample_sheet_wkflw( detect_runs_wkflw.out )
-  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
-  generate_run_params_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
+  split_sample_sheet_wkflw( detect_runs_wkflw.out.PARAMS, detect_runs_wkflw.out.RUNS_TO_DEMUX_FILE )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out.PARAMS,
+    split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS,
+    split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
+  generate_run_params_wkflw( demultiplex_wkflw.out.PARAMS,
+    demultiplex_wkflw.out.DEMUXED_DIR,
+    demultiplex_wkflw.out.SAMPLESHEET )
   align_to_reference_wkflw( generate_run_params_wkflw.out.PARAMS )
   add_or_replace_read_groups_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH )
   merge_sams_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.SAM_CH )

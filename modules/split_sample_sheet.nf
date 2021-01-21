@@ -5,11 +5,13 @@ include { log_out as out } from './log_out'
 // where the lab directory of sample sheets is mounted (it's not mounted on the other LSF nodes)
 process split_sample_sheet_task {
   input:
+    path PARAMS
     env RUN_TO_DEMUX_DIR
 
   output:
     stdout()
-    path "${SPLIT_SAMPLE_SHEETS}"
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
+    path "${SPLIT_SAMPLE_SHEETS}", emit: SPLIT_SAMPLE_SHEETS
     env RUN_TO_DEMUX_DIR, emit: RUN_TO_DEMUX_DIR
 
   shell:
@@ -17,17 +19,19 @@ process split_sample_sheet_task {
 }
 
 workflow split_sample_sheet_wkflw {
-  take: 
+  take:
+    PARAMS
     runs_to_demux_path
 
   main:
     // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
     runs_to_demux_path.splitText().set{ run_ch }
-    split_sample_sheet_task( run_ch ) 
+    split_sample_sheet_task( PARAMS, run_ch )
     out( split_sample_sheet_task.out[0], "split_sample_sheet" )
 
   emit:
-    SPLIT_SAMPLE_SHEETS = split_sample_sheet_task.out[1]
+    PARAMS = task.out.PARAMS
+    SPLIT_SAMPLE_SHEETS = split_sample_sheet_task.out.SPLIT_SAMPLE_SHEETS
     RUN_TO_DEMUX_DIR = split_sample_sheet_task.out.RUN_TO_DEMUX_DIR
 }
 

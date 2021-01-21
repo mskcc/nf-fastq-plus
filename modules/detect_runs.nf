@@ -8,8 +8,9 @@ process task {
   env IS_READY
 
   output:
-  path "${RUNS_TO_DEMUX_FILE}"
   stdout()
+  path "${RUN_PARAMS_FILE}", emit: PARAMS
+  path "${RUNS_TO_DEMUX_FILE}", emit: RUNS_TO_DEMUX_FILE
 
   shell:
   template 'detect_runs.sh'
@@ -21,9 +22,10 @@ workflow detect_runs_wkflw {
     IS_READY	// Dependency input, used to make previous workflow go first
   main:
     task( DEMUX_ALL, IS_READY )
-    out( task.out[1], "detect_runs" )
+    out( task.out[0], "detect_runs" )
   emit:
-    task.out[0]
+    PARAMS = task.out.PARAMS
+    RUNS_TO_DEMUX_FILE = task.out.RUNS_TO_DEMUX_FILE
 }
 
 
