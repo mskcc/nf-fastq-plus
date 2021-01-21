@@ -1,6 +1,10 @@
 # nf-fastq-plus
 Generate IGO fastqs, bams, stats and fingerprinting
 
+## TODO
+1) `commands.sh`: A script that marks all the commands run to produce the output
+2) Run the nextflow pipeline per project, i.e. cut out the `detect_runs` workflow into separate process and feed output into remining nextflow pipeline
+
 ## Run
 ### Run Pipeline
 ```
