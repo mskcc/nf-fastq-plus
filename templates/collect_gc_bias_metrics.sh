@@ -50,6 +50,6 @@ METRICS_PDF="${METRICS_DIR}/${RUN_TAG}___gc_bias_metrics.pdf"
 SUMMARY_FILE="${METRICS_DIR}/${RUN_TAG}___gc_summary_metrics.txt"
 echo "[CollectGcBiasMetrics:${RUN_TAG}] Writing to ${METRICS_FILE} & ${METRICS_PDF}"
 
-BAM=$(ls *.bam)
+BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectGcBiasMetrics ASSUME_SORTED=true I=${BAM} O=${METRICS_FILE} CHART=${METRICS_PDF} S=${SUMMARY_FILE} R=${REFERENCE}"
 run_cmd $CMD

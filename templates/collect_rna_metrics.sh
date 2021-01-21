@@ -56,6 +56,6 @@ mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___RNA.txt"
 echo "[CollectRnaSeqMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
-BAM=$(ls *.bam)
+BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectRnaSeqMetrics RIBOSOMAL_INTERVALS=${RIBO_INTER} STRAND_SPECIFICITY=NONE REF_FLAT=${REF_FLAT} I=${BAM} O=${METRICS_FILE}"
 run_cmd $CMD

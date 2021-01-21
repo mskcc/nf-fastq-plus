@@ -55,6 +55,6 @@ METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___AM.txt"
 
 echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
-BAM=$(ls *.bam)
+BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
 run_cmd $CMD
