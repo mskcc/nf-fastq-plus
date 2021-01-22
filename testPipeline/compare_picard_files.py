@@ -89,6 +89,7 @@ def main(argv):
         print("SUCCESS: {}".format(f_name))
         sys.exit(0)
     else:
+        print("ERROR (Mismatch): {}".format(f_name))
         sys.exit(1)
 
 
