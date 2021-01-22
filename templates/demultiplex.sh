@@ -44,7 +44,7 @@ if /bin/grep -q "10X_Genomics" $SAMPLESHEET; then
     JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
   else
     echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
-    JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1 ${BCL_LOG}"
+    JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1 >> ${BCL_LOG}"
   fi
 else
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
@@ -53,16 +53,20 @@ else
 fi
 
 echo ${JOB_CMD}
+
+# Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
+set +e
 eval ${JOB_CMD}
+UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
+PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
+set -e
 
 cat ${BCL_LOG} >> !{DEMUX_LOG_FILE}
+cat ${BCL_LOG}
 
 # TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed
 # NEXTFLOW ENVIRONMENT VARIABLES - These environment variables are passed to the next nextflow process
 echo "Demultiplexed DEMUXED_DIR: ${DEMUXED_DIR}, SAMPLESHEET: ${SAMPLESHEET}"
-
-UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
-PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
 FILE_OUTPUT_SIZE=$(printf "%s\n\n%s\n" "${UNDETERMINED_SIZE}" "$Proj_Size")
 REPORT="To view reports visit: ${DEMUXED_DIR}/Reports/html/index.html"
 FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
@@ -80,6 +84,7 @@ else
   # TODO - Uncomment
   # mail -s "Failed Demux Run ${RUN_TO_DEMUX}" naborsd@mskcc.org streidd@mskcc.org
   echo "MAIL: Failed Demux Run ${RUN_TO_DEMUX} naborsd@mskcc.org streidd@mskcc.org"
+  exit 1
 fi
 
 # TODO - Update: Add a notification for when a DEMUX fails. VERY IMPORTANT - Some sequencers (e.g. SCOTT) delete their old data w/ each new run, i.e. $30,000 run could be deleted just b/c the copy didn't work correctly

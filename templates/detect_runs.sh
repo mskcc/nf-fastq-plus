@@ -1,83 +1,80 @@
 #!/bin/bash
-#
-# Script that reads done files from sequencing directories and outputs paths
-# to run directories that should be submitted to the pipeline. 
+# 
+# Script that finds the RUN_TO_DEMUX path for a given RUNNAME
 # Arguments:
+#   RUN, param: Name or path to a sequencing run to proceed down the pipeline
 #   DEMUX_ALL, param: Whether to force the demux, whether or not, it exists in FASTQ_DIR
-#   RUNS_TO_DEMUX_FILE, config: Output file to write runs recently completed
 #   SEQUENCER_DIR, config: Parent directory of done files
-#   RUN_AGE, config: Maxmimum age of recent write to done folder
 #   FASTQ_DIR, config: Directory to find runs w/ FASTQ files
 #   PIPELINE_OUT, config (Optional):  Output directory where outputs will be written in nextflow
 # Outputs (STD OUT):
 #   Absolute paths to run directories
 # Run: 
-#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./detect_runs.sh
+#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 ./detect_runs.sh
 
-DONE_FILE="Run_Done.txt"
-touch ${RUNS_TO_DEMUX_FILE}
+echo "Received RUN=${RUN} DEMUX_ALL=${DEMUX_ALL}"
 
-DEMUX_ALL=$(("${DEMUX_ALL}" == "true"))
-if [[ ${DEMUX_ALL} ]]; then
-  echo "FORCE DEMUX: Processing all detected runs in past ${RUN_AGE} minutes."
-else
-  echo "Searching for new runs completed in past ${RUN_AGE} minutes"
-fi
-
-sequencer_files=( 
-  ${SEQUENCER_DIR}/johnsawyers/*/RTAComplete.txt
-  ${SEQUENCER_DIR}/kim/*/RTAComplete.txt
-  ${SEQUENCER_DIR}/momo/*/RTAComplete.txt
-  ${SEQUENCER_DIR}/toms/*/RTAComplete.txt
-  ${SEQUENCER_DIR}/vic/*/RTAComplete.txt
-  ${SEQUENCER_DIR}/diana/*/CopyComplete.txt
-  ${SEQUENCER_DIR}/michelle/*/CopyComplete.txt
-  ${SEQUENCER_DIR}/jax/*/SequencingComplete.txt
-  ${SEQUENCER_DIR}/pitt/*/SequencingComplete.txt
-  ${SEQUENCER_DIR}/scott/*/RunCompletionStatus.xml
-  ${SEQUENCER_DIR}/ayyan/*/RTAComplete.txt
-)
-for file in ${sequencer_files[@]}; do
-  SEQ_DONE_FILES=$(find ${file} -mmin -${RUN_AGE})
-  if [[ ! -z $SEQ_DONE_FILES ]]; then
-    echo $SEQ_DONE_FILES >> ${DONE_FILE}
-  fi
-done
-
-NUM_RUNS=$(cat ${DONE_FILE} | wc -l)
-
-echo "Detected ${NUM_RUNS} new runs: $(cat ${DONE_FILE})"
-
-if [[ $NUM_RUNS -eq 0 ]]; then
-  echo "Exiting. No new runs" 
-  exit 0
-fi
+# ENV variables passed on in NEXTFLOW
+RUNNAME="!{UNASSIGNED_PARAMETER}"
+RUNPATH="!{UNASSIGNED_PARAMETER}"
 
 echo "Outputting new runs to ${PIPELINE_OUT} and checking ${FASTQ_DIR} for existing runs"
-
-for x in $(cat ${DONE_FILE}) ; do
-  #Deletes shortest match of $substring '/*Complet*' from back of $x
-  RUNPATH=$(echo ${x%/*Complet*})
-  IFS='/'
-  array=($RUNPATH)
-  MACHINE="${array[3]}"
-  RUN="${array[4]}"
-  IFS=','
-
-  echo $RUN
-  RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
-  if [ -z "$RUNNAME" ] ; then
-    echo "ERROR: Could not parse out run from RUNNAME: $RUNNAME"
-    continue
+# Assigns RUNPATH/RUN based on input run being the dir name or path to dir of the run
+if [ -d "${RUN}" ]; then
+  RUNNAME=$(basename ${RUN})
+  RUNPATH=${RUN}
+else
+  RUNNAME=${RUN}
+  # STRUCTURE: /{SEQUENCER_DIR}/{MACHINE}/{RUNNAME}
+  RUNPATH=$(find !{SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNNAME}")
+  if [[ -z "${RUNPATH}" ]]; then
+    echo "Failed to find ${RUNNAME} in !{SEQUENCER_DIR}"
+    exit 1
   fi
-  
-  # If the run has already been demuxed, then it will be in the FASTQ directory.
-  demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
-  # echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
-  if [[ "${demuxed_run}" == "" || ${DEMUX_ALL} ]]; then
-    echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH DEMUX_TYPE=$DEMUX_TYPE"
-    echo $RUNPATH >> ${RUNS_TO_DEMUX_FILE}
-  else
-    echo "Has Been Demuxed (Skip): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
-  fi
-done
+fi
+
+
+NUM_RUNS=$(echo $RUNPATH | tr ' ' '\n' | wc -l)
+if [[ "$NUM_RUNS" -ne 1 ]]; then
+  echo "Not able to find one run folder for ${RUNNAME} in !{SEQUENCER_DIR}"
+  exit 1
+fi
+
+MACHINE=$(basename $(dirname $RUNPATH)) # /igo/sequencers/jax/210119_JAX_0502_BHK72NBBXY/ -> "jax"
+# File written when sequencing is complete
+DONE_FILE="RTAComplete.txt" # johnsawyers kim momo toms vic ayyan
+case $MACHINE in
+  diana)
+    DONE_FILE="CopyComplete";; 
+  michelle)
+    DONE_FILE="CopyComplete.txt";;
+  jax)
+    DONE_FILE="SequencingComplete.txt";;
+  pitt)
+    DONE_FILE="SequencingComplete.txt";;
+  scott)
+    DONE_FILE="RunCompletionStatus.xml";;
+  *)
+    DONE_FILE="NOT_FOUND";;
+esac
+
+echo "MACHINE=${MACHINE} RUN=${RUN} RUNNAME=${RUNNAME} DONE_FILE=${DONE_FILE} RUNPATH=${RUNPATH}"
+
+DONE_FILE_PATH=${RUNPATH}/${DONE_FILE}
+if test -f "${DONE_FILE_PATH}"; then
+  echo "Sequencing Complete (${RUNNAME}): ${DONE_FILE_PATH}"
+else
+  echo "Sequencing NOT Complete: ${RUNNAME}"
+  exit 1
+fi
+
+# If the run has already been demuxed, then it will be in the FASTQ directory.
+demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
+# TODO - uncomment
+# echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
+if [[ "${demuxed_run}" == "" || "${DEMUX_ALL}" == "true" ]]; then
+  echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH"
+else
+  echo "Has Been Demuxed (Skip): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
+  exit 1
+fi

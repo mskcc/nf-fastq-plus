@@ -4,26 +4,28 @@ process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
-  env DEMUX_ALL
-  env IS_READY
+    env RUN
+    env DEMUX_ALL
 
   output:
-  path "${RUNS_TO_DEMUX_FILE}"
-  stdout()
+    stdout() 
+    env RUNNAME, emit: RUNNAME
+    env RUNPATH, emit: RUNPATH
 
   shell:
-  template 'detect_runs.sh'
+    template 'detect_runs.sh'
 }
 
 workflow detect_runs_wkflw {
   take:
+    RUN
     DEMUX_ALL
-    IS_READY	// Dependency input, used to make previous workflow go first
   main:
-    task( DEMUX_ALL, IS_READY )
-    out( task.out[1], "detect_runs" )
+    task( RUN, DEMUX_ALL )
+    out( task.out[0], "detect_runs" )
   emit:
-    task.out[0]
+    RUNNAME = task.out.RUNNAME
+    RUNPATH = task.out.RUNPATH
 }
 
 
