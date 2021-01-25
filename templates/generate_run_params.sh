@@ -64,10 +64,6 @@ if [[ -z "${SAMPLESHEET}" ]]; then
   # TODO - Alert
 else
   RUN_TYPE=$(get_run_type)
-<<<<<<< HEAD
-  # RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
-=======
->>>>>>> ace871870a7c7c5d50d80c61316b06f451c10580
   #If dual barcode (column index2 exists) then
   DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
   if [[ "$DUAL" == "" ]]; then
