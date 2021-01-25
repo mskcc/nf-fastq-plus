@@ -21,18 +21,24 @@ RUNPATH="!{UNASSIGNED_PARAMETER}"
 echo "Outputting new runs to ${PIPELINE_OUT} and checking ${FASTQ_DIR} for existing runs"
 # Assigns RUNPATH/RUN based on input run being the dir name or path to dir of the run
 if [ -d "${RUN}" ]; then
-  RUNNAME=$(basename ${RUN})
+  RUNDIR=$(basename ${RUN})
   RUNPATH=${RUN}
 else
-  RUNNAME=${RUN}
+  RUNDIR=${RUN}
   # STRUCTURE: /{SEQUENCER_DIR}/{MACHINE}/{RUNNAME}
-  RUNPATH=$(find !{SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNNAME}")
+  RUNPATH=$(find !{SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNDIR}")
   if [[ -z "${RUNPATH}" ]]; then
-    echo "Failed to find ${RUNNAME} in !{SEQUENCER_DIR}"
+    echo "Failed to find ${RUNDIR} in !{SEQUENCER_DIR}"
     exit 1
   fi
 fi
 
+# Remove prepended date - e.g. 210119_MICHELLE_0319_AH22J7DRXY -> MICHELLE_0319_AH22J7DRXY
+RUNNAME=$(echo $RUNDIR | grep -oE "[A-Z]+.*") 
+if [[ -z "${RUNNAME}" ]]; then
+  echo "Unable to parse RUNNAME from ${RUNDIR}"
+  exit 1
+fi
 
 NUM_RUNS=$(echo $RUNPATH | tr ' ' '\n' | wc -l)
 if [[ "$NUM_RUNS" -ne 1 ]]; then

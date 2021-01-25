@@ -35,7 +35,6 @@ println """\
          RUN=${RUN}
 
          DEMUX_ALL=${DEMUX_ALL}
-         RUN_AGE=${RUN_AGE}
 
          SEQUENCER_DIR="${SEQUENCER_DIR}"
          LAB_SAMPLE_SHEET_DIR=${LAB_SAMPLE_SHEET_DIR}
