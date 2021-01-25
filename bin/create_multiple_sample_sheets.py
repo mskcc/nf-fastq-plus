@@ -75,6 +75,8 @@ def i7_only(sample_data, header):
 		if (len_req_samples > 1) and (len_index2 == 1):
 			# move the padded project to another data frame
 			i7_data = i7_data.append(requests_group.get_group(req))
+			# i7_data.drop(['index2'], axis=1)
+			i7_data = i7_data.drop(columns=['index2'])
 			sample_data.drop(sample_data[sample_data['Sample_Project'] == req].index, inplace = True)
 	# move regular sample sheet to the last element of the list	
 	i7_data.index = range(len(i7_data))
