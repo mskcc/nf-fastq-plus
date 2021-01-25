@@ -66,6 +66,29 @@ esac
 
 echo "MACHINE=${MACHINE} RUN=${RUN} RUNNAME=${RUNNAME} DONE_FILE=${DONE_FILE} RUNPATH=${RUNPATH}"
 
+<<<<<<< HEAD
+  echo $RUN
+  RUNNAME=$(echo $RUN | awk '{pos=match($0,"_"); print (substr($0,pos+1,length($0)))}')
+  if [ -z "$RUNNAME" ] ; then
+    echo "ERROR: Could not parse out run from RUNNAME: $RUNNAME"
+    continue
+  fi
+  
+  # If the run has already been demuxed, then it will be in the FASTQ directory.
+  demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
+  # echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
+
+  PARAMS="RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
+  if [[ "${demuxed_run}" == "" || ${DEMUX_ALL} ]]; then
+    echo "Run to Demux (Continue): ${PARAMS}"
+    echo $RUNPATH >> ${RUNS_TO_DEMUX_FILE}
+  else
+    echo "Has Been Demuxed (Skip): ${PARAMS}"
+  fi
+
+  echo "${PARAMS}" >> !{RUN_PARAMS_FILE}
+done
+=======
 DONE_FILE_PATH=${RUNPATH}/${DONE_FILE}
 if test -f "${DONE_FILE_PATH}"; then
   echo "Sequencing Complete (${RUNNAME}): ${DONE_FILE_PATH}"
@@ -84,3 +107,4 @@ else
   echo "Has Been Demuxed (Skip): RUN=$RUN RUNNAME=${RUNNAME} FASTQ_PATH=${FASTQ_DIR}/${demuxed_run}"
   exit 1
 fi
+>>>>>>> ace871870a7c7c5d50d80c61316b06f451c10580
