@@ -3,17 +3,11 @@
 # Nextflow Inputs:
 #   PICARD,     Picard Command
 #   STATS_DIR,  Directory to write stats files to
-#  
-#   BAITS	Interval list for bait set
-#   TARGETS     Interval list for target set  
-#   RUNNAME	Name of the Run
-#   REFERENC	Reference Genome for alignment
-#   MSKQ	TODO
-#   RUN_TAG	Run Tag for the sample
+#
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   None
-# Run:
-#   n/a
 
 #########################################
 # Executes and logs command
@@ -42,10 +36,10 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)
-TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)
-MSKQ=$(parse_param !{RUN_PARAMS_FILE} MSKQ)
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)
+BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)           # Interval list of bait sites
+TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)       # Interval list of target sites
+MSKQ=$(parse_param !{RUN_PARAMS_FILE} MSKQ)             # yes/no - must be yes to run CollectOxoGMetrics
+REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 

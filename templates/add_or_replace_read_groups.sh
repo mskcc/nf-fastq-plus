@@ -1,18 +1,14 @@
 #!/bin/bash
 # Add readgroups to the SAMs that have been aligned in the previous step
 # Nextflow Inputs:
-#   RUN_TAG
-#   PROJECT_TAG
-#   SAMPLE_TAG
+#   PICARD,     Picard Command
+#   STATS_DIR,  Directory to write stats files to
 #
-#   PICARD
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#
 # Nextflow Outputs:
-#   TODO
-# Run:
-#   TODO
-
-# TODO
-# Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
+#   RUN_PARAMS_FILE, Outputs sam file as input
+#   SAM_CH, Outputs SAM w/ Readgroups (*.sam)
 
 #########################################
 # Executes and logs command

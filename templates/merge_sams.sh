@@ -2,13 +2,11 @@
 # Performs an alignment on input @SAM_LIST
 # Nextflow Inputs:
 #   PICARD,     Picard Command
-# 
-#   PRJ_SMP,    Key used to group all SAM files
-#   SAM_LIST,   Stringified Java List of SAM files 
+#
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   MERGED_BAM, Output from Picard's MergeSamFiles
-# Run:
-#   TODO
 
 #########################################
 # Executes and logs command

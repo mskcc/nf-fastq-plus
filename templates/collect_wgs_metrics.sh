@@ -4,15 +4,10 @@
 #   PICARD,     Picard Command
 #   STATS_DIR,  Directory to write stats files to
 #
-#   GTAG        Indicator of reference genome (e.g. hg19, mm10, wgs)
-#   REFERENCE	Reference genome to align to
-#   RUNNAME	Name of the Run
-#   RUN_TAG	Run Tag for the sample
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   None
-# Run:
-#   n/a
-
 #########################################
 # Executes and logs command
 # Arguments:
@@ -40,9 +35,9 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-GTAG=$(parse_param !{RUN_PARAMS_FILE} GTAG)
-TYPE=$(parse_param !{RUN_PARAMS_FILE} TYPE)
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)
+GTAG=$(parse_param !{RUN_PARAMS_FILE} GTAG)              # Must include a WGS genome to run CollectWgsMetrics
+TYPE=$(parse_param !{RUN_PARAMS_FILE} TYPE)              # type is used to flag analysis like CollectWgsMetrics
+REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)    # Reference genome file to use
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 

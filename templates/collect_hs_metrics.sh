@@ -3,14 +3,11 @@
 # Nextflow Inputs:
 #   PICARD,     Picard Command
 #   STATS_DIR,  Directory to write stats files to
-#  
-#   BAITS	Interval list for bait set
-#   TARGETS     Interval list for target set  
-#   RUN_TAG	Run Tag for the sample
+#
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   None
-# Run:
-#   n/a
 
 #########################################
 # Executes and logs command
@@ -40,8 +37,8 @@ parse_param() {
 }
 
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
-BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)
-TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)
+BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)       # Interval list of bait sites
+TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)   # Interval list of target sites
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then

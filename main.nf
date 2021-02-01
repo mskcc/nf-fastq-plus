@@ -5,7 +5,6 @@ include { detect_runs_wkflw } from './modules/detect_runs';
 include { split_sample_sheet_wkflw } from './modules/split_sample_sheet';
 include { demultiplex_wkflw } from './modules/demultiplex';
 include { generate_run_params_wkflw } from './modules/generate_run_params';
-include { send_project_params_wkflw } from './modules/send_project_params';
 include { align_to_reference_wkflw } from './modules/align_to_reference';
 include { add_or_replace_read_groups_wkflw } from './modules/add_or_replace_read_groups';
 include { merge_sams_wkflw } from './modules/merge_sams';
