@@ -1,12 +1,11 @@
 #!/bin/bash
 # Submits an alignment to the reference
 # Nextflow Inputs:
-#   RUN_PARAMS_FILE
-#   FASTQ_CH
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   FASTQ_CH, FASTQ files to be aligned
 # Nextflow Outputs:
-#   TODO
-# Run:
-#   TODO
+#   RUN_PARAMS_FILE, Outputs sam file as input
+#   SAM_CH, Outputs SAM w/ Readgroups (*.sam)
 
 # TODO 
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here

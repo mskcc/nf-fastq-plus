@@ -4,14 +4,10 @@
 #   PICARD,     Picard Command
 #   STATS_DIR,  Directory to write stats files to
 #
-#   RIBO_INTER  Interval list for ribosomal regions
-#   REF_FLAT
-#   RUNNAME	Name of the Run
-#   RUN_TAG	Run Tag for the sample
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   None
-# Run:
-#   n/a
 
 #########################################
 # Executes and logs command
@@ -40,8 +36,8 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-RIBO_INTER=$(parse_param !{RUN_PARAMS_FILE} RIBO_INTER)
-REF_FLAT=$(parse_param !{RUN_PARAMS_FILE} REF_FLAT)
+RIBO_INTER=$(parse_param !{RUN_PARAMS_FILE} RIBO_INTER)    # Interval list of ribosomal sites
+REF_FLAT=$(parse_param !{RUN_PARAMS_FILE} REF_FLAT)        # Reference genome file to use
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 

@@ -2,13 +2,15 @@
 # 
 # Script that finds the RUN_TO_DEMUX path for a given RUNNAME
 # Arguments:
-#   RUN, param: Name or path to a sequencing run to proceed down the pipeline
-#   DEMUX_ALL, param: Whether to force the demux, whether or not, it exists in FASTQ_DIR
 #   SEQUENCER_DIR, config: Parent directory of done files
 #   FASTQ_DIR, config: Directory to find runs w/ FASTQ files
 #   PIPELINE_OUT, config (Optional):  Output directory where outputs will be written in nextflow
+#
+#   RUN, param: Name or path to a sequencing run to proceed down the pipeline
+#   DEMUX_ALL, param: Whether to force the demux, whether or not, it exists in FASTQ_DIR
 # Outputs (STD OUT):
-#   Absolute paths to run directories
+#   RUNNAME, env: value of what the runname (e.g. SCOTT_0277_AHKFKFBGXH)
+#   RUNPATH, env: value of the absolute path to the run to be demultiplexed (e.g. /PATH/TO/210122_SCOTT_0277_AHKFKFBGXH)
 # Run: 
 #   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 ./detect_runs.sh
 

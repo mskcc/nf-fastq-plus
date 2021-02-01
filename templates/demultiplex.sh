@@ -4,10 +4,12 @@
 #   SAMPLESHEET:      Absolute path to the sample sheet that will be used for demultiplexing
 #   RUN_TO_DEMUX_DIR: Absolute path to bcl files
 #
-#   LAB_SAMPLE_SHEET_DIR: Absolute path to directory of the mounted filesystem the lab writes the original sample sheets
+#   FASTQ_DIR:        Directory w/ FASTQ files
+#   DEMUX_LOG_FILE:   Log file where demux output is written to
 # Nextflow Outputs:
-#   DEMUXED_RUN, env: Name of run to demux, given by the name of @RUN_TO_DEMUX_DIR
-# Run: 
+#   DEMUXED_DIR, env: path to where the run has been demuxed to
+#   SAMPLE_SHEET,env: path to samplesheet used to demultiplex
+# Run:
 #   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
 
 #########################################

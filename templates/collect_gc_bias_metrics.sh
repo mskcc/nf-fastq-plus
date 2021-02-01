@@ -4,13 +4,10 @@
 #   PICARD,     Picard Command
 #   STATS_DIR,  Directory to write stats files to
 #
-#   REFERENCE	Reference genome to align to
-#   RUNNAME	Name of the Run
-#   RUN_TAG	Run Tag for the sample
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   None
-# Run:
-#   n/a
 
 #########################################
 # Executes and logs command
@@ -40,7 +37,7 @@ parse_param() {
 }
 
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)
+REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}

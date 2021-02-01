@@ -1,12 +1,12 @@
 # !/bin/bash
 # Configures FASTQ stats from input Runname
 # Nextflow Inputs:
+#   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
+#   STATS_DIR (Config): Absolute path to where stats should be written
+#
 #   RUNNAME (Input): Name of the run
 #   DEMUXED_DIR (Input): Absolute path to directory that is the output of the demultiplexing
 #   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
-# 
-#   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
-#   STATS_DIR (Config): Absolute path to where stats should be written
 # Nextflow Outputs:
 #   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
 # Run: 

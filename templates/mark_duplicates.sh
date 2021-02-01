@@ -3,13 +3,11 @@
 # Nextflow Inputs:
 #   PICARD,     Picard Command
 #   STATS_DIR,  Location to copy stats to
-# 
-#   PRJ_SMP,    Key used to group all SAM files
-#   SAM_LIST,   Stringified Java List of SAM files 
-#   MD,		yes/no of whether to run mark_duplicates
+#
+#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   BAM_CH, Bam files to calculate metrics on
 # Nextflow Outputs:
 #   MERGED_BAM, Output from Picard's MergeSamFiles
-# Run:
 
 #########################################
 # Executes and logs command
@@ -38,7 +36,7 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-MD=$(parse_param !{RUN_PARAMS_FILE} MD)
+MD=$(parse_param !{RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
