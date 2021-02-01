@@ -51,7 +51,7 @@ fi
 
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}
 mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___AM.txt"
+METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___HS.txt"
 
 echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
