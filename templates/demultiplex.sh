@@ -89,10 +89,10 @@ else
     echo "Masking i5 index"
     assign_MASK_OPT
   fi
-  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --no-lane-splitting  --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
+  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
 fi
 
-echo ${JOB_CMD}
+echo ${JOB_CMD} >> !{CMD_FILE}
 
 # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
 set +e
