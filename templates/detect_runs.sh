@@ -53,7 +53,7 @@ MACHINE=$(basename $(dirname $RUNPATH)) # /igo/sequencers/jax/210119_JAX_0502_BH
 DONE_FILE="RTAComplete.txt" # johnsawyers kim momo toms vic ayyan
 case $MACHINE in
   diana)
-    DONE_FILE="CopyComplete";; 
+    DONE_FILE="CopyComplete.txt";; 
   michelle)
     DONE_FILE="CopyComplete.txt";;
   jax)
@@ -63,7 +63,7 @@ case $MACHINE in
   scott)
     DONE_FILE="RunCompletionStatus.xml";;
   *)
-    DONE_FILE="NOT_FOUND";;
+    DONE_FILE="RTAComplete.txt";;
 esac
 
 echo "MACHINE=${MACHINE} RUN=${RUN} RUNNAME=${RUNNAME} DONE_FILE=${DONE_FILE} RUNPATH=${RUNPATH}"

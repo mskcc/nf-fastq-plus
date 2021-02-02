@@ -17,7 +17,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD}
+  echo ${INPUT_CMD} >> !{CMD_FILE}
   eval ${INPUT_CMD}
 }
 
