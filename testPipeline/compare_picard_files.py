@@ -1,6 +1,7 @@
 from os import path
 import sys
 import getopt
+import re
 
 ERROR_THRESHOLD = 0.01
 
@@ -114,6 +115,9 @@ def get_mismatches(d1, d2):
     for header in headers:
         try:
             if d1[header] != d2[header]:
+                if re.search('[a-zA-Z]', d1[header]) or re.search('[a-zA-Z]', d2[header]):
+                    print("\tSkipping {}".format(d1[header]))
+                    continue
                 v1_float = float(d1[header])
                 v2_float = float(d2[header])
                 diff = { 'v1': v1_float, 'v2': v2_float }
