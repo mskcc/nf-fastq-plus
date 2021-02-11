@@ -37,22 +37,22 @@ function get_project_species_recipe() {
 }
 
 #########################################
-# Reads input file and outputs param value
+# Returns sequencing lanes of a sample based on sample sheet
 # Arguments:
 #   INPUT_SAMPLE_NAME - "Sample_Name" as listed on sample sheet
 #   INPUT_SAMPLE_SHEET - Absolute path to sample sheet
 #########################################
 function get_lanes_of_sample() {
-  SAMPLE_NAME=$1
-  SAMPLE_SHEET=$2 
+  INPUT_SAMPLE_NAME=$1
+  INPUT_SAMPLE_SHEET=$2
 
-  num_lines=$(cat ${SAMPLE_SHEET} | wc -l)
+  num_lines=$(cat ${INPUT_SAMPLE_SHEET} | wc -l)
 
   SAMPLE_SHEET_HEADER="^Lane,Sample_ID,Sample_Name"
 
-  LANES=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${SAMPLE_SHEET} | \
+  LANES=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
     grep -v SAMPLE_SHEET_HEADER | \
-    grep "${SAMPLE_NAME}" | \
+    grep "${INPUT_SAMPLE_NAME}" | \
     cut -d',' -f1 | \
     sort | uniq)
 
