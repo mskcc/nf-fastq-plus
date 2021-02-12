@@ -12,8 +12,13 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
+
+if [[ -z "${RUN_PARAMS_FILE}" ]]; then
+  RUN_PARAMS_FILE="sample_params.txt"
+fi
+
 # These are inputs to the nextflow process
-echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
+echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} (RUN_PARAMS_FILE=${RUN_PARAMS_FILE})"
 
 RUN=$(basename ${DEMUXED_DIR})
 STATSDIR=${STATS_DIR}
@@ -59,8 +64,6 @@ function get_lanes_of_sample() {
   echo $LANES
 }
 
-touch !{RUN_PARAMS_FILE}  # Need to write a file for output to next process or pipeline will fail
-
 if [[ -z "${SAMPLESHEET}" ]]; then
   echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
   # TODO - Alert
@@ -101,9 +104,13 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
+
+        # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
+        # lane of processing
+        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${RUN_PARAMS_FILE}"
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
-          RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${LANE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
+          RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
           # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
           TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG}"
@@ -121,8 +128,12 @@ else
             FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
           done
           # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-          echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> !{RUN_PARAMS_FILE}
+          echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
+        if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
+          echo "Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"
+          exit 1
+        fi
       done
     else
       echo "ERROR: Could not locate Request directory w/ FASTQs for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"

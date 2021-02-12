@@ -11,18 +11,9 @@
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
 
 #########################################
-# Executes and logs command
-# Arguments:
-#   INPUT_CMD - string of command to run, e.g. "picard AddOrReplaceReadGroups ..."
-#########################################
-run_cmd () {
-  INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
-  eval ${INPUT_CMD}
-}
-
-#########################################
 # Runs BWA-MEM on input FASTQs
+# SIDE-EFFECTS:
+#   Populates global JOB_ID_LIST variable
 # Arguments:
 #   Lane - Sequencer Lane, e.g. L001
 #   REFERENCE - FASTQ reference genome
@@ -50,7 +41,6 @@ bwa_mem () {
     ENDEDNESS="Single End"
     LOG="${LOG} FASTQ2=${FASTQ2}"
   fi
-  echo $LOG
   
   # TODO - "______" is the delimiter that will be used to merge all SAMS from the same lane
   # TODO - This should be set in the config
@@ -58,8 +48,14 @@ bwa_mem () {
   BWA_SAM="${SAM_SMP}___BWA.sam"
 
   BWA_CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
-  echo "BWA Run (${ENDEDNESS}): ${RUN_TAG} - Dual: $DUAL, Type: $TYPE, Out: ${BWA_SAM}"
-  run_cmd $BWA_CMD
+
+  echo ${BWA_CMD} >> !{CMD_FILE}
+  SUBMIT=$(${BWA_CMD})                          # Submits and saves output
+  JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
+  JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
+
+  LOG="${LOG} OUT=${BWA_SAM} JOB_ID=${JOB_ID}"
+  echo $LOG
 }
 
 #########################################
@@ -78,27 +74,32 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-REFERENCE_PARAM=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)
-TYPE_PARAM=$(parse_param !{RUN_PARAMS_FILE} TYPE)
-DUAL_PARAM=$(parse_param !{RUN_PARAMS_FILE} DUAL)
-RUN_TAG_PARAM=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+ls -ltr
 
-# TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
-FASTQ_PARAMS=$(parse_param !{RUN_PARAMS_FILE} FASTQ) # new-line separated list of FASTQs
+JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
+for LANE_PARAM_FILE in $(ls *!{RUN_PARAMS_FILE}); do
+  REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
+  TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
+  DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
+  RUN_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} RUN_TAG)
+  LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
 
-# Setup alignment for scatter - align each lane if lanes are present
-LANES=$(echo $FASTQS | egrep -o '_L00._' | sed 's/_//g' | sort | uniq)
-if [[ $(echo "$LANES" | wc -l) -eq 1 ]]; then
-  echo "No Split Lanes: ${RUN_TAG_PARAM}"
+  # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
+  FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
+
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
-  bwa_mem "X" $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
-else
-  echo "Spliting Lanes: ${RUN_TAG_PARAM}"
-  for LANE in $LANES; do
-    LANE_FASTQS=$(echo $FASTQ_PARAMS | grep $LANE)
-    FASTQ_ARGS=$(echo ${LANE_FASTQS} | awk '{printf $0 " " }')
-    bwa_mem $LANE $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
-  done
-fi
+  bwa_mem "LANE_TAG_PARAM" $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
+done
 
+ls -ltr
+echo "TODO - Removing extra param files"
+
+
+for job_id in ${JOB_ID_LIST[@]}; do
+  echo "Waiting for ${job_id} to finish"
+  bwait -w "ended(${job_id})" &
+done
+echo "Waiting for all jobs"
+wait
+echo "Finished waiting for alignment of $RUN_TAG_PARAM"
 
