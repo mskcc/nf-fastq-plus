@@ -53,8 +53,8 @@ workflow {
   detect_runs_wkflw( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR )
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH )
   demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
-  generate_run_params_wkflw( detect_runs_wkflw.out.RUNNAME, demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
-  align_to_reference_wkflw( generate_run_params_wkflw.out.PARAMS )
+  generate_run_params_wkflw( detect_runs_wkflw.out.RUNNAME, demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, RUN_PARAMS_FILE )
+  align_to_reference_wkflw( generate_run_params_wkflw.out.LANE_PARAM_FILES )
   add_or_replace_read_groups_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH )
   merge_sams_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.SAM_CH )
   // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM

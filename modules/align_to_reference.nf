@@ -19,10 +19,10 @@ workflow align_to_reference_wkflw {
   take:
     LANE_PARAM_FILES
   main:
-    task( LANE_PARAM_FILES )
-    out( task.out[0], "align_to_reference" )
+    align_to_reference_task( LANE_PARAM_FILES )
+    out( align_to_reference_task.out[0], "align_to_reference" )
 
   emit:
-    PARAMS = task.out.PARAMS
-    SAM_CH = task.out.SAM_CH
+    PARAMS = align_to_reference_task.out.PARAMS
+    SAM_CH = align_to_reference_task.out.SAM_CH
 }

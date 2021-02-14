@@ -75,11 +75,17 @@ else
     DUAL=$UNASSIGNED_PARAMETER # Assign constant that can be evaluated later in the pipeline
   fi
  
-  echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL}"
-
+  
   # Tab-delimited project, species, recipe variable,
   #   e.g. "Project_08822_HF	Human	HumanWholeGenome"
   prj_spc_rec=$(get_project_species_recipe)
+  echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL} PSR=${prj_spc_rec}"
+
+  # Not being able to parse PROJECT, SPECIES, RECIPE is valid for runs w/ samplesheets that don't have sample rows (e.g. ADAPTIVE on SCOTT)
+  if [[ -z ${prj_spc_rec} ]]; then
+    echo "Failed to extract Project, Species, Recipe from SampleSheet: ${SAMPLESHEET}"
+    exit 1
+  fi
 
   IFS=$'\n'
   for psr in $prj_spc_rec; do
@@ -104,7 +110,6 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
-
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
         SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${RUN_PARAMS_FILE}"

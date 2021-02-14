@@ -1,7 +1,6 @@
 include { log_out as out } from './log_out'
-include { log_out as out2 } from './log_out'
 
-process task {
+process generate_run_params_task {
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
@@ -18,7 +17,7 @@ process task {
 
 process create_sample_lane_jobs {
   input:
-    tuple env SAMPLE_NAME, path SAMPLE_FILE
+    path SAMPLE_FILE
   output:
     path "*${RUN_PARAMS_FILE}", emit: LANE_PARAM_FILES
   shell:
@@ -27,11 +26,12 @@ process create_sample_lane_jobs {
     ls -ltr
     INPUT_FILE=$(ls *!{RUN_PARAMS_FILE})
     IDX=1
-    for line in $(cat $INPUT_FILE); do
-      echo $line
-      cp $f ${IDX}_${INPUT_FILE}
+    # Write each line to a separate file
+    while IFS= read -r line; do
+      echo "$line"
+      echo $line >> ${IDX}_${INPUT_FILE}
       let IDX=${IDX}+1
-    done
+    done < "${INPUT_FILE}"
     ls -ltr
     # Get rid of original file so it isn't passed along
     rm $INPUT_FILE
@@ -46,17 +46,9 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
     RUN_PARAMS_FILE
   main:
-    task( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
-    out( task.out[0], "generate_run_params" )
-    // We need to process each sample_file on its own rather than all samples of the run at once
-    task.out.PARAMS
-      .map { file ->
-        def key = file.name.toString().tokenize('___').get(0)
-        return tuple(key, file)
-      }
-      .groupTuple()
-      .set{ SAMPLE_PARAMS }
-    emit_sample_job( SAMPLE_PARAMS }
+    generate_run_params_task( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
+    out( generate_run_params_task.out[0], "generate_run_params" )
+    generate_run_params_task.out.PARAMS | flatten | create_sample_lane_jobs
   emit:
-    LANE_PARAM_FILES = emit_sample_job.out.LANE_PARAM_FILES
+    LANE_PARAM_FILES = create_sample_lane_jobs.out.LANE_PARAM_FILES
 }

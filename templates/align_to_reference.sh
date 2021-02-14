@@ -47,7 +47,9 @@ bwa_mem () {
   SAM_SMP="${RUN_TAG}______${LANE}"
   BWA_SAM="${SAM_SMP}___BWA.sam"
 
-  BWA_CMD="!{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+  # Submit the job locally and then add the JOB ID
+  JOB_NAME="BWA_MEM:${SAM_SMP}"
+  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 !{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
 
   echo ${BWA_CMD} >> !{CMD_FILE}
   SUBMIT=$(${BWA_CMD})                          # Submits and saves output
@@ -74,8 +76,6 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-ls -ltr
-
 JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
 for LANE_PARAM_FILE in $(ls *!{RUN_PARAMS_FILE}); do
   REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
@@ -88,12 +88,8 @@ for LANE_PARAM_FILE in $(ls *!{RUN_PARAMS_FILE}); do
   FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
 
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
-  bwa_mem "LANE_TAG_PARAM" $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
+  bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
 done
-
-ls -ltr
-echo "TODO - Removing extra param files"
-
 
 for job_id in ${JOB_ID_LIST[@]}; do
   echo "Waiting for ${job_id} to finish"
@@ -103,3 +99,5 @@ echo "Waiting for all jobs"
 wait
 echo "Finished waiting for alignment of $RUN_TAG_PARAM"
 
+# Output only the shared key-value pairs of the input param files into a single new param file for the sample
+cat *!{RUN_PARAMS_FILE} | tr ' ' '\n' | sort | uniq | grep -v LANE_TAG | tr '\n' ' ' > !{RUN_PARAMS_FILE}
