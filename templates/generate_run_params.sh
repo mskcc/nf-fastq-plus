@@ -53,7 +53,8 @@ function get_lanes_of_sample() {
 
   num_lines=$(cat ${INPUT_SAMPLE_SHEET} | wc -l)
 
-  SAMPLE_SHEET_HEADER="^Lane,Sample_ID,Sample_Name"
+  # Regex of demux headers - include only required in the order they appear
+  SAMPLE_SHEET_HEADER="^Lane,.*Sample_ID,.*index.*"
 
   LANES=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
     grep -v SAMPLE_SHEET_HEADER | \
@@ -79,7 +80,7 @@ else
   # Tab-delimited project, species, recipe variable,
   #   e.g. "Project_08822_HF	Human	HumanWholeGenome"
   prj_spc_rec=$(get_project_species_recipe)
-  echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL} PSR=${prj_spc_rec}"
+  echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL} PSR=[$(echo ${prj_spc_rec} | tr ' ' ',' | tr '\n' ';')]"
 
   # Not being able to parse PROJECT, SPECIES, RECIPE is valid for runs w/ samplesheets that don't have sample rows (e.g. ADAPTIVE on SCOTT)
   if [[ -z ${prj_spc_rec} ]]; then
@@ -121,6 +122,7 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
+
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
         SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${RUN_PARAMS_FILE}"
@@ -133,7 +135,7 @@ else
           TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG}"
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
-          FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX})
+          FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
             echo "!{RUN_ERROR}: No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
             exit 1
