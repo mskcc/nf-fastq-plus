@@ -86,7 +86,6 @@ for LANE_PARAM_FILE in $(ls *!{RUN_PARAMS_FILE}); do
 
   # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
   FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
-
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
   bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
 done
@@ -98,6 +97,18 @@ done
 echo "Waiting for all jobs"
 wait
 echo "Finished waiting for alignment of $RUN_TAG_PARAM"
+
+for job_id in ${JOB_ID_LIST[@]}; do
+  # Fail pipeline if one alignment job failed - has an exit code that is non-zero
+  has_exit_code=$(bjobs -l ${job_id} | grep "exit code")
+  has_success_code=$(bjobs -l ${job_id} | grep "exit code 0")
+  if [ ! -z ${has_exit_code} ] && [ -z ${has_success_code} ]; then
+    echo "bwa mem failed (Job Id: ${job_id})"
+    exit 1
+  else
+    echo "bwa mem success (Job Id: ${job_id})"
+  fi
+done
 
 # Output only the shared key-value pairs of the input param files into a single new param file for the sample
 cat *!{RUN_PARAMS_FILE} | tr ' ' '\n' | sort | uniq | grep -v LANE_TAG | tr '\n' ' ' > !{RUN_PARAMS_FILE}
