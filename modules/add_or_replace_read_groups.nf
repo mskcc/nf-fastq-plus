@@ -10,7 +10,7 @@ process task {
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
-    path '*.sam', emit: SAM_CH
+    path '*.bam', emit: BAM_CH
 
   shell:
     template 'add_or_replace_read_groups.sh'
@@ -19,11 +19,11 @@ process task {
 workflow add_or_replace_read_groups_wkflw {
   take:
     PARAMS
-    SAM_CH
+    BAM_CH
   main:
-    task( PARAMS, SAM_CH )
+    task( PARAMS, BAM_CH )
     out( task.out[0], "add_or_replace_read_groups" )
   emit:
     PARAMS = task.out.PARAMS
-    SAM_CH = task.out.SAM_CH
+    BAM_CH = task.out.BAM_CH
 }

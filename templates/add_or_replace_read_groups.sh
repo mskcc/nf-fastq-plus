@@ -37,14 +37,14 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-BWA_SAMS=$(ls *.sam)    # Nextflow should pass all the SAMs in the input directory
+MERGED_BAMS=$(ls *.bam)    # Nextflow should pass all the SAMs in the input directory
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 PROJECT_TAG=$(parse_param !{RUN_PARAMS_FILE} PROJECT_TAG)
 SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG)
 
-for BWA_SAM in $BWA_SAMS; do
-  RGP_SAM=${BWA_SAM/BWA/RGP}    # "${SAM_SMP}___BWA.sam" -> "${SAM_SMP}___RGP.sam"
-  RG_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
+for M_BAM in $MERGED_BAMS; do
+  RGP_BAM=${M_BAM/MRG/RGP}    # "${SAM_SMP}___MRG.bam" -> "${SAM_SMP}___RGP.bam"
+  RG_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${M_BAM} O=${RGP_BAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
   run_cmd $RG_CMD
 done
 
