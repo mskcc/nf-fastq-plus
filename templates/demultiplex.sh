@@ -75,7 +75,7 @@ if /bin/grep -q "10X_Genomics" $SAMPLESHEET; then
   export PATH=/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin:$PATH
   if /bin/grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
     echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
-    JOB_CMD="/home/nabors/cellranger-atac-1.1.0/cellranger-atac mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
+    JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
   else
     echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
     JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1 >> ${BCL_LOG}"

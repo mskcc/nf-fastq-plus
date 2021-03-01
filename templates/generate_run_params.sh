@@ -12,8 +12,13 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
+
+if [[ -z "${RUN_PARAMS_FILE}" ]]; then
+  RUN_PARAMS_FILE="sample_params.txt"
+fi
+
 # These are inputs to the nextflow process
-echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${DEMUXED_DIR}"
+echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} (RUN_PARAMS_FILE=${RUN_PARAMS_FILE})"
 
 RUN=$(basename ${DEMUXED_DIR})
 STATSDIR=${STATS_DIR}
@@ -36,7 +41,29 @@ function get_project_species_recipe() {
   fi
 }
 
-touch !{RUN_PARAMS_FILE}  # Need to write a file for output to next process or pipeline will fail
+#########################################
+# Returns sequencing lanes of a sample based on sample sheet
+# Arguments:
+#   INPUT_SAMPLE_NAME - "Sample_Name" as listed on sample sheet
+#   INPUT_SAMPLE_SHEET - Absolute path to sample sheet
+#########################################
+function get_lanes_of_sample() {
+  INPUT_SAMPLE_NAME=$1
+  INPUT_SAMPLE_SHEET=$2
+
+  num_lines=$(cat ${INPUT_SAMPLE_SHEET} | wc -l)
+
+  # Regex of demux headers - include only required in the order they appear
+  SAMPLE_SHEET_HEADER="^Lane,.*Sample_ID,.*index.*"
+
+  LANES=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
+    grep -v SAMPLE_SHEET_HEADER | \
+    grep "${INPUT_SAMPLE_NAME}" | \
+    cut -d',' -f1 | \
+    sort | uniq)
+
+  echo $LANES
+}
 
 if [[ -z "${SAMPLESHEET}" ]]; then
   echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
@@ -49,18 +76,24 @@ else
     DUAL=$UNASSIGNED_PARAMETER # Assign constant that can be evaluated later in the pipeline
   fi
  
-  echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL}"
-
+  
   # Tab-delimited project, species, recipe variable,
   #   e.g. "Project_08822_HF	Human	HumanWholeGenome"
   prj_spc_rec=$(get_project_species_recipe)
+  echo "Launching RunName: ${RUNNAME}, Run: ${RUN}, SampleSheet: ${SAMPLESHEET}, RunType: ${RUN_TYPE}, Dual Index: ${DUAL} PSR=[$(echo ${prj_spc_rec} | tr ' ' ',' | tr '\n' ';')]"
+
+  # Not being able to parse PROJECT, SPECIES, RECIPE is valid for runs w/ samplesheets that don't have sample rows (e.g. ADAPTIVE on SCOTT)
+  if [[ -z ${prj_spc_rec} ]]; then
+    echo "Failed to extract Project, Species, Recipe from SampleSheet: ${SAMPLESHEET}"
+    exit 1
+  fi
 
   IFS=$'\n'
   for psr in $prj_spc_rec; do
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
-
+   
     SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} RUN_TYPE=${RUN_TYPE} DUAL=${DUAL}"
 
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
@@ -75,26 +108,51 @@ else
       # TODO - Make "___" a delimiter
       PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
+
+      # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
+      if [[ "${RECIPE}" = "DLP" ]]; then
+        DLP_PARAM_FILE="DLP___${RUN_PARAMS_FILE}"
+        echo "DLP recipes will be skipped. Writing params to ${DLP_PARAM_FILE}"
+        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___DLP___${GTAG}" # RUN_TAG will determine the name of output stats
+        TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=DLP LANE_TAG=X"
+        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
+        continue
+      fi
+
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
+
+        # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
+        # lane of processing
+        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${RUN_PARAMS_FILE}"
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
-        # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
-        TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
+        for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
+          LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
 
-        FASTQS=$(find ${SAMPLE_DIR} -type f -name "*.fastq.gz")
-        if [[ -z $FASTQS ]]; then
-          echo "!{RUN_ERROR}: No FASTQS found in $SAMPLE_DIR"	# Catch this exception, but don't fail
-          exit 0
-        fi
+          # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
+          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG}"
 
-        FASTQ_PARAMS=""
-        # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
-        for SOURCE_FASTQ in $FASTQS; do
-          FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
+          FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
+          FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
+          if [[ -z $FASTQS ]]; then
+            echo "!{RUN_ERROR}: No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
+            exit 1
+          fi
+
+          FASTQ_PARAMS=""
+          # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
+          for SOURCE_FASTQ in $FASTQS; do
+            FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
+          done
+          # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
+          echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
-        # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> !{RUN_PARAMS_FILE}
+        if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
+          echo "Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"
+          exit 1
+        fi
       done
     else
       echo "ERROR: Could not locate Request directory w/ FASTQs for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
@@ -103,12 +161,3 @@ else
   done
   IFS=' \t\n'
 fi
-
-
-
-
-
-
-
-
-

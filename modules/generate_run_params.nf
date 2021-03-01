@@ -1,19 +1,50 @@
 include { log_out as out } from './log_out'
 include { log_out as out2 } from './log_out'
-include { write_params } from './write_params'
 
-process task {
+process generate_run_params_task {
+  tag "$RUNNAME"
+
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
     env RUNNAME
     env DEMUXED_DIR
     env SAMPLESHEET
+    env RUN_PARAMS_FILE
+    val RUNNAME
   output:
     stdout()
-    path "${RUN_PARAMS_FILE}", emit: PARAMS
+    path "*${RUN_PARAMS_FILE}", emit: PARAMS
   shell:
     template 'generate_run_params.sh'
+}
+
+process create_sample_lane_jobs {
+  input:
+    path SAMPLE_FILE
+  output:
+    stdout()
+    path "*${RUN_PARAMS_FILE}", emit: LANE_PARAM_FILES
+  shell:
+    '''
+    # Hopefully this is just ONE file and we just send it along
+    ls -ltr
+    INPUT_FILE=$(ls *!{RUN_PARAMS_FILE})
+    IDX=1
+    # Write each line to a separate file
+    while IFS= read -r line; do
+      LANE_FILE=${IDX}_${INPUT_FILE}
+      echo $line >> ${LANE_FILE}
+      echo "Created Lane File: ${LANE_FILE}"
+      echo "$line"
+
+      let IDX=${IDX}+1
+    done < "${INPUT_FILE}"
+    ls -ltr
+    # Get rid of original file so it isn't passed along
+    echo "Lane sample param files created. Removing original ${INPUT_FILE}"
+    rm $INPUT_FILE
+    '''
 }
 
 workflow generate_run_params_wkflw {
@@ -21,14 +52,15 @@ workflow generate_run_params_wkflw {
     RUNNAME
     DEMUXED_DIR
     SAMPLESHEET
+    RUN_PARAMS_FILE
   main:
-    task( RUNNAME, DEMUXED_DIR, SAMPLESHEET )
-    task.out.PARAMS.splitText().set{ params_ch }
-    write_params( params_ch )
-    out( task.out[0], "generate_run_params" )
-    out2( write_params.out[0], "generate_run_params" )
+    generate_run_params_task( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, RUNNAME )
+    out( generate_run_params_task.out[0], "generate_run_params" )
+    generate_run_params_task.out.PARAMS
+      .flatten()
+      .set{ SAMPLE_FILE_CH }
+    create_sample_lane_jobs( SAMPLE_FILE_CH )
+    out2( create_sample_lane_jobs.out[0], "create_sample_lane_jobs" )
   emit:
-    PARAMS = write_params.out.PARAMS
+    LANE_PARAM_FILES = create_sample_lane_jobs.out.LANE_PARAM_FILES
 }
-
-

@@ -197,3 +197,15 @@ workflow task_wkflw { 	// This is what will actually be exported
     task | out
 }
 ```
+
+## Crontab Setup
+```
+# crontab -e
+SHELL=/bin/bash
+
+# Add path to bsub executable
+PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
+
+# Load the LSF profile prior to running the command
+* * * * * . /igoadmin/lsfigo/lsf10/conf/profile.lsf; lsload; bhosts; /PATH/TO/detect_copied_sequencers.sh >> /PATH/TO/nf-fastq-plus.log 2>&1
+```

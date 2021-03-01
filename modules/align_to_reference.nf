@@ -1,15 +1,16 @@
 include { log_out as out } from './log_out'
 
-process task {
-  label 'BSUB_OPTIONS_BWA_MEM'
-
+// We specifically name it "align_to_reference_task" so that it can be identified in nextflow.config to run locally
+// and submit to the LSF cluster outside of nextflow
+process align_to_reference_task {
   input:
-    path PARAMS
+    path LANE_PARAM_FILES
 
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.sam', emit: SAM_CH
+    env SAMPLE_TAG, emit: SAMPLE_TAG
 
   shell:
     template 'align_to_reference.sh'
@@ -17,14 +18,13 @@ process task {
 
 workflow align_to_reference_wkflw {
   take:
-    PARAMS
+    LANE_PARAM_FILES
   main:
-    task( PARAMS )
-    out( task.out[0], "align_to_reference" )
+    align_to_reference_task( LANE_PARAM_FILES )
+    out( align_to_reference_task.out[0], "align_to_reference" )
 
   emit:
-    PARAMS = task.out.PARAMS
-    SAM_CH = task.out.SAM_CH
+    PARAMS = align_to_reference_task.out.PARAMS
+    SAM_CH = align_to_reference_task.out.SAM_CH
+    OUTPUT_ID = align_to_reference_task.out.SAMPLE_TAG
 }
-
-

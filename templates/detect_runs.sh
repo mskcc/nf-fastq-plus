@@ -1,26 +1,26 @@
 #!/bin/bash
 # 
-# Script that finds the RUN_TO_DEMUX path for a given RUNNAME
+# Script that finds the RUN_TO_DEMUX path for a given RUNNAME.
+#   NOTE - All ERRORS should have a non-zero exit code. Automated detection of new runs relies on 
+#          error codes to stop demuxing a run
+# 
 # Arguments:
 #   SEQUENCER_DIR, config: Parent directory of done files
 #   FASTQ_DIR, config: Directory to find runs w/ FASTQ files
-#   PIPELINE_OUT, config (Optional):  Output directory where outputs will be written in nextflow
 #
 #   RUN, param: Name or path to a sequencing run to proceed down the pipeline
 #   DEMUX_ALL, param: Whether to force the demux, whether or not, it exists in FASTQ_DIR
 # Outputs (STD OUT):
 #   RUNNAME, env: value of what the runname (e.g. SCOTT_0277_AHKFKFBGXH)
 #   RUNPATH, env: value of the absolute path to the run to be demultiplexed (e.g. /PATH/TO/210122_SCOTT_0277_AHKFKFBGXH)
-# Run: 
-#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR="/igo/sequencers" RUN_AGE=60 ./detect_runs.sh
+# Run:
+#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR=/igo/sequencers RUN=210201_AYYAN_0051_000000000-JCT75 ../templates/detect_runs.sh
 
-echo "Received RUN=${RUN} DEMUX_ALL=${DEMUX_ALL}"
+echo "Received RUN=${RUN} DEMUX_ALL=${DEMUX_ALL} FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQUENCER_DIR}"
 
-# ENV variables passed on in NEXTFLOW
-RUNNAME="!{UNASSIGNED_PARAMETER}"
-RUNPATH="!{UNASSIGNED_PARAMETER}"
+RUNNAME=""
+RUNPATH=""
 
-echo "Outputting new runs to ${PIPELINE_OUT} and checking ${FASTQ_DIR} for existing runs"
 # Assigns RUNPATH/RUN based on input run being the dir name or path to dir of the run
 if [ -d "${RUN}" ]; then
   RUNDIR=$(basename ${RUN})
@@ -28,10 +28,10 @@ if [ -d "${RUN}" ]; then
 else
   RUNDIR=${RUN}
   # STRUCTURE: /{SEQUENCER_DIR}/{MACHINE}/{RUNNAME}
-  RUNPATH=$(find !{SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNDIR}")
+  RUNPATH=$(find ${SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNDIR}")
   if [[ -z "${RUNPATH}" ]]; then
-    echo "Failed to find ${RUNDIR} in !{SEQUENCER_DIR}"
-    exit 1
+    echo "Failed to find ${RUNDIR} in ${SEQUENCER_DIR}"
+    exit 1 
   fi
 fi
 
@@ -44,7 +44,7 @@ fi
 
 NUM_RUNS=$(echo $RUNPATH | tr ' ' '\n' | wc -l)
 if [[ "$NUM_RUNS" -ne 1 ]]; then
-  echo "Not able to find one run folder for ${RUNNAME} in !{SEQUENCER_DIR}"
+  echo "Not able to find one run folder for ${RUNNAME} in ${SEQUENCER_DIR}"
   exit 1
 fi
 
