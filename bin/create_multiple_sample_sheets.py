@@ -80,6 +80,10 @@ def i7_only(sample_data, header):
 	i7_data.index = range(len(i7_data))
 	sample_data.index = range(len(sample_data))
 	data_sheets[4] = sample_data
+
+	#  Remove the second index
+	i7_data = i7_data.drop(columns=['index2'])
+
 	if not i7_data.empty:
 		data_sheets[2] = i7_data
 
