@@ -60,11 +60,11 @@ workflow {
   merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH, align_to_reference_wkflw.out.OUTPUT_ID )
   add_or_replace_read_groups_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH )
   // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
-  mark_duplicates_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.BAM_CH )
-  alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH )
-  collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH )
-  collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH )
-  collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH )
-  collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH )
-  collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH )
+  mark_duplicates_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.BAM_CH, add_or_replace_read_groups_wkflw.out.OUTPUT_ID )
+  alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
+  collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
+  collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
+  collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
+  collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
+  collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
 }

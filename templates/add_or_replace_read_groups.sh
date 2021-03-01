@@ -40,11 +40,11 @@ parse_param() {
 MERGED_BAMS=$(ls *.bam)    # Nextflow should pass all the SAMs in the input directory
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 PROJECT_TAG=$(parse_param !{RUN_PARAMS_FILE} PROJECT_TAG)
-SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG)
+SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG) # This will also be the output tag
 
+# TODO - there should only be one input BAM
 for M_BAM in $MERGED_BAMS; do
   RGP_BAM=${M_BAM/MRG/RGP}    # "${SAM_SMP}___MRG.bam" -> "${SAM_SMP}___RGP.bam"
   RG_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${M_BAM} O=${RGP_BAM} ID=${RUN_TAG} LB=${RUN_TAG} PU=${PROJECT_TAG} SM=${SAMPLE_TAG}  PL=illumina CN=IGO@MSKCC"
   run_cmd $RG_CMD
 done
-

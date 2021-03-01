@@ -39,6 +39,7 @@ parse_param() {
 MD=$(parse_param !{RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
 
 #   TODO - Use Each?
 INPUT_BAM=$(realpath *RGP.bam)
