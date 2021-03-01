@@ -10,6 +10,7 @@ process align_to_reference_task {
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.sam', emit: SAM_CH
+    env SAMPLE_TAG, emit: SAMPLE_TAG
 
   shell:
     template 'align_to_reference.sh'
@@ -25,4 +26,5 @@ workflow align_to_reference_wkflw {
   emit:
     PARAMS = align_to_reference_task.out.PARAMS
     SAM_CH = align_to_reference_task.out.SAM_CH
+    OUTPUT_ID = align_to_reference_task.out.SAMPLE_TAG
 }

@@ -83,6 +83,7 @@ for LANE_PARAM_FILE in $(ls *!{RUN_PARAMS_FILE}); do
   DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
   RUN_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} RUN_TAG)
   LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
+  SAMPLE_TAG=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)  # Assign output ID for downstream task
 
   # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
   FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs

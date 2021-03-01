@@ -3,9 +3,12 @@ include { log_out as out } from './log_out'
 process task {
   label 'BSUB_OPTIONS_LARGE'
 
+  tag "$INPUT_ID"
+
   input:
   path PARAMS
   path SAM_LIST
+  val INPUT_ID
  
   output:
   stdout()
@@ -20,9 +23,10 @@ workflow merge_sams_wkflw {
   take:
     PARAMS
     SAM_FILES
+    INPUT_ID
 
   main:
-    task( PARAMS, SAM_FILES )
+    task( PARAMS, SAM_FILES, INPUT_ID )
     out( task.out[0], "merge_sams" )
   
   emit:

@@ -2,6 +2,8 @@ include { log_out as out } from './log_out'
 include { log_out as out2 } from './log_out'
 
 process generate_run_params_task {
+  tag "$RUNNAME"
+
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
@@ -9,6 +11,7 @@ process generate_run_params_task {
     env DEMUXED_DIR
     env SAMPLESHEET
     env RUN_PARAMS_FILE
+    val RUNNAME
   output:
     stdout()
     path "*${RUN_PARAMS_FILE}", emit: PARAMS
@@ -51,7 +54,7 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
     RUN_PARAMS_FILE
   main:
-    generate_run_params_task( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
+    generate_run_params_task( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, RUNNAME )
     out( generate_run_params_task.out[0], "generate_run_params" )
     generate_run_params_task.out.PARAMS
       .flatten()
