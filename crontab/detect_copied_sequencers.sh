@@ -1,4 +1,4 @@
-NUM_DAYS_OLD=3
+NUM_DAYS_OLD=1 # Age of recent sequenced run to run through pipeline
 
 # DIR location should come from nextflow.config
 SEQ_DIR=/igo/sequencers/
