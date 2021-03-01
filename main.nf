@@ -58,7 +58,7 @@ workflow {
   generate_run_params_wkflw( detect_runs_wkflw.out.RUNNAME, demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, RUN_PARAMS_FILE )
   align_to_reference_wkflw( generate_run_params_wkflw.out.LANE_PARAM_FILES )
   merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH, align_to_reference_wkflw.out.OUTPUT_ID )
-  add_or_replace_read_groups_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH )
+  add_or_replace_read_groups_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID )
   // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
   mark_duplicates_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.BAM_CH, add_or_replace_read_groups_wkflw.out.OUTPUT_ID )
   alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )

@@ -36,6 +36,7 @@ parse_param() {
 }
 
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG)
 
 SAMS=$(realpath *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)

@@ -2,7 +2,7 @@ include { log_out as out } from './log_out'
 
 process task {
   label 'BSUB_OPTIONS_LARGE'
-  tag '$INPUT_ID'
+  tag "$INPUT_ID"
 
   input:
   path PARAMS

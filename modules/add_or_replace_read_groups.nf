@@ -23,8 +23,9 @@ workflow add_or_replace_read_groups_wkflw {
   take:
     PARAMS
     BAM_CH
+    INPUT_ID
   main:
-    task( PARAMS, BAM_CH )
+    task( PARAMS, BAM_CH, INPUT_ID )
     out( task.out[0], "add_or_replace_read_groups" )
   emit:
     PARAMS = task.out.PARAMS
