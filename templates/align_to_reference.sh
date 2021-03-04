@@ -49,7 +49,8 @@ bwa_mem () {
 
   # Submit the job locally and then add the JOB ID
   JOB_NAME="BWA_MEM:${SAM_SMP}"
-  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 !{BWA} mem -M -t 36 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+  # "-t {NUM_THREADS}": # threads should equal # tasks sent to LSF (-n)
+  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 !{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
 
   echo ${BWA_CMD} >> !{CMD_FILE}
   SUBMIT=$(${BWA_CMD})                          # Submits and saves output
