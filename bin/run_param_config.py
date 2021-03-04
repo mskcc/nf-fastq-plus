@@ -71,7 +71,7 @@ recipe_overrides = {
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
     "Human": "GRCh37",
-    "Mouse": "grcm38", # "mm10",
+    "Mouse": "mm10",
     "Mouse_GeneticallyModified": "mm10",
     "Drosophilia": "dm3",
     "Zebrafish": "danrer7",
@@ -164,8 +164,12 @@ genome_reference_mapping_UNORDERED = {
             REFERENCE: "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa"
         },
         "RNA": {
-            REF_FLAT: "/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt",
-            RIBOSOMAL_INTERVALS: "/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file"
+            GENOME: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',
+            REFERENCE: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa'
+            REF_FLAT: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat',
+            RIBOSOMAL_INTERVALS: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list'
+            # REF_FLAT: "/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt",
+            # RIBOSOMAL_INTERVALS: "/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file"
         },
         "miRNA": {
             REF_FLAT: "/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt",
