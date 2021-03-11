@@ -51,7 +51,7 @@ BSUB_CMD="echo 'No work assigned'"
 JOB_NAME="NO_JOB"
 JOB_CMD="echo 'No command specified'"
 JOB_OUT="${OUTPUT}/not_assigned.txt"
-echo "Procesisng SampleSheet: ${SAMPLESHEET}"
+echo "Procesisng SampleSheet ${SAMPLESHEET} (DEMUX_ALL=${DEMUX_ALL})"
 samplesheet_file=$(basename ${SAMPLESHEET})
 
 # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
@@ -94,9 +94,17 @@ fi
 
 echo ${JOB_CMD} >> !{CMD_FILE}
 
+DEMUXED_FASTQS=$(find ${DEMUXED_DIR} -type f -name "*.fastq.gz")
+
 # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
 set +e
-eval ${JOB_CMD}
+if [[ "${DEMUX_ALL}" == "true" && ! -z $DEMUXED_FASTQS  ]]; then
+  LOG="Skipping demux (DEMUX_ALL=${DEMUX_ALL}) of already demuxed directory: ${DEMUXED_DIR}"
+  echo $LOG >> ${BCL_LOG}
+else
+  echo "Running demux"
+  eval ${JOB_CMD}
+fi
 UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
 PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
 set -e

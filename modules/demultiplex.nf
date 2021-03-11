@@ -10,6 +10,7 @@ process task {
     env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
     env CELL_RANGER_ATAC
+    env DEMUX_ALL
 
   output:
     stdout()
@@ -25,11 +26,12 @@ workflow demultiplex_wkflw {
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
     CELL_RANGER_ATAC
+    DEMUX_ALL
 
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
     split_sample_sheets_path.splitText().set{ SPLIT_SAMPLE_SHEET_CH }
-    task( SPLIT_SAMPLE_SHEET_CH, RUN_TO_DEMUX_DIR, CELL_RANGER_ATAC )
+    task( SPLIT_SAMPLE_SHEET_CH, RUN_TO_DEMUX_DIR, CELL_RANGER_ATAC, DEMUX_ALL )
     out( task.out[0], "demultiplex" )
 
   emit:
