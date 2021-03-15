@@ -91,7 +91,10 @@ def get_reference_configs(recipe, sample_type, species):
     genome_configs = mapping[DEFAULT].copy() # Base configuration for all recipes
     overrides = {} if sample_type not in mapping else mapping[sample_type]
     genome_configs.update(overrides)
-    genome_configs.update( { GTAG: genome } ) # Need to add the GTAG mapping
+    if 'GTAG' not in genome_configs:
+        genome_configs.update( { GTAG: genome } )
+    # GTAG = genome if 'GTAG' not in mapping else mapping[ 'GTAG' ]
+    # genome_configs.update( { GTAG: GTAG } ) # Need to add the GTAG mapping
 
     return genome_configs
 

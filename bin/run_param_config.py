@@ -167,7 +167,8 @@ genome_reference_mapping_UNORDERED = {
             GENOME: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',
             REFERENCE: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',
             REF_FLAT: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat',
-            RIBOSOMAL_INTERVALS: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list'
+            RIBOSOMAL_INTERVALS: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list',
+            GTAG: 'GRCm38'
             # REF_FLAT: "/home/igo/resources/BED-Targets/mm10-Ref_Flat.txt",
             # RIBOSOMAL_INTERVALS: "/home/igo/resources/BED-Targets/mm10.ribosomal.interval_file"
         },
