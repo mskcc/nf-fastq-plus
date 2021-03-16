@@ -1,4 +1,12 @@
 #!/bin/bash
+# Uploads stat (.txt) files to ngs-stats & LIMS
+# Nextflow Inputs:
+#   Stat Files (in working directory) - .txt files
+#   RUN, env - Runname, e.g. 10309_MICHELLE_0347_BHWN55DMXX
+#   STATSDONEDIR, env - Absolute path of where files should be written to
+#   (SKIP_FILE_KEYWORD), env - txt to grep on to determine if file should be skipped, default: "SKIP_"
+# Run: 
+#   RUN=10309_MICHELLE_0347_BHWN55DMXX STATSDONEDIR=/igo/stats/DONE ./upload_stats.sh
 
 SKIP_KEYWORD="SKIP_"
 if [[ -z ${SKIP_FILE_KEYWORD} ]]; then
