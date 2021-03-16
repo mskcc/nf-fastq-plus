@@ -92,7 +92,9 @@ else
 
   # detect_barcode_collision.py should be in bin dir of root of project
   BARCODE_MISMATCH=1
-  detect_barcode_collision.py -sample-sheet ${COPIED_SAMPLE_SHEET} -m ${BARCODE_MISMATCH}
+  CMD="detect_barcode_collision.py -s ${SAMPLESHEET} -m ${BARCODE_MISMATCH}"
+  echo $CMD
+  eval $CMD
   if [ $? -ne 0 ]; then
     BARCODE_MISMATCH=0
   fi
