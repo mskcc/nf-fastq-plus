@@ -6,7 +6,7 @@
    "Barcodes with too few mismatches are ambiguous ( less than 2 times the number of mismatches plus 1)"
      e.g.
        INDEX 1:          TCGATGCA
-       INDEX 2:		 ACTATGCA
+       INDEX 2:          ACTATGCA
        BARCODE W/ ERROR: TCTATGCA 
 
        At bcl2fastq --barcode-mismatches 1, there will be a collision because it is ambiguous if a single error in index
