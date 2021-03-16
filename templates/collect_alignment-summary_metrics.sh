@@ -48,3 +48,6 @@ echo "Writing to ${AM_FILE}"
 BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectAlignmentSummaryMetrics MAX_INSERT_SIZE=1000 I=${BAM} O=${AM_FILE} R=${REFERENCE}"
 run_cmd $CMD
+
+# TODO - make metrics file available as output for nextlow
+cp ${AM_FILE} .

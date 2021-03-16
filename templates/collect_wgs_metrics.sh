@@ -42,21 +42,29 @@ RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
 WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
+METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+STATS_FILENAME="${RUN_TAG}___WGS.txt"
+METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
+
 if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then 
   echo "Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES} (TYPE: ${TYPE})";
+  echo "${SKIP_FILE_KEYWORD}_WGS" > ${STATS_FILENAME}
   exit 0
 fi
 
 if [ "${TYPE^^}" != "WGS" ]; then 
   echo "Skipping CollectWgsMetrics for ${RUN_TAG}. TYPE: ${TYPE} != WGS (GTAG: ${GTAG})"
+  echo "${SKIP_FILE_KEYWORD}_WGS" > ${STATS_FILENAME}
   exit 0
 fi
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+
 mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___WGS.txt"
 echo "[CollectWgsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
 BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectWgsMetrics I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
 run_cmd $CMD
+
+# TODO - make metrics file available as output for nextlow
+cp ${METRICS_FILE} .

@@ -41,17 +41,24 @@ REF_FLAT=$(parse_param !{RUN_PARAMS_FILE} REF_FLAT)        # Reference genome fi
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
+METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+STATS_FILENAME="${RUN_TAG}___RNA.txt"
+METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
+
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${RIBO_INTER} || ! -f ${REF_FLAT} ]]; then
   echo "Skipping CollectRnaSeqMetrics for ${RUN_TAG} (RIBO_INTER: ${RIBO_INTER}, REF_FLAT: ${REF_FLAT})"
+  echo "${SKIP_FILE_KEYWORD}_RNA" > ${STATS_FILENAME}
   exit 0
 fi
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+
 mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___RNA.txt"
 echo "[CollectRnaSeqMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
 BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectRnaSeqMetrics RIBOSOMAL_INTERVALS=${RIBO_INTER} STRAND_SPECIFICITY=NONE REF_FLAT=${REF_FLAT} I=${BAM} O=${METRICS_FILE}"
 run_cmd $CMD
+
+# TODO - make metrics file available as output for nextlow
+cp ${METRICS_FILE} .
