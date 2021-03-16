@@ -89,7 +89,17 @@ else
     echo "Masking i5 index"
     assign_MASK_OPT
   fi
-  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches 1 --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
+
+  # detect_barcode_collision.py should be in bin dir of root of project
+  BARCODE_MISMATCH=1
+  CMD="detect_barcode_collision.py -s ${SAMPLESHEET} -m ${BARCODE_MISMATCH}"
+  echo $CMD
+  eval $CMD
+  if [ $? -ne 0 ]; then
+    BARCODE_MISMATCH=0
+  fi
+  echo "Running bcl2fastq w/ mismatches=${BARCODE_MISMATCH}"
+  JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
 fi
 
 echo ${JOB_CMD} >> !{CMD_FILE}
