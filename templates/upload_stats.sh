@@ -10,7 +10,7 @@ RUN_NUM=$(echo ${RUN} | cut -d'_' -f3)  # 10309_MICHELLE_0347_BHWN55DMXX -> 0347
 FLOWCELL=$(echo ${RUN} | cut -d'_' -f4) # 10309_MICHELLE_0347_BHWN55DMXX -> BHWN55DMXX
 STAT_PREFIX="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
 
-STAT_FILES=$(find . -type f -name "*.txt" -exec readlink -f {} \;)
+STAT_FILES=$(find -L . -type f -name "*.txt" -exec readlink -f {} \;)
 # echo "FILES_TO_UPLOAD: ${STAT_FILES}"
 for stat_file in ${STAT_FILES}; do
   # SKIP_LINES were added because these steps were skipped in the workflow
@@ -29,7 +29,7 @@ echo "Calling to update Picard stats DB: ${DELPHI_ENDPOINT}"
 # curl "${DELPHI_ENDPOINT}"
 # TODO - Check to see if this resolves the incomplete update before updateLimsSampleLevelSequencingQc
 sleep 10
-LIMS_ENDPOINT="https://igo-lims02.mskcc.org:8443/LimsRest/updateLimsSampleLevelSequencingQc?runId=${RUNNAME}"
+LIMS_ENDPOINT="https://igo-lims02.mskcc.org:8443/LimsRest/updateLimsSampleLevelSequencingQc?runId=${STAT_PREFIX}"
 echo "Calling to LIMS QC Metrics: ${LIMS_ENDPOINT}"
 # curl -k ${LIMS_ENDPOINT}
 
