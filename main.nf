@@ -15,6 +15,7 @@ include { collect_oxoG_metrics_wkflw } from './modules/collect_oxoG_metrics';
 include { collect_wgs_metrics_wkflw } from './modules/collect_wgs_metrics';
 include { collect_rna_metrics_wkflw } from './modules/collect_rna_metrics';
 include { collect_gc_bias_wkflw } from './modules/collect_gc_bias_metrics';
+include { upload_stats_wkflw } from './modules/upload_stats';
 
 /**
  * Processes input parameters that are booleans
