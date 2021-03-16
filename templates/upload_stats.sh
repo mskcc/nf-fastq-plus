@@ -26,14 +26,15 @@ done
 
 DELPHI_ENDPOINT="http://delphi.mskcc.org:8080/ngs-stats/picardstats/updaterun/${MACHINE}/${STAT_PREFIX}"
 echo "Calling to update Picard stats DB: ${DELPHI_ENDPOINT}"
+# TODO - uncomment
 # curl "${DELPHI_ENDPOINT}"
-# TODO - Check to see if this resolves the incomplete update before updateLimsSampleLevelSequencingQc
 sleep 10
 LIMS_ENDPOINT="https://igo-lims02.mskcc.org:8443/LimsRest/updateLimsSampleLevelSequencingQc?runId=${STAT_PREFIX}"
 echo "Calling to LIMS QC Metrics: ${LIMS_ENDPOINT}"
+# TODO - uncomment
 # curl -k ${LIMS_ENDPOINT}
 
 # TODO - Remove GRCh37 BAM files when "PicardScripts"
 # rm -rf SAM/*$PROJECTNUMBER*
-# echo $PROJECTNUMBER | mail -s " Stats calculated for Project ""$PROJECTNUMBER"" , run ""$RUNNAME"" " naborsd@mskcc.org mcmanamd@mskcc.org cobbsc@mskcc.org hubermak@mskcc.org vialea@mskcc.org
+echo ${STAT_PREFIX} | mail -s " Stats calculated for Run ${STAT_PREFIX} " streidd@mskcc.org # naborsd@mskcc.org mcmanamd@mskcc.org cobbsc@mskcc.org hubermak@mskcc.org vialea@mskcc.org
 # sed -i "/$PROJECTNUMBER/d" ~/StatsTracker/$RUNNAME-Summary-File.txt
