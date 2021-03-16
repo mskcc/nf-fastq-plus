@@ -376,6 +376,10 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
+    "IDT_Exome_v2_FP_Viral_Probes": {
+      BAITS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/xgen-exome-research-panel-v2-probes-GRCh37.intervalList",
+      TARGETS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/xgen-exome-research-panel-v2-targets-GRCh37.intervalList"
+    },
     "IDT_Exome_v1": {
         BAITS: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-TARGETS.iList",
@@ -588,6 +592,14 @@ recipe_options_mapping_UNORDERED = {
         TARGETS: "/home/igo/resources/BED-Targets/HemeBrainPACT_v1/HemeBrainPACT_v1_TARGETS.interval_list",
         MSKQ: "no",
         MD: "yes"
+    },
+    "TWIST_mWES": {
+	    BAITS: "/home/igo/resources/ilist/TWIST_mWES/Twist_mWES_BAITS.IntervalList",
+	    TARGETS: "/home/igo/resources/ilist/TWIST_mWES/Twist_mWES_TARGETS.IntervalList"
+    },
+    "Twist_Kentsis_spikeinWES_RK_V3": {
+    	BAITS: "/home/igo/resources/ilist/Twist_Kentsis_spikeinWES_RK_V3/Twist_Kentsis_spikeinWES_RK_V3_BAITS.intervalList",
+	    TARGETS: "/home/igo/resources/ilist/Twist_Kentsis_spikeinWES_RK_V3/Twist_Kentsis_spikeinWES_RK_V3_TARGETS.intervalList"
     },
     "HumanWholeGenome": {
         MSKQ: "no",
