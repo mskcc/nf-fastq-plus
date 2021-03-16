@@ -1,9 +1,18 @@
 #!/usr/bin/env /igo/work/nabors/tools/venvpy2/bin/python
 """Determines whether there will be a barcode collision in the input sample sheet
 
-   NOTE: A collision occurs if 2 barcodes are ambiguous, which means that their number of mismatches is too little an
-   index w/ an error to be confidently mapped to its correct index. From bcl2fastq, ambiguity is calculated as "Barcodes
-   with too few mismatches are ambiguous ( less than 2 times the number of mismatches plus 1)"
+   NOTE: A collision occurs if 2 barcodes are ambiguous, which means that their number of mismatches is too little for an
+   error in the index to be confidently mapped back to the correct index. From bcl2fastq, ambiguity is calculated as 
+   "Barcodes with too few mismatches are ambiguous ( less than 2 times the number of mismatches plus 1)"
+     e.g.
+       INDEX 1:          TCGATGCA
+       INDEX 2:		 ACTATGCA
+       BARCODE W/ ERROR: TCTATGCA 
+
+       At bcl2fastq --barcode-mismatches 1, there will be a collision because it is ambiguous if a single error in index
+       1 or 2 led to the barcode with the error. bcl2fastq detects this because INDEX 1 & 2 have only 2 mismatches, which
+       satisifes the rule - NUM_INDEX_MISMATCHES < (2 * NUM_ALLOWED_MISMATCHES) + 1
+  
 Args:
     mismatch (-m), int:     Number of mismatches allowed
     sample_sheet (-s), str: path to samplesheet
