@@ -1,0 +1,148 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.update-container {
+	margin-left: auto;
+	margin-right: auto;
+	padding: 20px;
+	margin-bottom: 10px;
+	width: 350px;
+	height: 100px;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.text-align-left {
+	text-align: left;
+}
+.text-align-right {
+	text-align: right;
+}
+
+/* APP TEMPLATE STYLING */
+#root {
+	min-height: 100vh;
+}
+.em4 {
+  font-size: 4em;
+}
+.em2 {
+  font-size: 2em;
+}
+.italics {
+  font-style: italic;
+}
+.width-350 {
+  width: 350px;
+}
+.float-right {
+  float: right;
+}
+.inline-text {
+  display: inline;
+}
+
+/* MSKCC Colors */
+.background-mskcc-blue {
+    background-color: #007cba;
+}
+.background-mskcc-orange{
+	background-color: #df4602;
+}
+.background-mskcc-dark-blue{
+	background-color: #006098;
+}
+.mskcc-dark-blue{
+	color: #006098;
+}
+.background-mskcc-medium-blue{
+	background-color: #40b4e5;
+}
+.mskcc-medium-blue{
+	color: #40b4e5;
+}
+.background-mskcc-light-blue{
+	background-color: #8fc7e8;
+}
+.mskcc-light-blue{
+	color: #8fc7e8;
+}
+.background-mskcc-dark-orange{
+	background-color: #c24d00;
+}
+.background-mskcc-medium-orange{
+	background-color: #f29934;
+}
+.background-mskcc-light-orange{
+	background-color: #f6c65b;
+}
+.background-mskcc-dark-violet{
+	background-color: #83276b;
+}
+.background-mskcc-light-violet{
+	background-color: #b687b8;
+}
+.background-mskcc-dark-magenta{
+	background-color: #e92076;
+}
+.background-mskcc-light-magenta{
+	background-color: #efb3cb;
+}
+.background-mskcc-red{
+	background-color: #b1132d;
+}
+.background-mskcc-dark-green{
+	background-color: #4c8b2b;
+}
+.background-mskcc-light-green{
+	background-color: #a6ce39;
+}
+.background-mskcc-dark-turquoise{
+	background-color: #006c68;
+}
+.mskcc-dark-turquoise{
+	color: #006c68;
+}
+.background-mskcc-light-turquoise{
+	background-color: #009490;
+}
+.mskcc-light-turquoise{
+	color: #009490;
+}
+.background-mskcc-dark-yellow{
+	background-color: #ffc20e;
+}
+.background-mskcc-light-yellow{
+	background-color: #ffe100;
+}
+.background-mskcc-dark-gray{
+	background-color: #9e9e98;
+}
+.mskcc-dark-gray{
+	color: #9e9e98;
+}
+.background-mskcc-light-gray{
+	background-color: #d5d4c7;
+}
+.mskcc-light-gray{
+	color: #d5d4c7;
+}
+.material-gray {
+   	background-color: #eceff1;
+}
+.mskcc-white {
+	color: white;
+}
+
+
