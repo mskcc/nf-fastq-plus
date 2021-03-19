@@ -37,7 +37,9 @@ process email {
 
   shell:
   '''
+    echo "Emailing Stats Complete: ${RUN}"
     echo ${RUN} | mail -s " Stats calculated for Run ${RUN} " streidd@mskcc.org # naborsd@mskcc.org mcmanamd@mskcc.org cobbsc@mskcc.org hubermak@mskcc.org vialea@mskcc.org 
+    touch ${RUN}_DONE.txt
   '''
 }
 
