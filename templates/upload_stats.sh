@@ -46,5 +46,4 @@ echo "END: $(date +"%D %T")"
 
 # TODO - Remove GRCh37 BAM files when "PicardScripts"
 # rm -rf SAM/*$PROJECTNUMBER*
-echo ${STAT_PREFIX} | mail -s " Stats calculated for Run ${STAT_PREFIX} " streidd@mskcc.org # naborsd@mskcc.org mcmanamd@mskcc.org cobbsc@mskcc.org hubermak@mskcc.org vialea@mskcc.org
 # sed -i "/$PROJECTNUMBER/d" ~/StatsTracker/$RUNNAME-Summary-File.txt
