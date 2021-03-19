@@ -15,6 +15,7 @@ include { collect_oxoG_metrics_wkflw } from './modules/collect_oxoG_metrics';
 include { collect_wgs_metrics_wkflw } from './modules/collect_wgs_metrics';
 include { collect_rna_metrics_wkflw } from './modules/collect_rna_metrics';
 include { collect_gc_bias_wkflw } from './modules/collect_gc_bias_metrics';
+include { upload_stats_wkflw } from './modules/upload_stats';
 
 /**
  * Processes input parameters that are booleans
@@ -60,11 +61,15 @@ workflow {
   merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH, align_to_reference_wkflw.out.OUTPUT_ID )
   add_or_replace_read_groups_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID )
   // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
-  mark_duplicates_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.BAM_CH, add_or_replace_read_groups_wkflw.out.OUTPUT_ID )
-  alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-  collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-  collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-  collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-  collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-  collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
+  mark_duplicates_wkflw( add_or_replace_read_groups_wkflw.out.PARAMS, add_or_replace_read_groups_wkflw.out.BAM_CH, add_or_replace_read_groups_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+  upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE, alignment_summary_wkflw.out.METRICS_FILE, collect_hs_metrics_wkflw.out.METRICS_FILE, 
+    collect_oxoG_metrics_wkflw.out.METRICS_FILE, collect_wgs_metrics_wkflw.out.METRICS_FILE, collect_rna_metrics_wkflw.out.METRICS_FILE, collect_gc_bias_wkflw.out.METRICS_FILE,
+    RUN, STATSDONEDIR, SKIP_FILE_KEYWORD
+  )
 }

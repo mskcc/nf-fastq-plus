@@ -1,18 +1,18 @@
-NUM_DAYS_OLD=1 # Age of recent sequenced run to run through pipeline
+# NUM_DAYS_OLD=1 # Age of recent sequenced run to run through pipeline
+NUM_MINS_OLD=60
 
 # DIR location should come from nextflow.config
 SEQ_DIR=/igo/sequencers/
-# FASTQ_DIR=/igo/work/FASTQ
-FASTQ_DIR=/igo/work/streidd/PIPELINE_TESTS/FASTQ
-WORK_DIR=/igo/work/streidd/PIPELINE_REPEATS
+FASTQ_DIR=/igo/stats/NF_TESTING/FASTQ
+WORK_DIR=/igo/stats/NF_TESTING/working 
 
-RECENTLY_CREATED_RUN_DIRS=$(find ${SEQ_DIR} -mindepth 2 -maxdepth 2 -type d -mtime -${NUM_DAYS_OLD})
+RECENTLY_CREATED_RUN_DIRS=$(find ${SEQ_DIR} -mindepth 2 -maxdepth 2 -type d -mmin -${NUM_MINS_OLD})
 
 # We filter the previous find command by directories w/ FILES written within the past day.
 # For some reason, it looks like sequencer run folders are "touched" by res_igo_seq 
 NEW_RUNS=()
 for DIR in ${RECENTLY_CREATED_RUN_DIRS}; do
-  RECENTLY_SEQUENCED_FILES=$(find $DIR -maxdepth 1 -type f -mtime -${NUM_DAYS_OLD})
+  RECENTLY_SEQUENCED_FILES=$(find $DIR -maxdepth 1 -type f -mmin -${NUM_MINS_OLD})
   if [[ ! -z "${RECENTLY_SEQUENCED_FILES}" ]]; then
     NEW_RUNS+=(${DIR})
   fi
@@ -22,9 +22,15 @@ LOCATION=$(dirname "$0")
 WHOAMI=$(basename "$0")
 
 echo "Running ${LOCATION}/${WHOAMI}"
+echo "${#NEW_RUNS[@]} runs have been updaed in the past ${NUM_MINS_OLD} minute(s): ${NEW_RUNS[*]}"
+if [[ ${#NEW_RUNS[@]} -eq 0 ]]; then
+  echo "Exiting."
+  exit 0
+fi
+echo "Checking whether each run has been copied over complete..."
 
 for RUN in ${NEW_RUNS[@]}; do
-  echo "VERIFYING: $RUN"
+  printf "\tVERIFYING: $RUN\n"
   # Run the nextflow process script that determines if the run is good to be demultiplexed. On error, run is skipped
   DEMUX_ALL=false FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQ_DIR} RUN=${RUN} "${LOCATION}/../templates/detect_runs.sh"
   if [ $? -eq 0 ]; then
