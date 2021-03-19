@@ -22,10 +22,15 @@ LOCATION=$(dirname "$0")
 WHOAMI=$(basename "$0")
 
 echo "Running ${LOCATION}/${WHOAMI}"
-echo "${#NEW_RUNS[@]} runs have been written in the past ${NUM_MINS_OLD} minute(s)"
+echo "${#NEW_RUNS[@]} runs have been updaed in the past ${NUM_MINS_OLD} minute(s): ${NEW_RUNS[*]}"
+if [[ ${#NEW_RUNS[@]} -eq 0 ]]; then
+  echo "Exiting."
+  exit 0
+fi
+echo "Checking whether each run has been copied over complete..."
 
 for RUN in ${NEW_RUNS[@]}; do
-  echo "VERIFYING: $RUN"
+  printf "\tVERIFYING: $RUN\n"
   # Run the nextflow process script that determines if the run is good to be demultiplexed. On error, run is skipped
   DEMUX_ALL=false FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQ_DIR} RUN=${RUN} "${LOCATION}/../templates/detect_runs.sh"
   if [ $? -eq 0 ]; then
