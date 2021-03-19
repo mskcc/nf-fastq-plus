@@ -32,6 +32,7 @@ for stat_file in ${STAT_FILES}; do
   fi
 done
 
+echo "START: $(date +"%D %T")"
 DELPHI_ENDPOINT="http://delphi.mskcc.org:8080/ngs-stats/picardstats/updaterun/${MACHINE}/${STAT_PREFIX}"
 echo "Calling to update Picard stats DB: ${DELPHI_ENDPOINT}"
 # TODO - uncomment
@@ -41,6 +42,7 @@ LIMS_ENDPOINT="https://igo-lims02.mskcc.org:8443/LimsRest/updateLimsSampleLevelS
 echo "Calling to LIMS QC Metrics: ${LIMS_ENDPOINT}"
 # TODO - uncomment
 # curl -k ${LIMS_ENDPOINT}
+echo "END: $(date +"%D %T")"
 
 # TODO - Remove GRCh37 BAM files when "PicardScripts"
 # rm -rf SAM/*$PROJECTNUMBER*
