@@ -34,12 +34,12 @@ done
 
 echo "START: $(date +"%D %T")"
 DELPHI_ENDPOINT="http://delphi.mskcc.org:8080/ngs-stats/picardstats/updaterun/${MACHINE}/${STAT_PREFIX}"
-echo "Calling to update Picard stats DB: ${DELPHI_ENDPOINT}"
+echo "Updating Picard stats DB: ${DELPHI_ENDPOINT}"
 # TODO - uncomment
 # curl "${DELPHI_ENDPOINT}"
 sleep 10
 LIMS_ENDPOINT="https://igo-lims02.mskcc.org:8443/LimsRest/updateLimsSampleLevelSequencingQc?runId=${STAT_PREFIX}"
-echo "Calling to LIMS QC Metrics: ${LIMS_ENDPOINT}"
+echo "Updating LIMS QC Metrics: ${LIMS_ENDPOINT}"
 # TODO - uncomment
 # curl -k ${LIMS_ENDPOINT}
 echo "END: $(date +"%D %T")"
