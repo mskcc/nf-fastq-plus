@@ -11,7 +11,7 @@ const cors = require('cors');
 const MONGODB_URL = process.env.MONGODB_URL;
 const mongoose = require('mongoose');
 mongoose
-  .connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .then(() => {
     //don't show the log when it is test
     if (process.env.NODE_ENV !== 'test') {

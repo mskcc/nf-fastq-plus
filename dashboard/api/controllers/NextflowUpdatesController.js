@@ -21,16 +21,14 @@ exports.getPipelineUpdate = [
 
 exports.sendEvent = [
   function (req, res) {
-    console.log('Received event');
     logger.info('Received event');
 
     const body = req.body;
-
     saveNextflowUpdate(body).then((result) => {
       return apiResponse.successResponseWithData(res, 'success', result);
     });
   },
-]
+];
 
 const process_updates = function(updates) {
   console.log(updates);

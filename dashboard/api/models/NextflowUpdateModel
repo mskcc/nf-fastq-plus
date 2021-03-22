@@ -1,14 +1,37 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var Schema = mongoose.Schema;
-
-var NextflowUpdateSchema = new Schema({
-  run_id: {type: String, required: true},
-  run_name: {type: String, required: true},
-  time: {type: Date, required: false},
+const TraceUpdateSchema = new Schema({
   status: {type: String, required: true},
-  trace: {type: Map, required: false},
-  metadata: {type: Map, required: false}
+  runName: {type: String, required: true},
+  runId: {type: String, required: true},
+  time: {type: Date, required: false},
+  process: {type: String, required: true},
+  workDir: {type: String, required: true},
 });
 
-module.exports = mongoose.model('NextflowUpdate', NextflowUpdateSchema);
+const NextflowRunSchema = new Schema({
+  run:  {type: String, required: true},                     /* UPDATED: New Sequencing Run */
+  runName: {type: String, required: true},                  /* UPDATED: New Nextflow Run */
+  runId: {type: String, required: true},                    /* UPDATED: New Nextflow Run */
+  workDir: {type: String, required: true},                  /* UPDATED: New Nextflow Run */
+  command: {type: String, required: true},                  /* UPDATED: New Nextflow Run */
+  parameters: {type: Map, required: true},                  /* UPDATED: New Nextflow Run */
+  time: {type: Date, required: false},                      /* UPDATED: Trace Event */
+  completed: {type: Boolean, required: false},              /* UPDATED: Nextflow Run Complete Event */
+  success:  {type: Boolean, required: false},               /* UPDATED: Nextflow Run Complete Event */
+  trace: [{type: Schema.Types.ObjectId, ref: "TraceUpdate", required: true}]
+});
+
+var SequenceRunSchema = new Schema({
+  run: {type: String, required: true},                      /* UPDATED: New Sequencing Run */
+  totalRuns: {type: Number, required: true},                /* UPDATED: New Nextflow Run */
+  pending: {type: Boolean, required: true},                 /* UPDATED: New Nextflow Run */
+  successfulRuns: {type: Number, required: true},           /* UPDATED: Nextflow Run Success */
+  failedRuns: {type: Number, required: true},               /* UPDATED: Nextflow Run Fail */
+  nxfRuns: [{type: Schema.Types.ObjectId, ref: "NextflowRunUpdate", required: true}],
+});
+
+exports.SequenceRunModel = mongoose.model('SequenceRunUpdate', SequenceRunSchema);
+exports.NextflowRunModel = mongoose.model('NextflowRunUpdate', NextflowRunSchema);
+exports.TraceModel = mongoose.model('TraceUpdate', TraceUpdateSchema);
