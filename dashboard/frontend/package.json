@@ -12,7 +12,10 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.3"
+    "react-scripts": "^3.4.3",
+    "@fortawesome/fontawesome-svg-core": "^1.2.27",
+    "@fortawesome/free-solid-svg-icons": "^5.12.1",
+    "@fortawesome/react-fontawesome": "^0.1.8"
   },
   "scripts": {
     "start": "npm run config-dev && BROWSER=none react-scripts start",
