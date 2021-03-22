@@ -3,15 +3,27 @@ const { logger } = require('../helpers/winston');
 const { safe_get } = require('../helpers/utils');
 
 /**
- * Returns a random quote in the database
- * @returns {Promise<*>}
+ * Returns list of all sequencing runs passed through nextflow
+ * @returns List of Sequencing Run Objects
  */
 exports.getUpdates = async function () {
-  const savedUpdates = await NextflowUpdateModel.find({});
+  const savedUpdates = await SequenceRunModel
+      .find({})
+      .populate({
+        path: 'nxfRuns',
+        model: 'NextflowRunUpdate',
+        populate: {
+          path: 'trace',
+          model: 'TraceUpdate'
+        }
+      })
+      .exec();
   if(savedUpdates){
+    console.log(`Found ${savedUpdates.length} run(s): ${savedUpdates.map(update => update.run)}`);
     const updates = savedUpdates.map(update => update.toJSON());
     return updates;
   }
+  console.log("No runs found");
   return [];
 };
 

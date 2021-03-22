@@ -29,7 +29,7 @@ var SequenceRunSchema = new Schema({
   pending: {type: Boolean, required: true},                 /* UPDATED: New Nextflow Run */
   successfulRuns: {type: Number, required: true},           /* UPDATED: Nextflow Run Success */
   failedRuns: {type: Number, required: true},               /* UPDATED: Nextflow Run Fail */
-  nxfRuns: [{type: Schema.Types.ObjectId, ref: "NextflowRunUpdate", required: true}],
+  nxfRuns: [{type: Schema.Types.ObjectId, ref: "NextflowRunUpdate", required: true}]
 });
 
 exports.SequenceRunModel = mongoose.model('SequenceRunUpdate', SequenceRunSchema);

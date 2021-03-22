@@ -10,11 +10,8 @@ const { safe_get } = require('../helpers/utils');
  */
 exports.getPipelineUpdate = [
   function (req, res) {
-    console.log('Making query');
-    logger.info('Making query');
     getUpdates().then((updates) => {
-      const run_id_map = process_updates(updates);
-      return apiResponse.successResponseWithData(res, 'success', run_id_map);
+      return apiResponse.successResponseWithData(res, 'success', updates);
     });
   },
 ];
@@ -31,8 +28,6 @@ exports.sendEvent = [
 ];
 
 const process_updates = function(updates) {
-  console.log(updates);
-
   const run_ids = updates.map(update => update['run_id']);
   const run_id_map = {}
   for(const rid of run_ids){
@@ -51,8 +46,6 @@ const process_updates = function(updates) {
   const update_resp = [];
 
   for (const [run_id, updates] of Object.entries(run_id_map)) {
-    console.log(run_id);
-
     // TODO
     // const sorted_updates = sorted(updates, key=lambda update: update['time']['$date'], reverse=True)
     const sorted_updates = updates;
