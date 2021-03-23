@@ -18,12 +18,10 @@
     "@fortawesome/react-fontawesome": "^0.1.8"
   },
   "scripts": {
-    "start": "npm run config-dev && BROWSER=none react-scripts start",
+    "start": "REACT_APP_ENV=qa BROWSER=none react-scripts start",
     "clean": "rm -rf node_modules && touch package-lock.json && rm package-lock.json",
-    "config-dev": "cp ./src/configs/config.dev.js ./src/configs/config.js",
-    "config-qa": "cp ./src/configs/confignpm upd.qa.js ./src/configs/config.js",
     "lint": "./node_modules/.bin/eslint --fix .",
-    "build": "npm run clean && npm install && npm run config-qa && npm run lint && react-scripts build",
+    "build": "npm run clean && npm install && npm run lint && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

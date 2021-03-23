@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { BACKEND } from '../config';
 
 const getData = (resp) => {
     const data = resp.data || {};
@@ -7,7 +8,7 @@ const getData = (resp) => {
 
 export function getEvents() {
     return axios
-        .get('http://localhost:3221/api/nextflow/get-pipeline-update')
+        .get(`${BACKEND}/api/nextflow/get-pipeline-update`)
         .then(resp =>  getData(resp))
-        .catch(error => {throw new Error('Unable to get Get Events: ' + error) });
+        .catch(error => {throw new Error('Unable to get Get Events: ' + error); });
 }

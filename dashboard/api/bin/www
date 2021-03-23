@@ -12,7 +12,7 @@ var http = require("http");
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "3221");
+var port = normalizePort(process.env.PORT || "4500"); // process.env.PORT should come from pm2's ecosystem.config.js
 app.set("port", port);
 
 /**

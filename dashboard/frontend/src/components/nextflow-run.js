@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import IconButton from "@material-ui/core/IconButton";
-import {faFileAlt} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import IconButton from '@material-ui/core/IconButton';
+import {faFileAlt} from '@fortawesome/free-solid-svg-icons';
 
-import TraceView from "./trace-view";
+import TraceView from './trace-view';
 
 function NextflowRun({nextflowRun}) {
     const [showLogs, setShowLogs] = useState(true);
 
-    return <div className={"inline-block"}>
-        <div className={"sequencing-run-info"}>
+    return <div className={'inline-block'}>
+        <div className={'sequencing-run-info'}>
             <IconButton aria-label="show-logs"
                         onClick={() => setShowLogs(!showLogs)}
-                        className={"bottom-left"}>
-                <FontAwesomeIcon className={""}
+                        className={'bottom-left'}>
+                <FontAwesomeIcon className={''}
                                  icon={faFileAlt}/>
             </IconButton>
             <div>
@@ -28,7 +28,7 @@ function NextflowRun({nextflowRun}) {
                 showLogs ? <TraceView traceEvents={nextflowRun['trace']}></TraceView> : <div></div>
             }
         </div>
-    </div>
+    </div>;
 }
 
 export default NextflowRun;

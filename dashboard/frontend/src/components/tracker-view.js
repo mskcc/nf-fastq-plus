@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SequencingRun from './sequencing-run';
-import { getEvents } from '../services/tracker-service'
+import { getEvents } from '../services/tracker-service';
 
 function TrackerView() {
   const [events, setEvents] = useState([]);
@@ -11,17 +11,17 @@ function TrackerView() {
       if(update.status && update.data){
         setEvents(update.data);
       }
-    })
+    });
   }, []);
 
   return <div>
   <h1>Current Jobs</h1>
   {
     events.map((sequencingRun) => {
-      return <SequencingRun sequencingRun={sequencingRun}></SequencingRun>
+      return <SequencingRun sequencingRun={sequencingRun}></SequencingRun>;
     })
   }
-  </div>
+  </div>;
 }
 
 export default TrackerView;

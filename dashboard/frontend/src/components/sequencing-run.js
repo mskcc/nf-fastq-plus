@@ -1,5 +1,5 @@
 import React from 'react';
-import NextflowRun from "./nextflow-run";
+import NextflowRun from './nextflow-run';
 function SequencingRun({sequencingRun}) {
     return <div>
             <div className={'sequencing-run-info'}>
@@ -11,10 +11,10 @@ function SequencingRun({sequencingRun}) {
                 </div>
             </div>
         {sequencingRun['nxfRuns'].map((nextflowRun) => {
-            return <NextflowRun nextflowRun={nextflowRun}></NextflowRun>
+            return <NextflowRun nextflowRun={nextflowRun}></NextflowRun>;
         })
         }
-    </div>
+    </div>;
 }
 
 export default SequencingRun;
