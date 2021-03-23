@@ -2,7 +2,7 @@ const properties = {
     'base': {
     },
     'dev': {
-        api: 'http://localhost:3221'
+        api: 'http://localhost:4500'
     },
     'qa': {
         api: 'https://igodev.mskcc.org/nf-dashboard'

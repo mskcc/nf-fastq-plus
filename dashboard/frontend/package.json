@@ -18,7 +18,7 @@
     "@fortawesome/react-fontawesome": "^0.1.8"
   },
   "scripts": {
-    "start": "REACT_APP_ENV=qa BROWSER=none react-scripts start",
+    "start": "REACT_APP_ENV=dev BROWSER=none react-scripts start",
     "clean": "rm -rf node_modules && touch package-lock.json && rm package-lock.json",
     "lint": "./node_modules/.bin/eslint --fix .",
     "build": "npm run clean && npm install && npm run lint && react-scripts build",

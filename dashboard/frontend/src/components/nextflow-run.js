@@ -7,7 +7,6 @@ import TraceView from './trace-view';
 
 function NextflowRun({nextflowRun}) {
     const [showLogs, setShowLogs] = useState(true);
-
     return <div className={'inline-block'}>
         <div className={'sequencing-run-info'}>
             <IconButton aria-label="show-logs"
@@ -22,6 +21,9 @@ function NextflowRun({nextflowRun}) {
                 <p className={'text-align-right'}>Success: {nextflowRun.success.toString()}</p>
                 <p className={'text-align-right'}>{nextflowRun.time}</p>
             </div>
+        </div>
+        <div className={'sequencing-run-info'}>
+            <p className={'text-align-right'}>{nextflowRun.errorMessage}</p>
         </div>
         <div className={'flex-container'}>
             {

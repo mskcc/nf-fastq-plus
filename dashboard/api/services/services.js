@@ -155,18 +155,29 @@ const updateSeqRunModel = async function(nextflowEvent, nxfRunModel) {
         if (err) {
           console.log(err.message);
         }
-        console.log(doc.nxfRuns[0].trace);
-      })
-      /*
-            .populate({
-        path: 'nxfRuns',
-        model: 'NextflowRunUpdate',
-        populate: {
-          path: 'trace',
-          model: 'TraceUpdate'
-        }
-      })
-       */
+        console.log(`Successfully populated SequenceRun document for ${doc.run}`);
+      });
+};
+
+/**
+ * Retrieves the error message from the nextflow event in the form of a list delimited by the new line characters
+ *
+ * @param nextflowEvent
+ *    {
+ *        metadata: {
+ *            workflow: {
+ *                errorMessage: "... \n ..."
+ *            }
+ *        }
+ *    }
+ * @returns {string[]}
+ */
+const getErrorMessage = function(nextflowEvent) {
+  const metaData = nextflowEvent['metadata'] || {};
+  const workflow = metaData['workflow'] || {};
+  const errorMessage = workflow['errorMessage'] || '';
+
+  return errorMessage.split("\n");
 };
 
 /**
@@ -190,18 +201,15 @@ const updateNxfRunModel = async function(nextflowEvent) {
   const command = workflow['commandLine'];
   const parameters = metadata['parameters'];
   const run = parameters['run'];
+  const errorMessage = getErrorMessage(nextflowEvent);
   if(existingNxfRunDoc !== null){
-    existingNxfRunDoc.time = time;
-    existingNxfRunDoc.completed = completed;
-    existingNxfRunDoc.success = success;
-
-    const update = { time, completed, success };
+    const update = { time, completed, success, errorMessage };
     const newDoc = await NextflowRunModel.findOneAndUpdate(nxfRunQuery, update, {
       returnOriginal: false
     });
-
     return newDoc;
   }
+
   console.log("CREATE: NextflowRunModel");
   existingNxfRunDoc = Object.assign({
     time,
@@ -211,6 +219,7 @@ const updateNxfRunModel = async function(nextflowEvent) {
     command,
     parameters,
     run,
+    errorMessage,
     trace: []
   }, nxfRunQuery);
   const nxfRunModel = await NextflowRunModel(existingNxfRunDoc).save();
@@ -256,8 +265,6 @@ const updateTraceModel = async function(nextflowEvent) {
         console.log(err.message);
       }
     });
-
-    console.log("Found an existingNxfRunDoc");
   }
 };
 
@@ -277,8 +284,15 @@ exports.saveNextflowUpdate = async function (nextflowEvent){
   } else if(is_error_event(nextflowEvent)) {
     const runId = nextflowEvent['runId'];
     const runName = nextflowEvent['runName'];
-
     console.log(`ERROR - runId: ${runId}, runName: ${runName}`);
+    /* ERROR looks like this -
+    {
+      runId: 'ac75a853-5aa9-46b4-8922-a107ea1a1990',
+      event: 'error',
+      runName: 'festering_einstein',
+      utcTime: '2021-03-23T13:42:32Z'
+    }
+     */
   }
   return true;
 };

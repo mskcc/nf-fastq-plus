@@ -20,6 +20,7 @@ const NextflowRunSchema = new Schema({
   time: {type: Date, required: false},                      /* UPDATED: Trace Event */
   completed: {type: Boolean, required: false},              /* UPDATED: Nextflow Run Complete Event */
   success:  {type: Boolean, required: false},               /* UPDATED: Nextflow Run Complete Event */
+  errorMessage: {type: [String], required: false},          /* UPDATED: Nextflow Run Complete Event - ERROR */
   trace: [{type: Schema.Types.ObjectId, ref: "TraceUpdate", required: true}]
 });
 
