@@ -19,7 +19,7 @@ VMs
 ## QuickStart
 ### I) Frontend 
 ```
-$ cd ./template-frontend-react && npm install && npm run start # cd ./template-frontend-vue
+$ cd ./frontend && npm install && npm run start     # Should now be running on localhost:3000
 ```
 ### II) Mongo
 ```
@@ -27,7 +27,7 @@ $ mongod
 ```
 ### III) Backend
 ```
-$ cd ./template-backend && npm install && npm run dev
+$ cd ./api && npm install && npm run dev            # Should now be running on localhost:4500
 ```
 
 ## Deployment
