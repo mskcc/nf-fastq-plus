@@ -1,4 +1,4 @@
-# IGO Data Team App Template
+# NF-FASTQ-PLUS DASHBOARD
 
 ## Send nextflow events
 LOCAL
