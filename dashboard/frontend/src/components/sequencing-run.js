@@ -1,19 +1,30 @@
-import React from 'react';
-import NextflowRun from './nextflow-run';
+import React, {useState} from 'react';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import NextflowViewer from './nextflow-viewer';
+
 function SequencingRun({sequencingRun}) {
-    return <div>
-            <div className={'sequencing-run-info'}>
-                <div>{sequencingRun['run']}</div>
-                <div>
-                    <p className={'text-align-right'}>Total Runs: {sequencingRun['totalRuns']}</p>
-                    <p className={'text-align-right'}>Failed Runs: {sequencingRun['failedRuns']}</p>
-                    <p className={'text-align-right'}>Successful Runs: {sequencingRun['successfulRuns']}</p>
-                </div>
-            </div>
-        {sequencingRun['nxfRuns'].map((nextflowRun) => {
-            return <NextflowRun nextflowRun={nextflowRun}></NextflowRun>;
-        })
-        }
+    const [showHistory, setShowHistory] = useState(false);
+
+    return <div className={'seq-table'}>
+                <Row className={'height-row'}>
+                    <Col xs={6} sm={3} className={'sequencing-run-info'}>
+                        <div>
+                            <p className={'hv-align'}>{sequencingRun['run']}</p>
+                        </div>
+                        {
+                            showHistory ? <div>
+                            <p className={'text-align-right'}>Total Runs: {sequencingRun['totalRuns']}</p>
+                            <p className={'text-align-right'}>Failed Runs: {sequencingRun['failedRuns']}</p>
+                            <p className={'text-align-right'}>Successful Runs: {sequencingRun['successfulRuns']}</p>
+                        </div> : <div></div>
+                        }
+                    </Col>
+                    <Col xs={6} sm={9} className={'height-inherit'}>
+                        <NextflowViewer
+                            nxfRuns={sequencingRun['nxfRuns']}></NextflowViewer>
+                    </Col>
+                </Row>
     </div>;
 }
 
