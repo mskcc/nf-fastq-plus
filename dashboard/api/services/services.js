@@ -1,14 +1,69 @@
 const { SequenceRunModel, NextflowRunModel, TraceModel } = require('../models/NextflowUpdateModel');
+const axios = require('axios');
+const https = require('https');
 const { logger } = require('../helpers/winston');
-const { safe_get } = require('../helpers/utils');
+const { LIMS_API, LIMS_USR, LIMS_PWD } = require('./config');
+
+const agent = new https.Agent({
+  rejectUnauthorized: false
+});
+
+/**
+ * Categorizes requests by their sequencing runs
+ *
+ * @param requests
+ * @returns {[
+ *     {
+ *         run: '',
+ *         requests: [ {}, ... ]
+ *     }
+ * ]}
+ */
+const formatRuns = function(requests) {
+  const runMap = {}
+  for(const request of requests) {
+    const runFolder = request['runFolders'];
+    if(runMap[runFolder]){
+      runMap[runFolder].push(request);
+    } else {
+      runMap[runFolder] = [request];
+    }
+  }
+
+  const runList = [];
+  for(const [run,requests] of Object.entries(runMap)){
+    const entry = { run, requests };
+    runList.push(entry);
+  }
+
+  return runList;
+};
+
+/**
+ * Returns the most recent sequencing runs in the LIMS
+ * @param numDays
+ * @returns {Promise<{run: "", requests: {}[]}[]>}
+ */
+exports.getRecentRuns = async function (numDays = 30) {
+  const url = `${LIMS_API}/getSequencingRequests?days=${numDays}`;
+  const response = await axios.get(url, {auth: {username: LIMS_USR, password: LIMS_PWD}, httpsAgent: agent})
+    .catch(function (error) {
+      console.log(`Failed to sequencing runs within the past ${numDays} days. ERROR: ${error.message}`);
+    });
+  const data = response.data || {};
+  const requests = data.requests || [];
+  const recentRuns = formatRuns(requests);
+  return recentRuns;
+};
 
 /**
  * Returns list of all sequencing runs passed through nextflow
  * @returns List of Sequencing Run Objects
  */
-exports.getUpdates = async function () {
+exports.getUpdates = async function (run) {
+  const query = run ? { run }: {};
   const savedUpdates = await SequenceRunModel
-      .find({})
+      .find(query)
       .populate({
         path: 'nxfRuns',
         model: 'NextflowRunUpdate',
@@ -18,12 +73,12 @@ exports.getUpdates = async function () {
         }
       })
       .exec();
-  if(savedUpdates){
+  if(savedUpdates && savedUpdates.length > 0){
     console.log(`Found ${savedUpdates.length} run(s): ${savedUpdates.map(update => update.run)}`);
     const updates = savedUpdates.map(update => update.toJSON());
     return updates;
   }
-  console.log("No runs found");
+  console.log(`No runs found with query: ${JSON.stringify(query)}`);
   return [];
 };
 
@@ -56,7 +111,7 @@ const is_run_event = function(nxf_event) {
   const run_param = parameters["run"];
 
   return run_param !== null;
-}
+};
 
 /**
  *  Returns whether the nextflow event is a trace event

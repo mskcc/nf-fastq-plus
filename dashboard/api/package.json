@@ -5,8 +5,8 @@
   "scripts": {
     "start": "nodemon --exec babel-node -r dotenv/config ./bin/www",
     "clean": "rm -rf node_modules && rm -rf public",
-    "dev": "ENV=QA nodemon ./bin/www",
-    "test": "ENV=test JWT_SECRET={ADD_JWT_SECRET} nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
+    "dev": "NODE_ENV=QA nodemon ./bin/www",
+    "test": "NODE_ENV=test JWT_SECRET={ADD_JWT_SECRET} nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
     "lint": "eslint --fix --config .eslintrc.json \"**/*.js\""
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "express": "~4.16.0",
     "express-jwt": "^5.3.1",
     "express-validator": "^6.6.1",
+    "https": "^1.0.0",
     "ldapjs": "^1.0.2",
     "mocha-lcov-reporter": "^1.3.0",
     "moment": "^2.24.0",

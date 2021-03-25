@@ -1,5 +1,5 @@
 const apiResponse = require('../helpers/apiResponse');
-const { getUpdates, saveNextflowUpdate } = require('../services/services');
+const { getUpdates, saveNextflowUpdate, getRecentRuns } = require('../services/services');
 const { logger } = require('../helpers/winston');
 
 /**
@@ -9,11 +9,28 @@ const { logger } = require('../helpers/winston');
  */
 exports.getPipelineUpdate = [
   function (req, res) {
-    getUpdates().then((updates) => {
+    const query = req.query || {};
+    const run = query.run;
+    getUpdates(run).then((updates) => {
       return apiResponse.successResponseWithData(res, 'success', updates);
     });
   },
 ];
+
+/**
+ * Retrieves recent sequencing runs
+ *
+ * @type {Function[]}
+ */
+exports.getRecentRuns = [
+    function (req, res) {
+        const query = req.query || {};
+        const numDays = query.days || 30;
+        getRecentRuns(numDays).then((runs) => {
+            return apiResponse.successResponseWithData(res, 'success', runs);
+          })
+        }
+    ];
 
 exports.sendEvent = [
   function (req, res) {
