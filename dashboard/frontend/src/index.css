@@ -29,7 +29,7 @@ code {
 }
 
 .seq-table {
-	width: 95vw;
+	width: 85vw;
 	margin: auto;
 }
 
@@ -46,6 +46,17 @@ code {
 }
 
 .sequencing-run-info {
+	border: 1px solid black;
+	border-radius: 5px;
+	position: relative;
+}
+
+.non-nextflow-runs-text {
+	margin: 16px 16px 16px 16px;
+}
+
+.non-nextflow-runs {
+	margin: 2px 4px;
 	border: 1px solid black;
 	border-radius: 5px;
 	position: relative;

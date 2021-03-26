@@ -20,24 +20,28 @@ const agent = new https.Agent({
  * ]}
  */
 const formatRuns = function(requests) {
-  const runMap = {}
+  const runMap = {};
   for(const request of requests) {
-    const runFolder = request['runFolders'];
-    if(runMap[runFolder]){
-      runMap[runFolder].push(request);
-    } else {
-      runMap[runFolder] = [request];
+    const runFolders = request['runFolders'] || [];
+
+    for(const runFolder of runFolders){
+      const noTrailingSlashes = runFolder.replace(/^\/|\/+$/gm,'');
+      const runPathParts = noTrailingSlashes.split('/');
+      if(runPathParts.length == 0){
+        console.log(`ERROR: Couldn't correctly parse runName: ${runFolder}`);
+        return [];
+      }
+      const runName = runPathParts[runPathParts.length - 1].replace('/', '');
+      if(runMap[runName]){
+        runMap[runName].push(request);
+      } else {
+        runMap[runName] = [request];
+      }
     }
   }
 
   const runList = [];
-  for(const [runPath,requests] of Object.entries(runMap)){
-      const noTrailingSlashes = runPath.replace(/^\/|\/+$/gm,'');
-      const runPathParts = noTrailingSlashes.split('/');
-      if(runPathParts.length == 0){
-          console.log(`Couldn't correctly parse runName: ${runPath}`);
-      }
-      const run = runPathParts[runPathParts.length - 1].replace('/', '');
+  for(const [run,requests] of Object.entries(runMap)){
     const entry = { run, requests };
     runList.push(entry);
   }

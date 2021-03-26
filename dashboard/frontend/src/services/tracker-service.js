@@ -24,7 +24,7 @@ export function getEvents(runName) {
  * Retrieves the sequencing runs from the input number of days
  * @returns {Promise<AxiosResponse<T>>}
  */
-export function getSequencingRuns(numDays = 14) {
+export function getSequencingRuns(numDays = 7) {
     return axios
         .get(`${BACKEND}/api/nextflow/recent-runs?days=${numDays}`)
         .then(resp =>  getData(resp))
