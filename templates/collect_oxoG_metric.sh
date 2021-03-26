@@ -43,18 +43,25 @@ REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)   # Reference genome file 
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 
+METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+STAT_FILENAME="${RUN_TAG}___oxoG.txt"
+METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
+
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} || -z $(echo $MSKQ | grep -i "yes") ]]; then
   echo "Skipping CollectOxoGMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS} MSKQ: ${MSKQ})"
+  echo "${SKIP_FILE_KEYWORD}_OXOG" > ${STAT_FILENAME}
   exit 0
 fi
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+
 mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___oxoG.txt"
 echo "[CollectOxoGMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
 BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectOxoGMetrics CONTEXT_SIZE=0 I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
 
 run_cmd $CMD
+
+# TODO - make metrics file available as output for nextlow
+cp ${METRICS_FILE} .

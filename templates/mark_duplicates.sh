@@ -47,16 +47,26 @@ INPUT_BAM=$(realpath *RGP.bam)
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}
 mkdir -p ${METRICS_DIR}
 MD_TAG="${RUN_TAG}___MD"
-METRICS_FILE="${METRICS_DIR}/${MD_TAG}.txt"
+STAT_NAME="${MD_TAG}.txt"
+METRICS_FILE="${METRICS_DIR}/${STAT_NAME}"
 MD_BAM="${MD_TAG}.bam"
 
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
   NO_MD_BAM="${RUN_TAG}___NO_MD.bam"
   echo "Skipping Mark Duplicates for ${RUN_TAG} (MD: ${MD}). Creating symbolic link to input - ${NO_MD_BAM}"
   ln -s ${INPUT_BAM} ${NO_MD_BAM}
-  exit 0
+  echo "${SKIP_FILE_KEYWORD}_MD" > ${STAT_NAME}
+  # NOTE - DO NOT EXIT (e.g. "exit 0") Module mark_duplicates outputs ENV varialbes and to do this nextflow will append
+  # statements to write all environment variables to .command.env AT FILE END
+  #   e.g. echo SAMPLE_TAG=$SAMPLE_TAG > .command.env
+  # If you exit here, then .command.env will never be written
+else
+  echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
+  CMD="!{PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
+  run_cmd $CMD
+
+  # TODO - make metrics file available as output for nextlow
+  cp ${METRICS_FILE} .
 fi
 
-echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
-CMD="!{PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
-run_cmd $CMD
+

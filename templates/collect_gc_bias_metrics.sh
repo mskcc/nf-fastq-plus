@@ -50,3 +50,6 @@ echo "[CollectGcBiasMetrics:${RUN_TAG}] Writing to ${METRICS_FILE} & ${METRICS_P
 BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectGcBiasMetrics ASSUME_SORTED=true I=${BAM} O=${METRICS_FILE} CHART=${METRICS_PDF} S=${SUMMARY_FILE} R=${REFERENCE}"
 run_cmd $CMD
+
+# TODO - make metrics file available as output for nextlow
+cp ${METRICS_FILE} .

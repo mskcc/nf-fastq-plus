@@ -41,17 +41,24 @@ BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)       # Interval list of bait site
 TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)   # Interval list of target sites
 RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
 
+METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+STAT_FILE_NAME="${RUN_TAG}___HS.txt"
+
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then
   echo "Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
+  echo "${SKIP_FILE_KEYWORD}_HS" > ${STAT_FILE_NAME}
   exit 0
 fi
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+
 mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___HS.txt"
+METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
 
 echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
 BAM=$(realpath *.bam)
 CMD="!{PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
 run_cmd $CMD
+
+# TODO - make metrics file available as output for nextlow
+cp ${METRICS_FILE} .

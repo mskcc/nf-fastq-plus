@@ -56,7 +56,7 @@ samplesheet_file=$(basename ${SAMPLESHEET})
 
 # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
 basename ${SAMPLESHEET}
-RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=\d)[A-Za-z_0-9-]+")
+RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=_)[A-Za-z_0-9-]+")
 echo "RUN_BASENAME: ${RUN_BASENAME}"
 DEMUXED_DIR="!{FASTQ_DIR}/${RUN_BASENAME}"
 
