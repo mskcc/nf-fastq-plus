@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import IconButton from '@material-ui/core/IconButton';
 
 import {faCheck, faExclamationCircle, faEllipsisH} from '@fortawesome/free-solid-svg-icons';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import TraceView from './trace-view';
 
 function NextflowRun({nextflowRun}) {
     const [showLogs, setShowLogs] = useState(true);
@@ -37,7 +35,9 @@ function NextflowRun({nextflowRun}) {
         <Col xs={6} className={'height-inherit word-wrap scroll-y'}>
             {
                 nextflowRun.errorMessage ? nextflowRun.errorMessage.map((line) => {
-                    return <p className={'text-align-left code'}>{line}</p>;
+                    return <p
+                        key={line}
+                        className={'text-align-left code'}>{line}</p>;
                 }) : <p></p>
             }
         </Col>

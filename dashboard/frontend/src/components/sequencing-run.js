@@ -5,8 +5,15 @@ import NextflowViewer from './nextflow-viewer';
 
 function SequencingRun({sequencingRun}) {
     const [showHistory, setShowHistory] = useState(false);
-
     return <div className={'seq-table'}>
+                <Row className={'margin-top-15'}>
+                    <Col xs={6} sm={3}>
+                        <p className={'text-align-center'}>RUN</p>
+                    </Col>
+                    <Col xs={6} sm={9}>
+                        <p className={'text-align-center'}>PIPELINE INFO</p>
+                    </Col>
+                </Row>
                 <Row className={'height-row'}>
                     <Col xs={6} sm={3} className={'sequencing-run-info'}>
                         <div>

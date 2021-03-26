@@ -1,48 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import SequencingRun from './sequencing-run';
 import { getEvents, getSequencingRuns } from '../services/tracker-service';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 function TrackerView() {
-  const [events, setEvents] = useState([]);
   const [sequencingRuns, setSequencingRuns] = useState([]);
+
+  const [nxfEvents, setNxfEvents] = useState([]);
 
   // Set up our eventSource to listen
   useEffect(() => {
+    const receivedEvents = [];
     for(const run of sequencingRuns){
       const runName = run['run'];
       if(runName) {
+        console.log(`Querying for: ${runName}`);
         getEvents(runName).then((nextflowEvents) => {
-          setEvents(nextflowEvents);
+          // TODO - replace w/ better validator
+          if(Object.keys(nextflowEvents).length > 0){
+            const updatedNxfEvents = [...nxfEvents];
+            updatedNxfEvents.push(nextflowEvents);
+            console.log(`Pushed: ${runName}`);
+            setNxfEvents(updatedNxfEvents);
+          }
         });
       } else {
         console.log(`Couldn't extract runName from ${JSON.stringify(run)}`);
       }
+      console.log(`Loop done: ${runName}`);
     }
   }, [sequencingRuns]);
-
   useEffect(() => {
     getSequencingRuns().then((runs) => {
-      console.log(runs);
+      console.log('Received sequencing events');
       setSequencingRuns(runs);
     });
   }, []);
 
-  return <div>
-    <Row className={'margin-top-15'}>
-      <Col xs={6} sm={3}>
-        <p className={'text-align-center'}>RUN</p>
-      </Col>
-      <Col xs={6} sm={9}>
-        <p className={'text-align-center'}>PIPELINE INFO</p>
-      </Col>
-    </Row>
-  {
-    events.map((sequencingRun) => {
-      return <SequencingRun sequencingRun={sequencingRun}></SequencingRun>;
-    })
-  }
+  const isSuccessfulRun = (nxfEvt) => {
+    return nxfEvt['successfulRuns'] > 0 && !nxfEvt['pending'];
+  };
+
+  const isFailedRun = (nxfEvt) => {
+    return nxfEvt['totalRuns'] === nxfEvt['failedRuns'] && !nxfEvt['pending'];
+  };
+
+  const isPendingRun = (nxfEvt) => {
+      return nxfEvt['pending'];
+  };
+
+  const pendingRuns = nxfEvents.filter(isPendingRun);
+  const failedRuns = nxfEvents.filter(isFailedRun);
+  const successfulRuns = nxfEvents.filter(isSuccessfulRun);
+
+  return <div className={'seq-run-container'}>
+    <h2>Pending ({pendingRuns.length})</h2>
+    {
+      pendingRuns.map((sequencingRun) => {
+        return <SequencingRun
+            key={sequencingRun.run}
+            sequencingRun={sequencingRun}></SequencingRun>;
+      })
+    }
+    <h2>Failed ({failedRuns.length})</h2>
+    {
+      failedRuns.map((sequencingRun) => {
+        return <SequencingRun
+            key={sequencingRun.run}
+            sequencingRun={sequencingRun}></SequencingRun>;
+      })
+    }
+    <h2>Successful ({successfulRuns.length})</h2>
+    {
+      successfulRuns.map((sequencingRun) => {
+        return <SequencingRun
+            key={sequencingRun.run}
+            sequencingRun={sequencingRun}></SequencingRun>;
+      })
+    }
   </div>;
 }
 

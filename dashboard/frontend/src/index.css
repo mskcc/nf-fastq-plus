@@ -93,6 +93,12 @@ code {
 	margin-top: 15px;
 }
 
+.seq-run-container {
+	padding-top: 25px;
+	width: 85%;
+	margin: auto;
+}
+
 .code {
 	color: #251605;
 	font-family: Futura;

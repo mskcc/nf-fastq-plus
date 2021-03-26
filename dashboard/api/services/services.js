@@ -31,7 +31,13 @@ const formatRuns = function(requests) {
   }
 
   const runList = [];
-  for(const [run,requests] of Object.entries(runMap)){
+  for(const [runPath,requests] of Object.entries(runMap)){
+      const noTrailingSlashes = runPath.replace(/^\/|\/+$/gm,'');
+      const runPathParts = noTrailingSlashes.split('/');
+      if(runPathParts.length == 0){
+          console.log(`Couldn't correctly parse runName: ${runPath}`);
+      }
+      const run = runPathParts[runPathParts.length - 1].replace('/', '');
     const entry = { run, requests };
     runList.push(entry);
   }
@@ -42,7 +48,7 @@ const formatRuns = function(requests) {
 /**
  * Returns the most recent sequencing runs in the LIMS
  * @param numDays
- * @returns {Promise<{run: "", requests: {}[]}[]>}
+ * @returns {Promise<{run: '', requests: {}[]}[]>}
  */
 exports.getRecentRuns = async function (numDays = 30) {
   const url = `${LIMS_API}/getSequencingRequests?days=${numDays}`;
@@ -73,13 +79,15 @@ exports.getUpdates = async function (run) {
         }
       })
       .exec();
-  if(savedUpdates && savedUpdates.length > 0){
+  if(savedUpdates && savedUpdates.length === 1){
     console.log(`Found ${savedUpdates.length} run(s): ${savedUpdates.map(update => update.run)}`);
     const updates = savedUpdates.map(update => update.toJSON());
-    return updates;
+    return updates[0];
+  } else if(savedUpdates && savedUpdates.length > 1){
+    console.log('Too many updates!');
   }
   console.log(`No runs found with query: ${JSON.stringify(query)}`);
-  return [];
+  return {};
 };
 
 /**
@@ -87,16 +95,16 @@ exports.getUpdates = async function (run) {
  *
  *   START EVENT
  *   {
- *     "metadata":{
- *       "parameters":{
- *         "run":"210315_SCOTT_0313_AHT25CAFX2"
+ *     'metadata':{
+ *       'parameters':{
+ *         'run':'210315_SCOTT_0313_AHT25CAFX2'
  *       },
- *       "workflow":{ ... }
+ *       'workflow':{ ... }
  *     },
- *     "runId":"cc92cf46-022c-49fe-9052-3bfbc688d534",
- *       "event":"started",
- *       "runName":"trusting_coulomb",
- *       "utcTime":"2021-03-18T19:21:20Z"
+ *     'runId':'cc92cf46-022c-49fe-9052-3bfbc688d534',
+ *       'event':'started',
+ *       'runName':'trusting_coulomb',
+ *       'utcTime':'2021-03-18T19:21:20Z'
  *   }
  */
 const is_run_event = function(nxf_event) {
@@ -108,7 +116,7 @@ const is_run_event = function(nxf_event) {
   };
 
   const parameters = metadata['parameters'] || {};
-  const run_param = parameters["run"];
+  const run_param = parameters['run'];
 
   return run_param !== null;
 };
@@ -118,16 +126,16 @@ const is_run_event = function(nxf_event) {
  *
  *   TRACE EVENT
  *   {
- *     "trace":{
- *       "task_id":1,
- *       "status":"SUBMITTED",
- *       "hash":"1e/9ca43c",
+ *     'trace':{
+ *       'task_id':1,
+ *       'status':'SUBMITTED',
+ *       'hash':'1e/9ca43c',
  *       ...
  *     },
- *     "runId":"cc92cf46-022c-49fe-9052-3bfbc688d534",
- *     "event":"process_submitted",
- *     "runName":"trusting_coulomb",
- *     "utcTime":"2021-03-18T19:21:24Z"
+ *     'runId':'cc92cf46-022c-49fe-9052-3bfbc688d534',
+ *     'event':'process_submitted',
+ *     'runName':'trusting_coulomb',
+ *     'utcTime':'2021-03-18T19:21:24Z'
  *   }
  */
 const is_trace_event = function(nxf_event){
@@ -167,7 +175,7 @@ const updateSeqRunModel = async function(nextflowEvent, nxfRunModel) {
 
   let seqRunDoc = await SequenceRunModel.findOne(seqRunQuery);
   if(seqRunDoc !== null){
-    console.log("UPDATE: SequenceRunModel");
+    console.log('UPDATE: SequenceRunModel');
     if(completed){
       seqRunDoc.pending = false;
       seqRunDoc.totalRuns += 1;
@@ -181,7 +189,7 @@ const updateSeqRunModel = async function(nextflowEvent, nxfRunModel) {
       // NOTHING TO UPDATE
     }
   } else {
-    console.log("CREATE: SequenceRunModel");
+    console.log('CREATE: SequenceRunModel');
     seqRunDoc = Object.assign({
       pending: true,
       totalRuns: 0,
@@ -221,7 +229,7 @@ const updateSeqRunModel = async function(nextflowEvent, nxfRunModel) {
  *    {
  *        metadata: {
  *            workflow: {
- *                errorMessage: "... \n ..."
+ *                errorMessage: '... \n ...'
  *            }
  *        }
  *    }
@@ -232,7 +240,7 @@ const getErrorMessage = function(nextflowEvent) {
   const workflow = metaData['workflow'] || {};
   const errorMessage = workflow['errorMessage'] || '';
 
-  return errorMessage.split("\n");
+  return errorMessage.split('\n');
 };
 
 /**
@@ -265,7 +273,7 @@ const updateNxfRunModel = async function(nextflowEvent) {
     return newDoc;
   }
 
-  console.log("CREATE: NextflowRunModel");
+  console.log('CREATE: NextflowRunModel');
   existingNxfRunDoc = Object.assign({
     time,
     completed,
@@ -280,7 +288,7 @@ const updateNxfRunModel = async function(nextflowEvent) {
   const nxfRunModel = await NextflowRunModel(existingNxfRunDoc).save();
   if(nxfRunModel === null){
     // Trying to add err-callback to save function removes this
-    console.log("ERROR");
+    console.log('ERROR');
   }
   return nxfRunModel;
 };
@@ -306,7 +314,7 @@ const updateTraceModel = async function(nextflowEvent) {
   };
   const traceDoc = await TraceModel(traceInfo).save();
   if(traceDoc === null){
-    console.log("BIG PROBLEM - Couldn't save trace");
+    console.log('BIG PROBLEM - Couldn\'t save trace');
   }
 
   const nxfRunQuery = getNxfRunQry(nextflowEvent);
