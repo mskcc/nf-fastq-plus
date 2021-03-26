@@ -1,5 +1,6 @@
 # NUM_DAYS_OLD=1 # Age of recent sequenced run to run through pipeline
-NUM_MINS_OLD=60
+NUM_MINS_OLD=600
+EVENTS_API="http://dlviigoweb1:4500/api/nextflow/send-nextflow-event"
 
 # DIR location should come from nextflow.config
 SEQ_DIR=/igo/sequencers/
@@ -21,7 +22,7 @@ done
 LOCATION=$(dirname "$0")
 WHOAMI=$(basename "$0")
 
-echo "Running ${LOCATION}/${WHOAMI}"
+echo "[$(date "+%Y%m%d") $(date +"%T")] Running ${LOCATION}/${WHOAMI}"
 echo "${#NEW_RUNS[@]} runs have been updaed in the past ${NUM_MINS_OLD} minute(s): ${NEW_RUNS[*]}"
 if [[ ${#NEW_RUNS[@]} -eq 0 ]]; then
   echo "Exiting."
@@ -39,7 +40,7 @@ for RUN in ${NEW_RUNS[@]}; do
     RUN_DIR=${WORK_DIR}/${RUNNAME}
     mkdir -p ${RUN_DIR}
     cd ${RUN_DIR}
-    nohup nextflow ${LOCATION}/../main.nf --run ${RUNNAME} -bg
+    nohup nextflow ${LOCATION}/../main.nf --run ${RUNNAME} -with-weblog "${EVENTS_API}" -bg >> "nf_${RUNNAME}.log"
     pwd
     cd -
   else
