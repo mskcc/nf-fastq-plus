@@ -9,25 +9,24 @@ function TrackerView() {
 
   // Set up our eventSource to listen
   useEffect(() => {
-    const receivedEvents = [];
-    for(const run of sequencingRuns){
-      const runName = run['run'];
-      if(runName) {
-        console.log(`Querying for: ${runName}`);
-        getEvents(runName).then((nextflowEvents) => {
-          // TODO - replace w/ better validator
-          if(Object.keys(nextflowEvents).length > 0){
-            const updatedNxfEvents = [...nxfEvents];
-            updatedNxfEvents.push(nextflowEvents);
+    (async () => {
+      const nextflowEvents = [];
+      for(const run of sequencingRuns){
+        const runName = run['run'];
+        if(runName) {
+          console.log(`Querying for: ${runName}`);
+          const seqNextflowEvents = await getEvents(runName);
+          if(Object.keys(seqNextflowEvents).length > 0){
+            nextflowEvents.push(seqNextflowEvents);
             console.log(`Pushed: ${runName}`);
-            setNxfEvents(updatedNxfEvents);
           }
-        });
-      } else {
-        console.log(`Couldn't extract runName from ${JSON.stringify(run)}`);
+        } else {
+          console.log(`Couldn't extract runName from ${JSON.stringify(run)}`);
+        }
+        console.log(`Loop done: ${runName}`);
       }
-      console.log(`Loop done: ${runName}`);
-    }
+      setNxfEvents(nextflowEvents);
+    })();
   }, [sequencingRuns]);
   useEffect(() => {
     getSequencingRuns().then((runs) => {
