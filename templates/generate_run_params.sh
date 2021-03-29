@@ -95,7 +95,7 @@ else
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
    
     SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} RUN_TYPE=${RUN_TYPE} DUAL=${DUAL}"
-
+    echo "SAMPLE_SHEET_PARAMS: ${SAMPLE_SHEET_PARAMS}"
     PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
 
     # Extract GTAG value from generate_run_params.py output for ${RUN_TAG}, e.g. "...GTAG=GRCh37..." => "GRCh37"
@@ -125,7 +125,7 @@ else
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
-        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${RUN_PARAMS_FILE}"
+        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do

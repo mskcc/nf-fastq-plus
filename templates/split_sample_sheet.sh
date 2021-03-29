@@ -22,7 +22,7 @@ IFS=','
 # echo $RUN_TO_DEMUX | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
 
 echo "Searching w/ !{LAB_SAMPLE_SHEET_DIR}/SampleShee*${RUN_TO_DEMUX}*.csv"
-SAMPLESHEET=$(find !{LAB_SAMPLE_SHEET_DIR} -type f -name "SampleShee*${RUN_TO_DEMUX}*.csv")
+SAMPLESHEET=$(find !{LAB_SAMPLE_SHEET_DIR} -type f -name "SampleShee*${RUN_TO_DEMUX}*.csv" | sort | tail -1) # Retrieve the last modified sample sheet
 echo "Set samplesheet path to ${SAMPLESHEET}"
 
 SAMPLE_SHEET_FILE_NAME=$(basename $SAMPLESHEET)
@@ -57,6 +57,12 @@ echo "Wrote ${NUM_SHEETS} sample sheets from ${COPIED_SAMPLE_SHEET} to file !{SP
 if (( $NUM_SHEETS == 0 )); then
   echo "No sample sheets, copying original to !{PROCESSED_SAMPLE_SHEET_DIR}"
   cp ${COPIED_SAMPLE_SHEET} !{PROCESSED_SAMPLE_SHEET_DIR}
-  COPIED_FILE=!{PROCESSED_SAMPLE_SHEET_DIR}/$(basename ${COPIED_SAMPLE_SHEET})
+  COPIED_FILENAME=$(basename ${COPIED_SAMPLE_SHEET})
+  COPIED_FILE=$(find !{PROCESSED_SAMPLE_SHEET_DIR} -type f -name ${COPIED_FILENAME}) # !{PROCESSED_SAMPLE_SHEET_DIR}/$(basename ${COPIED_SAMPLE_SHEET})
+  if [[ -z ${COPIED_FILE} ]]; then
+    echo "Could not find ${COPIED_FILENAME} in !{PROCESSED_SAMPLE_SHEET_DIR}"
+    exit 1
+  fi
+  echo "Writing to !{SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
   ls ${COPIED_FILE} >> !{SPLIT_SAMPLE_SHEETS}
 fi
