@@ -9,8 +9,8 @@ EVENTS_API="http://dlviigoweb1:4500/api/nextflow/receive-nextflow-event"
 
 # DIR location should come from nextflow.config
 SEQ_DIR=/igo/sequencers/
-FASTQ_DIR=/igo/stats/NF_TESTING_IGO/FASTQ
-WORK_DIR=/igo/stats/NF_TESTING_IGO/working 
+FASTQ_DIR=/igo/stats/NF_TESTING/FASTQ
+WORK_DIR=/igo/stats/NF_TESTING/working 
 
 RECENTLY_CREATED_RUN_DIRS=$(find ${SEQ_DIR} -mindepth 2 -maxdepth 2 -type d -mmin -${NUM_MINS_OLD})
 

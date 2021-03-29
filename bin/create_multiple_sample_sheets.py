@@ -7,6 +7,10 @@ import argparse
 import os
 
 def get_sample_sheet_name(sample_sheet):
+	""" Retrieves the samplesheet filename from the absolute path to the samplesheet
+	:param sample_sheet_file, str: absolute path to sample sheet
+	:return: string
+	"""
 	sample_sheet_parts = sample_sheet.split("/")
 	sample_sheet_file_name = sample_sheet_parts[-1]
 	sample_sheet_base = sample_sheet_file_name.split(".")[0]
@@ -102,7 +106,6 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 	# check to see if sample sheet has been manipulated in any way
 	if (data_sheets[0].equals(no_data)) and (data_sheets[1].equals(no_data)) and (data_sheets[2].equals(no_data)) and (data_sheets[3].equals(no_data)):
 		print('NO CHANGES MADE TO THE ORIGINAL SAMPLE SHEET')
-		return
 	else:
 		print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
 	# list for sample sheet extensions
