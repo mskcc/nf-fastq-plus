@@ -1,8 +1,8 @@
 var express = require('express');
-var quoteRouter = require('./nextflow');
+var nextflowRouter = require('./nextflow');
 
 var app = express();
 
-app.use('/nextflow', quoteRouter);
+app.use('/nextflow', nextflowRouter);
 
 module.exports = app;
