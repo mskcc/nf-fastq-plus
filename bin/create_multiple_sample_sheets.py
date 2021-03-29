@@ -6,6 +6,16 @@ import numpy as np
 import argparse
 import os
 
+def get_sample_sheet_name(sample_sheet):
+	""" Retrieves the samplesheet filename from the absolute path to the samplesheet
+	:param sample_sheet_file, str: absolute path to sample sheet
+	:return: string
+	"""
+	sample_sheet_parts = sample_sheet.split("/")
+	sample_sheet_file_name = sample_sheet_parts[-1]
+	sample_sheet_base = sample_sheet_file_name.split(".")[0]
+	return sample_sheet_base
+
 def tenx_genomics(sample_data, header):
 	# create empty data frame
 	tenx_genomics_data = pd.DataFrame(columns = header)
@@ -19,7 +29,7 @@ def tenx_genomics(sample_data, header):
 	# move regular sample sheet to the last element of the list	
 	tenx_genomics_data.index = range(len(tenx_genomics_data))
 	sample_data.index = range(len(sample_data))
-	data_sheets[4] = sample_data
+	data_sheets[5] = sample_data
 	if not tenx_genomics_data.empty:
 		data_sheets[0] = tenx_genomics_data
 
@@ -35,7 +45,7 @@ def dlp(sample_data, header):
 	# clean up index and  move regular sample sheet to the last element of the list
 	dlp_data.index = range(len(dlp_data))
 	sample_data.index = range(len(sample_data))
-	data_sheets[4] = sample_data
+	data_sheets[5] = sample_data
 	if not dlp_data.empty:
 		data_sheets[1] = dlp_data
 		
@@ -43,17 +53,25 @@ def dlp(sample_data, header):
 def wgs(sample_data, header):
 	# create empty data frame
 	wgs_data = pd.DataFrame(columns = header)
+	ped_peg_data = pd.DataFrame(columns = header)
 	# test for wgs data
 	for x in range(0, len(sample_data['Sample_Well']), 1):
 		if (sample_data['Sample_Well'].loc[x] == 'HumanWholeGenome'):
-			wgs_data.loc[x] = sample_data.loc[x]
-			sample_data.drop([x], inplace = True, axis = 0)
+			if ('Project_08822' in sample_data['Sample_Project'].loc[x]):
+				ped_peg_data.loc[x] = sample_data.loc[x]
+				sample_data.drop([x], inplace = True, axis = 0)
+			else:
+				wgs_data.loc[x] = sample_data.loc[x]
+				sample_data.drop([x], inplace = True, axis = 0)
 	# clean up index and move regular sample sheet to the last element of the list
 	wgs_data.index = range(len(wgs_data))
+	ped_peg_data.index = range(len(ped_peg_data))
 	sample_data.index = range(len(sample_data))
-	data_sheets[4] = sample_data
+	data_sheets[5] = sample_data
 	if not wgs_data.empty:
 		data_sheets[3] = wgs_data
+	if not ped_peg_data.empty:
+		data_sheets[4] = ped_peg_data
 			
 		
 def i7_only(sample_data, header):
@@ -79,7 +97,7 @@ def i7_only(sample_data, header):
 	# move regular sample sheet to the last element of the list	
 	i7_data.index = range(len(i7_data))
 	sample_data.index = range(len(sample_data))
-	data_sheets[4] = sample_data
+	data_sheets[5] = sample_data
 	if not i7_data.empty:
 		data_sheets[2] = i7_data
 
@@ -91,9 +109,9 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 	else:
 		print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
 	# list for sample sheet extensions
-	extensions = ['_10X.csv', '_DLP.csv', '_i7.csv', '_WGS.csv', '.csv']
+	extensions = ['_10X.csv', '_DLP.csv', '_i7.csv', '_WGS.csv', '_PPG.csv', '.csv']
 	
-	# Write sample sheet to processed location
+	# go to new DividedSampleSheets directory
 	os.chdir(processed_dir)
 	
 	# create a csv sheet for all valid data sheets
@@ -117,7 +135,6 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 				data_element_sample_sheet = wgs_top_of_sheet + data_element_list
 			else:
 				data_element_sample_sheet = top_of_sheet + data_element_list
-			
 			# ext = extensions[data_sheets.index(data_element)]
 			data_element_sample_sheet_name = sample_sheet_name + extensions[y]
 			print("Writing " + data_element_sample_sheet_name)
@@ -130,12 +147,6 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 				f = open(created_sample_sheets, "a")
 				f.write("{}/{}\n".format(processed_dir, data_element_sample_sheet_name))
 				f.close()
-
-def get_sample_sheet_name(sample_sheet):
-	sample_sheet_parts = sample_sheet.split("/")
-	sample_sheet_file_name = sample_sheet_parts[-1]
-	sample_sheet_base = sample_sheet_file_name.split(".")[0]
-	return sample_sheet_base
 
 def main():
 	parser = argparse.ArgumentParser(description = 'This script takes a dual indexed sample sheet and splits it if there are DLP, PADDED or 10X indices')
@@ -151,19 +162,29 @@ def main():
 
 	output="SAMPLE SHEET={}, PROCESSED DIR={}".format(sample_sheet, processed_dir)
 	if created_sample_sheets:
-	    working_dir = os.getcwd()
-	    created_sample_sheets = "{}/{}".format(working_dir, created_sample_sheets)
-	    output += ", OUTPUT FILE={}".format(created_sample_sheets)
+		working_dir = os.getcwd()
+		created_sample_sheets = "{}/{}".format(working_dir, created_sample_sheets)
+		output += ", OUTPUT FILE={}".format(created_sample_sheets)
 	print(output)
+	
+	# grab sample sheet - alternate way
+	# sample_sheet = args.sample_sheet.split('/')[5]
+	# sample_sheet_dir = args.sample_sheet[:-len(sample_sheet)]
+	# print('LOCATION OF SAMPLE SHEET = ' + sample_sheet_dir)
+	# print('SAMPLE SHEET = ' + sample_sheet)
+
+	
+	# print for sanity check - where are we?
+	print('LOCATION OF SAMPLE SHEET = ' + os.getcwd())
 	
 	# hold area for the sample sheet created
 	# index listing
-	# 0 = 10X, 1 = DLP, 2 = i7 only, 3 = HumanWholeGenome, 4 = rest of sample sheet
+	# 0 = 10X, 1 = DLP, 2 = padded, 3 = HumanWholeGenome, 4 = PED-PEG, 5 = rest of sample sheet
 	global data_sheets, no_data, dual_index
 	dual_index = True  
 	# empty data set for comparison
 	no_data = pd.DataFrame()
-	data_sheets = [no_data, no_data, no_data, no_data, no_data]
+	data_sheets = [no_data, no_data, no_data, no_data, no_data, no_data]
 		
 	# this will hold the top of the sample sheet
 	top_of_sheet = list()
@@ -200,13 +221,13 @@ def main():
 		tenx_genomics(sample_data, header)	   
 	
 		# call the DLP routine
-		dlp(data_sheets[4], header)
+		dlp(data_sheets[5], header)
 		
 		# routine for taking out HumanWholeGenome
-		wgs(data_sheets[4], header)
+		wgs(data_sheets[5], header)
 		
 		# check for padding
-		i7_only(data_sheets[4], header)
+		i7_only(data_sheets[5], header)
 	
 		# did we have to split sample sheets?
 		create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets)
