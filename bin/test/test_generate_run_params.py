@@ -176,11 +176,11 @@ class TestSetupStats(unittest.TestCase):
 
     def test_CRISPRSeq(self):
         params = get_recipe_species_params("CRISPRSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=no MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRSeq", "Mouse")
 
         params = get_recipe_species_params("CRISPRSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=no MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRSeq", "Human")
 
     def test_CRISPRScreen(self):

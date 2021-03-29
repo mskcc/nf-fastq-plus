@@ -377,8 +377,8 @@ recipe_options_mapping_UNORDERED = {
         MD: "yes"
     },
     "IDT_Exome_v2_FP_Viral_Probes": {
-      BAITS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/xgen-exome-research-panel-v2-probes-GRCh37.intervalList",
-      TARGETS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/xgen-exome-research-panel-v2-targets-GRCh37.intervalList"
+      BAITS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_baits.intervalList",
+      TARGETS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_targets.intervalList"
     },
     "IDT_Exome_v1": {
         BAITS: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-BAITS.iList",
@@ -637,7 +637,7 @@ recipe_options_mapping_UNORDERED = {
     },
     "CRISPRSeq": {
         MSKQ: "no",
-        MD: "no"
+        MD: "yes"
         # TODO
         # sh ~/Scripts/PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES --mskq $MSKQ
     },
