@@ -1,5 +1,7 @@
+#!/bin/bash
+
 # NUM_DAYS_OLD=1 # Age of recent sequenced run to run through pipeline
-NUM_MINS_OLD=600
+NUM_MINS_OLD=60
 EVENTS_API="http://dlviigoweb1:4500/api/nextflow/send-nextflow-event"
 
 # DIR location should come from nextflow.config
