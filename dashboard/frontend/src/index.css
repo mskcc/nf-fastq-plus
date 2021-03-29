@@ -103,6 +103,9 @@ code {
 .margin-top-15 {
 	margin-top: 15px;
 }
+.margin-0 {
+	margin: 0px;
+}
 
 .seq-run-container {
 	padding-top: 25px;

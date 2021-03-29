@@ -24,15 +24,12 @@ function NextflowRun({nextflowRun}) {
 
     return <Row className={'simple-border height-inherit'}>
         <Col xs={2}>
-            <p className={'hv-align'}>{nextflowRun.runName}</p>
-        </Col>
-        <Col xs={2}>
             <FontAwesomeIcon className={`hv-align ${color} font-size-24`} icon={icon}/>
         </Col>
         <Col xs={2}>
             <p className={'hv-align'}>{new Date(nextflowRun.time).toLocaleString()}</p>
         </Col>
-        <Col xs={6} className={'height-inherit word-wrap scroll-y'}>
+        <Col xs={8} className={'height-inherit word-wrap scroll-y'}>
             {
                 nextflowRun.errorMessage ? nextflowRun.errorMessage.map((line) => {
                     return <p
