@@ -104,7 +104,7 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 		print('NO CHANGES MADE TO THE ORIGINAL SAMPLE SHEET')
 		return
 	else:
-	    print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
+		print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
 	# list for sample sheet extensions
 	extensions = ['_10X.csv', '_DLP.csv', '_i7.csv', '_WGS.csv', '_PPG.csv', '.csv']
 	
@@ -133,8 +133,8 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 			else:
 				data_element_sample_sheet = top_of_sheet + data_element_list
 			# ext = extensions[data_sheets.index(data_element)]
-                        data_element_sample_sheet_name = sample_sheet_name + extensions[y]
-                        print("Writing " + data_element_sample_sheet_name)
+			data_element_sample_sheet_name = sample_sheet_name + extensions[y]
+			print("Writing " + data_element_sample_sheet_name)
 			data_element_csv_file = open(data_element_sample_sheet_name, 'w')
 			with data_element_csv_file:
 				writer = csv.writer(data_element_csv_file)
@@ -148,20 +148,20 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 def main():
 	parser = argparse.ArgumentParser(description = 'This script takes a dual indexed sample sheet and splits it if there are DLP, PADDED or 10X indices')
 	parser.add_argument('--sample-sheet', type = str, required = True, help = 'The name and path of the sample sheet to be split')
-        parser.add_argument('--processed-dir', type = str, required = True, help = 'Directory to write processed sample sheets to')
-        parser.add_argument('--output-file', type = str, required = False, help = '(Optional) File to write names of created sample-sheets')
+	parser.add_argument('--processed-dir', type = str, required = True, help = 'Directory to write processed sample sheets to')
+	parser.add_argument('--output-file', type = str, required = False, help = '(Optional) File to write names of created sample-sheets')
 	args = parser.parse_args()
 	
 	# grab sample sheet
 	sample_sheet = args.sample_sheet
-        processed_dir = args.processed_dir
-        created_sample_sheets = args.output_file
+	processed_dir = args.processed_dir
+	created_sample_sheets = args.output_file
 
 	output="SAMPLE SHEET={}, PROCESSED DIR={}".format(sample_sheet, processed_dir)
 	if created_sample_sheets:
-	    working_dir = os.getcwd()
-	    created_sample_sheets = "{}/{}".format(working_dir, created_sample_sheets)
-	    output += ", OUTPUT FILE={}".format(created_sample_sheets)
+		working_dir = os.getcwd()
+		created_sample_sheets = "{}/{}".format(working_dir, created_sample_sheets)
+		output += ", OUTPUT FILE={}".format(created_sample_sheets)
 	print(output)
 	
 	# grab sample sheet - alternate way
@@ -209,7 +209,7 @@ def main():
 	if 'index2' not in header:
 		dual_index = False
 
-        sample_sheet_name = get_sample_sheet_name(sample_sheet)
+	sample_sheet_name = get_sample_sheet_name(sample_sheet)
 
 	# testing to see if we have dual barcodes, if not, we just quit.
 	# first check for 10X samples
