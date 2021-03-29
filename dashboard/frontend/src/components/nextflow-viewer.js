@@ -3,6 +3,8 @@ import NextflowRun from './nextflow-run';
 
 function NextflowViewer({nxfRuns}) {
     const [numRuns, setNumRuns] = useState(1);
+
+    // NOTE - These should be sorted from the API
     const sortedRuns = nxfRuns.sort((r1, r2) => {
         return new Date(r2.time) - new Date(r1.time);
     });
