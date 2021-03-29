@@ -1,0 +1,43 @@
+{
+  "name": "nf-fastq-plus-dashboard-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon --exec babel-node -r dotenv/config ./bin/www",
+    "clean": "rm -rf node_modules && rm -rf public",
+    "dev": "NODE_ENV=QA nodemon ./bin/www",
+    "test": "NODE_ENV=test JWT_SECRET={ADD_JWT_SECRET} nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
+    "lint": "eslint --fix --config .eslintrc.json \"**/*.js\""
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.0",
+    "codacy-coverage": "^3.2.0",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.0",
+    "express-jwt": "^5.3.1",
+    "express-validator": "^6.6.1",
+    "https": "^1.0.0",
+    "ldapjs": "^1.0.2",
+    "mocha-lcov-reporter": "^1.3.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.10.0",
+    "morgan": "~1.9.0",
+    "node-cache": "^5.1.2",
+    "nodemailer": "^6.4.11",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "mocha": "^6.2.2",
+    "nodemon": "^2.0.4"
+  }
+}

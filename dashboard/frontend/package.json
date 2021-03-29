@@ -1,0 +1,53 @@
+{
+  "name": "nf-fastq-plus-dashboard-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.27",
+    "@fortawesome/free-solid-svg-icons": "^5.12.1",
+    "@fortawesome/react-fontawesome": "^0.1.8",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.5.2",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.3"
+  },
+  "scripts": {
+    "start": "REACT_APP_ENV=dev BROWSER=none react-scripts start",
+    "clean": "rm -rf node_modules && touch package-lock.json && rm package-lock.json",
+    "lint": "./node_modules/.bin/eslint --fix .",
+    "build": "npm run clean && npm install && npm run lint && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "ie 11",
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^6.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "prettier": "^2.0.5",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "typescript": "^3.9.7"
+  }
+}

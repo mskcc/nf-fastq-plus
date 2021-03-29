@@ -1,0 +1,253 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.bottom-left {
+	position: absolute !important;
+	left: 0px;
+	bottom: 0px;
+}
+
+.inline-block {
+	display: inline-block;
+}
+.trace-event-log {
+	width: 600px;
+}
+
+.flex-container {
+	display: flex;
+}
+
+.seq-table {
+	width: 85vw;
+	margin: auto;
+}
+
+.trace-event {
+	width: 200px;
+	margin-left: 2px;
+	margin-right: 2px;
+	margin-top: 2px;
+	border: 1px solid black;
+	border-radius: 5px;
+	display: inline-block;
+	position: relative;
+	text-align: center;
+}
+
+.sequencing-run-info {
+	border: 1px solid black;
+	border-radius: 5px;
+	position: relative;
+}
+
+.non-nextflow-runs-text {
+	margin: 16px 16px 16px 16px;
+}
+
+.non-nextflow-runs {
+	margin: 2px 4px;
+	border: 1px solid black;
+	border-radius: 5px;
+	position: relative;
+}
+
+.height-row {
+	height: 150px;
+}
+
+.height-inherit {
+	height: inherit;
+}
+
+.scroll-y {
+	overflow-y: scroll;
+}
+
+.status-icon {
+
+}
+
+.hv-align {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	position: absolute;
+}
+
+/* TODO - delete */
+.simple-border {
+	border: 1px solid black;
+}
+
+.text-align-left {
+	text-align: left;
+}
+.text-align-right {
+	text-align: right;
+}
+.text-align-center {
+	text-align: center;
+}
+
+.margin-top-15 {
+	margin-top: 15px;
+}
+.margin-0 {
+	margin: 0px;
+}
+
+.seq-run-container {
+	padding-top: 25px;
+	width: 85%;
+	margin: auto;
+}
+
+.code {
+	color: #251605;
+	font-family: Futura;
+	font-size: 12px;
+	line-height: 14px;
+	margin: 12px 0;
+}
+
+.word-wrap {
+	word-wrap: break-word;
+}
+
+.font-size-24 {
+	font-size: 24px;
+}
+
+/* APP TEMPLATE STYLING */
+#root {
+	min-height: 100vh;
+}
+.em4 {
+  font-size: 4em;
+}
+.em2 {
+  font-size: 2em;
+}
+.italics {
+  font-style: italic;
+}
+.width-350 {
+  width: 350px;
+}
+.float-right {
+  float: right;
+}
+.inline-text {
+  display: inline;
+}
+
+/* MSKCC Colors */
+.background-mskcc-blue {
+    background-color: #007cba;
+}
+.background-mskcc-orange{
+	background-color: #df4602;
+}
+.background-mskcc-dark-blue{
+	background-color: #006098;
+}
+.mskcc-dark-blue{
+	color: #006098;
+}
+.background-mskcc-medium-blue{
+	background-color: #40b4e5;
+}
+.mskcc-medium-blue{
+	color: #40b4e5;
+}
+.background-mskcc-light-blue{
+	background-color: #8fc7e8;
+}
+.mskcc-light-blue{
+	color: #8fc7e8;
+}
+.mskcc-red{
+	color: #b1132d;
+}
+.mskcc-dark-green{
+	color: #4c8b2b;
+}
+.background-mskcc-dark-orange{
+	background-color: #c24d00;
+}
+.background-mskcc-medium-orange{
+	background-color: #f29934;
+}
+.background-mskcc-light-orange{
+	background-color: #f6c65b;
+}
+.background-mskcc-dark-violet{
+	background-color: #83276b;
+}
+.background-mskcc-light-violet{
+	background-color: #b687b8;
+}
+.background-mskcc-dark-magenta{
+	background-color: #e92076;
+}
+.background-mskcc-light-magenta{
+	background-color: #efb3cb;
+}
+.background-mskcc-red{
+	background-color: #b1132d;
+}
+.background-mskcc-dark-green{
+	background-color: #4c8b2b;
+}
+.background-mskcc-light-green{
+	background-color: #a6ce39;
+}
+.background-mskcc-dark-turquoise{
+	background-color: #006c68;
+}
+.mskcc-dark-turquoise{
+	color: #006c68;
+}
+.background-mskcc-light-turquoise{
+	background-color: #009490;
+}
+.mskcc-light-turquoise{
+	color: #009490;
+}
+.background-mskcc-dark-yellow{
+	background-color: #ffc20e;
+}
+.background-mskcc-light-yellow{
+	background-color: #ffe100;
+}
+.background-mskcc-dark-gray{
+	background-color: #9e9e98;
+}
+.mskcc-dark-gray{
+	color: #9e9e98;
+}
+.background-mskcc-light-gray{
+	background-color: #d5d4c7;
+}
+.mskcc-light-gray{
+	color: #d5d4c7;
+}
+.material-gray {
+   	background-color: #eceff1;
+}
+.mskcc-white {
+	color: white;
+}
+
+

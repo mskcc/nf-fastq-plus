@@ -1,0 +1,26 @@
+{
+  "extends": [ "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ]
+
+  },
+  "ignorePatterns": ["build/*"],
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true,
+    "FormData": true,
+    "FileReader": true,
+    "Blob": true,
+    "navigator": true
+  },
+  "parser": "babel-eslint"
+}
