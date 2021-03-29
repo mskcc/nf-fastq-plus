@@ -1,7 +1,7 @@
 const cache = require("../helpers/cache");
 
 const apiResponse = require('../helpers/apiResponse');
-const { getUpdates, saveNextflowUpdate, getRecentRuns } = require('../services/services');
+const { getSequencingRunUpdates, saveNextflowUpdate, getRecentRuns } = require('../services/services');
 const { logger } = require('../helpers/winston');
 
 /**
@@ -13,7 +13,7 @@ exports.getPipelineUpdate = [
   function (req, res) {
     const query = req.query || {};
     const run = query.run;
-    getUpdates(run).then((updates) => {
+    getSequencingRunUpdates(run).then((updates) => {
       return apiResponse.successResponseWithData(res, 'success', updates);
     });
   },
@@ -43,10 +43,14 @@ exports.getRecentRuns = [
             })
     }];
 
-exports.sendEvent = [
+/**
+ * Handles Nextflow event
+ *      - Endpoint passed to -with-weblog
+ * @type {Function[]}
+ */
+exports.receiveNextflowEvent = [
   function (req, res) {
     logger.info('Received event');
-
     const body = req.body;
     saveNextflowUpdate(body).then((result) => {
       return apiResponse.successResponseWithData(res, 'success', result);

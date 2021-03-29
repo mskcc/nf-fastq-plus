@@ -3,14 +3,16 @@
 ## Send nextflow events
 LOCAL
 ```
-nextflow /PATH/TO/nf-fastq-plus/main.nf --run <RUN_NAME> -with-weblog http://lski2780:3221/api/nextflow/send-nextflow-event
+nextflow /PATH/TO/nf-fastq-plus/main.nf --run <RUN_NAME> -with-weblog http://localhost:3221/api/nextflow/receive-nextflow-event
 ```
 
 VMs
 
 * On the VMs, I'm not able to send via https, so add the host & port the app is served from
 ```
-... -with-weblog "http://dlviigoweb1:4500/api/nextflow/send-nextflow-event" -bg
+HOST='...'
+PORT='...'
+... -with-weblog "http://${HOST}:${PORT}/api/nextflow/send-nextflow-event" -bg
 ```
 
 ## Dependencies

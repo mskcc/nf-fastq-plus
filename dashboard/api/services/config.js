@@ -2,19 +2,19 @@ const properties = {
     'base': {
     },
     'dev': {
-        lims_api: '',
-        lims_usr: '',
-        lims_pwd: ''
+        lims_api: 'https://tango.mskcc.org:8443/LimsRest',
+        lims_usr: 'pms',
+        lims_pwd: 'tiagostarbuckslightbike'
     },
     'qa': {
-        lims_api: '',
-        lims_usr: '',
-        lims_pwd: ''
+        lims_api: 'https://igolims.mskcc.org:8443/LimsRest',
+        lims_usr: 'pms',
+        lims_pwd: 'tiagostarbuckslightbike'
     },
     'prod': {
-        lims_api: '',
-        lims_usr: '',
-        lims_pwd: ''
+        lims_api: 'https://igolims.mskcc.org:8443/LimsRest',
+        lims_usr: 'pms',
+        lims_pwd: 'tiagostarbuckslightbike'
     }
 };
 

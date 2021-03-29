@@ -18,10 +18,6 @@ function NextflowRun({nextflowRun}) {
     };
 
     const [icon, color] = getIcon(nextflowRun);
-
-    // <p className={'text-align-right'}>Completed: {nextflowRun.completed.toString()}</p>
-    // <p className={'text-align-right'}>Success: {nextflowRun.success.toString()}</p>
-
     return <Row className={'simple-border height-inherit'}>
         <Col xs={2}>
             <FontAwesomeIcon className={`hv-align ${color} font-size-24`} icon={icon}/>

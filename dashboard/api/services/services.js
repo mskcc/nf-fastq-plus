@@ -70,7 +70,7 @@ exports.getRecentRuns = async function (numDays = 30) {
  * Returns list of all sequencing runs passed through nextflow
  * @returns List of Sequencing Run Objects
  */
-exports.getUpdates = async function (run) {
+exports.getSequencingRunUpdates = async function (run) {
   const query = run ? { run }: {};
   const savedUpdates = await SequenceRunModel
       .find(query)
@@ -116,7 +116,7 @@ const is_run_event = function(nxf_event) {
   const has_metadata = metadata !== null && metadata !== undefined;
 
   if(!has_metadata) {
-    return false
+    return false;
   };
 
   const parameters = metadata['parameters'] || {};
@@ -188,9 +188,8 @@ const updateSeqRunModel = async function(nextflowEvent, nxfRunModel) {
       } else {
         seqRunDoc.failedRuns += 1;
       }
-
     } else {
-      // NOTHING TO UPDATE
+      seqRunDoc.pending = true;
     }
   } else {
     console.log('CREATE: SequenceRunModel');

@@ -4,6 +4,6 @@ var router = express.Router();
 
 router.get('/recent-runs', NextflowUpdatesController.getRecentRuns);
 router.get('/get-pipeline-update', NextflowUpdatesController.getPipelineUpdate);
-router.post('/send-nextflow-event', NextflowUpdatesController.sendEvent);
+router.post('/receive-nextflow-event', NextflowUpdatesController.receiveNextflowEvent);
 
 module.exports = router;

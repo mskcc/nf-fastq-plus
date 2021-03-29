@@ -72,8 +72,7 @@ function TrackerView() {
   };
 
   const isPendingRun = (nxfEvt) => {
-    console.log(nxfEvt['pending']);
-      return nxfEvt['pending'];
+    return nxfEvt['pending'];
   };
 
   const pendingRuns = nxfEvents.filter(isPendingRun);

@@ -2,13 +2,13 @@ const properties = {
     'base': {
     },
     'dev': {
-        api: 'http://localhost:4500'
+        api: ''
     },
     'qa': {
-        api: 'https://igodev.mskcc.org/nf-dashboard'
+        api: ''
     },
     'prod': {
-        api: 'https://igo.mskcc.org/nf-dashboard'
+        api: ''
     }
 };
 
