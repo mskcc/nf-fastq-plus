@@ -11,31 +11,54 @@ function TrackerView() {
   // Set up our eventSource to listen
   useEffect(() => {
     (async () => {
-      const nextflowEvents = [];
-      const nonNextflowEvents = [];
+      /* Send out requests to populate run data and wait */
+      const seqRunsRequests = [];
+      const seqRunsToTrack = new Set();
       for(const run of sequencingRuns){
         const runName = run['run'];
+        seqRunsToTrack.add(runName);
         if(runName) {
-          console.log(`Querying for: ${runName}`);
-          const seqNextflowEvents = await getEvents(runName);
-          if(Object.keys(seqNextflowEvents).length > 0){
-            nextflowEvents.push(seqNextflowEvents);
-            console.log(`Pushed: ${runName}`);
-          } else {
-            nonNextflowEvents.push(runName);
-          }
+          seqRunsRequests.push(getEvents(runName));
         } else {
           console.log(`Couldn't extract runName from ${JSON.stringify(run)}`);
         }
-        console.log(`Loop done: ${runName}`);
       }
+      const responses = await Promise.all(seqRunsRequests);
+
+      /* Populate seq runs w/ their data or mark the ones that have no data */
+      const nextflowEvents = [];
+      const nonNextflowEvents = [];
+      for(const seqNextflowEvents of responses){
+        if(Object.keys(seqNextflowEvents).length > 0){
+          const populatedRun = seqNextflowEvents['run'];
+          seqRunsToTrack.delete(populatedRun);
+          nextflowEvents.push(seqNextflowEvents);
+        }
+      }
+      for(const runName of Array.from(seqRunsToTrack)){
+        nonNextflowEvents.push(runName);
+      }
+
+      // Sort nextflow events from most recent
+      nextflowEvents.sort((e1, e2) => {
+        const r1 = e1.nxfRuns;
+        const r2 = e2.nxfRuns;
+
+        const runTimes1 = r1.map(r => new Date(r.time));
+        const runTimes2 = r2.map(r => new Date(r.time));
+
+        const mostRecentTime1 = runTimes1.reduce((t1, t2) => t1 > t2 ? t1 : t2);
+        const mostRecentTime2 = runTimes2.reduce((t1, t2) => t1 > t2 ? t1 : t2);
+
+        return mostRecentTime2 - mostRecentTime1;
+      });
+
       setNxfEvents(nextflowEvents);
       setNonNxfSeqRuns(nonNextflowEvents);
     })();
   }, [sequencingRuns]);
   useEffect(() => {
     getSequencingRuns().then((runs) => {
-      console.log('Received sequencing events');
       setSequencingRuns(runs);
     });
   }, []);
@@ -49,6 +72,7 @@ function TrackerView() {
   };
 
   const isPendingRun = (nxfEvt) => {
+    console.log(nxfEvt['pending']);
       return nxfEvt['pending'];
   };
 
