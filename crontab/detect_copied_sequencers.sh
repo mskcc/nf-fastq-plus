@@ -1,13 +1,16 @@
 #!/bin/bash
+# Script to detect new seqeuncer runs ready to be demultiplexed, the full path of the script must be used
+# Example: sh /home/igo/nf-fastq-plus/crontab/detect_copied_sequencers.sh
 
-# NUM_DAYS_OLD=1 # Age of recent sequenced run to run through pipeline
+source ~/.bash_profile # load java, singularity, python, etc
+
 NUM_MINS_OLD=60
-EVENTS_API="http://dlviigoweb1:4500/api/nextflow/send-nextflow-event"
+EVENTS_API="http://dlviigoweb1:4500/api/nextflow/receive-nextflow-event"
 
 # DIR location should come from nextflow.config
 SEQ_DIR=/igo/sequencers/
-FASTQ_DIR=/igo/stats/NF_TESTING/FASTQ
-WORK_DIR=/igo/stats/NF_TESTING/working 
+FASTQ_DIR=/igo/stats/NF_TESTING_IGO/FASTQ
+WORK_DIR=/igo/stats/NF_TESTING_IGO/working 
 
 RECENTLY_CREATED_RUN_DIRS=$(find ${SEQ_DIR} -mindepth 2 -maxdepth 2 -type d -mmin -${NUM_MINS_OLD})
 
@@ -30,24 +33,24 @@ if [[ ${#NEW_RUNS[@]} -eq 0 ]]; then
   echo "Exiting."
   exit 0
 fi
-echo "Checking whether each run has been copied over complete..."
+echo "Checking whether each run has been copied over completely..."
 
 for RUN in ${NEW_RUNS[@]}; do
   printf "\tVERIFYING: $RUN\n"
   # Run the nextflow process script that determines if the run is good to be demultiplexed. On error, run is skipped
   DEMUX_ALL=false FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQ_DIR} RUN=${RUN} "${LOCATION}/../templates/detect_runs.sh"
   if [ $? -eq 0 ]; then
-    echo "DEMULTIPLEXING: ${RUN}"
     RUNNAME=$(basename ${RUN})
     RUN_DIR=${WORK_DIR}/${RUNNAME}
     mkdir -p ${RUN_DIR}
     cd ${RUN_DIR}
+    echo "[DEMULTIPLEXING] RUN=${RUN} WORK_DIR=$(pwd)"
     nohup nextflow ${LOCATION}/../main.nf --run ${RUNNAME} -with-weblog "${EVENTS_API}" -bg >> "nf_${RUNNAME}.log"
-    pwd
     cd -
   else
     echo "NOT DEMULTIPLEXING: ${RUN}"
   fi
+  echo ""
 done
 
 
