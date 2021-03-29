@@ -86,6 +86,12 @@ exports.getSequencingRunUpdates = async function (run) {
   if(savedUpdates && savedUpdates.length === 1){
     console.log(`Found ${savedUpdates.length} run(s): ${savedUpdates.map(update => update.run)}`);
     const updates = savedUpdates.map(update => update.toJSON());
+
+    // sort the nextflow runs in the update by their time
+    updates[0].nxfRuns.sort((r1, r2) => {
+      return new Date(r2.time) - new Date(r1.time);
+    });
+
     return updates[0];
   } else if(savedUpdates && savedUpdates.length > 1){
     console.log('Too many updates!');

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SequencingRun from './sequencing-run';
 import NonNextflowRun from './not-nextflow';
 import { getEvents, getSequencingRuns } from '../services/tracker-service';
+import {getLatestNextflowRunFromSeqRun} from '../services/util';
 
 function TrackerView() {
   const [sequencingRuns, setSequencingRuns] = useState([]);
@@ -64,11 +65,13 @@ function TrackerView() {
   }, []);
 
   const isSuccessfulRun = (nxfEvt) => {
-    return nxfEvt['successfulRuns'] > 0 && !nxfEvt['pending'];
+    const latest = getLatestNextflowRunFromSeqRun(nxfEvt);
+    return latest.success && nxfEvt['successfulRuns'] > 0 && !nxfEvt['pending'];
   };
 
   const isFailedRun = (nxfEvt) => {
-    return nxfEvt['totalRuns'] === nxfEvt['failedRuns'] && !nxfEvt['pending'];
+    const latest = getLatestNextflowRunFromSeqRun(nxfEvt);
+    return !latest.success && nxfEvt['totalRuns'] === nxfEvt['failedRuns'] && !nxfEvt['pending'];
   };
 
   const isPendingRun = (nxfEvt) => {
