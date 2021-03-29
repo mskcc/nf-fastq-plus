@@ -6,6 +6,11 @@ import numpy as np
 import argparse
 import os
 
+def get_sample_sheet_name(sample_sheet):
+	sample_sheet_parts = sample_sheet.split("/")
+	sample_sheet_file_name = sample_sheet_parts[-1]
+	sample_sheet_base = sample_sheet_file_name.split(".")[0]
+	return sample_sheet_base
 
 def tenx_genomics(sample_data, header):
 	# create empty data frame
@@ -93,18 +98,18 @@ def i7_only(sample_data, header):
 		data_sheets[2] = i7_data
 
 
-def create_csv(top_of_sheet, sample_sheet):
+def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets = None):
 	# check to see if sample sheet has been manipulated in any way
 	if (data_sheets[0].equals(no_data)) and (data_sheets[1].equals(no_data)) and (data_sheets[2].equals(no_data)) and (data_sheets[3].equals(no_data)):
 		print('NO CHANGES MADE TO THE ORIGINAL SAMPLE SHEET')
 		return
 	else:
-		print('NEW SAMPLE SHEETS LOCATED HERE = /igo/home/igo/DividedSampleSheets')
+	    print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
 	# list for sample sheet extensions
 	extensions = ['_10X.csv', '_DLP.csv', '_i7.csv', '_WGS.csv', '_PPG.csv', '.csv']
 	
 	# go to new DividedSampleSheets directory
-	os.chdir('/igo/home/igo/DividedSampleSheets')
+	os.chdir(processed_dir)
 	
 	# create a csv sheet for all valid data sheets
 	for y in range(0, len(data_sheets), 1):
@@ -128,31 +133,43 @@ def create_csv(top_of_sheet, sample_sheet):
 			else:
 				data_element_sample_sheet = top_of_sheet + data_element_list
 			# ext = extensions[data_sheets.index(data_element)]
-			data_element_sample_sheet_name = sample_sheet[:-4] + extensions[y]
+            data_element_sample_sheet_name = sample_sheet_name + extensions[y]
+            print("Writing " + data_element_sample_sheet_name)
 			data_element_csv_file = open(data_element_sample_sheet_name, 'w')
 			with data_element_csv_file:
 				writer = csv.writer(data_element_csv_file)
 				writer.writerows(data_element_sample_sheet)
-	
+			data_element_csv_file.close()
+			if created_sample_sheets:
+				f = open(created_sample_sheets, "a")
+				f.write("{}/{}\n".format(processed_dir, data_element_sample_sheet_name))
+				f.close()
 
 def main():
 	parser = argparse.ArgumentParser(description = 'This script takes a dual indexed sample sheet and splits it if there are DLP, PADDED or 10X indices')
 	parser.add_argument('--sample-sheet', type = str, required = True, help = 'The name and path of the sample sheet to be split')
+    parser.add_argument('--processed-dir', type = str, required = True, help = 'Directory to write processed sample sheets to')
+    parser.add_argument('--output-file', type = str, required = False, help = '(Optional) File to write names of created sample-sheets')
 	args = parser.parse_args()
 	
 	# grab sample sheet
 	sample_sheet = args.sample_sheet
-	
-	print('SAMPLE SHEET = ' + sample_sheet)
+    processed_dir = args.processed_dir
+    created_sample_sheets = args.output_file
+
+	output="SAMPLE SHEET={}, PROCESSED DIR={}".format(sample_sheet, processed_dir)
+	if created_sample_sheets:
+	    working_dir = os.getcwd()
+	    created_sample_sheets = "{}/{}".format(working_dir, created_sample_sheets)
+	    output += ", OUTPUT FILE={}".format(created_sample_sheets)
+	print(output)
 	
 	# grab sample sheet - alternate way
 	# sample_sheet = args.sample_sheet.split('/')[5]
 	# sample_sheet_dir = args.sample_sheet[:-len(sample_sheet)]
 	# print('LOCATION OF SAMPLE SHEET = ' + sample_sheet_dir)
 	# print('SAMPLE SHEET = ' + sample_sheet)
-	
-	# switch to the SampleSheetCopies directory
-	os.chdir('/igo/home/igo/SampleSheetCopies')
+
 	
 	# print for sanity check - where are we?
 	print('LOCATION OF SAMPLE SHEET = ' + os.getcwd())
@@ -192,6 +209,7 @@ def main():
 	if 'index2' not in header:
 		dual_index = False
 
+    sample_sheet_name = get_sample_sheet_name(sample_sheet)
 
 	# testing to see if we have dual barcodes, if not, we just quit.
 	# first check for 10X samples
@@ -209,7 +227,7 @@ def main():
 		i7_only(data_sheets[5], header)
 	
 		# did we have to split sample sheets?
-		create_csv(top_of_sheet, sample_sheet)
+		create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets)
 	
 if __name__ == '__main__':
 	main()
