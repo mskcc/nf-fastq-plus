@@ -1,10 +1,10 @@
 #!/bin/bash
 # Submits an alignment to the reference
 # Nextflow Inputs:
-#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
+#   RUN_PARAMS_FILE, env - The suffix of the files we care about
 #   FASTQ_CH, FASTQ files to be aligned
 # Nextflow Outputs:
-#   RUN_PARAMS_FILE, Outputs sam file as input
+#   RUN_PARAMS_FILE, file - Output all individual param files
 #   SAM_CH, Outputs SAM w/ Readgroups (*.sam)
 
 # TODO 
@@ -78,7 +78,7 @@ parse_param() {
 }
 
 JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
-for LANE_PARAM_FILE in $(ls *!{RUN_PARAMS_FILE}); do
+for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
   TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
   DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
@@ -113,4 +113,4 @@ for job_id in ${JOB_ID_LIST[@]}; do
 done
 
 # Output only the shared key-value pairs of the input param files into a single new param file for the sample
-cat *!{RUN_PARAMS_FILE} | tr ' ' '\n' | sort | uniq | grep -v LANE_TAG | tr '\n' ' ' > !{RUN_PARAMS_FILE}
+cat *${RUN_PARAMS_FILE} | tr ' ' '\n' | sort | uniq | grep -v LANE_TAG | tr '\n' ' ' > ${RUN_PARAMS_FILE}

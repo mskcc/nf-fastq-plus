@@ -5,6 +5,7 @@ include { log_out as out } from './log_out'
 process align_to_reference_task {
   input:
     path LANE_PARAM_FILES
+    env RUN_PARAMS_FILE
 
   output:
     stdout()
@@ -19,8 +20,9 @@ process align_to_reference_task {
 workflow align_to_reference_wkflw {
   take:
     LANE_PARAM_FILES
+    RUN_PARAMS_FILE
   main:
-    align_to_reference_task( LANE_PARAM_FILES )
+    align_to_reference_task( LANE_PARAM_FILES, RUN_PARAMS_FILE )
     out( align_to_reference_task.out[0], "align_to_reference" )
 
   emit:
