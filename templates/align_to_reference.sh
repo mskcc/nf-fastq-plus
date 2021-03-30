@@ -137,8 +137,6 @@ for job_id in ${JOB_ID_LIST[@]}; do
   has_exit_code=$(bjobs -l ${job_id} | grep "exit code")
   has_success_code=$(bjobs -l ${job_id} | grep "exit code 0")
 
-  echo $has_exit_code
-  echo $has_success_code
   if [ ! -z ${has_exit_code} ] && [ -z ${has_success_code} ]; then
     echo "bwa mem failed (Job Id: ${job_id})"
     exit 1
