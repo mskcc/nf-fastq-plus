@@ -84,21 +84,34 @@ TYPE_PARAM=$(parse_param ${FIRST_FILE} TYPE)
 JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
 
 if [[ ${SPECIES_PARAM} == "Human" && ${TYPE_PARAM} == "RNA" ]]; then
-  echo "Will run DRAGEN - RGID: ${RGID}"
+  echo "Will run DRAGEN"
+  
+  echo "Creating fastq_list.csv DRAGEN input file with the list of all sample fastq.gz files"
+  echo "RGID,RGSM,RGLB,Lane,Read1File,Read2File" > fastq_list.csv
+  # Write one line per fastq like this example line from DRAGEN documentation:
+  # CACACTGA.1,RDSR181520,UnknownLibrary,1,/staging/RDSR181520_S1_L001_R1_001.fastq, /staging/RDSR181520_S1_L001_R2_001.fastq
+  for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
+    RGID=$(parse_param ${LANE_PARAM_FILE} RGID)
+    RGSM=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)
+    RGLB="UnknownLibrary"
+    LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
+    LANE=${LANE_TAG_PARAM: -1}  # take only last character of L001
 
-  echo "Create fastq_list.csv"
-  # TODO
-  # Iterate over *${RUN_PARAMS_FILE} and create one line per line 
-  # RGID=$(parse_param ${LANE_PARAM_FILE} RGID
-  # RGSM=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)
-  # LANE=...
-  # FASTQ=....
+    # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
+    FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
+    echo "FASTQ-PARAMS:$FASTQ_PARAMS"
+    FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr ' ' ',')      # If DUAL-Ended, then there will be a new line between the FASTQs
+    echo "${RGID},${RGSM},${RGLB},${LANE},${FASTQ_ARGS}" >> fastq_list.csv
+  done
+  
+  JOB_NAME="DRAGEN_BAM_${RGSM}"
+  DRAGEN_CMD="dragen -r /staging/ref/GRCh38_rna --enable-rna true --enable-duplicate-marking true --output-file-prefix $RGID --output-directory . --fastq-list fastq_list.csv --annotation-file /igo/work/genomes/H.sapiens/gencode.v37.annotation.gtf"
+  DRAGEN_BSUB_CMD="bsub -n48 -q dragen -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log ${DRAGEN_CMD}"
 
-  echo "Run DRAGEN"
-  JOB_NAME="DRAGEN_ALIGN"
-  DRAGEN_CMD="bsub -n48 -q dragen -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log 'echo RUNNING_DRAGEN'"
-
-  SUBMIT=$(${DRAGEN_CMD})                          # Submits and saves output
+  # TODO UNCOMMENT TO RUN COMMAND
+  #SUBMIT=$(${DRAGEN_BSUB_CMD})                  # Submits and saves output
+  echo "RUNNING DRAGEN CMD:"
+  echo "$DRAGEN_BSUB_CMD"
   JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
   JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
 
@@ -109,6 +122,8 @@ if [[ ${SPECIES_PARAM} == "Human" && ${TYPE_PARAM} == "RNA" ]]; then
   # Option 1 - Write BAM to this directory
   # Option 2 - Write BAM elsewhere and provide symbolic link in this directory
 else
+  echo "EXITING"
+  exit 0
   for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
     REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
     TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
