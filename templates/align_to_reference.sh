@@ -78,20 +78,51 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
+FIRST_FILE=$(find . -type f -name *${RUN_PARAMS_FILE} | head)
+SPECIES_PARAM=$(parse_param ${FIRST_FILE} SPECIES)
+TYPE_PARAM=$(parse_param ${FIRST_FILE} TYPE)
 JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
-for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
-  REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
-  TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
-  DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
-  RUN_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} RUN_TAG)
-  LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
-  SAMPLE_TAG=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)  # Assign output ID for downstream task
 
-  # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
-  FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
-  FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
-  bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
-done
+if [[ ${SPECIES_PARAM} == "Human" && ${TYPE_PARAM} == "RNA" ]]; then
+  echo "Will run DRAGEN - RGID: ${RGID}"
+
+  echo "Create fastq_list.csv"
+  # TODO
+  # Iterate over *${RUN_PARAMS_FILE} and create one line per line 
+  # RGID=$(parse_param ${LANE_PARAM_FILE} RGID
+  # RGSM=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)
+  # LANE=...
+  # FASTQ=....
+
+  echo "Run DRAGEN"
+  JOB_NAME="DRAGEN_ALIGN"
+  DRAGEN_CMD="bsub -n48 -q dragen -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log 'echo RUNNING_DRAGEN'"
+
+  SUBMIT=$(${DRAGEN_CMD})                          # Submits and saves output
+  JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
+  JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
+
+  LOG="JOB_ID=${JOB_ID}"
+  echo $LOG
+
+  # TODO - Add way to link BAM to next nextflow module
+  # Option 1 - Write BAM to this directory
+  # Option 2 - Write BAM elsewhere and provide symbolic link in this directory
+else
+  for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
+    REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
+    TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
+    DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
+    RUN_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} RUN_TAG)
+    LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
+    SAMPLE_TAG=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)  # Assign output ID for downstream task
+
+    # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
+    FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
+    FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
+    bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
+  done
+fi
 
 for job_id in ${JOB_ID_LIST[@]}; do
   echo "Waiting for ${job_id} to finish"
@@ -105,6 +136,9 @@ for job_id in ${JOB_ID_LIST[@]}; do
   # Fail pipeline if one alignment job failed - has an exit code that is non-zero
   has_exit_code=$(bjobs -l ${job_id} | grep "exit code")
   has_success_code=$(bjobs -l ${job_id} | grep "exit code 0")
+
+  echo $has_exit_code
+  echo $has_success_code
   if [ ! -z ${has_exit_code} ] && [ -z ${has_success_code} ]; then
     echo "bwa mem failed (Job Id: ${job_id})"
     exit 1
