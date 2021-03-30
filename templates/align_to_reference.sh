@@ -3,6 +3,7 @@
 # Nextflow Inputs:
 #   RUN_PARAMS_FILE, env - The suffix of the files we care about
 #   FASTQ_CH, FASTQ files to be aligned
+#   CMD_FILE, path - where to log all commands to
 # Nextflow Outputs:
 #   RUN_PARAMS_FILE, file - Output all individual param files
 #   SAM_CH, Outputs SAM w/ Readgroups (*.sam)
@@ -52,7 +53,7 @@ bwa_mem () {
   # "-t {NUM_THREADS}": # threads should equal # tasks sent to LSF (-n)
   BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 !{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
 
-  echo ${BWA_CMD} >> !{CMD_FILE}
+  echo ${BWA_CMD} >> ${CMD_FILE}
   SUBMIT=$(${BWA_CMD})                          # Submits and saves output
   JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
   JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later

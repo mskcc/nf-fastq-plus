@@ -6,6 +6,7 @@ process align_to_reference_task {
   input:
     path LANE_PARAM_FILES
     env RUN_PARAMS_FILE
+    env CMD_FILE
 
   output:
     stdout()
@@ -21,8 +22,9 @@ workflow align_to_reference_wkflw {
   take:
     LANE_PARAM_FILES
     RUN_PARAMS_FILE
+    CMD_FILE
   main:
-    align_to_reference_task( LANE_PARAM_FILES, RUN_PARAMS_FILE )
+    align_to_reference_task( LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE )
     out( align_to_reference_task.out[0], "align_to_reference" )
 
   emit:
