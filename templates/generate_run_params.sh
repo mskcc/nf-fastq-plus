@@ -10,9 +10,8 @@
 # Nextflow Outputs:
 #   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
 # Run: 
-#   Can't be run - relies on ./bin
-
-
+#   RUNNAME=JAX_0514_AHKNJVBBXY DEMUXED_DIR=/igo/work/FASTQ/JAX_0514_AHKNJVBBXY SAMPLESHEET=/home/igo/SampleSheetCopies/SampleSheet_210323_JAX_0514_AHKNJVBBXY.csv  RUN_PARAMS_FILE=sample_params.txt ./generate_run_params.sh
+#   Can't be run - relies on ./bin/create_multiple_sample_sheets.py
 if [[ -z "${RUN_PARAMS_FILE}" ]]; then
   RUN_PARAMS_FILE="sample_params.txt"
 fi
@@ -55,13 +54,22 @@ function get_rgids_of_sample() {
 
   # Regex of demux headers - include only required in the order they appear
   SAMPLE_SHEET_HEADER="^Lane,.*Sample_ID,.*index.*"
-
-  RGIDS=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
+ 
+  LANE_IDX=1
+  INDEX_IDX=7
+  LANE_INDEX=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
     grep -v SAMPLE_SHEET_HEADER | \
     grep "${INPUT_SAMPLE_NAME}" | \
-    cut -d',' -f7,1 | \
+    cut -d',' -f${LANE_IDX},${INDEX_IDX} --output-delimiter '.' | \
     sort | uniq)
 
+  RGIDS=""
+  for LI in ${LANE_INDEX}; do
+    LANE=$(echo $LI | cut -d'.' -f1)
+    INDEX=$(echo $LI | cut -d'.' -f2)
+    RGIDS="${RGIDS} ${INDEX}.${LANE}"
+  done
+  
   echo $RGIDS
 }
 
@@ -129,7 +137,7 @@ else
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
         for RGID in $(echo ${RGIDS} | tr ' ' '\n'); do
-          LANE=$(echo RGID | cut -d'.' -f2)
+          LANE=$(echo ${RGID} | cut -d'.' -f2)
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
 
           # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
