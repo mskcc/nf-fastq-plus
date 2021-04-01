@@ -23,7 +23,6 @@ const formatRuns = function(requests) {
   const runMap = {};
   for(const request of requests) {
     const runFolders = request['runFolders'] || [];
-
     for(const runFolder of runFolders){
       const noTrailingSlashes = runFolder.replace(/^\/|\/+$/gm,'');
       const runPathParts = noTrailingSlashes.split('/');
@@ -55,13 +54,17 @@ const formatRuns = function(requests) {
  * @returns {Promise<{run: '', requests: {}[]}[]>}
  */
 exports.getRecentRuns = async function (numDays = 30) {
-  const url = `${LIMS_API}/getSequencingRequests?days=${numDays}`;
+  const url = `${LIMS_API}/getSequencingRequests?days=${numDays}&delivered=false`;
   const response = await axios.get(url, {auth: {username: LIMS_USR, password: LIMS_PWD}, httpsAgent: agent})
     .catch(function (error) {
       console.log(`Failed to sequencing runs within the past ${numDays} days. ERROR: ${error.message}`);
     });
   const data = response.data || {};
   const requests = data.requests || [];
+
+  const requestNames = requests.map(r => r.requestId);
+  console.log(`Returning Information for Requests: ${requestNames.join(', ')}`);
+
   const recentRuns = formatRuns(requests);
   return recentRuns;
 };
