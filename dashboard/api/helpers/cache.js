@@ -47,7 +47,7 @@ class Cache {
         this.cache.flushAll();
     }
 }
-const ttl = 60 * 60 * 12; 			// cache for 12 hours
+const ttl = 60 * 60 * 4; 			// cache for 12 hours
 const cache = new Cache(ttl); 		// create a new cache service instance
 
 module.exports = cache;
