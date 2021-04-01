@@ -104,7 +104,7 @@ def i7_only(sample_data, header):
 
 def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets = None):
 	# check to see if sample sheet has been manipulated in any way
-	if (data_sheets[0].equals(no_data)) and (data_sheets[1].equals(no_data)) and (data_sheets[2].equals(no_data)) and (data_sheets[3].equals(no_data)):
+	if (data_sheets[0].equals(no_data)) and (data_sheets[1].equals(no_data)) and (data_sheets[2].equals(no_data)) and (data_sheets[3].equals(no_data)) and (data_sheets[4].equals(no_data)):
 		print('NO CHANGES MADE TO THE ORIGINAL SAMPLE SHEET')
 	else:
 		print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
