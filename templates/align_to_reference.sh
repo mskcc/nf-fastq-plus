@@ -78,7 +78,7 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-FIRST_FILE=$(find . -type f -name *${RUN_PARAMS_FILE} | head)
+FIRST_FILE=$(find -L . -xtype l -name *${RUN_PARAMS_FILE} | head)
 SPECIES_PARAM=$(parse_param ${FIRST_FILE} SPECIES)
 TYPE_PARAM=$(parse_param ${FIRST_FILE} TYPE)
 JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
