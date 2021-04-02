@@ -56,11 +56,11 @@ bwa_mem () {
 
   BWA_MEM_CMD="!{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
   ADD_RGP_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RGID} LB=Illumina PU=${PROJECT_TAG} SM=${SAMPLE_TAG} PL=illumina CN=IGO@MSKCC"
+  echo ${BWA_MEM_CMD} >> ${CMD_FILE}
+  echo ${ADD_RGP_CMD} >> ${CMD_FILE}
 
   # "-t {NUM_THREADS}": # threads should equal # tasks sent to LSF (-n)
   BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 '${BWA_MEM_CMD} && ${ADD_RGP_CMD}'"
-
-  echo ${BWA_CMD} >> ${CMD_FILE}
   SUBMIT=$(${BWA_CMD})                          # Submits and saves output
   JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
   JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
