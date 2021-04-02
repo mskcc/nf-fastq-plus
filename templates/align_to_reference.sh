@@ -29,8 +29,10 @@ bwa_mem () {
   TYPE=$3
   DUAL=$4
   RUN_TAG=$5
-  FASTQ1_INPUT=$6
-  FASTQ2_INPUT=$7
+  PROJECT_TAG=$6
+  RGID=$7
+  FASTQ1_INPUT=$8
+  FASTQ2_INPUT=$9
   FASTQ1=$(realpath ${FASTQ1_INPUT})
   FASTQ2=$(realpath ${FASTQ2_INPUT})
 
@@ -47,11 +49,16 @@ bwa_mem () {
   # TODO - This should be set in the config
   SAM_SMP="${RUN_TAG}______${LANE}"
   BWA_SAM="${SAM_SMP}___BWA.sam"
+  RGP_SAM=${BWA_SAM/BWA/RGP}    # "${SAM_SMP}___BWA.sam" -> "${SAM_SMP}___RGP.sam"
 
   # Submit the job locally and then add the JOB ID
   JOB_NAME="BWA_MEM:${SAM_SMP}"
+
+  BWA_MEM_CMD="!{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+  ADD_RGP_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RGID} LB=Illumina PU=${PROJECT_TAG} SM=${SAMPLE_TAG} PL=illumina CN=IGO@MSKCC"
+
   # "-t {NUM_THREADS}": # threads should equal # tasks sent to LSF (-n)
-  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 !{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 '${BWA_MEM_CMD} && ${ADD_RGP_CMD}'"
 
   echo ${BWA_CMD} >> ${CMD_FILE}
   SUBMIT=$(${BWA_CMD})                          # Submits and saves output
@@ -85,12 +92,14 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
   RUN_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} RUN_TAG)
   LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
+  PROJECT_TAG_PARAM=$(parse_param !{RUN_PARAMS_FILE} PROJECT_TAG)
+  RGID_PARAM=$(parse_param !{RUN_PARAMS_FILE} RGID)
   SAMPLE_TAG=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)  # Assign output ID for downstream task
 
   # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
   FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
-  bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $FASTQ_ARGS
+  bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS
 done
 
 for job_id in ${JOB_ID_LIST[@]}; do
