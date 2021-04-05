@@ -18,6 +18,7 @@ process task {
 
   output:
     stdout()
+    path "UPLOAD_DONE.txt", emit: UPLOAD_DONE
 
   shell:
     template 'upload_stats.sh'
@@ -82,4 +83,7 @@ workflow upload_stats_wkflw {
         RUN,
         IGO_EMAIL )
     out( task.out[0], "upload_stats" )
+
+  emit:
+    UPLOAD_DONE = task.out.UPLOAD_DONE
 }
