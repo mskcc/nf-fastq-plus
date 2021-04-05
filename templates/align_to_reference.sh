@@ -56,11 +56,15 @@ bwa_mem () {
 
   BWA_MEM_CMD="!{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
   ADD_RGP_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RGID} LB=Illumina PU=${PROJECT_TAG} SM=${SAMPLE_TAG} PL=illumina CN=IGO@MSKCC"
-  echo ${BWA_MEM_CMD} >> ${CMD_FILE}
-  echo ${ADD_RGP_CMD} >> ${CMD_FILE}
+
+  BSUB_SCRIPT=${SAMPLE_TAG}___${RGID}___${LANE}.sh
+  echo ${BWA_MEM_CMD} >> ${BSUB_SCRIPT}
+  echo ${ADD_RGP_CMD} >> ${BSUB_SCRIPT}
+  cat ${BSUB_SCRIPT} >> ${CMD_FILE}
+  chmod 755 ${BSUB_SCRIPT}
 
   # "-t {NUM_THREADS}": # threads should equal # tasks sent to LSF (-n)
-  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 '${BWA_MEM_CMD} && ${ADD_RGP_CMD}'"
+  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 ./${BSUB_SCRIPT}"
   SUBMIT=$(${BWA_CMD})                          # Submits and saves output
   JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
   JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
@@ -92,13 +96,16 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
   RUN_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} RUN_TAG)
   LANE_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} LANE_TAG)
-  PROJECT_TAG_PARAM=$(parse_param !{RUN_PARAMS_FILE} PROJECT_TAG)
-  RGID_PARAM=$(parse_param !{RUN_PARAMS_FILE} RGID)
+  PROJECT_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} PROJECT_TAG)
+  RGID_PARAM=$(parse_param ${LANE_PARAM_FILE} RGID)
   SAMPLE_TAG=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)  # Assign output ID for downstream task
 
   # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
   FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
+ 
+  echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
+
   bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS
 done
 
@@ -114,7 +121,9 @@ for job_id in ${JOB_ID_LIST[@]}; do
   # Fail pipeline if one alignment job failed - has an exit code that is non-zero
   has_exit_code=$(bjobs -l ${job_id} | grep "exit code")
   has_success_code=$(bjobs -l ${job_id} | grep "exit code 0")
-  if [ ! -z ${has_exit_code} ] && [ -z ${has_success_code} ]; then
+  echo "has_exit_code: ${has_exit_code}"
+  echo "has_success_code: ${has_success_code}"
+  if [ ! -z "${has_exit_code}" ] && [ -z "${has_success_code}" ]; then
     echo "bwa mem failed (Job Id: ${job_id})"
     exit 1
   else

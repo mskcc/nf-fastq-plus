@@ -132,7 +132,7 @@ else
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
 
           # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
-          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}" # TODO - replace RGID w/ [INDEX].[LANE]
+          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}" # TODO - replace RGID w/ [INDEX].[LANE]
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
