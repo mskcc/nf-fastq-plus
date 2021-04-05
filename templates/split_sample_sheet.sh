@@ -6,6 +6,7 @@
 #   (config)
 #   SPLIT_SAMPLE_SHEETS   File name that the absolute paths of the split sample sheets will be written
 #   LAB_SAMPLE_SHEET_DIR: Absolute path to directory of the mounted filesystem the lab writes the original sample sheets (for IGO, this is mounted on only the head LSF node)
+#   DATA_TEAM_EMAIL: emails of data team members who should be notified
 # Nextflow Outputs:
 #   DEMUXED_RUN, env: Name of run to demux, given by the name of @RUN_TO_DEMUX_DIR
 # Run: 
@@ -18,8 +19,7 @@ array=($RUNPATH)					# ( PATH TO sequencers johnsawyers 201113_JOHNSAWYERS_0252_
 RUN_TO_DEMUX="${array[-1]}" 				# 201113_JOHNSAWYERS_0252_000000000-G6H72
 IFS=','
 
-# TODO - uncomment
-# echo $RUN_TO_DEMUX | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
+echo $RUN_TO_DEMUX | mail -s "IGO Cluster New Run Sent for Demuxing" $DATA_TEAM_EMAIL
 
 echo "Searching w/ !{LAB_SAMPLE_SHEET_DIR}/SampleShee*${RUN_TO_DEMUX}*.csv"
 SAMPLESHEET=$(find !{LAB_SAMPLE_SHEET_DIR} -type f -name "SampleShee*${RUN_TO_DEMUX}*.csv" | sort | tail -1) # Retrieve the last modified sample sheet

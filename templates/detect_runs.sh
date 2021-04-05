@@ -10,6 +10,7 @@
 #
 #   RUN, param: Name or path to a sequencing run to proceed down the pipeline
 #   DEMUX_ALL, param: Whether to force the demux, whether or not, it exists in FASTQ_DIR
+#   DATA_TEAM_EMAIL: emails of data team members who should be notified
 # Outputs (STD OUT):
 #   RUNNAME, env: value of what the runname (e.g. SCOTT_0277_AHKFKFBGXH)
 #   RUNPATH, env: value of the absolute path to the run to be demultiplexed (e.g. /PATH/TO/210122_SCOTT_0277_AHKFKFBGXH)
@@ -78,8 +79,7 @@ fi
 
 # If the run has already been demuxed, then it will be in the FASTQ directory.
 demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
-# TODO - uncomment
-# echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
+echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" ${DATA_TEAM_EMAIL}
 if [[ "${demuxed_run}" == "" || "${DEMUX_ALL}" == "true" ]]; then
   echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH"
 else

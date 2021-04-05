@@ -14,6 +14,7 @@ process task {
     env RUN
     env STATSDONEDIR
     env SKIP_FILE_KEYWORD
+    env IGO_EMAIL
 
   output:
     stdout()
@@ -34,11 +35,12 @@ process email {
     path RNA_METRICS_FILE_CH
     path GC_BIAS_METRICS_FILE_CH
     env RUN
+    env IGO_EMAIL
 
   shell:
   '''
     echo "Emailing Stats Complete: ${RUN}"
-    echo ${RUN} | mail -s " Stats calculated for Run ${RUN} " streidd@mskcc.org # naborsd@mskcc.org mcmanamd@mskcc.org cobbsc@mskcc.org hubermak@mskcc.org vialea@mskcc.org 
+    echo ${RUN} | mail -s " Stats calculated for Run ${RUN} " ${IGO_EMAIL}
     touch ${RUN}_DONE.txt
   '''
 }
@@ -55,6 +57,7 @@ workflow upload_stats_wkflw {
     RUN
     STATSDONEDIR
     SKIP_FILE_KEYWORD
+    IGO_EMAIL
 
   main:
     task(
@@ -76,6 +79,7 @@ workflow upload_stats_wkflw {
         WGS_METRICS_FILE_CH.collect(),
         RNA_METRICS_FILE_CH.collect(),
         GC_BIAS_METRICS_FILE_CH.collect(),
-        RUN )
+        RUN,
+        IGO_EMAIL )
     out( task.out[0], "upload_stats" )
 }
