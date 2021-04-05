@@ -1,3 +1,4 @@
+crontab/**/*.log
 .nextflow
 .nextflow.log*
 igo-pipeline.log
