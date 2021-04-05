@@ -6,6 +6,7 @@
 #
 #   FASTQ_DIR:        Directory w/ FASTQ files
 #   DEMUX_LOG_FILE:   Log file where demux output is written to
+#   DATA_TEAM_EMAIL: emails of data team members who should be notified
 # Nextflow Outputs:
 #   DEMUXED_DIR, env: path to where the run has been demuxed to
 #   SAMPLE_SHEET,env: path to samplesheet used to demultiplex
@@ -131,17 +132,14 @@ FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
 
 echo "DEMUX_UPDATE: ${FULL}"
 
-# TODO - Uncomment
-# echo $FULL | mail -s "IGO Cluster Done Demuxing ${DEMUXED_RUN} mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org"
+echo $FULL | mail -s "IGO Cluster Done Demuxing ${DEMUXED_RUN} ${DATA_TEAM_EMAIL}"
 
 if [ -n "$FILE_OUTPUT_SIZE" ]; then
-  # TODO - Uncomment
-  # mail -s "Starting stats for run ${DEMUXED_RUN} naborsd@mskcc.org mcmanamd@mskcc.org streidd@mskcc.org"
-  echo "MAIL: Starting stats for run ${DEMUXED_RUN} naborsd@mskcc.org mcmanamd@mskcc.org streidd@mskcc.org"
+  echo "MAIL: Starting stats for run ${DEMUXED_RUN} ${DATA_TEAM_EMAIL}"
+  mail -s "Starting stats for run ${DEMUXED_RUN} ${DATA_TEAM_EMAIL}"
 else
-  # TODO - Uncomment
-  # mail -s "Failed Demux Run ${RUN_TO_DEMUX}" naborsd@mskcc.org streidd@mskcc.org
-  echo "MAIL: Failed Demux Run ${RUN_TO_DEMUX} naborsd@mskcc.org streidd@mskcc.org"
+  echo "MAIL: Failed Demux Run ${RUN_TO_DEMUX} ${DATA_TEAM_EMAIL}"
+  mail -s "Failed Demux Run ${RUN_TO_DEMUX}" ${DATA_TEAM_EMAIL}
   exit 1
 fi
 

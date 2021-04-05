@@ -8,6 +8,7 @@ process task {
     env DEMUX_ALL
     env SEQUENCER_DIR
     env FASTQ_DIR
+    env DATA_TEAM_EMAIL
 
   output:
     stdout() 
@@ -24,8 +25,9 @@ workflow detect_runs_wkflw {
     DEMUX_ALL
     SEQUENCER_DIR
     FASTQ_DIR
+    DATA_TEAM_EMAIL
   main:
-    task( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR )
+    task( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR, DATA_TEAM_EMAIL )
     out( task.out[0], "detect_runs" )
   emit:
     RUNNAME = task.out.RUNNAME
