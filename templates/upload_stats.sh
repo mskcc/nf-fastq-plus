@@ -42,6 +42,8 @@ echo "Updating LIMS QC Metrics: ${LIMS_ENDPOINT}"
 curl -k ${LIMS_ENDPOINT}
 echo "END: $(date +"%D %T")"
 
+touch UPLOAD_DONE.txt
+
 # TODO - Remove GRCh37 BAM files when "PicardScripts"
 # rm -rf SAM/*$PROJECTNUMBER*
 # sed -i "/$PROJECTNUMBER/d" ~/StatsTracker/$RUNNAME-Summary-File.txt
