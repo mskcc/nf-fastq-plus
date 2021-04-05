@@ -132,11 +132,11 @@ FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
 
 echo "DEMUX_UPDATE: ${FULL}"
 
-echo $FULL | mail -s "IGO Cluster Done Demuxing ${DEMUXED_RUN} ${DATA_TEAM_EMAIL}"
+echo $FULL | mail -s "IGO Cluster Done Demuxing ${DEMUXED_RUN}" ${DATA_TEAM_EMAIL}
 
 if [ -n "$FILE_OUTPUT_SIZE" ]; then
   echo "MAIL: Starting stats for run ${DEMUXED_RUN} ${DATA_TEAM_EMAIL}"
-  mail -s "Starting stats for run ${DEMUXED_RUN} ${DATA_TEAM_EMAIL}"
+  mail -s "Starting stats for run ${DEMUXED_RUN}" ${DATA_TEAM_EMAIL}
 else
   echo "MAIL: Failed Demux Run ${RUN_TO_DEMUX} ${DATA_TEAM_EMAIL}"
   mail -s "Failed Demux Run ${RUN_TO_DEMUX}" ${DATA_TEAM_EMAIL}

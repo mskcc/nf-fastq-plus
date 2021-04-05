@@ -14,7 +14,6 @@ process task {
     env RUN
     env STATSDONEDIR
     env SKIP_FILE_KEYWORD
-    env IGO_EMAIL
 
   output:
     stdout()
