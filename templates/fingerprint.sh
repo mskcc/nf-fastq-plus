@@ -4,7 +4,7 @@
 #   SAMPLE_SHEET, env: Absolute path to the sample sheet
 #   CROSSCHECK_DIR, env: Absoulte path to the fingerprinting nextflow directory
 # Run:
-#   SAMPLE_SHEET=/PATH/TO/SAMPLESHEET CROSSCHECK_DIR=/PATH/TO/CROSSCHECK_DIR ./fingerprint.sh
+#   SAMPLESHEET=/PATH/TO/SAMPLESHEET CROSSCHECK_DIR=/PATH/TO/CROSSCHECK_DIR ./fingerprint.sh
 
 #########################################
 # Executes and logs command
