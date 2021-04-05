@@ -81,6 +81,7 @@ fi
 demuxed_run=$( ls ${FASTQ_DIR} | grep -e "${RUNNAME}$" )
 if [[ "${demuxed_run}" == "" || "${DEMUX_ALL}" == "true" ]]; then
   if [ "${DEMUX_ALL}" != "true" ]; then
+    # It's only a new demux if no demux output exists and DEMUX_ALL hasn't been set to "true"
     echo $RUNNAME | mail -s "IGO Cluster New Run Sent for Demuxing" ${DATA_TEAM_EMAIL}
   fi
   echo "Run to Demux (Continue): RUN=$RUN RUNNAME=$RUNNAME RUNPATH=$RUNPATH"
