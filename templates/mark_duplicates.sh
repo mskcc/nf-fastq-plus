@@ -42,7 +42,7 @@ RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
 SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
 
 #   TODO - Use Each?
-INPUT_BAM=$(realpath *RGP.bam)
+INPUT_BAM=$(realpath *MRG.bam)
 
 METRICS_DIR=!{STATS_DIR}/${RUNNAME}   # Location of metrics & BAMs
 BAM_DIR=${METRICS_DIR}/bam            # Specific path to BAMs
