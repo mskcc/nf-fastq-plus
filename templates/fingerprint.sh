@@ -26,20 +26,23 @@ function get_samplesheet_projects() {
   SAMPLESHEET_PARAM=$1
   DUAL=$(cat $SAMPLESHEET_PARAM |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
   if [[ "$DUAL" == "$UNASSIGNED_PARAMETER" ]]; then
-    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$8}' | sort | uniq
+    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s\n",$8}' | sort | uniq
   else
-    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$9}' | sort | uniq
+    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s\n",$9}' | sort | uniq
   fi
 }
 
 CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
 projects=$(get_samplesheet_projects $SAMPLESHEET)
-echo "Running ${CROSSCHECK_WORKFLOW}"
+
+echo "Running ${CROSSCHECK_WORKFLOW} (PROJECTS=\"${projects}\" SAMPLESHEET=${SAMPLESHEET})"
 for prj in $projects; do
-  mkdir $prj
-  cd $prj
-  echo "Fingerprinting Project ${prj}"
-  CMD="nextflow ${CROSSCHECK_DIR}/main.nf --projects $prj --s"
+  FP_PRJ=${prj/Project_/}
+
+  mkdir $FP_PRJ
+  cd $FP_PRJ
+  echo "Fingerprinting Project ${FP_PRJ}"
+  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $FP_PRJ --s"
 
   # We will ignore errors w/ fingerprinting for now
   set +e

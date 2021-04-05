@@ -16,6 +16,7 @@ include { collect_wgs_metrics_wkflw } from './modules/collect_wgs_metrics';
 include { collect_rna_metrics_wkflw } from './modules/collect_rna_metrics';
 include { collect_gc_bias_wkflw } from './modules/collect_gc_bias_metrics';
 include { upload_stats_wkflw } from './modules/upload_stats';
+include { fingerprint_wkflw } from './modules/fingerprint';
 
 /**
  * Processes input parameters that are booleans
@@ -72,5 +73,5 @@ workflow {
     collect_oxoG_metrics_wkflw.out.METRICS_FILE, collect_wgs_metrics_wkflw.out.METRICS_FILE, collect_rna_metrics_wkflw.out.METRICS_FILE, collect_gc_bias_wkflw.out.METRICS_FILE,
     RUN, STATSDONEDIR, SKIP_FILE_KEYWORD
   )
-  fingerprint_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, CROSSCHECK_DIR, upload_stats_wkflw.out )
+  fingerprint_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE )
 }

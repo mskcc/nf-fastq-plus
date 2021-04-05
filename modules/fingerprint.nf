@@ -6,6 +6,7 @@ process task {
   input:
     env SAMPLESHEET
     env CROSSCHECK_DIR
+    path READY_TO_FINGERPRINT
 
   shell:
     template 'fingerprint.sh'
@@ -19,7 +20,6 @@ workflow fingerprint_wkflw {
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path separately
     SAMPLE_SHEET_LIST.splitText().set{ SPLIT_SAMPLE_SHEET_CH }
-    task( SPLIT_SAMPLE_SHEET_CH, CROSSCHECK_DIR )
-    out( task.out[0], "fingerprint" )
+    task( SPLIT_SAMPLE_SHEET_CH, CROSSCHECK_DIR, READY_TO_FINGERPRINT )
 }
 
