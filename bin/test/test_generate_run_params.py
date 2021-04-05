@@ -199,7 +199,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_MSK_ACCESS(self):
         params = get_recipe_species_params("MSK-ACCESS_v1", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list GTAG=GRCh37 GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list TYPE=DNA"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/ACCESS_targets_coverage_GRCh38.interval_list GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/RefSeq/ncbi-genomes-2021-04-05/GCF_000001405.39_GRCh38.p13_genomic.fna MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/RefSeq/ncbi-genomes-2021-04-05/GCF_000001405.39_GRCh38.p13_genomic.fna TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/ACCESS_targets_coverage_GRCh38.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "MSK-ACCESS_v1", "Human")
 
     def test_CH_v1(self):
