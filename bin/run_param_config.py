@@ -66,7 +66,7 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 """ Recipes that should have determine recipe (instead of species -> genome logic) """
 recipe_overrides = {
     "ADCC1_v3": "GRCh37",
-    "CH_v1": "hg19"
+    "CH_v1": "hg19",
     "MSK-ACCESS_v1":"GRCh38"
 }
 """ Mapping of species to their genome-type """
