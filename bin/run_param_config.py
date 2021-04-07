@@ -86,6 +86,7 @@ species_genome_mapping_UNORDERED = {
     "S.Pombe": "pombe",
     "R.norvegicus": "rn6",
     "E.Lambda": "elambda",
+    "Plasmid": "ecolik12",
     # FOR NEW ENTRIES
     # "{regex}": "{GENOME}"
 

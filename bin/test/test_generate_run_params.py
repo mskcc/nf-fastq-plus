@@ -66,6 +66,16 @@ class TestSetupStats(unittest.TestCase):
         self.assertEqual(genome, "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa")
         self.assertEqual(ref, "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa")
 
+    def test_main_AmpliconSeq_Plasmid(self):
+        argv = [ "-r", "AmpliconSeq", "-s", "Plasmid" ]
+        params = main(argv)
+        genome = parse_param(params, GENOME)
+        ref = parse_param(params, REFERENCE)
+        typ = parse_param(params, TYPE)
+        self.assertEqual(typ, "DNA")
+        self.assertEqual(genome, "/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa")
+        self.assertEqual(ref, "/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa")
+
     def verify_params(self,params, expected_params, recipe, species):
         actual = params.strip().split(" ")
         expected = expected_params.strip().split(" ")
