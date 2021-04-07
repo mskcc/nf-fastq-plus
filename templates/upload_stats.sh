@@ -23,12 +23,14 @@ STAT_FILES=$(find -L . -type f -name "*.txt" -exec readlink -f {} \;)
 for stat_file in ${STAT_FILES}; do
   # SKIP_LINES were added because these steps were skipped in the workflow
   SKIP_LINE=$(cat ${stat_file} | grep "${SKIP_KEYWORD}")
-  if [[ -z $SKIP_LINE ]]; then
-    echo "Skipping ${stat_file}"
-  else
+  if [[ -z "$SKIP_LINE" ]]; then
+    # If SKIP_KEYWORD isn't detected in the file, then we will prepare it for upload
     echo "Preparing ${stat_file} for upload"
     mkdir -p $STATSDONEDIR/$MACHINE
+    chmod 777 $stat_file
     cp $stat_file $STATSDONEDIR/$MACHINE
+  else
+    echo "Skipping ${stat_file}"
   fi
 done
 
