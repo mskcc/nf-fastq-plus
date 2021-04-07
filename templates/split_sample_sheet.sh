@@ -18,9 +18,6 @@ array=($RUNPATH)					# ( PATH TO sequencers johnsawyers 201113_JOHNSAWYERS_0252_
 RUN_TO_DEMUX="${array[-1]}" 				# 201113_JOHNSAWYERS_0252_000000000-G6H72
 IFS=','
 
-# TODO - uncomment
-# echo $RUN_TO_DEMUX | mail -s "IGO Cluster New Run Sent for Demuxing" mcmanamd@mskcc.org naborsd@mskcc.org streidd@mskcc.org
-
 echo "Searching w/ !{LAB_SAMPLE_SHEET_DIR}/SampleShee*${RUN_TO_DEMUX}*.csv"
 SAMPLESHEET=$(find !{LAB_SAMPLE_SHEET_DIR} -type f -name "SampleShee*${RUN_TO_DEMUX}*.csv" | sort | tail -1) # Retrieve the last modified sample sheet
 echo "Set samplesheet path to ${SAMPLESHEET}"
