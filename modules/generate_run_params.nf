@@ -14,7 +14,7 @@ process generate_run_params_task {
     val RUNNAME
   output:
     stdout()
-    path "*${RUN_PARAMS_FILE}", emit: PARAMS
+    path "*${RUN_PARAMS_FILE}", optional: true, emit: PARAMS
   shell:
     template 'generate_run_params.sh'
 }
