@@ -27,6 +27,8 @@ function get_samplesheet_projects_and_recipe() {
   awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$9,$5}' | sort | uniq
 }
 
+SAMPLESHEET=$(find . -type f -name "SampleSheet_*.csv")
+
 CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
 projects_and_recipe=$(get_samplesheet_projects_and_recipe $SAMPLESHEET)
 
