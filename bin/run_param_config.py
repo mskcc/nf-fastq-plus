@@ -126,8 +126,8 @@ genome_reference_mapping_UNORDERED = {
     },
     "grch38": {
         DEFAULT: {
-            GENOME: "/igo/work/genomes/H.sapiens/RefSeq/ncbi-genomes-2021-04-05/GCF_000001405.39_GRCh38.p13_genomic.fna",
-            REFERENCE: "/igo/work/genomes/H.sapiens/RefSeq/ncbi-genomes-2021-04-05/GCF_000001405.39_GRCh38.p13_genomic.fna"
+            GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
+            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa"
         },
         "RNA": {
             REF_FLAT: '/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat',
