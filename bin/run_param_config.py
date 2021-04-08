@@ -559,8 +559,8 @@ recipe_options_mapping_UNORDERED = {
         MD: "yes"
     },
     "MSK-ACCESS_v1": {
-        BAITS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/ACCESS_targets_coverage_GRCh38.interval_list",
-        TARGETS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/ACCESS_targets_coverage_GRCh38.interval_list",
+        BAITS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
+        TARGETS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
         MSKQ: "no",
         MD: "yes"
     },
