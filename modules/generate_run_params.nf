@@ -2,26 +2,26 @@ include { log_out as out } from './log_out'
 include { log_out as out2 } from './log_out'
 
 process generate_run_params_task {
-  tag "$RUNNAME"
-
   publishDir PIPELINE_OUT, mode:'copy'
 
   input:
-    env RUNNAME
     env DEMUXED_DIR
     env SAMPLESHEET
     env RUN_PARAMS_FILE
-    val RUNNAME
   output:
     stdout()
     path "*${RUN_PARAMS_FILE}", emit: PARAMS
+    env RUNNAME, emit: RUNNAME
   shell:
     template 'generate_run_params.sh'
 }
 
 process create_sample_lane_jobs {
+  tag "$RUNNAME"
+
   input:
     path SAMPLE_FILE
+    val RUNNAME
   output:
     stdout()
     path "*${RUN_PARAMS_FILE}", emit: LANE_PARAM_FILES
@@ -49,18 +49,18 @@ process create_sample_lane_jobs {
 
 workflow generate_run_params_wkflw {
   take:
-    RUNNAME
     DEMUXED_DIR
     SAMPLESHEET
     RUN_PARAMS_FILE
   main:
-    generate_run_params_task( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, RUNNAME )
+    generate_run_params_task( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
     out( generate_run_params_task.out[0], "generate_run_params" )
     generate_run_params_task.out.PARAMS
       .flatten()
       .set{ SAMPLE_FILE_CH }
-    create_sample_lane_jobs( SAMPLE_FILE_CH )
+    create_sample_lane_jobs( SAMPLE_FILE_CH, generate_run_params_task.out.RUNNAME )
     out2( create_sample_lane_jobs.out[0], "create_sample_lane_jobs" )
   emit:
     LANE_PARAM_FILES = create_sample_lane_jobs.out.LANE_PARAM_FILES
+    RUNNAME = generate_run_params_task.out.RUNNAME
 }

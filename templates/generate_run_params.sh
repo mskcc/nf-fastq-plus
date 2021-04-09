@@ -4,7 +4,6 @@
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 #
-#   RUNNAME (Input): Name of the run
 #   DEMUXED_DIR (Input): Absolute path to directory that is the output of the demultiplexing
 #   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
 # Nextflow Outputs:
@@ -12,6 +11,11 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
+SPLIT_RUNNAME=$(basename ${DEMUXED_DIR})
+MACHINE=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX_DLP -> MICHELLE
+RUN_NUM=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX_DLP -> 0347
+FLOWCELL=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX_DLP -> BHWN55DMXX
+RUNNAME="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
 
 if [[ -z "${RUN_PARAMS_FILE}" ]]; then
   RUN_PARAMS_FILE="sample_params.txt"
