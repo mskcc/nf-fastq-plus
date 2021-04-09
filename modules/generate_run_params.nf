@@ -10,7 +10,7 @@ process generate_run_params_task {
     env RUN_PARAMS_FILE
   output:
     stdout()
-    path "*${RUN_PARAMS_FILE}", emit: PARAMS
+    path "*${RUN_PARAMS_FILE}", optional: true, emit: PARAMS
     env RUNNAME, emit: RUNNAME
   shell:
     template 'generate_run_params.sh'

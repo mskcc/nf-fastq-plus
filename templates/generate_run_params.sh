@@ -119,7 +119,7 @@ else
         echo "DLP recipes will be skipped. Writing params to ${DLP_PARAM_FILE}"
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___DLP___${GTAG}" # RUN_TAG will determine the name of output stats
         TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=DLP LANE_TAG=X"
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
+        # echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
         continue
       fi
 
