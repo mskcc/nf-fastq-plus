@@ -27,7 +27,7 @@ println """\
          SEQUENCER_DIR="${SEQUENCER_DIR}"
          FASTQ_DIR=${FASTQ_DIR}
          STATS_DIR=${STATS_DIR}
-         STATSDONEDIR="/igo/stats/DONE"
+         STATSDONEDIR=${STATSDONEDIR}
 
          DEMUX_LOG_FILE=${DEMUX_LOG_FILE}
          LOG_FILE=${LOG_FILE}
@@ -51,6 +51,5 @@ workflow {
   detect_runs_wkflw( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR, DATA_TEAM_EMAIL )
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH, PROCESSED_SAMPLE_SHEET_DIR )
   demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR, CELL_RANGER_ATAC, DEMUX_ALL, DATA_TEAM_EMAIL )
-  samplesheet_stats_wkflw( RUN, RUNNAME, DEMUXED_DIR, RUN_PARAMS_FILE, CMD_FILE, SKIP_FILE_KEYWORD, SAMPLESHEET,
-    STATSDONEDIR, SKIP_FILE_KEYWORD, IGO_EMAIL )
+  samplesheet_stats_wkflw( RUN, detect_runs_wkflw.out.RUNNAME, demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
 }

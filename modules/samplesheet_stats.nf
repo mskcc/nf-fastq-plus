@@ -17,14 +17,7 @@ workflow samplesheet_stats_wkflw {
     RUN
     RUNNAME
     DEMUXED_DIR
-    RUN_PARAMS_FILE
-    CMD_FILE
-    SKIP_FILE_KEYWORD
     SAMPLESHEET
-    STATSDONEDIR
-    SKIP_FILE_KEYWORD
-    IGO_EMAIL
-    CROSSCHECK_DIR
 
   main:
     generate_run_params_wkflw( RUNNAME, DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
