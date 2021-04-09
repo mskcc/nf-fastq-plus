@@ -24,7 +24,12 @@ run_cmd () {
 #########################################
 function get_samplesheet_projects_and_recipe() {
   SAMPLESHEET_PARAM=$1
-  awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$9,$5}' | sort | uniq
+  DUAL=$(cat $SAMPLESHEET_PARAM |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
+  if [[ "$DUAL" == "" ]]; then
+    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$8,$5}' | sort | uniq
+  else
+    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$9,$5}' | sort | uniq
+  fi
 }
 
 CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
@@ -51,7 +56,7 @@ for prj_recipe in $projects_and_recipe; do
 
   # We will ignore errors w/ fingerprinting for now
   set +e
-  #run_cmd $CMD
+  run_cmd $CMD
   set -e
 
   cd -
