@@ -2,23 +2,21 @@ nextflow.preview.dsl=2
 
 include { samplesheet_stats_wkflw } from './modules/samplesheet_stats';
 
-RUN=params.RUN
-RUNNAME=params.RUNNAME
-DEMUXED_DIR=params.DEMUXED_DIR
-SAMPLESHEET=params.SAMPLESHEET
+DEMUXED_DIR=params.dir
+SAMPLESHEET=params.ss
 
 println """\
           S A M P L E S H E E T    P I P E L I N E
          ==========================================
-         RUN=${RUN}
-
-         STATSDONEDIR="/igo/stats/DONE"
+         SEQUENCER_DIR="${SEQUENCER_DIR}"
+         FASTQ_DIR=${FASTQ_DIR}
+         STATS_DIR=${STATS_DIR}
+         STATSDONEDIR=${STATSDONEDIR}
 
          LOG_FILE=${LOG_FILE}
          CMD_FILE=${CMD_FILE}
 
-         CROSSCHECK_DIR=${CROSSCHECK_DIR}
-
+         DATA_TEAM_EMAIL=${DATA_TEAM_EMAIL}
          IGO_EMAIL=${IGO_EMAIL}
 
          BWA: ${BWA}
@@ -30,8 +28,5 @@ println """\
 
 
 workflow {
-  samplesheet_stats_wkflw( RUN, RUNNAME, DEMUXED_DIR, RUN_PARAMS_FILE, CMD_FILE, SKIP_FILE_KEYWORD, SAMPLESHEET,
-    STATSDONEDIR, SKIP_FILE_KEYWORD, IGO_EMAIL )
+  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET )
 }
-
-
