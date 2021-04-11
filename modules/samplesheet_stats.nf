@@ -1,6 +1,5 @@
 include { generate_run_params_wkflw } from './generate_run_params';
 include { align_to_reference_wkflw } from './align_to_reference';
-include { add_or_replace_read_groups_wkflw } from './add_or_replace_read_groups';
 include { merge_sams_wkflw } from './merge_sams';
 include { mark_duplicates_wkflw } from './mark_duplicates';
 include { alignment_summary_wkflw } from './collect_alignment_summary_metrics';
