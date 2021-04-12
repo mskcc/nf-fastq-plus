@@ -1,10 +1,6 @@
 nextflow.preview.dsl=2
 
-include { dependency_check_wkflw } from './modules/dependency_check';
-include { detect_runs_wkflw } from './modules/detect_runs';
-include { split_sample_sheet_wkflw } from './modules/split_sample_sheet';
-include { demultiplex_wkflw } from './modules/demultiplex';
-include { samplesheet_stats_wkflw } from './modules/samplesheet_stats';
+include { request_stats_wkflw } from './request_stats';
 
 /**
  * Processes input parameters that are booleans
@@ -27,7 +23,7 @@ println """\
          SEQUENCER_DIR="${SEQUENCER_DIR}"
          FASTQ_DIR=${FASTQ_DIR}
          STATS_DIR=${STATS_DIR}
-         STATSDONEDIR=${STATSDONEDIR}
+         STATSDONEDIR="/igo/stats/DONE"
 
          DEMUX_LOG_FILE=${DEMUX_LOG_FILE}
          LOG_FILE=${LOG_FILE}
@@ -47,9 +43,5 @@ println """\
          .stripIndent()
 
 workflow {
-  dependency_check_wkflw()
-  detect_runs_wkflw( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR, DATA_TEAM_EMAIL )
-  split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH, PROCESSED_SAMPLE_SHEET_DIR )
-  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR, CELL_RANGER_ATAC, DEMUX_ALL, DATA_TEAM_EMAIL )
-  samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET )
+  request_stats_wkflw()
 }

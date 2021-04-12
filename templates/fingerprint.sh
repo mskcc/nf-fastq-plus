@@ -32,6 +32,8 @@ function get_samplesheet_projects_and_recipe() {
   fi
 }
 
+SAMPLESHEET=$(find -L . -type f -name "SampleSheet_*.csv")
+
 CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
 projects_and_recipe=$(get_samplesheet_projects_and_recipe $SAMPLESHEET)
 

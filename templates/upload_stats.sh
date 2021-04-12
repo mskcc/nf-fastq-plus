@@ -19,16 +19,20 @@ FLOWCELL=$(echo ${RUN} | cut -d'_' -f4) # 10309_MICHELLE_0347_BHWN55DMXX -> BHWN
 STAT_PREFIX="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
 
 STAT_FILES=$(find -L . -type f -name "*.txt" -exec readlink -f {} \;)
-# echo "FILES_TO_UPLOAD: ${STAT_FILES}"
+
+DESTINATION=$STATSDONEDIR/$MACHINE
+mkdir -p ${DESTINATION}
+echo "Copying stat files to ${DESTINATION}"
+
 for stat_file in ${STAT_FILES}; do
   # SKIP_LINES were added because these steps were skipped in the workflow
   SKIP_LINE=$(cat ${stat_file} | grep "${SKIP_KEYWORD}")
   if [[ -z "$SKIP_LINE" ]]; then
+    DESTINATION_FILE=$STATSDONEDIR/$MACHINE/$(basename ${stat_file})
     # If SKIP_KEYWORD isn't detected in the file, then we will prepare it for upload
-    echo "Preparing ${stat_file} for upload"
-    mkdir -p $STATSDONEDIR/$MACHINE
+    echo "Preparing ${stat_file} for upload: ${DESTINATION_FILE}"
     chmod 777 $stat_file
-    cp $stat_file $STATSDONEDIR/$MACHINE
+    cp $stat_file ${DESTINATION_FILE}
   else
     echo "Skipping ${stat_file}"
   fi
@@ -40,9 +44,9 @@ echo "Updating Picard stats DB: ${DELPHI_ENDPOINT}"
 curl "${DELPHI_ENDPOINT}"
 sleep 10
 LIMS_ENDPOINT="https://igo-lims02.mskcc.org:8443/LimsRest/updateLimsSampleLevelSequencingQc?runId=${STAT_PREFIX}"
-echo "Updating LIMS QC Metrics: ${LIMS_ENDPOINT}"
+printf "\nUpdating LIMS QC Metrics: ${LIMS_ENDPOINT}\n"
 curl -k ${LIMS_ENDPOINT}
-echo "END: $(date +"%D %T")"
+printf "\nEND: $(date +"%D %T")\n"
 
 touch UPLOAD_DONE.txt
 

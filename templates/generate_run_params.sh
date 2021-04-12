@@ -4,7 +4,6 @@
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 #
-#   RUNNAME (Input): Name of the run
 #   DEMUXED_DIR (Input): Absolute path to directory that is the output of the demultiplexing
 #   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
 # Nextflow Outputs:
@@ -12,6 +11,11 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
+SPLIT_RUNNAME=$(basename ${DEMUXED_DIR})
+MACHINE=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX_DLP -> MICHELLE
+RUN_NUM=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX_DLP -> 0347
+FLOWCELL=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX_DLP -> BHWN55DMXX
+RUNNAME="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
 
 if [[ -z "${RUN_PARAMS_FILE}" ]]; then
   RUN_PARAMS_FILE="sample_params.txt"
@@ -111,10 +115,7 @@ else
 
       # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
       if [[ "${RECIPE}" = "DLP" ]]; then
-        DLP_PARAM_FILE="DLP___${RUN_PARAMS_FILE}"
-        echo "DLP recipes will be skipped. Writing params to ${DLP_PARAM_FILE}"
-        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___DLP___${GTAG}" # RUN_TAG will determine the name of output stats
-        TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=DLP LANE_TAG=X"
+        echo "DLP recipes will be skipped. Not writting a ${RUN_PARAMS_FILE} file"
         # echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
         continue
       fi

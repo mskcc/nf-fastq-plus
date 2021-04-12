@@ -4,7 +4,7 @@ process task {
   label 'BSUB_OPTIONS_SMALL'
 
   input:
-    env SAMPLESHEET
+    path SAMPLESHEET_CH
     env CROSSCHECK_DIR
     path READY_TO_FINGERPRINT
 
@@ -14,12 +14,10 @@ process task {
 
 workflow fingerprint_wkflw {
   take:
-    SAMPLE_SHEET_LIST
+    SAMPLESHEET_CH
     CROSSCHECK_DIR
     READY_TO_FINGERPRINT
   main:
-    // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path separately
-    SAMPLE_SHEET_LIST.splitText().set{ SPLIT_SAMPLE_SHEET_CH }
-    task( SPLIT_SAMPLE_SHEET_CH, CROSSCHECK_DIR, READY_TO_FINGERPRINT )
+    task( SAMPLESHEET_CH, CROSSCHECK_DIR, READY_TO_FINGERPRINT )
 }
 

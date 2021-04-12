@@ -2,6 +2,12 @@
 Generate IGO fastqs, bams, stats and fingerprinting
 
 ## Run
+There are two options for running the modules in this pipeline - 
+* [End-to-End](#end-to-end): Includes all demultiplexing and stats for a sequencing run
+* [Stats](#stats): Runs only the stats on a specified demultiplexed directory
+
+### [Demultiplex and Stats](#end-to-end)
+**Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing run
 ```
 # Basic
 nextflow main.nf --run ${RUN}
@@ -16,16 +22,35 @@ nohup nextflow main.nf --run ${RUN} --force true -bg
 nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb1:4500/api/nextflow/receive-nextflow-event' -bg  
 ```
 
-### Arguments `(--arg)`
+#### Arguments `(--arg)`
 * `--run`: string (required), directory name of the sequencing directory 
   > Eg: `210406_JOHNSAWYERS_0277_000000000-G7H54`
 * `--force`: string (optional), skips the demultiplexing if already completed
   > Eg: `true`,  `false`
 
-### Options `(-opt)`
+#### Options `(-opt)`
 * `-bg`: run process in background 
 * `-with-weblog`: publish events to an API
-                                                                              
+
+### [Statistics on Demultiplex Output (Skips Demultiplexing)](#stats)
+**Description**: Runs stats given a demultiplex output
+```
+# Basic
+nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET}
+
+# Run in background
+nohup nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET} -bg  
+```
+
+#### Arguments `(--arg)`
+* `--dir`: string (required), Absolute path to the directory name of the demultiplexed directory 
+  > Eg: `/igo/work/FASTQ/DIANA_0333_BH53GNDRXY_i7`
+* `--ss`: string (required), Absolute path to the sample sheet that CREATED the value of `--dir`
+  > Eg: `/home/igo/DividedSampleSheets/SampleSheet_210407_DIANA_0333_BH53GNDRXY_i7.csv`
+
+#### Options `(-opt)`
+* `-bg`: run process in background 
+                                                  
 ### Example Output
 ```
 $ nextflow /igo/work/streidd/nf-fastq-plus/main.nf --run 210406_SCOTT_0325_AH2VTCBGXJ
