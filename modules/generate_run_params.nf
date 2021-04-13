@@ -18,7 +18,7 @@ process generate_run_params_task {
 
 process create_sample_lane_jobs {
   tag "$RUNNAME"
-
+  
   input:
     path SAMPLE_FILE
     val RUNNAME
@@ -58,9 +58,7 @@ workflow generate_run_params_wkflw {
     generate_run_params_task.out.PARAMS
       .flatten()
       .set{ SAMPLE_FILE_CH }
-    create_sample_lane_jobs( SAMPLE_FILE_CH, generate_run_params_task.out.RUNNAME )
-    out2( create_sample_lane_jobs.out[0], "create_sample_lane_jobs" )
   emit:
-    LANE_PARAM_FILES = create_sample_lane_jobs.out.LANE_PARAM_FILES
+    SAMPLE_FILE_CH = SAMPLE_FILE_CH
     RUNNAME = generate_run_params_task.out.RUNNAME
 }
