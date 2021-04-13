@@ -48,16 +48,14 @@ METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${RIBO_INTER} || ! -f ${REF_FLAT} ]]; then
   echo "Skipping CollectRnaSeqMetrics for ${RUN_TAG} (RIBO_INTER: ${RIBO_INTER}, REF_FLAT: ${REF_FLAT})"
-  exit 0
+else
+  mkdir -p ${METRICS_DIR}
+  echo "[CollectRnaSeqMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
+
+  BAM=$(realpath *.bam)
+  CMD="!{PICARD} CollectRnaSeqMetrics RIBOSOMAL_INTERVALS=${RIBO_INTER} STRAND_SPECIFICITY=NONE REF_FLAT=${REF_FLAT} I=${BAM} O=${METRICS_FILE}"
+  run_cmd $CMD
+
+  # TODO - make metrics file available as output for nextlow
+  cp ${METRICS_FILE} .
 fi
-
-
-mkdir -p ${METRICS_DIR}
-echo "[CollectRnaSeqMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
-
-BAM=$(realpath *.bam)
-CMD="!{PICARD} CollectRnaSeqMetrics RIBOSOMAL_INTERVALS=${RIBO_INTER} STRAND_SPECIFICITY=NONE REF_FLAT=${REF_FLAT} I=${BAM} O=${METRICS_FILE}"
-run_cmd $CMD
-
-# TODO - make metrics file available as output for nextlow
-cp ${METRICS_FILE} .

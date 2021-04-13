@@ -46,16 +46,16 @@ STAT_FILE_NAME="${RUN_TAG}___HS.txt"
 
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then
   echo "Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
+else
+    mkdir -p ${METRICS_DIR}
+  METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
+
+  echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
+
+  BAM=$(realpath *.bam)
+  CMD="!{PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
+  run_cmd $CMD
+
+  # TODO - make metrics file available as output for nextlow
+  cp ${METRICS_FILE} .
 fi
-
-mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
-
-echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
-
-BAM=$(realpath *.bam)
-CMD="!{PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
-run_cmd $CMD
-
-# TODO - make metrics file available as output for nextlow
-cp ${METRICS_FILE} .
