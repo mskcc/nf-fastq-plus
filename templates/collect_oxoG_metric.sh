@@ -50,7 +50,6 @@ METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} || -z $(echo $MSKQ | grep -i "yes") ]]; then
   echo "Skipping CollectOxoGMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS} MSKQ: ${MSKQ})"
-  echo "${SKIP_FILE_KEYWORD}_OXOG" > ${STAT_FILENAME}
   exit 0
 fi
 

@@ -9,11 +9,10 @@ process task {
     path PARAMS
     path BAM_CH
     val INPUT_ID
-    env SKIP_FILE_KEYWORD
 
   output:
     stdout()
-    path "*___oxoG.txt", emit: METRICS_FILE
+    path "*___oxoG.txt", optional: true, emit: METRICS_FILE
 
   shell:
     template 'collect_oxoG_metric.sh'
@@ -24,10 +23,9 @@ workflow collect_oxoG_metrics_wkflw {
     PARAMS
     BAM_CH
     INPUT_ID
-    SKIP_FILE_KEYWORD
 
   main:
-    task( PARAMS, BAM_CH, INPUT_ID, SKIP_FILE_KEYWORD )
+    task( PARAMS, BAM_CH, INPUT_ID )
     out( task.out[0], "collect_oxoG_metrics" )
 
   emit:

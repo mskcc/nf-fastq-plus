@@ -46,10 +46,7 @@ STAT_FILE_NAME="${RUN_TAG}___HS.txt"
 
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then
   echo "Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
-  echo "${SKIP_FILE_KEYWORD}_HS" > ${STAT_FILE_NAME}
-  exit 0
 fi
-
 
 mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"

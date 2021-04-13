@@ -48,7 +48,6 @@ METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${RIBO_INTER} || ! -f ${REF_FLAT} ]]; then
   echo "Skipping CollectRnaSeqMetrics for ${RUN_TAG} (RIBO_INTER: ${RIBO_INTER}, REF_FLAT: ${REF_FLAT})"
-  echo "${SKIP_FILE_KEYWORD}_RNA" > ${STATS_FILENAME}
   exit 0
 fi
 
