@@ -177,7 +177,7 @@ class TestSetupStats(unittest.TestCase):
     def test_IDT_Exome(self):
         params = get_recipe_species_params("IDT_Exome_v2_FP_Viral_Probes", "Human")
         expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_BAITS.intervalList GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_TARGETS.intervalList TYPE=DNA"
-        self.verify_params(params, expected_params, "IDT_Exome_v1_FP_Viral_Probes", "Human")
+        self.verify_params(params, expected_params, "IDT_Exome_v2_FP_Viral_Probes", "Human")
 
     def test_Agilent(self):
         params = get_recipe_species_params("Agilent_MouseAllExonV1", "Mouse")
