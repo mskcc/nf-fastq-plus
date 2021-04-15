@@ -2,14 +2,15 @@
 # Uploads stat (.txt) files to ngs-stats & LIMS
 # Nextflow Inputs:
 #   Stat Files (in working directory) - .txt files
-#   RUN, env - Runname, e.g. 10309_MICHELLE_0347_BHWN55DMXX
+#   RUNNAME, env - Runname, e.g. MICHELLE_0347_BHWN55DMXX
 #   STATSDONEDIR, env - Absolute path of where files should be written to
 # Run: 
-#   RUN=10309_MICHELLE_0347_BHWN55DMXX STATSDONEDIR=/igo/stats/DONE ./upload_stats.sh
+#   RUNNAME=MICHELLE_0347_BHWN55DMXX STATSDONEDIR=/igo/stats/DONE ./upload_stats.sh
 
-MACHINE=$(echo ${RUN} | cut -d'_' -f2)  # 10309_MICHELLE_0347_BHWN55DMXX -> MICHELLE
-RUN_NUM=$(echo ${RUN} | cut -d'_' -f3)  # 10309_MICHELLE_0347_BHWN55DMXX -> 0347
-FLOWCELL=$(echo ${RUN} | cut -d'_' -f4) # 10309_MICHELLE_0347_BHWN55DMXX -> BHWN55DMXX
+MACHINE=$(echo ${RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX -> MICHELLE
+RUN_NUM=$(echo ${RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX -> 0347
+FLOWCELL=$(echo ${RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX -> BHWN55DMXX
+
 STAT_PREFIX="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
 
 STAT_FILES=$(find -L . -type f -name "*.txt" -exec readlink -f {} \;)
