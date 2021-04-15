@@ -59,7 +59,7 @@ samplesheet_file=$(basename ${SAMPLESHEET})
 basename ${SAMPLESHEET}
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 echo "RUN_BASENAME: ${RUN_BASENAME}"
-DEMUXED_DIR="!{FASTQ_DIR}/${RUN_BASENAME}"
+DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
 
 mkdir -p $DEMUXED_DIR
 chmod -R 775 $DEMUXED_DIR
@@ -103,7 +103,7 @@ else
   JOB_CMD="/opt/common/CentOS_6/bcl2fastq/bcl2fastq2-v2.20.0.422/bin/bcl2fastq ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
 fi
 
-echo ${JOB_CMD} >> !{CMD_FILE}
+echo ${JOB_CMD} >> ${CMD_FILE}
 
 DEMUXED_FASTQS=$(find ${DEMUXED_DIR} -type f -name "*.fastq.gz")
 
@@ -120,7 +120,7 @@ UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
 PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
 set -e
 
-cat ${BCL_LOG} >> !{DEMUX_LOG_FILE}
+cat ${BCL_LOG} >> ${DEMUX_LOG_FILE}
 cat ${BCL_LOG}
 
 # TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed

@@ -12,6 +12,9 @@ process task {
     env CELL_RANGER_ATAC
     env DEMUX_ALL
     env DATA_TEAM_EMAIL
+    env FASTQ_DIR
+    env CMD_FILE
+    env DEMUX_LOG_FILE
 
   output:
     stdout()
@@ -29,6 +32,9 @@ workflow demultiplex_wkflw {
     CELL_RANGER_ATAC
     DEMUX_ALL
     DATA_TEAM_EMAIL
+    FASTQ_DIR
+    CMD_FILE
+    DEMUX_LOG_FILE
 
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
