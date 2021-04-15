@@ -30,9 +30,11 @@ workflow samplesheet_stats_wkflw {
     collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
     collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
     collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE, alignment_summary_wkflw.out.METRICS_FILE, collect_hs_metrics_wkflw.out.METRICS_FILE,
-        collect_oxoG_metrics_wkflw.out.METRICS_FILE, collect_wgs_metrics_wkflw.out.METRICS_FILE, collect_rna_metrics_wkflw.out.METRICS_FILE, collect_gc_bias_wkflw.out.METRICS_FILE,
-        generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR, SKIP_FILE_KEYWORD, IGO_EMAIL
+    upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
+        collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
+        collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
+        collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR,
+        SKIP_FILE_KEYWORD, IGO_EMAIL
     )
     fingerprint_wkflw( SAMPLESHEET, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE )
 }

@@ -1,5 +1,4 @@
 include { log_out as out } from './log_out'
-include { log_out as out2 } from './log_out'
 
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
