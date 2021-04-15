@@ -15,7 +15,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -35,18 +35,19 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-GTAG=$(parse_param !{RUN_PARAMS_FILE} GTAG)              # Must include a WGS genome to run CollectWgsMetrics
-TYPE=$(parse_param !{RUN_PARAMS_FILE} TYPE)              # type is used to flag analysis like CollectWgsMetrics
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)    # Reference genome file to use
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+GTAG=$(parse_param ${RUN_PARAMS_FILE} GTAG)              # Must include a WGS genome to run CollectWgsMetrics
+TYPE=$(parse_param ${RUN_PARAMS_FILE} TYPE)              # type is used to flag analysis like CollectWgsMetrics
+REFERENCE=$(parse_param ${RUN_PARAMS_FILE} REFERENCE)    # Reference genome file to use
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
-WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STATS_FILENAME="${RUN_TAG}___WGS.txt"
 METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
 
-if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then 
+WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
+if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then
   echo "Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES} (TYPE: ${TYPE})";
 elif [ "${TYPE^^}" != "WGS" ]; then
   echo "Skipping CollectWgsMetrics for ${RUN_TAG}. TYPE: ${TYPE} != WGS (GTAG: ${GTAG})"
@@ -55,7 +56,7 @@ else
   echo "[CollectWgsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
   BAM=$(realpath *.bam)
-  CMD="!{PICARD} CollectWgsMetrics I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
+  CMD="${PICARD} CollectWgsMetrics I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
   run_cmd $CMD
 
   # TODO - make metrics file available as output for nextlow

@@ -10,22 +10,7 @@
 MACHINE=$(echo ${RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX -> MICHELLE
 RUN_NUM=$(echo ${RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX -> 0347
 FLOWCELL=$(echo ${RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX -> BHWN55DMXX
-
 STAT_PREFIX="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
-
-STAT_FILES=$(find -L . -type f -name "*.txt" -exec readlink -f {} \;)
-
-DESTINATION=$STATSDONEDIR/$MACHINE
-mkdir -p ${DESTINATION}
-echo "Copying stat files to ${DESTINATION}"
-
-# Stat files need to be copied to their destination directory to be uploaded
-for stat_file in ${STAT_FILES}; do
-  DESTINATION_FILE=$STATSDONEDIR/$MACHINE/$(basename ${stat_file})
-  echo "Preparing ${stat_file} for upload: ${DESTINATION_FILE}"
-  chmod 777 $stat_file
-  cp $stat_file ${DESTINATION_FILE}
-done
 
 echo "START: $(date +"%D %T")"
 DELPHI_ENDPOINT="http://delphi.mskcc.org:8080/ngs-stats/picardstats/updaterun/${MACHINE}/${STAT_PREFIX}"

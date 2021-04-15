@@ -8,13 +8,18 @@ process task {
     path PARAMS
     path BAM_CH
     val INPUT_ID
+    env RUN_PARAMS_FILE
+    env CMD_FILE
+    env PICARD
+    env STATSDONEDIR
+    env STATS_DIR
 
   output:
     stdout()
     path "*.bam", emit: BAM_CH
     env SAMPLE_TAG, emit: SAMPLE_TAG
-    path "${RUN_PARAMS_FILE}", optional: true, emit: PARAMS
-    path "*___MD.txt", optional: true, emit: METRICS_FILE
+    path "${RUN_PARAMS_FILE}", emit: PARAMS
+    path "*___MD.txt", emit: METRICS_FILE
 
   shell:
   template 'mark_duplicates.sh'
@@ -25,9 +30,14 @@ workflow mark_duplicates_wkflw {
     PARAMS
     BAM_CH
     INPUT_ID
+    RUN_PARAMS_FILE
+    CMD_FILE
+    PICARD
+    STATSDONEDIR
+    STATS_DIR
 
   main:
-    task( PARAMS, BAM_CH, INPUT_ID )
+    task( PARAMS, BAM_CH, INPUT_ID, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR, STATS_DIR )
     out( task.out[0], "mark_duplicates" )
 
   emit:

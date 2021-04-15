@@ -16,7 +16,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -36,12 +36,13 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-RIBO_INTER=$(parse_param !{RUN_PARAMS_FILE} RIBOSOMAL_INTERVALS) # Interval list of ribosomal sites
-REF_FLAT=$(parse_param !{RUN_PARAMS_FILE} REF_FLAT)        # Reference genome file to use
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+RIBO_INTER=$(parse_param ${RUN_PARAMS_FILE} RIBOSOMAL_INTERVALS) # Interval list of ribosomal sites
+REF_FLAT=$(parse_param ${RUN_PARAMS_FILE} REF_FLAT)        # Reference genome file to use
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STATS_FILENAME="${RUN_TAG}___RNA.txt"
 METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
 
@@ -53,7 +54,7 @@ else
   echo "[CollectRnaSeqMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
   BAM=$(realpath *.bam)
-  CMD="!{PICARD} CollectRnaSeqMetrics RIBOSOMAL_INTERVALS=${RIBO_INTER} STRAND_SPECIFICITY=NONE REF_FLAT=${REF_FLAT} I=${BAM} O=${METRICS_FILE}"
+  CMD="${PICARD} CollectRnaSeqMetrics RIBOSOMAL_INTERVALS=${RIBO_INTER} STRAND_SPECIFICITY=NONE REF_FLAT=${REF_FLAT} I=${BAM} O=${METRICS_FILE}"
   run_cmd $CMD
 
   # TODO - make metrics file available as output for nextlow

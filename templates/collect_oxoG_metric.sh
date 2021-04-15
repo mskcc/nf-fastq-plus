@@ -16,7 +16,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -36,14 +36,15 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)           # Interval list of bait sites
-TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)       # Interval list of target sites
-MSKQ=$(parse_param !{RUN_PARAMS_FILE} MSKQ)             # yes/no - must be yes to run CollectOxoGMetrics
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+BAITS=$(parse_param ${RUN_PARAMS_FILE} BAITS)           # Interval list of bait sites
+TARGETS=$(parse_param ${RUN_PARAMS_FILE} TARGETS)       # Interval list of target sites
+MSKQ=$(parse_param ${RUN_PARAMS_FILE} MSKQ)             # yes/no - must be yes to run CollectOxoGMetrics
+REFERENCE=$(parse_param ${RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STAT_FILENAME="${RUN_TAG}___oxoG.txt"
 METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
 
@@ -55,7 +56,7 @@ else
   echo "[CollectOxoGMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
   BAM=$(realpath *.bam)
-  CMD="!{PICARD} CollectOxoGMetrics CONTEXT_SIZE=0 I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
+  CMD="${PICARD} CollectOxoGMetrics CONTEXT_SIZE=0 I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
 
   run_cmd $CMD
 

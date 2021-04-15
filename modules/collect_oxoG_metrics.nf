@@ -9,10 +9,14 @@ process task {
     path PARAMS
     path BAM_CH
     val INPUT_ID
+    env RUN_PARAMS_FILE
+    env CMD_FILE
+    env PICARD
+    env STATSDONEDIR
 
   output:
     stdout()
-    path "*___oxoG.txt", optional: true, emit: METRICS_FILE
+    path "*___oxoG.txt", emit: METRICS_FILE
 
   shell:
     template 'collect_oxoG_metric.sh'
@@ -23,9 +27,13 @@ workflow collect_oxoG_metrics_wkflw {
     PARAMS
     BAM_CH
     INPUT_ID
+    RUN_PARAMS_FILE
+    CMD_FILE
+    PICARD
+    STATSDONEDIR
 
   main:
-    task( PARAMS, BAM_CH, INPUT_ID )
+    task( PARAMS, BAM_CH, INPUT_ID, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     out( task.out[0], "collect_oxoG_metrics" )
 
   emit:
