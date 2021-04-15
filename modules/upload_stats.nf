@@ -26,13 +26,6 @@ process email {
   label 'LOCAL'
 
   input:
-    path MD_METRICS_FILE_CH
-    path AM_METRICS_FILE_CH
-    path HS_METRICS_FILE_CH
-    path OXOG_METRICS_FILE_CH
-    path WGS_METRICS_FILE_CH
-    path RNA_METRICS_FILE_CH
-    path GC_BIAS_METRICS_FILE_CH
     env RUNNAME
     env IGO_EMAIL
 
@@ -69,13 +62,6 @@ workflow upload_stats_wkflw {
         RUNNAME,
         STATSDONEDIR )
     email(
-        MD_METRICS_FILE_CH.collect(),
-        AM_METRICS_FILE_CH.collect(),
-        HS_METRICS_FILE_CH.collect(),
-        OXOG_METRICS_FILE_CH.collect(),
-        WGS_METRICS_FILE_CH.collect(),
-        RNA_METRICS_FILE_CH.collect(),
-        GC_BIAS_METRICS_FILE_CH.collect(),
         RUNNAME,
         IGO_EMAIL )
     out( task.out[0], "upload_stats" )
