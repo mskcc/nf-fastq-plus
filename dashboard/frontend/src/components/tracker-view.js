@@ -59,7 +59,7 @@ function TrackerView() {
     })();
   }, [sequencingRuns]);
   useEffect(() => {
-    getSequencingRuns(14).then((runs) => {
+    getSequencingRuns(21).then((runs) => {
       setSequencingRuns(runs);
     });
   }, []);
