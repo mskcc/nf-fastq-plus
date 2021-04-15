@@ -166,7 +166,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_IMPACT505(self):
         params = get_recipe_species_params("IMPACT505", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList TYPE=DNA"
+        expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_TARGETS.intervalList TYPE=DNA"
         self.verify_params(params, expected_params, "IMPACT505", "Human")
 
     def test_ShallowWGS(self):
@@ -175,8 +175,8 @@ class TestSetupStats(unittest.TestCase):
         self.verify_params(params, expected_params, "ShallowWGS", "Human")
 
     def test_IDT_Exome(self):
-        params = get_recipe_species_params("IDT_Exome_v1_FP_Viral_Probes", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GTAG=GRCh37 GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=DNA"
+        params = get_recipe_species_params("IDT_Exome_v2_FP_Viral_Probes", "Human")
+        expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_BAITS.intervalList GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_TARGETS.intervalList TYPE=DNA"
         self.verify_params(params, expected_params, "IDT_Exome_v1_FP_Viral_Probes", "Human")
 
     def test_Agilent(self):
