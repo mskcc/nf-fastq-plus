@@ -52,7 +52,6 @@ INPUT_BAM=$(realpath *MRG.bam)
 
 METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 BAM_DIR=${STATS_DIR}/${RUNNAME}          # Specific path to BAMs
-
 mkdir -p ${METRICS_DIR}
 mkdir -p ${BAM_DIR}
 
