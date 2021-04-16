@@ -38,8 +38,9 @@ parse_param() {
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 REFERENCE=$(parse_param ${RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
-METRICS_DIR=${STATSDONEDIR}/${RUNNAME}
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}
 mkdir -p ${METRICS_DIR}
 AM_FILE="${METRICS_DIR}/${RUN_TAG}___AM.txt"
 
