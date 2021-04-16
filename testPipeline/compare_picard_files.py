@@ -115,7 +115,7 @@ def get_mismatches(d1, d2):
     for header in headers:
         try:
             if d1[header] != d2[header]:
-                if re.search('[a-zA-Z]', d1[header]) or re.search('[a-zA-Z]', d2[header]) or d1[header] == '' or d2[header] == '':
+                if re.search('[a-zA-Z]', d1[header]) or re.search('[a-zA-Z]', d2[header]):
                     print("\tSkipping {}".format(d1[header]))
                     continue
                 v1_float = float(d1[header])
