@@ -46,12 +46,14 @@ MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
 METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STAT_FILENAME="${RUN_TAG}___oxoG.txt"
-METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
 
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} || -z $(echo $MSKQ | grep -i "yes") ]]; then
-  echo "Skipping CollectOxoGMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS} MSKQ: ${MSKQ})"
+  MSG="Skipping CollectOxoGMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS} MSKQ: ${MSKQ})"
+  echo $MSG
+  echo $MSG >> ${STAT_FILENAME}
 else
+  METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
   mkdir -p ${METRICS_DIR}
   echo "[CollectOxoGMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 

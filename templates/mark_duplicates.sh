@@ -57,14 +57,13 @@ mkdir -p ${METRICS_DIR}
 mkdir -p ${BAM_DIR}
 
 MD_TAG="${RUN_TAG}___MD"
-STAT_NAME="${MD_TAG}.txt"
-METRICS_FILE="${METRICS_DIR}/${STAT_NAME}"
+STAT_FILE_NAME="${MD_TAG}.txt"
 
 OUTPUT_BAM=""
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
   MSG="Skipping Mark Duplicates for ${RUN_TAG} (MD: ${MD}). Passing on Merged Bam: ${INPUT_BAM}"
   echo ${MSG}
-  echo ${MSG} > ${METRICS_FILE}
+  echo ${MSG} > ${STAT_FILE_NAME}
   OUTPUT_BAM=${BAM_DIR}/$(basename ${INPUT_BAM})
   mv ${INPUT_BAM} ${OUTPUT_BAM}
   # NOTE - DO NOT EXIT (e.g. "exit 0") Module mark_duplicates outputs ENV varialbes and to do this nextflow will append
@@ -73,6 +72,7 @@ if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
   # If you exit here, then .command.env will never be written
 else
   MD_BAM="${MD_TAG}.bam"
+  METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
 
   echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
   CMD="${PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"

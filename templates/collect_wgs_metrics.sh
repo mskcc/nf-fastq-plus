@@ -43,8 +43,8 @@ RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
 METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
+mkdir -p ${METRICS_DIR}
 STATS_FILENAME="${RUN_TAG}___WGS.txt"
-METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
 
 WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
 if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then
@@ -54,7 +54,7 @@ elif [ "${TYPE^^}" != "WGS" ]; then
   echo "Skipping CollectWgsMetrics for ${RUN_TAG}. TYPE: ${TYPE} != WGS (GTAG: ${GTAG})"
   echo $MSG > ${STATS_FILENAME}
 else
-  mkdir -p ${METRICS_DIR}
+  METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
   echo "[CollectWgsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
   BAM=$(realpath *.bam)

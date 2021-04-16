@@ -44,12 +44,14 @@ MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
 METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STATS_FILENAME="${RUN_TAG}___RNA.txt"
-METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
 
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${RIBO_INTER} || ! -f ${REF_FLAT} ]]; then
-  echo "Skipping CollectRnaSeqMetrics for ${RUN_TAG} (RIBO_INTER: ${RIBO_INTER}, REF_FLAT: ${REF_FLAT})"
+  MSG="Skipping CollectRnaSeqMetrics for ${RUN_TAG} (RIBO_INTER: ${RIBO_INTER}, REF_FLAT: ${REF_FLAT})"
+  echo $MSG
+  echo $MSG >> ${STATS_FILENAME}
 else
+  METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
   mkdir -p ${METRICS_DIR}
   echo "[CollectRnaSeqMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
 
