@@ -4,7 +4,7 @@ LOCATION=$(realpath $(dirname "$0"))
 cd ${LOCATION}
 
 # Write the directories
-SAMPLE_DIR=${LOCATION}/FASTQ/ROSALIND_0001_AGTCTGAGTC/Project_0001/Sample_U0a
+SAMPLE_DIR=${LOCATION}/FASTQ/ROSALIND_0001_AGTCTGAGTC/Project_12878_NA/Sample_U0a
 mkdir -p ${SAMPLE_DIR}
 cd ${SAMPLE_DIR}
 
