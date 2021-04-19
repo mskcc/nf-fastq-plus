@@ -16,7 +16,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -36,41 +36,53 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-MD=$(parse_param !{RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
-SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
+# Write to local directory unless these parameters are passed in
+if [[ -z ${STATSDONEDIR} || -z ${STATS_DIR} ]]; then
+  STATSDONEDIR="."
+  STATS_DIR="."
+fi
 
-#   TODO - Use Each?
+MD=$(parse_param ${RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
+
 INPUT_BAM=$(realpath *MRG.bam)
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}   # Location of metrics & BAMs
-BAM_DIR=${METRICS_DIR}/bam            # Specific path to BAMs
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
+BAM_DIR=${STATS_DIR}/${RUNNAME}          # Specific path to BAMs
 mkdir -p ${METRICS_DIR}
 mkdir -p ${BAM_DIR}
 
 MD_TAG="${RUN_TAG}___MD"
-STAT_NAME="${MD_TAG}.txt"
-METRICS_FILE="${METRICS_DIR}/${STAT_NAME}"
-MD_BAM="${MD_TAG}.bam"
+STAT_FILE_NAME="${MD_TAG}.txt"
 
+OUTPUT_BAM=""
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
-  NO_MD_BAM="${RUN_TAG}___NO_MD.bam"
-  echo "Skipping Mark Duplicates for ${RUN_TAG} (MD: ${MD}). Creating symbolic link to input - ${NO_MD_BAM}"
-  ln -s ${INPUT_BAM} ${NO_MD_BAM}
-  echo "${SKIP_FILE_KEYWORD}_MD" > ${STAT_NAME}
-  cp ${INPUT_BAM} ${BAM_DIR}
-
+  MSG="Skipping Mark Duplicates for ${RUN_TAG} (MD: ${MD}). Passing on Merged Bam: ${INPUT_BAM}"
+  echo ${MSG}
+  echo ${MSG} > ${STAT_FILE_NAME}
+  OUTPUT_BAM=${BAM_DIR}/$(basename ${INPUT_BAM})
+  mv ${INPUT_BAM} ${OUTPUT_BAM}
   # NOTE - DO NOT EXIT (e.g. "exit 0") Module mark_duplicates outputs ENV varialbes and to do this nextflow will append
   # statements to write all environment variables to .command.env AT FILE END
   #   e.g. echo SAMPLE_TAG=$SAMPLE_TAG > .command.env
   # If you exit here, then .command.env will never be written
 else
+  MD_BAM="${MD_TAG}.bam"
+  METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
+
   echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
-  CMD="!{PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
+  CMD="${PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
   run_cmd $CMD
 
   # TODO - make metrics file available as output for nextlow
   cp ${METRICS_FILE} .
-  cp ${MD_BAM} ${BAM_DIR}
+
+  OUTPUT_BAM=${BAM_DIR}/$(basename ${MD_BAM})
+  mv ${INPUT_BAM} ${OUTPUT_BAM}
 fi
+
+# Check BAM was moved and provide a symbolic link to continue nextflow pipeline if successful
+ln -s ${OUTPUT_BAM} .

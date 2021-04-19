@@ -16,7 +16,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -36,29 +36,34 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
-BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)       # Interval list of bait sites
-TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)   # Interval list of target sites
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
+# Write to local directory unless these parameters are passed in
+if [[ -z ${STATSDONEDIR} ]]; then
+  STATSDONEDIR="."
+fi
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+BAITS=$(parse_param ${RUN_PARAMS_FILE} BAITS)       # Interval list of bait sites
+TARGETS=$(parse_param ${RUN_PARAMS_FILE} TARGETS)   # Interval list of target sites
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
+
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STAT_FILE_NAME="${RUN_TAG}___HS.txt"
 
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} ]]; then
-  echo "Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
-  echo "${SKIP_FILE_KEYWORD}_HS" > ${STAT_FILE_NAME}
-  exit 0
+  MSG="Skipping CollectHsMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS})"
+  echo $MSG
+  echo $MSG > ${STAT_FILE_NAME}
+else
+  mkdir -p ${METRICS_DIR}
+  METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
+
+  echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
+
+  BAM=$(realpath *.bam)
+  CMD="${PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
+  run_cmd $CMD
+
+  # TODO - make metrics file available as output for nextlow
+  cp ${METRICS_FILE} .
 fi
-
-
-mkdir -p ${METRICS_DIR}
-METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
-
-echo "[CollectHsMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
-
-BAM=$(realpath *.bam)
-CMD="!{PICARD} CollectHsMetrics BI=${BAITS} TI=${TARGETS} I=${BAM} O=${METRICS_FILE}"
-run_cmd $CMD
-
-# TODO - make metrics file available as output for nextlow
-cp ${METRICS_FILE} .

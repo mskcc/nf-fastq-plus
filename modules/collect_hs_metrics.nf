@@ -9,7 +9,10 @@ process task {
     path PARAMS
     path BAM_FILES
     val INPUT_ID
-    env SKIP_FILE_KEYWORD
+    env RUN_PARAMS_FILE
+    env CMD_FILE
+    env PICARD
+    env STATSDONEDIR
 
   output:
     stdout()
@@ -24,10 +27,13 @@ workflow collect_hs_metrics_wkflw {
     PARAMS
     BAM_CH
     INPUT_ID
-    SKIP_FILE_KEYWORD
+    RUN_PARAMS_FILE
+    CMD_FILE
+    PICARD
+    STATSDONEDIR
 
   main:
-    task( PARAMS, BAM_CH, INPUT_ID, SKIP_FILE_KEYWORD )
+    task( PARAMS, BAM_CH, INPUT_ID, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     out( task.out[0], "collect_hs_metrics" )
 
   emit:

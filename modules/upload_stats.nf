@@ -13,7 +13,6 @@ process task {
     path GC_BIAS_METRICS_FILE_CH
     env RUNNAME
     env STATSDONEDIR
-    env SKIP_FILE_KEYWORD
 
   output:
     stdout()
@@ -49,7 +48,6 @@ workflow upload_stats_wkflw {
     GC_BIAS_METRICS_FILE_CH
     RUNNAME
     STATSDONEDIR
-    SKIP_FILE_KEYWORD
     IGO_EMAIL
 
   main:
@@ -62,8 +60,7 @@ workflow upload_stats_wkflw {
         RNA_METRICS_FILE_CH,
         GC_BIAS_METRICS_FILE_CH,
         RUNNAME,
-        STATSDONEDIR,
-        SKIP_FILE_KEYWORD )
+        STATSDONEDIR )
     email(
         RUNNAME,
         IGO_EMAIL )
