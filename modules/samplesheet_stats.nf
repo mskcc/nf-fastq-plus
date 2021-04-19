@@ -23,18 +23,25 @@ workflow samplesheet_stats_wkflw {
     align_to_reference_wkflw( create_sample_lane_jobs_wkflw.out.LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE )
     merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH, align_to_reference_wkflw.out.OUTPUT_ID )
     // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
-    mark_duplicates_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
-    collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.MD_BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID, SKIP_FILE_KEYWORD )
+    mark_duplicates_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR, STATS_DIR )
+    alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR,
-        SKIP_FILE_KEYWORD, IGO_EMAIL
+        IGO_EMAIL
     )
     fingerprint_wkflw( SAMPLESHEET, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE )
 }
