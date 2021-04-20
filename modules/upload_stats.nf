@@ -28,6 +28,13 @@ process email {
   input:
     env RUNNAME
     env IGO_EMAIL
+    path MD_METRICS_FILE_CH
+    path AM_METRICS_FILE_CH
+    path HS_METRICS_FILE_CH
+    path OXOG_METRICS_FILE_CH
+    path WGS_METRICS_FILE_CH
+    path RNA_METRICS_FILE_CH
+    path GC_BIAS_METRICS_FILE_CH
 
   shell:
   '''
@@ -63,7 +70,14 @@ workflow upload_stats_wkflw {
         STATSDONEDIR )
     email(
         RUNNAME,
-        IGO_EMAIL )
+        IGO_EMAIL,
+        MD_METRICS_FILE_CH,
+        AM_METRICS_FILE_CH,
+        HS_METRICS_FILE_CH,
+        OXOG_METRICS_FILE_CH,
+        WGS_METRICS_FILE_CH,
+        RNA_METRICS_FILE_CH,
+        GC_BIAS_METRICS_FILE_CH )
     out( task.out[0], "upload_stats" )
 
   emit:
