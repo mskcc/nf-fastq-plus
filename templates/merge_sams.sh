@@ -41,15 +41,20 @@ fi
 
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 MD=$(parse_param ${RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
 
 SAMS=$(realpath *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
 
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
-  echo "Writing BAM directly to BAM directory"
-  MERGED_BAM="${STATS_DIR}/${RUN_TAG}___MRG.bam"
+  DELIVERED_BAM_DIR=${STATS_DIR}/${RUNNAME}
+  MERGED_BAM="${DELIVERED_BAM_DIR}/${RUN_TAG}___MRG.bam"
+
+  echo "Writing BAM directly to delivered directory: ${DELIVERED_BAM_DIR}"
+  mkdir -p ${DELIVERED_BAM_DIR}
   touch ${MERGED_BAM}
+
   ln ${MERGED_BAM} .
 else
   echo "Passing BAM for mark duplicates, which will be the delivered BAM"
