@@ -16,6 +16,8 @@ workflow samplesheet_stats_wkflw {
   take:
     DEMUXED_DIR
     SAMPLESHEET
+    STATS_DIR
+    STATSDONEDIR
 
   main:
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
