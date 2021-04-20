@@ -10,10 +10,10 @@ fi
 
 case $RECIPE in
   HumanWholeGenome)
-    FILE_SUFFIXES=( ___MD.txt ___AM.txt ___WGS.txt )
+    FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt ___WGS.txt )
     ;;
   IDT_Exome_v2_FP_Viral_Probes)
-    FILE_SUFFIXES=( ___MD.txt ___AM.txt )
+    FILE_SUFFIXES=( ___AM.txt ___gc_bias_metrics.txt ___HS.txt )
     ;;
   *)
     echo "Could not find a pattern matching recipe: ${RECIPE}"
