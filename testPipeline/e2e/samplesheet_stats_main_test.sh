@@ -69,7 +69,7 @@ if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing test_output directories"
   rm -rf ${LOCATION}/test_output___*
 else
-  printf "ERRORS were found - ${ERRORS}"
+  printf "ERRORS were found - \n${ERRORS}"
 fi
 
 
