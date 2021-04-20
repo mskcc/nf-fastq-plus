@@ -42,10 +42,13 @@ echo ${CMD}
 eval ${CMD}
 cd -
 
+ERRORS=""
 echo "TEST 1: Checking for bam"
 FOUND_BAM=$(find ${STATS_DIR} -type f -name "*.bam")
 if [ -z ${FOUND_BAM} ]; then
-  printf "\tERROR: Pipeline didn't create BAM files\n"
+  ERROR="\tERROR: Pipeline didn't create BAM files\n"
+  ERRORS="${ERRORS}${ERROR}"
+  printf "$ERROR"
 else
   printf "\tFound BAM: ${FOUND_BAM}\n"
 fi
@@ -54,10 +57,19 @@ echo "TEST 2: Checking for following output stat files - ${FILE_SUFFIXES[@]}"
 for fs in "${FILE_SUFFIXES[@]}"; do
   FOUND_FILES=$(find ${STATSDONEDIR} -type f -name "*${fs}")
   if [ -z ${FOUND_FILES} ]; then
-    printf "\tERROR: Pipeline didn't create ${fs} files\n"
+    ERROR="\tERROR: Pipeline didn't create ${fs} files\n"
+    printf "$ERROR"
+    ERRORS="${ERRORS}${ERROR}"
   else
     printf "\tFound ${FOUND_FILES}\n"
   fi
 done
+
+if [ -z "${ERRORS}" ]; then
+  echo "All tests successful - removing test_output directories"
+  rm -rf ${LOCATION}/test_output___*
+else
+  printf "ERRORS were found - ${ERRORS}"
+fi
 
 
