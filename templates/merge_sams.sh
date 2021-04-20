@@ -64,7 +64,3 @@ for SAM in $SAMS; do
 done
 
 run_cmd $MERGE_CMD
-
-# if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
-#   ln ${MERGED_BAM} .
-# fi
