@@ -37,5 +37,5 @@ println """\
 
 
 workflow {
-  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET )
+  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR )
 }
