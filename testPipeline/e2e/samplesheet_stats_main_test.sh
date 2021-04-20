@@ -21,7 +21,7 @@ case $RECIPE in
     ;;
 esac
 
-LOCATION=$(dirname "$0")
+LOCATION=$(realpath $(dirname "$0"))
 TEST_OUTPUT=${LOCATION}/test_output___${RECIPE}
 
 DEMUXED_DIR=${LOCATION}/../data/FASTQ/ROSALIND_0001_AGTCTGAGTC
@@ -51,8 +51,8 @@ fi
 
 echo "TEST 2: Checking for following output stat files - ${FILE_SUFFIXES[@]}"
 for fs in "${FILE_SUFFIXES[@]}"; do
-	FOUND_FILES=$(find ${STATSDONEDIR} -type f -name "*${fs}")
-	if [ -z ${FOUND_FILES} ]; then
+  FOUND_FILES=$(find ${STATSDONEDIR} -type f -name "*${fs}")
+  if [ -z ${FOUND_FILES} ]; then
     printf "\tERROR: Pipeline didn't create ${fs} files\n"
   else
     printf "\tFound ${FOUND_FILES}\n"
