@@ -37,7 +37,7 @@ STATSDONEDIR=${TEST_OUTPUT}/stats/DONE
 mkdir -p ${STATSDONEDIR}
 
 cd ${TEST_OUTPUT}
-CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --seq_dir ${SEQUENCER_DIR} --fq_dir ${FASTQ_DIR} --done_dir ${STATSDONEDIR}"
+CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR}"
 echo ${CMD}
 eval ${CMD}
 cd -
