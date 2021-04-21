@@ -50,8 +50,8 @@ WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
 if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then
   MSG="Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES} (TYPE: ${TYPE})";
   echo $MSG > ${STATS_FILENAME}
-elif [ "${TYPE^^}" != "WGS" ]; then
-  echo "Skipping CollectWgsMetrics for ${RUN_TAG}. TYPE: ${TYPE} != WGS (GTAG: ${GTAG})"
+elif [ "${TYPE}" != "WGS" ]; then
+  MSG="Skipping CollectWgsMetrics for ${RUN_TAG}. TYPE: ${TYPE} != WGS (GTAG: ${GTAG})"
   echo $MSG > ${STATS_FILENAME}
 else
   METRICS_FILE="${METRICS_DIR}/${STATS_FILENAME}"
