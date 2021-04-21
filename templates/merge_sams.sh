@@ -15,7 +15,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -35,15 +35,35 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
-SAMPLE_TAG=$(parse_param !{RUN_PARAMS_FILE} SAMPLE_TAG)
+if [[ -z ${STATS_DIR} ]]; then
+  STATS_DIR="."
+fi
+
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+MD=$(parse_param ${RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
 
 SAMS=$(realpath *.sam)
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
-MERGED_BAM="${RUN_TAG}___MRG.bam"
+
+if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
+  DELIVERED_BAM_DIR=${STATS_DIR}/${RUNNAME}
+  MERGED_BAM="${DELIVERED_BAM_DIR}/${RUN_TAG}___MRG.bam"
+
+  echo "Writing BAM directly to delivered directory: ${DELIVERED_BAM_DIR}"
+  mkdir -p ${DELIVERED_BAM_DIR}
+  touch ${MERGED_BAM}
+
+  ln ${MERGED_BAM} .
+else
+  echo "Passing BAM for mark duplicates, which will be the delivered BAM"
+  MERGED_BAM="${RUN_TAG}___MRG.bam"
+fi
+
 echo "Merging ${NUM_SAMS} SAM(s): ${MERGED_BAM}"
 
-MERGE_CMD="!{PICARD} MergeSamFiles CREATE_INDEX=true O=${MERGED_BAM}"
+MERGE_CMD="${PICARD} MergeSamFiles CREATE_INDEX=true O=${MERGED_BAM}"
 for SAM in $SAMS; do
   MERGE_CMD="${MERGE_CMD} I=${SAM}"
 done
