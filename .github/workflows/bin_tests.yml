@@ -31,3 +31,6 @@ jobs:
 
       - name: Test Barcode Collision Detection
         run: cd ./bin/test && python test_detect_barcode_collision.py
+
+      - name: Test split samplesheet
+        run: ./bin/test/test_split_sample_sheet.sh
