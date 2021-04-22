@@ -31,9 +31,3 @@ jobs:
 
       - name: Test Barcode Collision Detection
         run: cd ./bin/test && python test_detect_barcode_collision.py
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
