@@ -28,12 +28,6 @@ jobs:
         with:
           python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-    # this Action should follow steps to set up Python build environment
-      - name: Install Python dependencies
-        uses: py-actions/py-dependency-install@v2
-        with:
-          path: "bin/requirements.txt"
-
       # Runs a single command using the runners shell
       - name: Test Run Parameters
         run: cd ./bin/test && python test_generate_run_params.py
@@ -42,4 +36,4 @@ jobs:
         run: cd ./bin/test && python test_detect_barcode_collision.py
 
       - name: Test split samplesheet
-        run: ./bin/test/test_split_sample_sheet.sh
+        run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
