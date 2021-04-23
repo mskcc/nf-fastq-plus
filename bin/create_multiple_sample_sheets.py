@@ -197,14 +197,13 @@ def main():
 		got_data = False
 		for row in csv_reader:
 			if (row[0] != 'Lane') and (got_data is False):
-				# got_data is False
 				top_of_sheet.append(row)
 			elif (row[0] == 'Lane'):
 				got_data = True
 				header = row
-			# elif (got_data is True):
 			elif got_data:
-				csv_sample_data.append(row)	
+				csv_sample_data.append(row)
+
 	# this is the data part of the sheet
 	sample_data = pd.DataFrame(csv_sample_data, columns = header)
 	

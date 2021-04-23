@@ -19,15 +19,21 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       # Runs a single command using the runners shell
       - name: Test Run Parameters
         run: cd ./bin/test && python test_generate_run_params.py
 
       - name: Test Barcode Collision Detection
         run: cd ./bin/test && python test_detect_barcode_collision.py
+
+      - name: Test split samplesheet
+        run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
