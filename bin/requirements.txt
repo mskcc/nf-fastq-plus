@@ -12,7 +12,6 @@ fastools==1.0.1
 future==0.18.2
 humanfriendly==8.2
 idna==2.7
-importlib==1.0.4
 Jinja2==2.11.2
 matplotlib==2.2.5
 numpy==1.16.6
