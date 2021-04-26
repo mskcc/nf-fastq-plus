@@ -37,6 +37,8 @@ jobs:
 
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
-
       - name: Test e2e
-        run: cd testPipeline/e2e/ && ./samplesheet_stats_main_test.sh
+        description: 'Runs e2e pipeline'
+        runs:
+          using: 'docker'
+          image: 'testPipeline/Dockerfile'
