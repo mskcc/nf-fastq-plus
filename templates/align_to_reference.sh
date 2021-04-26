@@ -22,6 +22,8 @@
 #   DUAL - Numeric value for dual 
 #   RUN_TAG - Tag for Run-Project-Sample
 #   FASTQ* - absolute path to FASTQ
+# Global:
+#   EXECUTOR - lsf, local
 #########################################
 bwa_mem () {
   LANE=$1
@@ -64,12 +66,16 @@ bwa_mem () {
   chmod 755 ${BSUB_SCRIPT}
 
   # "-t {NUM_THREADS}": # threads should equal # tasks sent to LSF (-n)
-  BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 ./${BSUB_SCRIPT}"
-  SUBMIT=$(${BWA_CMD})                          # Submits and saves output
-  JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
-  JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
-
-  LOG="${LOG} OUT=${BWA_SAM} JOB_ID=${JOB_ID}"
+  if [[ ${EXECUTOR} == "local" ]]; then
+    LOG="RUNNING LOCAL - ${LOG}"
+    ./${BSUB_SCRIPT}
+  else
+    BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 ./${BSUB_SCRIPT}"
+    SUBMIT=$(${BWA_CMD})                          # Submits and saves output
+    JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
+    JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
+    LOG="${LOG} OUT=${BWA_SAM} JOB_ID=${JOB_ID}"
+  fi
   echo $LOG
 }
 
@@ -105,8 +111,8 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
  
   echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
-
-  bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS
+  bwa_mem_out=$(bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS)
+  echo $bwa_mem_out
 done
 
 for job_id in ${JOB_ID_LIST[@]}; do
