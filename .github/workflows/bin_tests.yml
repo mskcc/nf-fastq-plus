@@ -37,7 +37,13 @@ jobs:
 
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
+
+  docker-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Test e2e
-        run:
-          using: 'docker'
-          image: 'testPipeline/Dockerfile'
+        uses: docker://foundeo/minibox:latest
+        with:
+          entrypoint: /opt/box/box
+          args: version
