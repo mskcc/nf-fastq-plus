@@ -24,11 +24,11 @@ function compare_files {
     fi
   done
 
+  # Test correct number of files written
   base_file=$(basename ${SOURCE} | cut -d'.' -f1)                       # /path/to/base_file.csv -> base_file
   num_expected=$(echo ${EXPECTED} | tr ' ' '\n' | wc -l | tr -d " ")
   actual_files=$(ls ${TARGET_DIR} | grep ${base_file})
   num_actual=$(echo ${actual_files} | tr ' ' '\n' | wc -l | tr -d " ")
-
   if [[ "${num_expected}" != "${num_actual}" ]]; then
     printf "Incorrect number - Expected ${num_expected}, but found ${num_actual}.\n${actual_files}"
     exit 1
