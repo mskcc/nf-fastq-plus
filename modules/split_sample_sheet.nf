@@ -6,6 +6,7 @@ include { log_out as out } from './log_out'
 process split_sample_sheet_task {
   input:
     env RUN_TO_DEMUX_DIR
+    env COPIED_SAMPLE_SHEET_DIR
     env PROCESSED_SAMPLE_SHEET_DIR
 
   output:
@@ -20,11 +21,12 @@ process split_sample_sheet_task {
 workflow split_sample_sheet_wkflw {
   take:
     runs_to_demux_path
+    COPIED_SAMPLE_SHEET_DIR
     PROCESSED_SAMPLE_SHEET_DIR
 
   main:
     // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
-    split_sample_sheet_task( runs_to_demux_path, PROCESSED_SAMPLE_SHEET_DIR )
+    split_sample_sheet_task( runs_to_demux_path, COPIED_SAMPLE_SHEET_DIR, PROCESSED_SAMPLE_SHEET_DIR )
     out( split_sample_sheet_task.out[0], "split_sample_sheet" )
 
   emit:
