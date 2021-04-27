@@ -11,8 +11,11 @@ RUN wget -qO- https://get.nextflow.io | bash
 # Add all executables to the path
 ENV PATH=$PATH:/usr/gitc
 
+# Get around not having "mail" command
+RUN ln -s /bin/echo /bin/mail
+
 # Add executables
-RUN mkdir -p /opt/common/CentOS_7/bwa/bwa-0.7.17 && \
+RUN mkdir -pubp /opt/common/CentOS_7/bwa/bwa-0.7.17 && \
   mkdir -p /home/igo/resources/picard2.21.8/ && \
   ln -s /usr/gitc/bwa /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa && \
   ln -s /usr/gitc/picard.jar /home/igo/resources/picard2.21.8/picard.jar
