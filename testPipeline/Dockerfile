@@ -3,6 +3,8 @@ FROM broadinstitute/genomes-in-the-cloud:2.3.1-1512499786
 
 # Add the script that can be run as an entrypoint
 COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test.sh
+
+# Test script uses mock data at testPipeline/data (not needed if mounting nf-fastq-plus when running container)
 COPY data .
 
 # Install nextflow
