@@ -14,26 +14,13 @@ ENV PATH=$PATH:/usr/gitc
 # Add executables
 RUN mkdir -p /opt/common/CentOS_7/bwa/bwa-0.7.17 && \
   mkdir -p /home/igo/resources/picard2.21.8/ && \
-  mkdir -p /igo/work/nabors/tools/cellranger-atac-1.2.0/cellranger-atac-cs/1.2.0/bin/ && \
   ln -s /usr/gitc/bwa /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa && \
-  ln -s /usr/gitc/picard.jar /home/igo/resources/picard2.21.8/picard.jar && \
-  touch /igo/work/nabors/tools/cellranger-atac-1.2.0/cellranger-atac-cs/1.2.0/bin/cellranger-atac
-  # TODO - Add cellranger
+  ln -s /usr/gitc/picard.jar /home/igo/resources/picard2.21.8/picard.jar
 
 # Add Genome reference
 RUN wget https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.fna.gz && \
   gunzip GRCh37_latest_genomic.fna.gz && \
-  mv GRCh37_latest_genomic.fna /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta && \
-  ln -s /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta /igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa
-
-# Setup dummy supporting reference files
-RUN mkdir -p /igo/work/nabors/bed_files/GRCh37_RNA_Ensembl && \
-  mkdir -p /igo/work/genomes/H.sapiens/GRCh37/ && \
-  mkdir -p /igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/ && \
-  echo "@HD	VN:1.4	SO:coordinate" > /igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list && \
-  touch /igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt && \
-  echo "@HD	VN:1.6	SO:coordinate" > /igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_targets.intervalList && \
-  echo "@HD	VN:1.6	SO:coordinate" > /igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_baits.intervalList
+  mv GRCh37_latest_genomic.fna /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta
 
 # Setup directories of nextflow.config
 RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
