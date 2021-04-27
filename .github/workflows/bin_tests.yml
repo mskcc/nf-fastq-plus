@@ -39,4 +39,4 @@ jobs:
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
 
       - name: Test split samplesheet
-        run: docker build -t nf-fastq-plus-playground . && docker run -v /home/runner/work/nf-fastq-plus/nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+        run: cd testPipeline && docker build -t nf-fastq-plus-playground . && docker run -v /home/runner/work/nf-fastq-plus/nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
