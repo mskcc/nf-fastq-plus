@@ -140,7 +140,7 @@ See `nextflow.config` to see where data is being written
 
 Notes:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
-* Before merging your branch into `master`, wait for the GitHub actions to pass and verify that all checks pass
+* Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
 * Follow the project structure below -
 
 
