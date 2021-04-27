@@ -63,7 +63,7 @@ STATSDONEDIR=${TEST_OUTPUT}/stats/DONE
 mkdir -p ${STATSDONEDIR}
 
 cd ${TEST_OUTPUT}
-CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR}"
+CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} > ${RECIPE}.out && tail -100 ${RECIPE}.out"
 echo ${CMD}
 eval ${CMD}
 cd -
@@ -96,6 +96,5 @@ if [ -z "${ERRORS}" ]; then
   rm -rf ${TEST_OUTPUT}
 else
   printf "ERRORS were found - \n${ERRORS}"
+  exit 1
 fi
-
-
