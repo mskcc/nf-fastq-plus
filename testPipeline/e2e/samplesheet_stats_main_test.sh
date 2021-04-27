@@ -96,6 +96,7 @@ if [ -z "${ERRORS}" ]; then
   rm -rf ${TEST_OUTPUT}
 else
   printf "ERRORS were found - \n${ERRORS}"
+  exit 1
 fi
 
 
