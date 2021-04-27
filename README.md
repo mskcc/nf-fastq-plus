@@ -137,6 +137,13 @@ See `nextflow.config` to see where data is being written
 * `STATSDONEDIR`: Directory where stats ready for upload are written (`STATS_DIR` may write stats that shouldn't be uploaded) 
 
 ## DEV
+
+Notes:
+* Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
+* Before merging your branch into `master`, wait for the GitHub actions to pass and verify that all checks pass
+* Follow the project structure below -
+
+
 To add a new process, please follow the following steps.
 
 ### Project Structure
