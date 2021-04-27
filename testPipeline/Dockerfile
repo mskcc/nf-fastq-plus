@@ -1,26 +1,20 @@
-# Container image that runs your code
+# Image w/ bwa & picard binaries
 FROM broadinstitute/genomes-in-the-cloud:2.3.1-1512499786
 
-# Copies your code file from your action repository to the filesystem path `/` of the container
+# Add the script that can be run as an entrypoint
 COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test.sh
 COPY data .
 
 # Install nextflow
 RUN wget -qO- https://get.nextflow.io | bash
 
-# Add all executables to the path
+# Add all executables, most importantly nextflow, to the path
 ENV PATH=$PATH:/usr/gitc
 
-# Get around not having "mail" command
+# Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
 
-# Add executables
-RUN mkdir -p /opt/common/CentOS_7/bwa/bwa-0.7.17 && \
-  mkdir -p /home/igo/resources/picard2.21.8/ && \
-  ln -s /usr/gitc/bwa /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa && \
-  ln -s /usr/gitc/picard.jar /home/igo/resources/picard2.21.8/picard.jar
-
-# Add Genome reference
+# Add Genome reference used by Human Whole Genome & IDT
 RUN wget https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.fna.gz && \
   gunzip GRCh37_latest_genomic.fna.gz && \
   mkdir -p /igo/work/genomes/H.sapiens/GRCh37/ && \
