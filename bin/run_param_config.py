@@ -67,7 +67,9 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 recipe_overrides = {
     "ADCC1_v3": "GRCh37",
     "CH_v1": "hg19",
-    "MSK-ACCESS_v1":"GRCh38"
+    "MSK-ACCESS_v1":"GRCh38",
+    "IMPACT505":"GRCh38",
+    "IDT_Exome_v2_FP_Viral_Probes":"GRCh38"
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
@@ -319,8 +321,8 @@ recipe_options_mapping_UNORDERED = {
     },
     "IMPACT505": {
         # NOTE: interval list file name "IMPACT468_BAITS" is stored in LIMS and passed to pipelines, change file name with caution
-        BAITS: "/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList",
-        TARGETS: "/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList",
+        BAITS: "/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_BAITS.intervalList",
+        TARGETS: "/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_TARGETS.intervalList",
         MSKQ: "yes",
         MD: "yes"
     },
@@ -379,8 +381,10 @@ recipe_options_mapping_UNORDERED = {
         MD: "yes"
     },
     "IDT_Exome_v2_FP_Viral_Probes": {
-      BAITS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_baits.intervalList",
-      TARGETS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_targets.intervalList"
+      BAITS: "/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_BAITS.intervalList",
+      TARGETS: "/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_TARGETS.intervalList",
+      MSKQ: "no",
+      MD: "yes"
     },
     "IDT_Exome_v1": {
         BAITS: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-BAITS.iList",
