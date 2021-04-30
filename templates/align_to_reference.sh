@@ -11,10 +11,11 @@
 # TODO 
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
 
+JOB_ID_LIST_FILE=submitted_jobs.txt  # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
 #########################################
 # Runs BWA-MEM on input FASTQs
 # SIDE-EFFECTS:
-#   Populates global JOB_ID_LIST variable
+#   Populates writes to JOB_ID_LIST_FILE
 # Arguments:
 #   Lane - Sequencer Lane, e.g. L001
 #   REFERENCE - FASTQ reference genome
@@ -73,7 +74,7 @@ bwa_mem () {
     BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 ./${BSUB_SCRIPT}"
     SUBMIT=$(${BWA_CMD})                          # Submits and saves output
     JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
-    JOB_ID_LIST+=( $JOB_ID )                      # Save job id to wait on later
+    echo ${JOB_ID} >> ${JOB_ID_LIST_FILE}         # Save job id to wait on later
     LOG="${LOG} OUT=${BWA_SAM} JOB_ID=${JOB_ID}"
   fi
   echo $LOG
@@ -95,7 +96,6 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-JOB_ID_LIST=()      # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
 for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
   TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
@@ -112,18 +112,20 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
  
   echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
   bwa_mem_out=$(bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS)
-  echo $bwa_mem_out
+  echo "BWA JOB OUTPUT: ${bwa_mem_out}"
 done
 
-for job_id in ${JOB_ID_LIST[@]}; do
+ALL_JOBS=$(cat ${JOB_ID_LIST_FILE} | tr '\n' ' ')
+printf "Submitted Jobs (${EXECUTOR}): %s\n" "${ALL_JOBS}"
+for job_id in ${ALL_JOBS}; do
   echo "Waiting for ${job_id} to finish"
   bwait -w "ended(${job_id})" &
 done
-echo "Waiting for all jobs"
+echo "Waiting for all jobs: $(date +"%T")"
 wait
-echo "Finished waiting for alignment of $RUN_TAG_PARAM"
+echo "Finished waiting for alignment of $RUN_TAG_PARAM: $(date +"%T")"
 
-for job_id in ${JOB_ID_LIST[@]}; do
+for job_id in ${ALL_JOBS}; do
   # Fail pipeline if one alignment job failed - has an exit code that is non-zero
   has_exit_code=$(bjobs -l ${job_id} | grep "exit code")
   has_success_code=$(bjobs -l ${job_id} | grep "exit code 0")
