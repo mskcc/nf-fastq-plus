@@ -60,6 +60,13 @@ EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0003_FLOWCELLNAME_1
 python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION} > /dev/null
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 
+TYPE="6nt"
+echo "Testing ${TYPE} split"
+SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv
+EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME_6nt.csv )
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION} > /dev/null
+ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
+
 OUTPUT=$(printf "$ERRORS" | grep -v "success" | sed "s/^/   /")
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 

@@ -101,22 +101,23 @@ def is_6nt_index(index_name):
     return index_name in BARCODE_6NT_SET
 
 def has_6nt(sample_data, header):
-    """ Creates a 6_nt dataframe if 6nt indices are present
-            Side Effects:
-                - Modifies @sample_data in-place (Removes and re-orders indices)
-                - Creates a 6_nt dataframe and adds it to global @data_sheets
+	""" Creates a 6_nt dataframe if 6nt indices are present
+			Side Effects:
+				- Modifies @sample_data in-place (Removes and re-orders indices)
+				- Creates a 6_nt dataframe and adds it to global @data_sheets
 
-    :param sample_data, df: original sample sheet
-    :param sample_data, header: original sample sheet headers
+	:param sample_data, df: original sample sheet
+	:param sample_data, header: original sample sheet headers
 
-    :return: bool, was a 6_nt dataframe created
-    """
+	:return: bool, was a 6_nt dataframe created
+	"""
 	# create empty data frame for padded requests
 	has_6nt_data = pd.DataFrame(columns = header)
 	for x in range(0, len(sample_data), 1):
 		i7_index = sample_data['I7_Index_ID'].loc[x]
 		if (is_6nt_index(i7_index)):
 			has_6nt_data.loc[x] = sample_data.loc[x]
+			has_6nt_data['index'].loc[x] = sample_data['index'].loc[x][:6]      # We only need the first 6 nucleotides
 			sample_data.drop([x], inplace = True, axis = 0)
 
 	if not has_6nt_data.empty:
