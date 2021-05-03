@@ -92,15 +92,22 @@ if grep -q "10X_Genomics" $SAMPLESHEET; then
 else
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
   echo "DEMUX CMD (${RUN_BASENAME}): bcl2fastq"
-  MASK_OPT=""
+
+  # Add options depending on whether bin/create_multiple_sample_sheets.py created special sample sheets
+  MASK_OPT=""         # Option for use-bases-mask, default to no mask (will take from RunInfo.xml)
+  LANE_SPLIT_OPT=""   # Option for lane-splitting, default to lane-splitting
   has_i7=$(echo ${SAMPLESHEET} | grep _i7.csv)
   has_6nt=$(echo ${SAMPLESHEET} | grep _6nt.csv)
+  no_lane_split=$(echo ${SAMPLESHEET} | grep -E '_PPG.csv|_DLP.csv')
   if [[ ! -z $has_i7 ]]; then
-    echo "Masking i5 index"
+    echo "Detected an _i7.csv SampleSheet. Will add mask to remove i5 index"
     assign_MASK_OPT
   elif [[ ! -z $has_6nt ]]; then
-    echo "Using six-nucleotide i7 index"
+    echo "Detected a _6nt.csv SampleSheet. Will add mask of six-nucleotide i7 index and to remove i5 index"
     assign_MASK_OPT 6
+  elif [[ ! -z $no_lane_split ]]; then
+    echo "Detected a _PPG.csv or _DLP.csv SampleSheet. Using --no-lane-splitting option"
+    LANE_SPLIT_OPT="--no-lane-splitting"
   fi
 
   # detect_barcode_collision.py should be in bin dir of root of project
@@ -111,8 +118,9 @@ else
   if [ $? -ne 0 ]; then
     BARCODE_MISMATCH=0
   fi
+
   echo "Running bcl2fastq w/ mismatches=${BARCODE_MISMATCH}"
-  JOB_CMD="${BCL2FASTQ} ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
+  JOB_CMD="${BCL2FASTQ} ${MASK_OPT} ${LANE_SPLIT_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
 fi
 
 echo ${JOB_CMD} >> ${CMD_FILE}
