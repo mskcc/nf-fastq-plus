@@ -165,3 +165,17 @@ else
   echo $FULL | mail -s "[FAILED DEMUX] ${RUN_TO_DEMUX}" ${DATA_TEAM_EMAIL}
   exit 1
 fi
+
+# Add DLP metadata.yaml script
+is_dlp=$(echo ${SAMPLESHEET} | grep -E '_DLP.csv')
+if [[ ! -z $is_dlp && ! -z ${SHARED_SINGLE_CELL_DIR} && -d ${SHARED_SINGLE_CELL_DIR} ]]; then
+  echo "Detected an _DLP.csv SampleSheet. Creating metadata.yaml"
+  cd ${SHARED_SINGLE_CELL_DIR}
+  project_dirs=$(find ${DEMUXED_DIR} -maxdepth 1 -type d -name "Project_*")
+  for project_path in $project_dirs; do
+    prj=$(basename ${project_path})
+    CMD="make create-metadata-yaml ss=${SAMPLESHEET} prj=${prj} project_path=${project_path}"
+    echo ${CMD}
+    eval ${CMD}
+  done
+fi
