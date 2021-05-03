@@ -3,15 +3,19 @@
 # Nextflow Inputs:
 #   SAMPLESHEET:      Absolute path to the sample sheet that will be used for demultiplexing
 #   RUN_TO_DEMUX_DIR: Absolute path to bcl files
-#
+#   BCL2FASTQ:        Absolute path to bcl2fastq binary
+#   CELL_RANGER_ATAC: Absolute path to cellranger binary
 #   FASTQ_DIR:        Directory w/ FASTQ files
 #   DEMUX_LOG_FILE:   Log file where demux output is written to
+#   CMD_FILE:         Log file to write commands to
 #   DATA_TEAM_EMAIL: emails of data team members who should be notified
 # Nextflow Outputs:
 #   DEMUXED_DIR, env: path to where the run has been demuxed to
 #   SAMPLE_SHEET,env: path to samplesheet used to demultiplex
 # Run:
-#   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
+#   SAMPLESHEET=/path/to/SampleSheet...csv RUN_TO_DEMUX_DIR=/path/to/bcl_files BCL2FASTQ=/path/to/bcl2fastq/binary \
+#     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
+#     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
 #########################################
 # Reads the RunInfo.xml of the RUN_TO_DEMUX_DIR to retrieve mask and assigns to MASK_OPT
@@ -92,15 +96,22 @@ if grep -q "10X_Genomics" $SAMPLESHEET; then
 else
   export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
   echo "DEMUX CMD (${RUN_BASENAME}): bcl2fastq"
-  MASK_OPT=""
+
+  # Add options depending on whether bin/create_multiple_sample_sheets.py created special sample sheets
+  MASK_OPT=""         # Option for use-bases-mask, default to no mask (will take from RunInfo.xml)
+  LANE_SPLIT_OPT=""   # Option for lane-splitting, default to lane-splitting
   has_i7=$(echo ${SAMPLESHEET} | grep _i7.csv)
   has_6nt=$(echo ${SAMPLESHEET} | grep _6nt.csv)
+  no_lane_split=$(echo ${SAMPLESHEET} | grep -E '_PPG.csv|_DLP.csv')
   if [[ ! -z $has_i7 ]]; then
-    echo "Masking i5 index"
+    echo "Detected an _i7.csv SampleSheet. Will add mask to remove i5 index"
     assign_MASK_OPT
   elif [[ ! -z $has_6nt ]]; then
-    echo "Using six-nucleotide i7 index"
+    echo "Detected a _6nt.csv SampleSheet. Will add mask of six-nucleotide i7 index and to remove i5 index"
     assign_MASK_OPT 6
+  elif [[ ! -z $no_lane_split ]]; then
+    echo "Detected a _PPG.csv or _DLP.csv SampleSheet. Using --no-lane-splitting option"
+    LANE_SPLIT_OPT="--no-lane-splitting"
   fi
 
   # detect_barcode_collision.py should be in bin dir of root of project
@@ -111,8 +122,9 @@ else
   if [ $? -ne 0 ]; then
     BARCODE_MISMATCH=0
   fi
+
   echo "Running bcl2fastq w/ mismatches=${BARCODE_MISMATCH}"
-  JOB_CMD="${BCL2FASTQ} ${MASK_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
+  JOB_CMD="${BCL2FASTQ} ${MASK_OPT} ${LANE_SPLIT_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
 fi
 
 echo ${JOB_CMD} >> ${CMD_FILE}
