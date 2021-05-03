@@ -11,7 +11,9 @@
 #   DEMUXED_DIR, env: path to where the run has been demuxed to
 #   SAMPLE_SHEET,env: path to samplesheet used to demultiplex
 # Run:
-#   RUN_TO_DEMUX_DIR=/igo/sequencers/michelle/200814_MICHELLE_0249_AHMNCJDRXX ./demultiplex.sh
+#   SAMPLESHEET=/path/to/SampleSheet...csv RUN_TO_DEMUX_DIR=/path/to/bcl_files BCL2FASTQ=/path/to/bcl2fastq/binary \
+#     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
+#     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
 #########################################
 # Reads the RunInfo.xml of the RUN_TO_DEMUX_DIR to retrieve mask and assigns to MASK_OPT
