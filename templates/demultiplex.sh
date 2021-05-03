@@ -44,7 +44,7 @@ assign_MASK_OPT () {
   # Mask all but the first ${R2_MASK} nucleotides of the i7 index if specified
   if [[ ! -z ${R2_MASK} ]]; then
     nR2="$((R2 - ${R2_MASK}))"
-    R2="6n${nR2}"
+    R2="${R2_MASK}n${nR2}"
   fi
   R4_bleed="$((R4 - 1))"
 
