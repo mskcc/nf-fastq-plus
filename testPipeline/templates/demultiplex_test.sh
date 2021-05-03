@@ -1,4 +1,8 @@
 #!/bin/bash
+
+LOCATION=$(dirname "$0")
+cd ${LOCATION}
+
 TYPE=no_mask
 echo "${TYPE}"
 FASTQ_DIR=${TYPE}_FASTQ
