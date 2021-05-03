@@ -10,9 +10,13 @@ process task {
     env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
     val RUNNAME
+    env BCL2FASTQ
     env CELL_RANGER_ATAC
+    env FASTQ_DIR
     env DEMUX_ALL
     env DATA_TEAM_EMAIL
+    env CMD_FILE
+    env DEMUX_LOG_FILE
 
   output:
     stdout()
@@ -28,14 +32,18 @@ workflow demultiplex_wkflw {
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
     RUNNAME
+    BCL2FASTQ
     CELL_RANGER_ATAC
+    FASTQ_DIR
     DEMUX_ALL
     DATA_TEAM_EMAIL
+    CMD_FILE
+    DEMUX_LOG_FILE
 
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
     split_sample_sheets_path.splitText().set{ SPLIT_SAMPLE_SHEET_CH }
-    task( SPLIT_SAMPLE_SHEET_CH, RUN_TO_DEMUX_DIR, RUNNAME, CELL_RANGER_ATAC, DEMUX_ALL, DATA_TEAM_EMAIL )
+    task( SPLIT_SAMPLE_SHEET_CH, RUN_TO_DEMUX_DIR, RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
     out( task.out[0], "demultiplex" )
 
   emit:

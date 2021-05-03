@@ -38,6 +38,9 @@ jobs:
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
 
+      - name: Test demultiplex masks
+        run: testPipeline/templates/demultiplex_test.sh
+
       - name: samplesheet_stats_main_test HWG
         run: >
           cd testPipeline &&
