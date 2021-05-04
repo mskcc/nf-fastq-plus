@@ -79,6 +79,7 @@ DEMUXED_FASTQS=$(find ${DEMUXED_DIR} -type f -name "*.fastq.gz")
 
 if [[ "${DEMUX_ALL}" == "true" && ! -z $DEMUXED_FASTQS  ]]; then
   LOG="Skipping demux (DEMUX_ALL=${DEMUX_ALL}) of already demuxed directory: ${DEMUXED_DIR}"
+  echo "${LOG}"
   echo $LOG >> ${BCL_LOG}
 else
   chmod -R 775 $DEMUXED_DIR
