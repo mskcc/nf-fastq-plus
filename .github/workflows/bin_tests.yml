@@ -39,7 +39,10 @@ jobs:
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
 
       - name: Test demultiplex masks
-        run: testPipeline/templates/demultiplex_test.sh
+        run: testPipeline/templates/demultiplex/demultiplex_test.sh
+
+      - name: Test cellranger outputs
+        run: testPipeline/templates/cellranger/cellranger_test.sh
 
       - name: samplesheet_stats_main_test HWG
         run: >
