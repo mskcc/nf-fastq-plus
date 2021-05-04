@@ -11,7 +11,7 @@ OUT=${FASTQ_DIR}
 CMD_FILE=${FASTQ_DIR}/CMD_FILE.txt
 DEMUX_FILE=${FASTQ_DIR}/DEMUX_LOG_FILE.txt
 OUT_FILE=${FASTQ_DIR}/${TYPE}.txt
-SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv) \
+SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv) \
   RUN_TO_DEMUX_DIR=210421_ROSALIND_0004_FLOWCELLNAME \
   BCL2FASTQ=/bin/echo \
   CELL_RANGER_ATAC=TODO \
@@ -40,7 +40,7 @@ OUT=${FASTQ_DIR}
 CMD_FILE=${FASTQ_DIR}/CMD_FILE.txt
 DEMUX_FILE=${FASTQ_DIR}/DEMUX_LOG_FILE.txt
 OUT_FILE=${FASTQ_DIR}/${TYPE}.txt
-SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME_6nt.csv) \
+SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME_6nt.csv) \
   RUN_TO_DEMUX_DIR=210421_ROSALIND_0004_FLOWCELLNAME \
   BCL2FASTQ=/bin/echo \
   CELL_RANGER_ATAC=TODO \
@@ -49,7 +49,7 @@ SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_2
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex.sh > ${OUT_FILE}
 expected_mask="use-bases-mask y50n,i6n2,n8,y50n"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_mask}")
 if [[ ! -z ${has_mask} ]]; then
@@ -68,7 +68,7 @@ OUT=${FASTQ_DIR}
 CMD_FILE=${FASTQ_DIR}/CMD_FILE.txt
 DEMUX_FILE=${FASTQ_DIR}/DEMUX_LOG_FILE.txt
 OUT_FILE=${FASTQ_DIR}/${TYPE}.txt
-SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME_i7.csv) \
+SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME_i7.csv) \
   RUN_TO_DEMUX_DIR=210421_ROSALIND_0004_FLOWCELLNAME \
   BCL2FASTQ=/bin/echo \
   CELL_RANGER_ATAC=TODO \
@@ -77,7 +77,7 @@ SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_2
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex.sh > ${OUT_FILE}
 expected_mask="use-bases-mask y50n,i8,n8,y50n"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_mask}")
 if [[ ! -z ${has_mask} ]]; then
@@ -96,7 +96,7 @@ OUT=${FASTQ_DIR}
 CMD_FILE=${FASTQ_DIR}/CMD_FILE.txt
 DEMUX_FILE=${FASTQ_DIR}/DEMUX_LOG_FILE.txt
 OUT_FILE=${FASTQ_DIR}/${TYPE}.txt
-SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_210422_ROSALIND_0001_FLOWCELLNAME_DLP.csv) \
+SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleSheet_210422_ROSALIND_0001_FLOWCELLNAME_DLP.csv) \
   RUN_TO_DEMUX_DIR=210421_ROSALIND_0004_FLOWCELLNAME \
   BCL2FASTQ=/bin/echo \
   CELL_RANGER_ATAC=TODO \
@@ -105,7 +105,7 @@ SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_2
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex.sh > ${OUT_FILE}
 expected_lane_split="no-lane-splitting"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_lane_split}")
 if [[ ! -z ${has_mask} ]]; then
