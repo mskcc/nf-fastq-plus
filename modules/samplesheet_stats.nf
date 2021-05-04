@@ -11,6 +11,7 @@ include { collect_rna_metrics_wkflw } from './collect_rna_metrics';
 include { collect_gc_bias_wkflw } from './collect_gc_bias_metrics';
 include { upload_stats_wkflw } from './upload_stats';
 include { fingerprint_wkflw } from './fingerprint';
+include { cellranger_wkflw } from './cellranger';
 
 workflow samplesheet_stats_wkflw {
   take:
@@ -40,6 +41,8 @@ workflow samplesheet_stats_wkflw {
         RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
         RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    cellranger_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
+                              RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR  )
     upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
