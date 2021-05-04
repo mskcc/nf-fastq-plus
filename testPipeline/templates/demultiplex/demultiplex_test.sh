@@ -20,7 +20,7 @@ SAMPLESHEET=$(realpath ../../bin/test/data/split_sampleSheet/split/SampleSheet_2
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex.sh > ${OUT_FILE}
 incorrect_mask="use-bases-mask"
 ls ${OUT_FILE}
 has_mask=$(cat ${OUT_FILE} | grep "${incorrect_mask}")
