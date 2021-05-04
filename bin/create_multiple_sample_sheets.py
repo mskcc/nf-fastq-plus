@@ -114,10 +114,12 @@ def has_6nt(sample_data, header):
 	# create empty data frame for padded requests
 	has_6nt_data = pd.DataFrame(columns = header)
 	for x in range(0, len(sample_data), 1):
-		i7_index = sample_data['I7_Index_ID'].loc[x]
-		if (is_6nt_index(i7_index)):
+		i7_index = sample_data['index'].loc[x]
+		i7_index_name = sample_data['I7_Index_ID'].loc[x]
+		if (is_6nt_index(i7_index_name) and len(i7_index) > 6):
+			# Mark & modify samplesheet if the i7_index is recognized as a 6nt and the i7 index isn't already length 6
 			has_6nt_data.loc[x] = sample_data.loc[x]
-			has_6nt_data['index'].loc[x] = sample_data['index'].loc[x][:6]      # We only need the first 6 nucleotides
+			has_6nt_data['index'].loc[x] = i7_index[:6]      # We only need the first 6 nucleotides
 			sample_data.drop([x], inplace = True, axis = 0)
 
 	if not has_6nt_data.empty:
