@@ -126,6 +126,7 @@ def has_6nt(sample_data, header):
 		data_sheets[5] = has_6nt_data
 		# Reset the index to 0 (if this isn't done, the indices of sample_data will have missing positions that will cause errors)
 		sample_data.index = range(len(sample_data))
+		data_sheets[6] = sample_data
 		return True
 
 	return False
@@ -260,6 +261,10 @@ def main():
 
 	# 6nt barcodes
 	made_6nt_sample_sheet = has_6nt(sample_data, header)
+	if made_6nt_sample_sheet:
+	    # RE-ASSIGN 6nt Samples - an input sample_data w/ 6nt samples will have its 6nt samples removed. The remaining
+	    # samples are placed in data_sheets[6]
+	    sample_data = data_sheets[6]
 
 	# testing to see if we have dual barcodes, if not, we just quit.
 	# first check for 10X samples
