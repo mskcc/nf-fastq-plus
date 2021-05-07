@@ -31,6 +31,7 @@ else
   echo "${TYPE} - Correct mask: ${incorrect_mask}"
   rm -rf ${FASTQ_DIR}
 fi
+rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 TYPE=6nt_test
 echo "${TYPE}"
@@ -59,6 +60,7 @@ else
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
+rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 TYPE=i7_test
 echo "${TYPE}"
@@ -87,6 +89,7 @@ else
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
+rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 TYPE=DLP_test
 echo "${TYPE}"
@@ -115,5 +118,4 @@ else
   echo "[ERROR] Did not have ${expected_lane_split}"
   exit 1
 fi
-
-rm bcl2fastq.log
+rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
