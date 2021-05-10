@@ -54,9 +54,9 @@ assign_index () {
 # Reads the RunInfo.xml of the RUN_TO_DEMUX_DIR to retrieve mask and assigns to MASK_OPT
 # Params
 #   i7_MASK - Mask of i7 index (Format i/n#)        i/n# <- "n" mask entire index, "i" don't mask & use # nucleotides
-#   i5_MASK - Mask of i5 index (Format i/n#)        Valid: i, i6, n     Invalid: y1
-#                                                     e.g. "i6": Don't mask, but use only 6 nucleotides for idx
-#                                                     e.g. "n": Mask entire id
+#   i5_MASK - Mask of i5 index (Format i/n#)            Valid: i, i6, n     Invalid: y1
+#                                                       e.g. "i6": Don't mask, but use only 6 nucleotides for index
+#                                                       e.g. "n": Mask entire index
 # Globals:
 #   RUN_TO_DEMUX_DIR - Absolute path of run to demux
 #########################################
@@ -153,9 +153,14 @@ else
     no_lane_split=$(echo ${SAMPLESHEET} | grep -E '_PPG.csv|_DLP.csv')
     if [[ ! -z $has_i7 ]]; then
       echo "Detected an _i7.csv SampleSheet. Will keep i7 index of RunInfo.xml, but add mask to remove i5 index"
-      assign_MASK_OPT i n
+      I7_MASK="i"     # "i" = Take the index defined in the RunInfo.xml
+      I5_MASK="n"     # "n" = Mask out the i5 index
+      assign_MASK_OPT ${I7_MASK} ${I5_MASK}
     elif [[ ! -z $has_6nt ]]; then
       echo "Detected a _6nt.csv SampleSheet. Will add mask of six-nucleotide i7 index (keeps i5 if present)"
+      I7_MASK="i6"    # "i6" = Take ONLY THE FIRST 6 NUCLEOTIDES of the index defined in RunInfo.xml
+      I5_MASK="n"     # "n" = Mask out the i5 index
+      assign_MASK_OPT ${I7_MASK} ${I5_MASK}
       assign_MASK_OPT i6 n
     elif [[ ! -z $no_lane_split ]]; then
       echo "Detected a _PPG.csv or _DLP.csv SampleSheet. Using --no-lane-splitting option"
