@@ -182,7 +182,6 @@ else
   eval ${JOB_CMD}
   UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
   PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
-  set -e
 
   cat ${BCL_LOG} >> ${DEMUX_LOG_FILE}
   cat ${BCL_LOG}
@@ -217,5 +216,6 @@ else
       echo ${CMD}
       eval ${CMD}
     done
+    cd - # Come back to work directory
   fi
 fi
