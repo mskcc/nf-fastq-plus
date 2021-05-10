@@ -172,5 +172,6 @@ else
       echo ${CMD}
       eval ${CMD}
     done
+    cd - # Come back to work directory
   fi
 fi
