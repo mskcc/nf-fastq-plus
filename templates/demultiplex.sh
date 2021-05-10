@@ -161,7 +161,6 @@ else
       I7_MASK="i6"    # "i6" = Take ONLY THE FIRST 6 NUCLEOTIDES of the index defined in RunInfo.xml
       I5_MASK="n"     # "n" = Mask out the i5 index
       assign_MASK_OPT ${I7_MASK} ${I5_MASK}
-      assign_MASK_OPT i6 n
     elif [[ ! -z $no_lane_split ]]; then
       echo "Detected a _PPG.csv or _DLP.csv SampleSheet. Using --no-lane-splitting option"
       LANE_SPLIT_OPT="--no-lane-splitting"
