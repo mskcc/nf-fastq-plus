@@ -115,6 +115,7 @@ samplesheet_file=$(basename ${SAMPLESHEET})
 
 # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
 basename ${SAMPLESHEET}
+# TODO - fix "perl-regexp" for portability
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 echo "RUN_BASENAME: ${RUN_BASENAME}"
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
@@ -150,7 +151,7 @@ else
     LANE_SPLIT_OPT=""   # Option for lane-splitting, default to lane-splitting
     has_i7=$(echo ${SAMPLESHEET} | grep _i7.csv)
     has_6nt=$(echo ${SAMPLESHEET} | grep _6nt.csv)
-    no_lane_split=$(echo ${SAMPLESHEET} | grep -E '_PPG.csv|_DLP.csv')
+    no_lane_split=$(echo ${SAMPLESHEET} | grep -e _PPG.csv -e _DLP.csv)
     if [[ ! -z $has_i7 ]]; then
       echo "Detected an _i7.csv SampleSheet. Will keep i7 index of RunInfo.xml, but add mask to remove i5 index"
       I7_MASK="i"     # "i" = Take the index defined in the RunInfo.xml
@@ -209,7 +210,7 @@ else
   fi
 
   # Add DLP metadata.yaml script
-  is_dlp=$(echo ${SAMPLESHEET} | grep -E '_DLP.csv')
+  is_dlp=$(echo ${SAMPLESHEET} | grep _DLP.csv)
   if [[ ! -z $is_dlp && ! -z ${SHARED_SINGLE_CELL_DIR} && -d ${SHARED_SINGLE_CELL_DIR} ]]; then
     echo "Detected an _DLP.csv SampleSheet. Creating metadata.yaml"
     cd ${SHARED_SINGLE_CELL_DIR}
