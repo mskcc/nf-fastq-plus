@@ -18,14 +18,52 @@
 #     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
 #########################################
+# Returns what the mask should be
+# Params
+#   RUN_INFO_NUMBER  Index number pulled from RunInfo.xml (Required)
+#   MASK             Mask of index (Format i/n#)          (Optional)
+#########################################
+assign_index () {
+  RUN_INFO_NUMBER=$1    # will always be defined
+  MASK=$2               # won't always be defined
+
+  INDEX_MASK=i${RUN_INFO_NUMBER}                  # Default - unmasked index unless mask is defined
+  if [[ ! -z ${MASK} ]]; then
+    mask=$(echo ${MASK} | grep -oE "n|i")         # i6 -> i
+    if [[ "${mask}" = "n" ]]; then
+      INDEX_MASK="n${RUN_INFO_NUMBER}"            # Mask entire index
+    elif [[ "${mask}" = "i" ]]; then
+      num=$(echo ${MASK} | grep -oE "\d")      # i6 -> 6
+      if [[ -z ${num} ]]; then
+        pass                                      # No nucleotide mask defined - return default
+      else
+        remaining="$((${RUN_INFO_NUMBER} - num))"
+        if [[ ${remaining} -gt 0 ]]; then
+          INDEX_MASK="i${num}n${remaining}"       # Need to add remaining amount after nucleotide mask
+        else
+          pass                                    # Nucleotide mask matches RunInfo.xml - return default
+        fi
+      fi
+    fi
+  fi
+
+  echo $INDEX_MASK
+}
+
+#########################################
 # Reads the RunInfo.xml of the RUN_TO_DEMUX_DIR to retrieve mask and assigns to MASK_OPT
 # Params
-#   R2_MASK - Number of nucleotides of the i7 index to include, all others are masked
+#   i7_MASK - Mask of i7 index (Format i/n#)        i/n# <- "n" mask entire index, "i" don't mask & use # nucleotides
+#   i5_MASK - Mask of i5 index (Format i/n#)        Valid: i, i6, n     Invalid: y1
+#                                                     e.g. "i6": Don't mask, but use only 6 nucleotides for idx
+#                                                     e.g. "n": Mask entire id
 # Globals:
 #   RUN_TO_DEMUX_DIR - Absolute path of run to demux
 #########################################
 assign_MASK_OPT () {
-  R2_MASK=$1
+  # Pass in index masks
+  i7_MASK=$(echo $1 | grep -oE "^[n|i]\d{0,1}$")    # Verify index masks are of the format "i/n#"
+  i5_MASK=$(echo $2 | grep -oE "^[n|i]\d{0,1}$")    # Optional, may not be a dual-indexed read
 
   #Deletes shortest match of $substring '/*Complet*' from back of $x
   RUNPATH=$(echo ${RUN_TO_DEMUX_DIR%/*Complet*})  # ../PATH/TO/sequencers/johnsawyers/201113_JOHNSAWYERS_0252_000000000-G6H72
@@ -42,21 +80,27 @@ assign_MASK_OPT () {
   R3=$( cat $RUN_INFO_PATH | grep "Number=\"3\"" | awk '{posCycle=match($0,"s=");print substr($0,posCycle+3,5)}' | awk '{PosIndex=match($0,"\""); print substr($0,1,PosIndex-1)}')
   R4=$( cat $RUN_INFO_PATH | grep "Number=\"4\"" | awk '{posCycle=match($0,"s=");print substr($0,posCycle+3,5)}' | awk '{PosIndex=match($0,"\""); print substr($0,1,PosIndex-1)}')
 
-  # Number of actual bases is one less than the number of cycles Reads section of RunInfo.xml
+  I7=$(assign_index ${R2} ${i7_MASK})
+
+  # Calculate bleed - Number of actual bases is one less than the number of cycles Reads section of RunInfo.xml
   R1_bleed="$((R1 - 1))"
 
-  # Mask all but the first ${R2_MASK} nucleotides of the i7 index if specified
-  if [[ ! -z ${R2_MASK} ]]; then
-    nR2="$((R2 - ${R2_MASK}))"
-    R2="${R2_MASK}n${nR2}"
+  MASK="y${R1_bleed}n,${I7}"
+  if [[ ! -z "${R4}" && ${R4} -gt 0 ]]; then
+    # DUAL-END: Wll have an R4 in the RunInfo.xml. Add the second index (i5) & the second read (R4)
+    R4_bleed="$((R4 - 1))"
+    I5=$(assign_index ${R3} ${i5_MASK})
+    MASK="${MASK},${I5},y${R4_bleed}n"
+  else
+    # SINGLE-END: Wll only have one index and the R3 value is the actual read value
+    R3_bleed="$((R3 - 1))"
+    MASK="${MASK},y${R3_bleed}n"
   fi
-  R4_bleed="$((R4 - 1))"
 
-  MASK="y${R1_bleed}n,i${R2},n${R3},y${R4_bleed}n"
- 
-  echo "R1=${R1} R2=${R2} R3=${R3} R4=${R4} MASK: ${MASK}"
+  echo "i7_MASK=${i7_MASK} i5_MASK=${i5_MASK} MASK=${MASK} (R1=${R1} R2=${R2} R3=${R3} R4=${R4})"
   MASK_OPT="--use-bases-mask ${MASK}"
 }
+
 BCL_LOG="bcl2fastq.log"
 
 SAMPLESHEET=$(echo $SAMPLESHEET | tr -d " \t\n\r")	# Sometimes "\n" or "\t" characters can be appended 
@@ -108,11 +152,11 @@ else
     has_6nt=$(echo ${SAMPLESHEET} | grep _6nt.csv)
     no_lane_split=$(echo ${SAMPLESHEET} | grep -E '_PPG.csv|_DLP.csv')
     if [[ ! -z $has_i7 ]]; then
-      echo "Detected an _i7.csv SampleSheet. Will add mask to remove i5 index"
-      assign_MASK_OPT
+      echo "Detected an _i7.csv SampleSheet. Will keep i7 index of RunInfo.xml, but add mask to remove i5 index"
+      assign_MASK_OPT i n
     elif [[ ! -z $has_6nt ]]; then
-      echo "Detected a _6nt.csv SampleSheet. Will add mask of six-nucleotide i7 index and to remove i5 index"
-      assign_MASK_OPT 6
+      echo "Detected a _6nt.csv SampleSheet. Will add mask of six-nucleotide i7 index (keeps i5 if present)"
+      assign_MASK_OPT i6 n
     elif [[ ! -z $no_lane_split ]]; then
       echo "Detected a _PPG.csv or _DLP.csv SampleSheet. Using --no-lane-splitting option"
       LANE_SPLIT_OPT="--no-lane-splitting"
