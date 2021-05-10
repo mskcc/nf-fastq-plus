@@ -97,7 +97,7 @@ assign_MASK_OPT () {
     MASK="${MASK},y${R3_bleed}n"
   fi
 
-  echo "i7_MASK=${i7_MASK} i5_MASK=${i5_MASK} MASK=${MASK} (R1=${R1} R2=${R2} R3=${R3} R4=${R4})"
+  echo "1=$1 2=$2 i7_MASK=${i7_MASK} i5_MASK=${i5_MASK} MASK=${MASK} (R1=${R1} R2=${R2} R3=${R3} R4=${R4})"
   MASK_OPT="--use-bases-mask ${MASK}"
 }
 
@@ -153,14 +153,14 @@ else
     no_lane_split=$(echo ${SAMPLESHEET} | grep -E '_PPG.csv|_DLP.csv')
     if [[ ! -z $has_i7 ]]; then
       echo "Detected an _i7.csv SampleSheet. Will keep i7 index of RunInfo.xml, but add mask to remove i5 index"
-      # I7_MASK="i"     # "i" = Take the index defined in the RunInfo.xml
-      # I5_MASK="n"     # "n" = Mask out the i5 index
-      assign_MASK_OPT i n
+      I7_MASK="i"     # "i" = Take the index defined in the RunInfo.xml
+      I5_MASK="n"     # "n" = Mask out the i5 index
+      assign_MASK_OPT ${I7_MASK} ${I5_MASK}
     elif [[ ! -z $has_6nt ]]; then
       echo "Detected a _6nt.csv SampleSheet. Will add mask of six-nucleotide i7 index (keeps i5 if present)"
-      # I7_MASK="i6"    # "i6" = Take ONLY THE FIRST 6 NUCLEOTIDES of the index defined in RunInfo.xml
-      # I5_MASK="n"     # "n" = Mask out the i5 index
-      assign_MASK_OPT i6 n
+      I7_MASK="i6"    # "i6" = Take ONLY THE FIRST 6 NUCLEOTIDES of the index defined in RunInfo.xml
+      I5_MASK="n"     # "n" = Mask out the i5 index
+      assign_MASK_OPT ${I7_MASK} ${I5_MASK}
     elif [[ ! -z $no_lane_split ]]; then
       echo "Detected a _PPG.csv or _DLP.csv SampleSheet. Using --no-lane-splitting option"
       LANE_SPLIT_OPT="--no-lane-splitting"
