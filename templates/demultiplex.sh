@@ -29,7 +29,7 @@ assign_index () {
 
   INDEX_MASK=i${RUN_INFO_NUMBER}                  # Default - unmasked index unless mask is defined
   if [[ ! -z ${MASK} ]]; then
-    mask=$(echo ${MASK} | grep -o "[n|i]")         # i6 -> i
+    mask=$(echo ${MASK} | grep -o "[n|i]")        # i6 -> i
     if [[ "${mask}" = "n" ]]; then
       INDEX_MASK="n${RUN_INFO_NUMBER}"            # Mask entire index
     elif [[ "${mask}" = "i" ]]; then
