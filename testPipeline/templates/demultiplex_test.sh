@@ -28,6 +28,7 @@ if [[ ! -z ${has_mask} ]]; then
   echo "[ERROR] Mask was applied: ${has_mask}"
   exit 1
 else
+  cat ${OUT_FILE}
   echo "${TYPE} - Correct mask: ${incorrect_mask}"
   rm -rf ${FASTQ_DIR}
 fi
@@ -57,6 +58,7 @@ if [[ ! -z ${has_mask} ]]; then
   echo "${TYPE} - Correct mask: ${expected_mask}"
   rm -rf ${FASTQ_DIR}
 else
+  cat ${OUT_FILE}
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
@@ -86,6 +88,7 @@ if [[ ! -z ${has_mask} ]]; then
   echo "${TYPE} - Correct mask: ${expected_mask}"
   rm -rf ${FASTQ_DIR}
 else
+  cat ${OUT_FILE}
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
@@ -115,6 +118,7 @@ if [[ ! -z ${has_mask} ]]; then
   echo "${TYPE} - Correct lane splitting: ${expected_lane_split}"
   rm -rf ${FASTQ_DIR}
 else
+  cat ${OUT_FILE}
   echo "[ERROR] Did not have ${expected_lane_split}"
   exit 1
 fi
@@ -145,6 +149,7 @@ if [[ ! -z ${has_mask} ]]; then
   echo "${TYPE} - Correct mask: ${expected_mask}"
   rm -rf ${FASTQ_DIR}
 else
+  cat ${OUT_FILE}
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
