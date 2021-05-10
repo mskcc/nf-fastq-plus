@@ -62,8 +62,8 @@ assign_index () {
 #########################################
 assign_MASK_OPT () {
   # Pass in index masks
-  i7_MASK=$(echo $1 | grep -oE "^[n|i]\d{0,1}$")    # Verify index masks are of the format "i/n#"
-  i5_MASK=$(echo $2 | grep -oE "^[n|i]\d{0,1}$")    # Optional, may not be a dual-indexed read
+  i7_MASK=$(echo $1 | grep -oe "^[n|i][0-9]*$")    # Verify index masks are of the format "i/n#"
+  i5_MASK=$(echo $2 | grep -oe "^[n|i][0-9]*$")    # Optional, may not be a dual-indexed read
 
   #Deletes shortest match of $substring '/*Complet*' from back of $x
   RUNPATH=$(echo ${RUN_TO_DEMUX_DIR%/*Complet*})  # ../PATH/TO/sequencers/johnsawyers/201113_JOHNSAWYERS_0252_000000000-G6H72
