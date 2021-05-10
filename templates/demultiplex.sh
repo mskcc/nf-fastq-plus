@@ -29,11 +29,11 @@ assign_index () {
 
   INDEX_MASK=i${RUN_INFO_NUMBER}                  # Default - unmasked index unless mask is defined
   if [[ ! -z ${MASK} ]]; then
-    mask=$(echo ${MASK} | grep -oE "n|i")         # i6 -> i
+    mask=$(echo ${MASK} | grep -o "[n|i]")         # i6 -> i
     if [[ "${mask}" = "n" ]]; then
       INDEX_MASK="n${RUN_INFO_NUMBER}"            # Mask entire index
     elif [[ "${mask}" = "i" ]]; then
-      num=$(echo ${MASK} | grep -oE "\d")      # i6 -> 6
+      num=$(echo ${MASK} | grep -oe [0-9])        # i6 -> 6
       if [[ -z ${num} ]]; then
         pass                                      # No nucleotide mask defined - return default
       else
