@@ -31,7 +31,6 @@ workflow demultiplex_wkflw {
   take:
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
-    RUNNAME
     BCL2FASTQ
     CELL_RANGER_ATAC
     FASTQ_DIR
@@ -42,8 +41,14 @@ workflow demultiplex_wkflw {
 
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
-    split_sample_sheets_path.splitText().set{ SPLIT_SAMPLE_SHEET_CH }
-    task( SPLIT_SAMPLE_SHEET_CH, RUN_TO_DEMUX_DIR, RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
+    split_sample_sheets_path
+      .splitText()
+      .multiMap { it ->
+        SAMPLE_SHEET: it                                    // /path/to/SampleSheet.csv
+        RUNNAME: it.split('/')[-1].tokenize(".")[0]         // SampleSheet
+      }
+      .set{ split_ch }
+    task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, split_ch.RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
     out( task.out[0], "demultiplex" )
 
   emit:
