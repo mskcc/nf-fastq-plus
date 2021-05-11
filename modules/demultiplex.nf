@@ -30,7 +30,6 @@ workflow demultiplex_wkflw {
   take:
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
-    RUNNAME
     BCL2FASTQ
     CELL_RANGER_ATAC
     FASTQ_DIR
