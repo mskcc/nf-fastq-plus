@@ -16,9 +16,13 @@ SAMPLESHEET=params.ss
 STATS_DIR=process_param(params.stats_dir, STATS_DIR)
 STATSDONEDIR=process_param(params.done_dir, STATSDONEDIR)
 
+EXECUTOR=config.executor.name
+
 println """\
           S A M P L E S H E E T    P I P E L I N E
          ==========================================
+         EXECUTOR=${EXECUTOR}
+
          STATS_DIR=${STATS_DIR}
          STATSDONEDIR=${STATSDONEDIR}
 
