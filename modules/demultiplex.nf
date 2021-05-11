@@ -45,8 +45,8 @@ workflow demultiplex_wkflw {
     split_sample_sheets_path
       .splitText()
       .multiMap { it ->
-        SAMPLE_SHEET: it                // /path/to/SampleSheet*.csv
-        RUNNAME: it.split('/')[-1]      // SampleSheet*.csv
+        SAMPLE_SHEET: it                                    // /path/to/SampleSheet.csv
+        RUNNAME: it.split('/')[-1].tokenize(".")[0]         // SampleSheet
       }
       .set{ split_ch }
     task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, split_ch.RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
