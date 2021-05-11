@@ -9,7 +9,6 @@ process task {
   input:
     env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
-    val RUNNAME
     env BCL2FASTQ
     env CELL_RANGER_ATAC
     env FASTQ_DIR
