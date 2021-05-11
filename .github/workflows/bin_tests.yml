@@ -30,7 +30,7 @@ jobs:
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       # Runs a single command using the runners shell
       - name: Test demultiplex masks
-        run: testPipeline/templates/demultiplex_test.sh
+        run: testPipeline/templates/demultiplex/demultiplex_test.sh
 
       - name: Test Run Parameters
         run: cd ./bin/test && python test_generate_run_params.py
