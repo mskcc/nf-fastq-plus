@@ -34,7 +34,9 @@ println """\
 
          BWA: ${BWA}
          PICARD: ${PICARD}
+         CELL_RANGER: ${CELL_RANGER}
          CELL_RANGER_ATAC: ${CELL_RANGER_ATAC}
+         CELL_RANGER_CNV: ${CELL_RANGER_CNV}
          """
          .stripIndent()
 
