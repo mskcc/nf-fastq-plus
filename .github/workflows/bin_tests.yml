@@ -46,7 +46,7 @@ jobs:
 
       - name: samplesheet_stats_main_test HWG
         run: >
+          ./testPipeline/create_local_executor_config.sh nextflow.config &&
           cd testPipeline &&
-          cp nextflow_test.config ../nextflow.config &&
           docker build -t nf-fastq-plus-playground . > /dev/null &&
           docker run -v /home/runner/work/nf-fastq-plus/nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
