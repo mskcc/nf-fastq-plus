@@ -1,5 +1,9 @@
 #!/bin/bash
 
+REGEX_10X_Genomics_ATAC="10X_Genomics_ATAC"
+REGEX_10X_Genomics_VDJ="10X_Genomics.*VDJ.*"
+REGEX_10X_Genomics_CNV="10X_Genomics_CNV"
+
 #########################################
 # Reads input file and outputs param value
 # Globals:
@@ -16,10 +20,23 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-RECIPE=$(parse_param ${RUN_PARAMS_FILE} RECIPE)          # Must include a WGS genome to run CollectWgsMetrics
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$@
+  echo ${INPUT_CMD}  >> ${CMD_FILE}
+  eval ${INPUT_CMD}
+}
+
+RUN_PARAMS_FILE=$(realpath ${RUN_PARAMS_FILE})           # Take absolute path since we navigate to the cellranger dir
+RECIPE=$(parse_param ${RUN_PARAMS_FILE} RECIPE)          # Musts include a WGS genome to run CollectWgsMetrics
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
 PROJECT_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+SPECIES=$(parse_param ${RUN_PARAMS_FILE} SPECIES)
 
 # Find All Sample Directories, e.g. /igo/work/FASTQ/SCOTT_0339_AH2VTWBGXJ_10X/Project_11926/Sample_ESC_IGO_11926_1
 SAMPLE_FASTQ_DIRS_ACROSS_RUNS=$(find ${FASTQ_DIR} -mindepth 3 -maxdepth 3 -type d -name "Sample_${SAMPLE_TAG}")
@@ -32,52 +49,92 @@ else
   CELLRANGER_DIR=${STATS_DIR}/${RUNNAME}/cellranger/${PROJECT_TAG}/${SAMPLE_TAG}       # Specific path to BAMs
   mkdir -p ${CELLRANGER_DIR}
   cd ${CELLRANGER_DIR}
-  echo "Detected 10X Recipe: ${RECIPE}"
-  if [[ ! -z $(echo ${RECIPE} | grep "GeneExpression") ]]; then
+  echo "Detected 10X Recipe: ${RECIPE} (${SPECIES})"
+  if [[ ! -z $(echo ${RECIPE} | grep "10X_Genomics.*Expression.*") ]]; then
+    echo "Processing GeneExpression"
+    CELLRANGER_TRANSCRIPTOME=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_COUNT)
     # 10X_Genomics_NextGEM-GeneExpression
     # 10X_Genomics_NextGem_GeneExpression-5
     # 10X_Genomics_NextGEM_GeneExpression-5
     # 10X_Genomics_GeneExpression
     # 10X_Genomics_GeneExpression-3
     # 10X_Genomics_GeneExpression-5
-
-    echo "Processing GeneExpression"
-    ${CELLRANGER} count \
-      --id=${SAMPLE_TAG} \
-      --transcriptome=${CELLRANGER_TRANSCRIPTOME} \
-      --fastqs=${CELLRANGER_FASTQ_INPUT} \
-      --nopreflight \
-      --jobmode=lsf \
-      --mempercore=64 \
-      --disable-ui \
-      --maxjobs=200
-  elif [[ ! -z $(echo ${RECIPE} | grep "VDJ") ]]; then
+    CMD="${CELLRANGER} count"
+    CMD+=" --id=${SAMPLE_TAG}"
+    CMD+=" --transcriptome=${CELLRANGER_TRANSCRIPTOME}"
+    CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
+    CMD+=" --nopreflight"
+    CMD+=" --jobmode=lsf"
+    CMD+=" --mempercore=64"
+    CMD+=" --disable-ui"
+    CMD+=" --maxjobs=200"
+    run_cmd $CMD
+  fi
+  if [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_VDJ}") ]]; then
+    CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_VDJ)
+    echo "Processing VDJ"
     # 10X_Genomics_NextGem_VDJ
     # 10X_Genomics_NextGEM_VDJ
     # 10X_Genomics_NextGEM-VDJ
     # 10X_Genomics_VDJ
     # 10X_Genomics-VDJ
+    CMD="${CELLRANGER} vdj"
+    CMD+=" --id=${SAMPLE_TAG}"
+    CMD+=" --reference=${CELLRANGER_REFERENCE}"
+    CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
+    CMD+=" --sample=${SAMPLE_TAG}"
+    CMD+=" --nopreflight"
+    CMD+=" --jobmode=lsf"
+    CMD+=" --mempercore=64"
+    CMD+=" --disable-ui"
+    CMD+=" --maxjobs=200"
+    run_cmd $CMD
+  fi
 
-    # TODO
-    echo "Processing VDJ"
-  elif [[ ! -z $(echo ${RECIPE} | grep "10X_Genomics_Visium") ]]; then
-    # 10X_Genomics_Visium
-
-    # TODO
-    echo "Processing Visium"
-  elif [[ ! -z $(echo ${RECIPE} | grep "10X_Genomics_ATAC") ]]; then
-    # 10X_Genomics_ATAC
-
-    # TODO
-    echo "Processing ATAC"
-  else
-    # 10X_Genomics-Expression+VDJ
-    # 10X_Genomics-FeatureBarcoding
-    # 10X_Genomics_NextGEM-FB
-    # 10X_Genomics_NextGEM_FeatureBarcoding
-
-    # TODO
-    echo "Processing Other"
+  # Check if a command has been sent, if not, it is a more specialized recipe
+  if [[ -z ${CMD} ]]; then
+    if [[ ! -z $(echo ${RECIPE} | grep "10X_Genomics_Visium") ]]; then
+      # TODO
+      echo "Processing Visium"
+      # 10X_Genomics_Visium
+    elif [[ ! -z $(echo ${RECIPE} | grep "${10X_Genomics_ATAC}") ]]; then
+      echo "Processing ATAC count"
+      CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_ATAC)
+      # 10X_Genomics_ATAC
+      CMD="${CELLRANGER_ATAC} count"
+      CMD+=" --id=${SAMPLE_TAG}"
+      CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
+      CMD+=" --reference=${CELLRANGER_REFERENCE}"
+      CMD+=" --nopreflight"
+      CMD+=" --jobmode=lsf"
+      CMD+=" --mempercore=64"
+      CMD+=" --disable-ui"
+      CMD+=" --maxjobs=200"
+      echo "Processing ATAC"
+      run_cmd $CMD
+    elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_CNV}") ]]; then
+      echo "Processing cnv count"
+      # 10X_Genomics_CNV
+      CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_CNV)
+      CMD="${CELLRANGER_CNV} cnv"
+      CMD+=" --id=${SAMPLE_TAG}"
+      CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
+      CMD+=" --reference=${CELLRANGER_REFERENCE}"
+      CMD+=" --nopreflight"
+      CMD+=" --jobmode=lsf"
+      CMD+=" --mempercore=64"
+      CMD+=" --disable-ui"
+      CMD+=" --maxjobs=200"
+      echo "Processing ATAC"
+      run_cmd $CMD
+    else
+      echo "ERROR - Did not recognize cellranger command"
+      # TODO
+      # 10X_Genomics-Expression+VDJ
+      # 10X_Genomics-FeatureBarcoding
+      # 10X_Genomics_NextGEM-FB
+      # 10X_Genomics_NextGEM_FeatureBarcoding
+    fi
   fi
   cd -
 fi

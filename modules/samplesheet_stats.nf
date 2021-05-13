@@ -42,7 +42,7 @@ workflow samplesheet_stats_wkflw {
     collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
         RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     cellranger_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
-                              RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR  )
+        CELLRANGER_ATAC, CELLRANGER, CELLRANGER_CNV, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR  )
     upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
