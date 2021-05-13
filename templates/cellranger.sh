@@ -59,7 +59,7 @@ else
     # 10X_Genomics_GeneExpression
     # 10X_Genomics_GeneExpression-3
     # 10X_Genomics_GeneExpression-5
-    CMD="${CELLRANGER} count"
+    CMD="${CELL_RANGER} count"
     CMD+=" --id=${SAMPLE_TAG}"
     CMD+=" --transcriptome=${CELLRANGER_TRANSCRIPTOME}"
     CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
@@ -78,7 +78,7 @@ else
     # 10X_Genomics_NextGEM-VDJ
     # 10X_Genomics_VDJ
     # 10X_Genomics-VDJ
-    CMD="${CELLRANGER} vdj"
+    CMD="${CELL_RANGER} vdj"
     CMD+=" --id=${SAMPLE_TAG}"
     CMD+=" --reference=${CELLRANGER_REFERENCE}"
     CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
@@ -101,7 +101,7 @@ else
       echo "Processing ATAC count"
       CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_ATAC)
       # 10X_Genomics_ATAC
-      CMD="${CELLRANGER_ATAC} count"
+      CMD="${CELL_RANGER_ATAC} count"
       CMD+=" --id=${SAMPLE_TAG}"
       CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
       CMD+=" --reference=${CELLRANGER_REFERENCE}"
@@ -115,7 +115,7 @@ else
       echo "Processing cnv count"
       # 10X_Genomics_CNV
       CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_CNV)
-      CMD="${CELLRANGER_CNV} cnv"
+      CMD="${CELL_RANGER_CNV} cnv"
       CMD+=" --id=${SAMPLE_TAG}"
       CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
       CMD+=" --reference=${CELLRANGER_REFERENCE}"

@@ -11,9 +11,9 @@ run_cellranger() {
   echo "Running ${type} Test"
   # These would be the cellranger commands, we pass echo so we can spy on the params
   CELLRANGER_ATAC="echo" \
-    CELLRANGER="echo" \
-    CELLRANGER_CNV="echo" \
-    CELLRANGER_ATAC="echo" \
+    CELL_RANGER="echo" \
+    CELL_RANGER_CNV="echo" \
+    CELL_RANGER_ATAC="echo" \
     FASTQ_DIR=$(pwd) \
     CMD_FILE=/dev/null \
     RUN_PARAMS_FILE="${rpf}" \
