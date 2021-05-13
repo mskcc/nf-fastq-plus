@@ -97,7 +97,7 @@ else
       # TODO
       echo "Processing Visium"
       # 10X_Genomics_Visium
-    elif [[ ! -z $(echo ${RECIPE} | grep "${10X_Genomics_ATAC}") ]]; then
+    elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_ATAC}") ]]; then
       echo "Processing ATAC count"
       CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_ATAC)
       # 10X_Genomics_ATAC
@@ -110,7 +110,6 @@ else
       CMD+=" --mempercore=64"
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
-      echo "Processing ATAC"
       run_cmd $CMD
     elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_CNV}") ]]; then
       echo "Processing cnv count"
