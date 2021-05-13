@@ -5,6 +5,13 @@ OUTPUT_FILE=output.txt
 LOCATION=$(dirname "$0")
 cd ${LOCATION}
 
+#########################################
+# Runs the cellranger command w/ test inputs
+# Globals:
+#   OUTPUT_FILE - where to write the command output to (used for testing later)
+# Arguments:
+#   type - The recipe type that is being tested samplesheet suffix. This is also the suffix of the sample_params*.txt
+#########################################
 run_cellranger() {
   type=$1
   rpf="sample_params_${type}.txt"
