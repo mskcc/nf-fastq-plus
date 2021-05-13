@@ -20,7 +20,7 @@ echo "  TMPDIR = '/scratch'" >> ${TEMP_FILE}
 echo "}" >> ${TEMP_FILE}
 
 # Take whatever is in the original config for the environment variables
-cat ${ORIGINAL_CONFIG} | sed -n '/env {/,$p' >> ${TEMP_FILE}
+cat ${ORIGINAL_CONFIG} | sed -n '/env {/,$p' | sed -E "s#BWA=.*#BWA=\"/usr/gitc/bwa\"#" | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/gitc/picard.jar\"#" >> ${TEMP_FILE}
 BACKUP=nextflow_original.config
 
 echo "Writing temporary nextflow.config file (Saving old to ${BACKUP})"
