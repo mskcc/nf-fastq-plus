@@ -34,7 +34,7 @@ workflow create_sample_lane_jobs_wkflw {
     SAMPLE_FILE_CH
     RUN_PARAMS_FILE
   main:
-    create_sample_lane_job_task( SAMPLE_FILE_CH )
+    create_sample_lane_job_task( SAMPLE_FILE_CH, RUN_PARAMS_FILE )
     out( create_sample_lane_job_task.out[0], "create_sample_lane_jobs" )
   emit:
     LANE_PARAM_FILES = create_sample_lane_job_task.out.LANE_PARAM_FILES
