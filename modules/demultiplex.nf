@@ -15,7 +15,6 @@ process task {
     env FASTQ_DIR
     env DEMUX_ALL
     env DATA_TEAM_EMAIL
-    env FASTQ_DIR
     env CMD_FILE
     env DEMUX_LOG_FILE
 
@@ -37,7 +36,6 @@ workflow demultiplex_wkflw {
     FASTQ_DIR
     DEMUX_ALL
     DATA_TEAM_EMAIL
-    FASTQ_DIR
     CMD_FILE
     DEMUX_LOG_FILE
 
