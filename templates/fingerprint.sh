@@ -46,7 +46,7 @@ for prj_recipe in $projects_and_recipe; do
   echo "Project $prj with recipe $recipe from $prj_recipe"
 
   FP_PRJ_DIR=Project_${prj}_${recipe}
-  MAP="/home/igo/resources/fingerprinting/hg19_nochr.map"
+  MAP="/home/igo/fingerprint_maps/map_files/hg38_chr.map"
   if [[ "$recipe" == *"ACCESS"* ]]; then
     MAP="/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
   fi

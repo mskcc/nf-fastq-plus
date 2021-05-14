@@ -16,7 +16,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -36,32 +36,32 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-BAITS=$(parse_param !{RUN_PARAMS_FILE} BAITS)           # Interval list of bait sites
-TARGETS=$(parse_param !{RUN_PARAMS_FILE} TARGETS)       # Interval list of target sites
-MSKQ=$(parse_param !{RUN_PARAMS_FILE} MSKQ)             # yes/no - must be yes to run CollectOxoGMetrics
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+BAITS=$(parse_param ${RUN_PARAMS_FILE} BAITS)           # Interval list of bait sites
+TARGETS=$(parse_param ${RUN_PARAMS_FILE} TARGETS)       # Interval list of target sites
+MSKQ=$(parse_param ${RUN_PARAMS_FILE} MSKQ)             # yes/no - must be yes to run CollectOxoGMetrics
+REFERENCE=$(parse_param ${RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 STAT_FILENAME="${RUN_TAG}___oxoG.txt"
-METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
 
 # Skip if no valid BAITS/TARGETS or MSKQ=no
 if [[ ! -f ${BAITS} || ! -f ${TARGETS} || -z $(echo $MSKQ | grep -i "yes") ]]; then
-  echo "Skipping CollectOxoGMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS} MSKQ: ${MSKQ})"
-  echo "${SKIP_FILE_KEYWORD}_OXOG" > ${STAT_FILENAME}
-  exit 0
+  MSG="Skipping CollectOxoGMetrics for ${RUN_TAG} (BAITS: ${BAITS}, TARGETS: ${TARGETS} MSKQ: ${MSKQ})"
+  echo $MSG
+  echo $MSG >> ${STAT_FILENAME}
+else
+  METRICS_FILE="${METRICS_DIR}/${STAT_FILENAME}"
+  mkdir -p ${METRICS_DIR}
+  echo "[CollectOxoGMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
+
+  BAM=$(realpath *.bam)
+  CMD="${PICARD} CollectOxoGMetrics CONTEXT_SIZE=0 I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
+
+  run_cmd $CMD
+
+  # TODO - make metrics file available as output for nextlow
+  cp ${METRICS_FILE} .
 fi
-
-
-mkdir -p ${METRICS_DIR}
-echo "[CollectOxoGMetrics:${RUN_TAG}] Writing to ${METRICS_FILE}"
-
-BAM=$(realpath *.bam)
-CMD="!{PICARD} CollectOxoGMetrics CONTEXT_SIZE=0 I=${BAM} O=${METRICS_FILE} R=${REFERENCE}"
-
-run_cmd $CMD
-
-# TODO - make metrics file available as output for nextlow
-cp ${METRICS_FILE} .

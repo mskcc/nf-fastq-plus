@@ -2,14 +2,27 @@ nextflow.preview.dsl=2
 
 include { samplesheet_stats_wkflw } from './modules/samplesheet_stats';
 
+/**
+ * Processes input parameters if they are specified
+ */
+def process_param(pm, cValue) {
+  if( pm == null )
+    return cValue
+  return pm
+}
+
 DEMUXED_DIR=params.dir
 SAMPLESHEET=params.ss
+STATS_DIR=process_param(params.stats_dir, STATS_DIR)
+STATSDONEDIR=process_param(params.done_dir, STATSDONEDIR)
+
+EXECUTOR=config.executor.name
 
 println """\
           S A M P L E S H E E T    P I P E L I N E
          ==========================================
-         SEQUENCER_DIR="${SEQUENCER_DIR}"
-         FASTQ_DIR=${FASTQ_DIR}
+         EXECUTOR=${EXECUTOR}
+
          STATS_DIR=${STATS_DIR}
          STATSDONEDIR=${STATSDONEDIR}
 
@@ -28,5 +41,5 @@ println """\
 
 
 workflow {
-  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET )
+  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR )
 }

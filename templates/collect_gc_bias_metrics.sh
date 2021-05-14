@@ -16,7 +16,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD} >> !{CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
@@ -36,11 +36,12 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-RUNNAME=$(parse_param !{RUN_PARAMS_FILE} RUNNAME)
-REFERENCE=$(parse_param !{RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
-RUN_TAG=$(parse_param !{RUN_PARAMS_FILE} RUN_TAG)
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
+REFERENCE=$(parse_param ${RUN_PARAMS_FILE} REFERENCE)   # Reference genome file to use
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
-METRICS_DIR=!{STATS_DIR}/${RUNNAME}
+METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 mkdir -p ${METRICS_DIR}
 METRICS_FILE="${METRICS_DIR}/${RUN_TAG}___gc_bias_metrics.txt"
 METRICS_PDF="${METRICS_DIR}/${RUN_TAG}___gc_bias_metrics.pdf"
@@ -48,7 +49,7 @@ SUMMARY_FILE="${METRICS_DIR}/${RUN_TAG}___gc_summary_metrics.txt"
 echo "[CollectGcBiasMetrics:${RUN_TAG}] Writing to ${METRICS_FILE} & ${METRICS_PDF}"
 
 BAM=$(realpath *.bam)
-CMD="!{PICARD} CollectGcBiasMetrics ASSUME_SORTED=true I=${BAM} O=${METRICS_FILE} CHART=${METRICS_PDF} S=${SUMMARY_FILE} R=${REFERENCE}"
+CMD="${PICARD} CollectGcBiasMetrics ASSUME_SORTED=true I=${BAM} O=${METRICS_FILE} CHART=${METRICS_PDF} S=${SUMMARY_FILE} R=${REFERENCE}"
 run_cmd $CMD
 
 # TODO - make metrics file available as output for nextlow
