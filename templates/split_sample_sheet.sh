@@ -18,8 +18,8 @@ array=($RUNPATH)					# ( PATH TO sequencers johnsawyers 201113_JOHNSAWYERS_0252_
 RUN_TO_DEMUX="${array[-1]}" 				# 201113_JOHNSAWYERS_0252_000000000-G6H72
 IFS=','
 
-echo "Searching w/ !{LAB_SAMPLE_SHEET_DIR}/SampleShee*${RUN_TO_DEMUX}*.csv"
-SAMPLESHEET=$(find !{LAB_SAMPLE_SHEET_DIR} -type f -name "SampleShee*${RUN_TO_DEMUX}*.csv" | sort | tail -1) # Retrieve the last modified sample sheet
+echo "Searching w/ ${LAB_SAMPLE_SHEET_DIR}/SampleShee*${RUN_TO_DEMUX}*.csv"
+SAMPLESHEET=$(find ${LAB_SAMPLE_SHEET_DIR} -type f -name "SampleShee*${RUN_TO_DEMUX}*.csv" | sort | tail -1) # Retrieve the last modified sample sheet
 echo "Set samplesheet path to ${SAMPLESHEET}"
 
 SAMPLE_SHEET_FILE_NAME=$(basename $SAMPLESHEET)
@@ -35,21 +35,21 @@ echo "SampleSheet Copy (${SAMPLE_SHEET_FILE_NAME}): $SAMPLESHEET -> ${COPIED_SAM
 #     --source-dir /home/igo/SampleSheetCopies/ \
 #     --processed-dir /home/streidd/working/nf-fastq-plus/bin \
 #     --output-file test.csv
-#  OUTPUT (saved in !{SPLIT_SAMPLE_SHEETS}):
+#  OUTPUT (saved in ${SPLIT_SAMPLE_SHEETS}):
 #     SampleSheet_201204_PITT_0527_BHK752BBXY.csv
 #     SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv
 # TODO
 #   - If lane is a single-ended library (all i5s are the same), then MAYBE separate out
 #   - If an entire run is a single-ended library, then run w/ i5 only
 #   - Don't separate out runs b/c it messes up the undetermined
-echo "SampleSheet: ${COPIED_SAMPLE_SHEET}, OutputDir: ${PROCESSED_SAMPLE_SHEET_DIR} OutputFile: !{SPLIT_SAMPLE_SHEETS}"
+echo "SampleSheet: ${COPIED_SAMPLE_SHEET}, OutputDir: ${PROCESSED_SAMPLE_SHEET_DIR} OutputFile: ${SPLIT_SAMPLE_SHEETS}"
 
 # In ./bin 
-CMD="create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file !{SPLIT_SAMPLE_SHEETS}"
-create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file !{SPLIT_SAMPLE_SHEETS}
+CMD="create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file ${SPLIT_SAMPLE_SHEETS}"
+create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file ${SPLIT_SAMPLE_SHEETS}
 
-NUM_SHEETS=$(cat !{SPLIT_SAMPLE_SHEETS} | wc -l)
-echo "Wrote ${NUM_SHEETS} sample sheets from ${COPIED_SAMPLE_SHEET} to file !{SPLIT_SAMPLE_SHEETS}: $(cat !{SPLIT_SAMPLE_SHEETS})"
+NUM_SHEETS=$(cat ${SPLIT_SAMPLE_SHEETS} | wc -l)
+echo "Wrote ${NUM_SHEETS} sample sheets from ${COPIED_SAMPLE_SHEET} to file ${SPLIT_SAMPLE_SHEETS}: $(cat ${SPLIT_SAMPLE_SHEETS})"
 
 if (( $NUM_SHEETS == 0 )); then
   echo "No sample sheets, copying original to ${PROCESSED_SAMPLE_SHEET_DIR}"
@@ -60,6 +60,6 @@ if (( $NUM_SHEETS == 0 )); then
     echo "Could not find ${COPIED_FILENAME} in ${PROCESSED_SAMPLE_SHEET_DIR}"
     exit 1
   fi
-  echo "Writing to !{SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
-  ls ${COPIED_FILE} >> !{SPLIT_SAMPLE_SHEETS}
+  echo "Writing to ${SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
+  ls ${COPIED_FILE} >> ${SPLIT_SAMPLE_SHEETS}
 fi

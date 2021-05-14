@@ -57,8 +57,8 @@ bwa_mem () {
   # Submit the job locally and then add the JOB ID
   JOB_NAME="BWA_MEM:${SAM_SMP}"
 
-  BWA_MEM_CMD="!{BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
-  ADD_RGP_CMD="!{PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RGID} LB=Illumina PU=${PROJECT_TAG} SM=${SAMPLE_TAG} PL=illumina CN=IGO@MSKCC"
+  BWA_MEM_CMD="${BWA} mem -M -t 40 ${REFERENCE} ${FASTQ1} ${FASTQ2} > ${BWA_SAM}"
+  ADD_RGP_CMD="${PICARD} AddOrReplaceReadGroups SO=coordinate CREATE_INDEX=true I=${BWA_SAM} O=${RGP_SAM} ID=${RGID} LB=Illumina PU=${PROJECT_TAG} SM=${SAMPLE_TAG} PL=illumina CN=IGO@MSKCC"
 
   BSUB_SCRIPT=${SAMPLE_TAG}___${RGID}___${LANE}.sh
   echo ${BWA_MEM_CMD} >> ${BSUB_SCRIPT}

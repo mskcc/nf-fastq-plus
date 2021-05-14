@@ -140,7 +140,7 @@ else
       JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
     else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
-      JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1 >> ${BCL_LOG}"
+      JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 0 >> ${BCL_LOG}"
     fi
   else
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
@@ -208,11 +208,11 @@ else
     echo $FULL | mail -s "[FAILED DEMUX] ${RUN_TO_DEMUX}" ${DATA_TEAM_EMAIL}
     exit 1
   fi
+
   # Add DLP metadata.yaml script
   is_dlp=$(echo ${SAMPLESHEET} | grep _DLP.csv)
   if [[ ! -z $is_dlp && ! -z ${SHARED_SINGLE_CELL_DIR} && -d ${SHARED_SINGLE_CELL_DIR} ]]; then
     echo "Detected an _DLP.csv SampleSheet. Creating metadata.yaml"
-    rm ${DEMUXED_DIR}/SampleSheet*.csv  # Having an extra samplesheet interferes w/ metadata.yaml creation
     cd ${SHARED_SINGLE_CELL_DIR}
     project_dirs=$(find ${DEMUXED_DIR} -maxdepth 1 -type d -name "Project_*")
     for project_path in $project_dirs; do

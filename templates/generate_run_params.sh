@@ -138,7 +138,7 @@ else
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
-            echo "!{RUN_ERROR}: No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
+            echo "No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
             exit 1
           fi
 

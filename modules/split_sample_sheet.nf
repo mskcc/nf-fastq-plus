@@ -8,6 +8,8 @@ process split_sample_sheet_task {
     env RUN_TO_DEMUX_DIR
     env COPIED_SAMPLE_SHEET_DIR
     env PROCESSED_SAMPLE_SHEET_DIR
+    env LAB_SAMPLE_SHEET_DIR
+    env SPLIT_SAMPLE_SHEETS
 
   output:
     stdout()
@@ -23,10 +25,13 @@ workflow split_sample_sheet_wkflw {
     runs_to_demux_path
     COPIED_SAMPLE_SHEET_DIR
     PROCESSED_SAMPLE_SHEET_DIR
+    LAB_SAMPLE_SHEET_DIR
+    SPLIT_SAMPLE_SHEETS
 
   main:
     // splitText() will submit each line of @runs_to_demux_path seperately, i.e. allows for distributed tasks
-    split_sample_sheet_task( runs_to_demux_path, COPIED_SAMPLE_SHEET_DIR, PROCESSED_SAMPLE_SHEET_DIR )
+    split_sample_sheet_task( runs_to_demux_path, COPIED_SAMPLE_SHEET_DIR, PROCESSED_SAMPLE_SHEET_DIR, LAB_SAMPLE_SHEET_DIR,
+      SPLIT_SAMPLE_SHEETS )
     out( split_sample_sheet_task.out[0], "split_sample_sheet" )
 
   emit:
