@@ -52,6 +52,6 @@ workflow {
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH, COPIED_SAMPLE_SHEET_DIR, PROCESSED_SAMPLE_SHEET_DIR,
     LAB_SAMPLE_SHEET_DIR, SPLIT_SAMPLE_SHEETS )
   demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR,
-    BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, FASTQ_DIR, CMD_FILE, DEMUX_LOG_FILE )
+    BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
   samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, STATS_DIR, STATSDONEDIR )
 }
