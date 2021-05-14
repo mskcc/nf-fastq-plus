@@ -50,7 +50,8 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // SampleSheet
       }
       .set{ split_ch }
-    task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, split_ch.RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
+    task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, split_ch.RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL,
+      DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
     out( task.out[0], "demultiplex" )
 
   emit:
