@@ -3,6 +3,7 @@
 # Nextflow Inputs:
 #   SAMPLE_SHEET, env: Absolute path to the sample sheet
 #   CROSSCHECK_DIR, env: Absolute path to the fingerprinting nextflow directory
+#   CMD_FILE, env: Absolute path of the file to log commands to
 # Run:
 #   SAMPLESHEET=/PATH/TO/SAMPLESHEET CROSSCHECK_DIR=/PATH/TO/CROSSCHECK_DIR ./fingerprint.sh
 
@@ -13,7 +14,7 @@
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD}  >> !{CMD_FILE}
+  echo ${INPUT_CMD}  >> ${CMD_FILE}
   eval ${INPUT_CMD}
 }
 
