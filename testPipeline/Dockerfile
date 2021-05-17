@@ -35,6 +35,3 @@ RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   touch /home/igo/log/nf_fasltq_plus/nf_fastq_run.log && \
   touch /home/igo/log/nf_fastq_plus/commands.log && \
   touch /home/igo/log/nf_fastq_plus/bcl2fastq.log
-
-# Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test.sh", "HWG"]
