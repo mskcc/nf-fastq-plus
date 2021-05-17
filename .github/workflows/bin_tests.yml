@@ -45,7 +45,7 @@ jobs:
         run: testPipeline/templates/cellranger/cellranger_test.sh
 
       - name: Build Docker nf-fastq-plus-playground
-        run: docker build -t nf-fastq-plus-playground . > /dev/null &&
+        run: cd testPipeline && docker build -t nf-fastq-plus-playground . > /dev/null
 
       - name: samplesheet_stats_main_test HWG
         run: >
