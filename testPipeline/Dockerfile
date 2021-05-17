@@ -11,6 +11,20 @@ COPY data .
 RUN wget -O cellranger-6.0.1.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-6.0.1.tar.gz?Expires=1621307248&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci02LjAuMS50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2MjEzMDcyNDh9fX1dfQ__&Signature=RJQMY0OGFrKBopyBTkkn~k4Hh5MJxTBRuqbzq5MQ7KAenx4SAGmJs-gfp0-7jeAboYjIVDWIDhggfneTWdnU5ufj3LLiImhAzyVngxDyuMCs4LGvwnZgr9gAFdR6C662ZlVdyacHsyJ0si-QESp6RPcYGxIhC2VpZzj0eT-3cSA3IjkqrwkRXojTcbf1UHG-s~qCDLqA5VdVI01xgJ8WZa5HlJcjmhO7j2BbqXGqdB2-FKPru8RS~sSS6w1u9Y9m6EHlJe3izI9v0PO0gyex1txbyWkdq2LUNPVy0blXZ0ue0tF0CVAnDjjw4Nsg-eQ9y9dDWCtFoq8NNWuKAnDwjQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" && \
   tar -zxvf cellranger-6.0.1.tar.gz
 
+# Is bcl2fastq undownloadable? this guy did it - https://github.com/Zymo-Research/docker-bcl2fastq/blob/master/Dockerfile
+RUN wget ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/software/bcl2fastq/bcl2fastq2-v2-20-0-tar.zip \
+     && unzip bcl2fastq2-v2-20-0-tar.zip \
+     && tar xzvf bcl2fastq2-v2.20.0.422-Source.tar.gz \
+     && ./bcl2fastq/src/configure --prefix=/usr/local/ \
+     && make \
+     && make install \
+     && rm -r /tmp/* \
+     && rm /usr/include/mcheck.h \
+     && apk --no-cache del \
+          alpine-sdk \
+          bash \
+          zlib-dev
+
 # Install nextflow
 RUN wget -qO- https://get.nextflow.io | bash
 
