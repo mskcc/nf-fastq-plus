@@ -56,9 +56,11 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
 wget https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz
 
 # Unpack the files
-TEST_BCL_DIR=${SEQUENCER_DIR}/rosalind/${RUN}
-mkdir -p ${TEST_BCL_DIR}
-tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_BCL_DIR}
+TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
+TEST_BCL_DIR=${TEST_MACHINE_DIR}/${RUN}
+mkdir -p ${TEST_MACHINE_DIR}
+tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR}
+mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
 
 RUN_OUT=${RUN}.out
 CMD="nextflow ${LOCATION}/../../main.nf -c ${TEST_NEXTFLOW_CONFIG} --run ${RUN}" # > ${RUN_OUT}"
