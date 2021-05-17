@@ -44,14 +44,16 @@ jobs:
       - name: Test cellranger outputs
         run: testPipeline/templates/cellranger/cellranger_test.sh
 
+      - name: Build Docker nf-fastq-plus-playground
+        run: docker build -t nf-fastq-plus-playground . > /dev/null &&
+
       - name: samplesheet_stats_main_test HWG
         run: >
           ./testPipeline/create_local_executor_config.sh nextflow.config &&
           cd testPipeline &&
-          docker build -t nf-fastq-plus-playground . > /dev/null &&
           docker run -v /home/runner/work/nf-fastq-plus/nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
 
-      - name: demux test
+      - name: main test (demux & stats)
         run: >
           cd testPipeline &&
           docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
