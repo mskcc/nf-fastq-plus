@@ -54,9 +54,16 @@ echo "Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Samp
 echo "1,test_sample,test_sample,Human,10X_Genomics_GeneExpression,SI-TT-D9,Project_10001,Investigator_1" >> ${SAMPLE_SHEET}
 
 # Create nextflow config that 1) runs locally, 2) Has relative directory paths, 3) Has Docker images
+echo "executor {" > ${TEST_NEXTFLOW_CONFIG}
+echo "  name = 'local'" >> ${TEST_NEXTFLOW_CONFIG}
+echo "  perJobMemLimit = true" >> ${TEST_NEXTFLOW_CONFIG}
+echo "  scratch = true" >> ${TEST_NEXTFLOW_CONFIG}
+echo "  TMPDIR = '/scratch'" >> ${TEST_NEXTFLOW_CONFIG}
+echo "}" >> ${TEST_NEXTFLOW_CONFIG}
 cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   | sed -E "s#BWA=.*#BWA=\"/usr/gitc/bwa\"#" \
   | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/gitc/picard.jar\"#" \
+  | sed -E "s#CELL_RANGER=.*#CELL_RANGER=\"/usr/gitc/cellranger-6.0.1/bin/cellranger\"#" \
   | sed -E "s#FASTQ_DIR=.*#FASTQ_DIR=\"${FASTQ_DIR}\"#" \
   | sed -E "s#STATS_DIR=.*#STATS_DIR=\"${STATS_DIR}\"#" \
   | sed -E "s#SEQUENCER_DIR=.*#SEQUENCER_DIR=\"${SEQUENCER_DIR}\"#" \
@@ -67,7 +74,7 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   | sed -E "s#LOG_FILE=.*#LOG_FILE=\"${LOG_FILE}\"#" \
   | sed -E "s#CMD_FILE=.*#CMD_FILE=\"${CMD_FILE}\"#" \
   | sed -E "s#DEMUX_LOG_FILE=.*#DEMUX_LOG_FILE=\"${DEMUX_LOG_FILE}\"#" \
-  > ${TEST_NEXTFLOW_CONFIG}
+  >> ${TEST_NEXTFLOW_CONFIG}
 
   # | sed -E "s#=.*#=\"${}\"#" \
 
@@ -82,6 +89,6 @@ tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR}
 mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
 
 RUN_OUT=${RUN}.out
-CMD="nextflow ${LOCATION}/../../main.nf -c ${TEST_NEXTFLOW_CONFIG} --run ${RUN}" # > ${RUN_OUT}"
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}" # > ${RUN_OUT}"
 echo $CMD
 eval $CMD
