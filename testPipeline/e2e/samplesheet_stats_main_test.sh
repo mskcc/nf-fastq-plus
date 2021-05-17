@@ -63,7 +63,9 @@ STATSDONEDIR=${TEST_OUTPUT}/stats/DONE
 mkdir -p ${STATSDONEDIR}
 
 cd ${TEST_OUTPUT}
-CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} > ${RECIPE}.out && tail -100 ${RECIPE}.out"
+touch ${RECIPE}.out
+OUT_FILE=$(realpath ${RECIPE}.out)
+CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} > ${OUT_FILE}"
 echo ${CMD}
 eval ${CMD}
 cd -
@@ -95,6 +97,7 @@ if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"
   rm -rf ${TEST_OUTPUT}
 else
+  cat ${OUT_FILE}
   printf "ERRORS were found - \n${ERRORS}"
   exit 1
 fi
