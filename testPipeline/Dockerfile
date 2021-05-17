@@ -8,7 +8,7 @@ COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesh
 COPY data .
 
 # Install cellranger - places binary in /usr/gitc/cellranger-6.0.1/bin
-RUN wget -O cellranger-6.0.1.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-6.0.1.tar.gz?Expires=1621059424&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci02LjAuMS50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2MjEwNTk0MjR9fX1dfQ__&Signature=HJP~~ztgMXRYq0UqgHrjllifFKNCMBCAnT-7ew2gyECSCLJ8gqyKWIBDWXETUT4hyOaPzqZMfpewYddS5qbfnbkWypGn4uZlhMBi1DDYuQ-nTpqsi0XIyrp0Zb4vhOwj0I3jAClpigAM9voGpFxQGj0GFUNcT8Zz0EqhFxcy7NpZhZFj9bYjC0gzOYVXSdqrfRIRGcMbw80HCKGi4tpoiqs8Z8ysBf8SasZhXcSTW9rSLayIEKI4~utOaZf-ow1eMUpAHf28DbKz99anhOSJzrbPDI9d-hrXVH2keuIjk~hEqgN9IvPkEcR7mICji5HXc5voFve~uy~RUzK3Ko63kw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" && \
+RUN wget -O cellranger-6.0.1.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-6.0.1.tar.gz?Expires=1621307248&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci02LjAuMS50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2MjEzMDcyNDh9fX1dfQ__&Signature=RJQMY0OGFrKBopyBTkkn~k4Hh5MJxTBRuqbzq5MQ7KAenx4SAGmJs-gfp0-7jeAboYjIVDWIDhggfneTWdnU5ufj3LLiImhAzyVngxDyuMCs4LGvwnZgr9gAFdR6C662ZlVdyacHsyJ0si-QESp6RPcYGxIhC2VpZzj0eT-3cSA3IjkqrwkRXojTcbf1UHG-s~qCDLqA5VdVI01xgJ8WZa5HlJcjmhO7j2BbqXGqdB2-FKPru8RS~sSS6w1u9Y9m6EHlJe3izI9v0PO0gyex1txbyWkdq2LUNPVy0blXZ0ue0tF0CVAnDjjw4Nsg-eQ9y9dDWCtFoq8NNWuKAnDwjQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" && \
   tar -zxvf cellranger-6.0.1.tar.gz
 
 # Install nextflow
