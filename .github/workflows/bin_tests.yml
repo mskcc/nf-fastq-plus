@@ -51,7 +51,7 @@ jobs:
         run: >
           ./testPipeline/create_local_executor_config.sh nextflow.config &&
           cd testPipeline &&
-          docker run -v /home/runner/work/nf-fastq-plus/nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+          docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
 
       - name: main test (demux & stats)
         run: >
