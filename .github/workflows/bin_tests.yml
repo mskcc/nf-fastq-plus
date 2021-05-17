@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-      # Runs a single command using the runners shell
+
       - name: Test demultiplex masks
         run: testPipeline/templates/demultiplex/demultiplex_test.sh
 
@@ -47,12 +47,12 @@ jobs:
       - name: Build Docker nf-fastq-plus-playground
         run: cd testPipeline && docker build -t nf-fastq-plus-playground . > /dev/null
 
-      - name: samplesheet_stats_main_test HWG
+      - name: samplesheet_stats_main.nf HWG
         run: >
           cd testPipeline &&
           docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
 
-      - name: main test (demux & stats)
+      - name: main.nf cellranger (demux & stats)
         run: >
           cd testPipeline &&
           docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
