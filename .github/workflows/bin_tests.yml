@@ -30,7 +30,7 @@ jobs:
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       # Runs a single command using the runners shell
       - name: Test demultiplex masks
-        run: testPipeline/templates/demultiplex_test.sh
+        run: testPipeline/templates/demultiplex/demultiplex_test.sh
 
       - name: Test Run Parameters
         run: cd ./bin/test && python test_generate_run_params.py
@@ -41,10 +41,13 @@ jobs:
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
 
+      - name: Test cellranger outputs
+        run: testPipeline/templates/cellranger/cellranger_test.sh
+
       - name: samplesheet_stats_main_test HWG
         run: >
+          ./testPipeline/create_local_executor_config.sh nextflow.config &&
           cd testPipeline &&
-          cp nextflow_test.config ../nextflow.config &&
           docker build -t nf-fastq-plus-playground . > /dev/null &&
           docker run -v /home/runner/work/nf-fastq-plus/nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
 
