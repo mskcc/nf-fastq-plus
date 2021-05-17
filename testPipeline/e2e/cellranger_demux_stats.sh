@@ -32,7 +32,26 @@ DEMUX_LOG_FILE="${LOG_DIR}/bcl2fastq.log"
 TEST_NEXTFLOW_CONFIG=${LOCATION}/nextflow.config
 
 # Create a basic samplesheet
-printf "Lane,Sample,Index\n1,test_sample,SI-TT-D9\n" > ${LAB_SAMPLE_SHEET_DIR}/SampleSheet_${RUN}.csv
+SAMPLE_SHEET=${LAB_SAMPLE_SHEET_DIR}/SampleSheet_${RUN}.csv
+echo "[Header],,,,,,,," > ${SAMPLE_SHEET}
+echo "IEMFileVersion,4,,,,,,," >> ${SAMPLE_SHEET}
+echo "Date,5/10/2021,,,,,,," >> ${SAMPLE_SHEET}
+echo "Workflow,GenerateFASTQ,,,,,,," >> ${SAMPLE_SHEET}
+echo "Application,MICHELLE,,,,,,," >> ${SAMPLE_SHEET}
+echo "Assay,,,,,,,," >> ${SAMPLE_SHEET}
+echo "Description,,,,,,,," >> ${SAMPLE_SHEET}
+echo "Chemistry,Default,,,,,,," >> ${SAMPLE_SHEET}
+echo ",,,,,,,," >> ${SAMPLE_SHEET}
+echo "[Reads],,,,,,,," >> ${SAMPLE_SHEET}
+echo "27,,,,,,,," >> ${SAMPLE_SHEET}
+echo "91,,,,,,,," >> ${SAMPLE_SHEET}
+echo ",,,,,,,," >> ${SAMPLE_SHEET}
+echo "[Settings],,,,,,,," >> ${SAMPLE_SHEET}
+echo "Adapter,,,,,,,," >> ${SAMPLE_SHEET}
+echo ",,,,,,,," >> ${SAMPLE_SHEET}
+echo "[Data],,,,,,,," >> ${SAMPLE_SHEET}
+echo "Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Sample_Project,Description" >> ${SAMPLE_SHEET}
+echo "1,test_sample,test_sample,Human,10X_Genomics_GeneExpression,SI-TT-D9,Project_10001,Investigator_1" >> ${SAMPLE_SHEET}
 
 # Create nextflow config that 1) runs locally, 2) Has relative directory paths, 3) Has Docker images
 cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
