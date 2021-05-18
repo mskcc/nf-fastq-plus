@@ -16,12 +16,7 @@ RUN yum install -y \
 	wget \
 	unzip
 
-# https://github.com/litd/docker-cellranger/blob/master/Dockerfile
-# Install bcl2fastq
-RUN cd /tmp/ && \
-	wget http://regmedsrv1.wustl.edu/Public_SPACE/litd/Public_html/pkg/bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm && \
-	yum -y --nogpgcheck localinstall bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm && \
-	rm -rf bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm
+
 
 # Install cellranger
 RUN cd /opt/ && \
