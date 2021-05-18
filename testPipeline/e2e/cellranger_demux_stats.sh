@@ -63,7 +63,7 @@ echo "}" >> ${TEST_NEXTFLOW_CONFIG}
 cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   | sed -E "s#BWA=.*#BWA=\"/usr/gitc/bwa\"#" \
   | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/gitc/picard.jar\"#" \
-  | sed -E "s#CELL_RANGER=.*#CELL_RANGER=\"/usr/gitc/cellranger-6.0.1/bin/cellranger\"#" \
+  | sed -E "s#CELL_RANGER=.*#CELL_RANGER=\"/usr/gitc/cellranger-6.0.0/bin/cellranger\"#" \
   | sed -E "s#FASTQ_DIR=.*#FASTQ_DIR=\"${FASTQ_DIR}\"#" \
   | sed -E "s#STATS_DIR=.*#STATS_DIR=\"${STATS_DIR}\"#" \
   | sed -E "s#SEQUENCER_DIR=.*#SEQUENCER_DIR=\"${SEQUENCER_DIR}\"#" \
