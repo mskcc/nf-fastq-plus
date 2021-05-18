@@ -7,6 +7,15 @@ COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesh
 # Test script uses mock data at testPipeline/data (not needed if mounting nf-fastq-plus when running container)
 COPY data .
 
+# Install some utilities
+RUN yum install -y \
+	file \
+	git \
+	sssd-client \
+	which \
+	wget \
+	unzip
+
 # https://github.com/litd/docker-cellranger/blob/master/Dockerfile
 # Install bcl2fastq
 RUN cd /tmp/ && \
