@@ -8,15 +8,14 @@ COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesh
 COPY data .
 
 # Install some utilities
-RUN yum install -y \
-	file \
-	git \
-	sssd-client \
-	which \
-	wget \
-	unzip
+RUN apt-get -y  install rpm cpio
 
-
+# https://github.com/litd/docker-cellranger/blob/master/Dockerfile
+# Install bcl2fastq
+RUN cd /tmp/ && \
+	wget http://regmedsrv1.wustl.edu/Public_SPACE/litd/Public_html/pkg/bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm && \
+	rpm2cpio bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm  | cpio -idmv && \
+	rm -rf bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm
 
 # Install cellranger
 RUN cd /opt/ && \
