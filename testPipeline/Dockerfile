@@ -17,13 +17,7 @@ RUN wget ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/software/bcl2fa
      && tar xzvf bcl2fastq2-v2.20.0.422-Source.tar.gz \
      && ./bcl2fastq/src/configure --prefix=/usr/local/ \
      && make \
-     && make install \
-     && rm -r /tmp/* \
-     && rm /usr/include/mcheck.h \
-     && apk --no-cache del \
-          alpine-sdk \
-          bash \
-          zlib-dev
+     && make install
 
 # Install nextflow
 RUN wget -qO- https://get.nextflow.io | bash
