@@ -36,7 +36,8 @@ RUN ln -s /bin/echo /bin/mail
 RUN wget https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.fna.gz && \
   gunzip GRCh37_latest_genomic.fna.gz && \
   mkdir -p /igo/work/genomes/H.sapiens/GRCh37/ && \
-  mv GRCh37_latest_genomic.fna /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta
+  mv GRCh37_latest_genomic.fna /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta && \
+  samtools faidx /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta
 
 # Setup directories of nextflow.config
 RUN mkdir -p /home/igo/log/nf_fasltq_plus && \

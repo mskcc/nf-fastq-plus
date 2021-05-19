@@ -56,7 +56,6 @@ echo "1,s1,test_sample,Human,10X_Genomics_GeneExpression,SI-GA-A3,SI-GA-A3,Proje
 # Create nextflow config that 1) runs locally, 2) Has relative directory paths, 3) Has Docker images
 echo "executor {" > ${TEST_NEXTFLOW_CONFIG}
 echo "  name = 'local'" >> ${TEST_NEXTFLOW_CONFIG}
-echo "  perJobMemLimit = true" >> ${TEST_NEXTFLOW_CONFIG}
 echo "  scratch = true" >> ${TEST_NEXTFLOW_CONFIG}
 echo "  TMPDIR = '/scratch'" >> ${TEST_NEXTFLOW_CONFIG}
 echo "}" >> ${TEST_NEXTFLOW_CONFIG}
@@ -89,6 +88,7 @@ tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR}
 mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
 
 RUN_OUT=${RUN}.out
+# nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}" # > ${RUN_OUT}"
 echo $CMD
 eval $CMD
