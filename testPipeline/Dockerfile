@@ -8,7 +8,7 @@ COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesh
 COPY data .
 
 # Install some utilities (needed to install bcl2fastq)
-RUN apt-get -y install rpm cpio
+RUN apt-get -y install rpm cpio less
 
 # https://github.com/litd/docker-cellranger/blob/master/Dockerfile
 # Install bcl2fastq to /usr/local/bin/
@@ -33,11 +33,12 @@ ENV PATH=$PATH:/usr/gitc
 RUN ln -s /bin/echo /bin/mail
 
 # Add Genome reference used by Human Whole Genome & IDT
-RUN wget https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.fna.gz && \
-  gunzip GRCh37_latest_genomic.fna.gz && \
-  mkdir -p /igo/work/genomes/H.sapiens/GRCh37/ && \
-  mv GRCh37_latest_genomic.fna /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta && \
-  /usr/gitc/bwa index /igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta
+RUN wget https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz && \
+  tar -xzvf refdata-GRCh37-1.0.0.tar.gz && \
+  mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
+  cd refdata-GRCh37-1.0.0/fasta && \
+  FILES=$(find . -type f -name "genome.fa*") && \
+  for f in $FILES; do mv $f /igo/work/genomes/H.sapiens/GRCh37/${f/genome.fa/GRCh37.fasta}; done
 
 # Setup directories of nextflow.config
 RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
