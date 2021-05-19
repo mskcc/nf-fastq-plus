@@ -1,6 +1,15 @@
 # Image w/ bwa & picard binaries
 FROM broadinstitute/genomes-in-the-cloud:2.3.1-1512499786
 
+# Add Genome reference used by Human Whole Genome & IDT
+RUN wget https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz
+
+RUN tar -xzvf refdata-GRCh37-1.0.0.tar.gz && \
+  mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
+  cd refdata-GRCh37-1.0.0/fasta && \
+  FILES=$(find . -type f -name "genome.fa*") && \
+  for f in $FILES; do mv $f /igo/work/genomes/H.sapiens/GRCh37/${f/genome.fa/GRCh37.fasta}; done
+
 # Add the script that can be run as an entrypoint
 COPY e2e/samplesheet_stats_main_test.sh /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test.sh
 
@@ -31,15 +40,6 @@ ENV PATH=$PATH:/usr/gitc
 
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
-
-# Add Genome reference used by Human Whole Genome & IDT
-RUN wget https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz
-
-RUN tar -xzvf refdata-GRCh37-1.0.0.tar.gz && \
-  mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
-  cd refdata-GRCh37-1.0.0/fasta && \
-  FILES=$(find . -type f -name "genome.fa*") && \
-  for f in $FILES; do mv $f /igo/work/genomes/H.sapiens/GRCh37/${f/genome.fa/GRCh37.fasta}; done
 
 # Setup directories of nextflow.config
 RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
