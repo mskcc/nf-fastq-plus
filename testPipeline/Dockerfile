@@ -34,8 +34,9 @@ RUN ln -s /bin/echo /bin/mail
 
 # Add Genome reference used by Human Whole Genome & IDT
 RUN wget https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz && \
-  tar -xzvf refdata-GRCh37-1.0.0.tar.gz && \
-  mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
+  tar -xzvf refdata-GRCh37-1.0.0.tar.gz
+
+RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
   cd refdata-GRCh37-1.0.0/fasta && \
   FILES=$(find . -type f -name "genome.fa*") && \
   for f in $FILES; do mv $f /igo/work/genomes/H.sapiens/GRCh37/${f/genome.fa/GRCh37.fasta}; done
