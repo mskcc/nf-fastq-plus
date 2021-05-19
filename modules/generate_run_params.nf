@@ -3,12 +3,12 @@ include { log_out as out } from './log_out'
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
-  tag "$RUN_ID"
+  tag "$RUN_TAG"
 
   input:
     env DEMUXED_DIR
     env SAMPLESHEET
-    val RUN_ID
+    val RUN_TAG
     env RUN_PARAMS_FILE
   output:
     stdout()
