@@ -143,8 +143,9 @@ else
     else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
       JOB_CMD="${CELL_RANGER} mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
+      echo "EXECUTOR=${EXECUTOR} localmem=${LOCAL_MEM}"
       if [[ ${EXECUTOR} = "local" ]]; then
-        JOB_CMD+="--localmem=${LOCAL_MEM}"
+        JOB_CMD+=" --localmem=${LOCAL_MEM}"
       fi
       JOB_CMD+=" --disable-ui  --barcode-mismatches 1 --jobmode=${EXECUTOR} >> ${BCL_LOG}"
     fi
@@ -190,6 +191,7 @@ else
   echo "Running demux"
   # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
   set +e
+  echo ${JOB_CMD}
   eval ${JOB_CMD}
   UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
   PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);
