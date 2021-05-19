@@ -3,9 +3,12 @@ include { log_out as out } from './log_out'
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
+  tag "$RUN_ID"
+
   input:
     env DEMUXED_DIR
     env SAMPLESHEET
+    val RUN_ID
     env RUN_PARAMS_FILE
   output:
     stdout()
@@ -21,7 +24,7 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
     RUN_PARAMS_FILE
   main:
-    task( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
+    task( DEMUXED_DIR, SAMPLESHEET, DEMUXED_DIR.split('/')[-1], RUN_PARAMS_FILE )
     out( task.out[0], "generate_run_params" )
     task.out.PARAMS
       .flatten()
