@@ -24,7 +24,7 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
     RUN_PARAMS_FILE
   main:
-    task( DEMUXED_DIR, SAMPLESHEET, DEMUXED_DIR.toString().split('/')[-1], RUN_PARAMS_FILE )
+    task( DEMUXED_DIR, SAMPLESHEET, DEMUXED_DIR, RUN_PARAMS_FILE )
     out( task.out[0], "generate_run_params" )
     task.out.PARAMS
       .flatten()
