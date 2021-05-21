@@ -6,6 +6,8 @@ RUN wget https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz
 
 RUN /bin/tar -zxvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat
 
+RUN rm refdata-GRCh37-1.0.0.tar.gz
+
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
   cd refdata-GRCh37-1.0.0/fasta && \
   FILES=$(find . -type f -name "genome.fa*") && \
