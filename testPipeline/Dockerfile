@@ -4,9 +4,7 @@ FROM broadinstitute/genomes-in-the-cloud:2.3.1-1512499786
 # Add Genome reference used by Human Whole Genome & IDT
 RUN wget https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz
 
-RUN which tar
-
-RUN /bin/tar -xzvf --exclude=genome.fa.flat refdata-GRCh37-1.0.0.tar.gz
+RUN which tar && /bin/tar -xzvf --exclude=genome.fa.flat refdata-GRCh37-1.0.0.tar.gz
 
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
   cd refdata-GRCh37-1.0.0/fasta && \
