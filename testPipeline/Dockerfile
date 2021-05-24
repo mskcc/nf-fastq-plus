@@ -2,7 +2,7 @@ FROM centos:7
 
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
 RUN curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
-  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.bwt && \
+  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat && \
   rm refdata-GRCh37-1.0.0.tar.gz
 
 # Move all the reference files to the location expected by nextflow.config
