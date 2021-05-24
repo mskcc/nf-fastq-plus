@@ -1,10 +1,9 @@
 #!/bin/bash
-
-# Reference - https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/mkfastq
+# Sets up and runs full pipeline for BCL files downloaded from cellranger
+#   Reference - https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/mkfastq
 
 LOCATION=$(realpath $(dirname "$0"))
 RUN=200514_ROSALIND_0001_FLOWCELL
-
 TEST_OUTPUT=${LOCATION}/main_test
 
 FASTQ_DIR=${TEST_OUTPUT}/FASTQ
@@ -74,7 +73,6 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   | sed -E "s#CMD_FILE=.*#CMD_FILE=\"${CMD_FILE}\"#" \
   | sed -E "s#DEMUX_LOG_FILE=.*#DEMUX_LOG_FILE=\"${DEMUX_LOG_FILE}\"#" \
   >> ${TEST_NEXTFLOW_CONFIG}
-
   # | sed -E "s#=.*#=\"${}\"#" \
 
 # Download raw cellranger BCL files
@@ -85,6 +83,7 @@ TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
 TEST_BCL_DIR=${TEST_MACHINE_DIR}/${RUN}
 mkdir -p ${TEST_MACHINE_DIR}
 tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR}
+rm cellranger-tiny-bcl-1.2.0.tar.gz
 mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
 
 RUN_OUT=${RUN}.out
