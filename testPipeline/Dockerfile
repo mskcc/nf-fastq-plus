@@ -3,7 +3,7 @@ FROM centos:7
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes/H.sapiens/GRCh37 && \
   curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
-  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --strip-components 2 && \
+  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
   rm refdata-GRCh37-1.0.0.tar.gz && \
   cd /igo/work/genomes/H.sapiens/GRCh37 && \
   FILES=$(find . -type f -name "genome.fa*") && \
