@@ -1,9 +1,12 @@
 FROM centos:7
 
-# Add Genome reference
-RUN curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
+# Add Genome reference and move all the reference files to the location expected by nextflow.config
+RUN mkdir -p /igo/work/genomes && cd /igo/work/genomes && \
+  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
   /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.bwt && \
-  rm refdata-GRCh37-1.0.0.tar.gz
+  rm refdata-GRCh37-1.0.0.tar.gz && \
+  mv /igo/work/genomes/refdata-GRCh37-1.0.0 /igo/work/genomes/H.sapiens && \
+  mv /igo/work/genomes/refdata-GRCh37-1.0.0/fasta /igo/work/genomes/H.sapiens/GRCh37
 
 # Move all the reference files to the location expected by nextflow.config
 # RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
