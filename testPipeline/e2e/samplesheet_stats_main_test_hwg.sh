@@ -22,8 +22,8 @@ echo "}" >> ${TEMP_FILE}
 
 # Take whatever is in the original config for the environment variables. Replace bwa & picard w/ docker binaries
 cat ${ORIGINAL_CONFIG} | sed -n '/env {/,$p' \
-  | sed -E "s#BWA=.*#BWA=\"/usr/gitc/bwa\"#" \
-  | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/gitc/picard.jar\"#" \
+  | sed -E "s#BWA=.*#BWA=\"/usr/bin/bwa\"#" \
+  | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/local/bioinformatics/picard.jar\"#" \
   >> ${TEMP_FILE}
 
 BACKUP=nextflow_original.config
