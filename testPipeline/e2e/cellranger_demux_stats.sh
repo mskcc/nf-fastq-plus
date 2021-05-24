@@ -60,9 +60,9 @@ echo "  scratch = true" >> ${TEST_NEXTFLOW_CONFIG}
 echo "  TMPDIR = '/scratch'" >> ${TEST_NEXTFLOW_CONFIG}
 echo "}" >> ${TEST_NEXTFLOW_CONFIG}
 cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
-  | sed -E "s#BWA=.*#BWA=\"/usr/gitc/bwa\"#" \
-  | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/gitc/picard.jar\"#" \
-  | sed -E "s#CELL_RANGER=.*#CELL_RANGER=\"/usr/gitc/cellranger-6.0.0/bin/cellranger\"#" \
+  | sed -E "s#BWA=.*#BWA=\"/usr/bin/bwa\"#" \
+  | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/local/bioinformatics/picard.jar\"#" \
+  | sed -E "s#CELL_RANGER=.*#CELL_RANGER=\"/usr/local/bioinformatics/cellranger-6.0.0/bin/cellranger\"#" \
   | sed -E "s#FASTQ_DIR=.*#FASTQ_DIR=\"${FASTQ_DIR}\"#" \
   | sed -E "s#STATS_DIR=.*#STATS_DIR=\"${STATS_DIR}\"#" \
   | sed -E "s#SEQUENCER_DIR=.*#SEQUENCER_DIR=\"${SEQUENCER_DIR}\"#" \
@@ -78,7 +78,7 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   # | sed -E "s#=.*#=\"${}\"#" \
 
 # Download raw cellranger BCL files
-wget https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz
+curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz > cellranger-tiny-bcl-1.2.0.tar.gz
 
 # Unpack the files
 TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
