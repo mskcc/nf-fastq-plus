@@ -4,7 +4,7 @@ FROM centos:7
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes && \
   curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
   /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat && \
-  rm refdata-GRCh37-1.0.0.tar.gz && rm -rf refdata-GRCh37-1.0.0/ && \
+  rm refdata-GRCh37-1.0.0.tar.gz && \
   mv refdata-GRCh37-1.0.0 H.sapiens && \
   cd H.sapiens && \
   mv fasta GRCh37
