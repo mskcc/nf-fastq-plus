@@ -1,15 +1,13 @@
 FROM centos:7
 
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
-RUN curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
+RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes && \
+  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
   /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat && \
-  rm refdata-GRCh37-1.0.0.tar.gz
-
-# Move all the reference files to the location expected by nextflow.config
-RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
-  cd refdata-GRCh37-1.0.0/fasta && \
-  FILES=$(find . -type f -name "genome.fa*") && \
-  for f in $FILES; do mv $f /igo/work/genomes/H.sapiens/GRCh37/${f/genome.fa/GRCh37.fasta}; done
+  rm refdata-GRCh37-1.0.0.tar.gz && rm -rf refdata-GRCh37-1.0.0/ && \
+  mv refdata-GRCh37-1.0.0 H.sapiens && \
+  cd H.sapiens && \
+  mv fasta GRCh37
 
 # Install utilities needed for bcl2fastq
 RUN yum -y install rpm cpio
