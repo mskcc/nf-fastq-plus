@@ -51,9 +51,3 @@ jobs:
         run: >
           cd testPipeline &&
           docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
-
-      # If there isn't enough memory provided, then cellranger will stall infinitely
-      - name: main.nf cellranger (demux & stats)
-        run: >
-          cd testPipeline &&
-          docker run -m=4g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
