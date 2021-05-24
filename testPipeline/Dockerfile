@@ -15,7 +15,8 @@ RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
 RUN yum -y install rpm cpio
 
 # gc-bias requires R ("R is not installed on this machine. It is required for creating the chart.")
-RUN yum install R
+RUN yum -y install epel-release R
+RUN yum -y install R
 
 # Install bcl2fastq to /usr/local/bin/ (Ref - https://github.com/litd/docker-cellranger/blob/master/Dockerfile)
 RUN cd / && \
