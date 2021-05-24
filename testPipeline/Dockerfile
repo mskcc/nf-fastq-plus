@@ -1,6 +1,6 @@
 FROM centos:7
 
-# Add Genome reference and move all the reference files to the location expected by nextflow.config
+# Add Genome reference
 RUN curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
   /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.bwt && \
   rm refdata-GRCh37-1.0.0.tar.gz
@@ -13,6 +13,9 @@ RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
 
 # Install utilities needed for bcl2fastq
 RUN yum -y install rpm cpio
+
+# gc-bias requires R ("R is not installed on this machine. It is required for creating the chart.")
+RUN yum install R
 
 # Install bcl2fastq to /usr/local/bin/ (Ref - https://github.com/litd/docker-cellranger/blob/master/Dockerfile)
 RUN cd / && \
