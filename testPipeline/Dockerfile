@@ -1,6 +1,6 @@
 FROM centos:7
 
-# Add Genome reference
+# Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
 RUN curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
   /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.bwt && \
   rm refdata-GRCh37-1.0.0.tar.gz
@@ -13,10 +13,6 @@ RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && \
 
 # Install utilities needed for bcl2fastq
 RUN yum -y install rpm cpio
-
-# gc-bias requires R ("R is not installed on this machine. It is required for creating the chart.")
-RUN yum -y install epel-release R
-RUN yum -y install R
 
 # Install bcl2fastq to /usr/local/bin/ (Ref - https://github.com/litd/docker-cellranger/blob/master/Dockerfile)
 RUN cd / && \
@@ -34,32 +30,30 @@ RUN cd /usr/local/bioinformatics && \
   rm -f cellranger-6.0.0.tar.gz
 
 # Add cellranger binary to PATH
-ENV PATH="/usr/local/bioinformatics/cellranger-6.0.0/bin:${PATH}"
-
 RUN yum -y install java-1.8.0-openjdk-devel git
 ENV JAVA_HOME=/usr/lib/jvm/java-openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
+# Picard's CollectGcBiasMetrics requires R ("R is not installed on this machine. It is required for creating the chart.")
+RUN yum -y install epel-release
+RUN yum -y install R
+
+# Install Picard
 RUN git clone https://github.com/broadinstitute/picard.git && \
   cd picard && \
   ./gradlew shadowJar && \
   mv build/libs/picard.jar /usr/local/bioinformatics && \
   rm -rf picard
 
-# Install nextflow
+# Install nextflow (Should be to directory in PATH)
 RUN cd /usr/local/bin && curl -s https://get.nextflow.io | bash
 
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
 
-# Setup directories of nextflow.config
+# Setup remaining directories of nextflow.config
 RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /igo/stats/DONE && \
-  mkdir -p /home/igo/nextflow/crosscheck_metrics && \
-  touch /home/igo/log/nf_fasltq_plus/nf_fastq_run.log && \
-  touch /home/igo/log/nf_fastq_plus/commands.log && \
-  touch /home/igo/log/nf_fastq_plus/bcl2fastq.log
-
-
+  mkdir -p /home/igo/nextflow/crosscheck_metrics
