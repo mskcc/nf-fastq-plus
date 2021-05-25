@@ -38,21 +38,19 @@ PROJECT_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 SPECIES=$(parse_param ${RUN_PARAMS_FILE} SPECIES)
 
-echo "Searching directory ${FASTQ_DIR} for Sample_${SAMPLE_TAG} directory"
-# Find All Sample Directories, e.g. /igo/work/FASTQ/SCOTT_0339_AH2VTWBGXJ_10X/Project_11926/Sample_ESC_IGO_11926_1
-SAMPLE_FASTQ_DIRS_ACROSS_RUNS=$(find ${FASTQ_DIR} -mindepth 3 -maxdepth 3 -type d -name "Sample_${SAMPLE_TAG}")
-
-if [[ -z ${SAMPLE_FASTQ_DIRS_ACROSS_RUNS} ]]; then
-  echo "Unable to locate FASTQ DIRS"
-  exit 1
-fi
-
-CELLRANGER_FASTQ_INPUT=$(echo ${SAMPLE_FASTQ_DIRS_ACROSS_RUNS} | tr ' ' ',') # cellranger input: comma-delimited list
-
 is_10X=$(echo $RECIPE | grep "10X_Genomics_")
 if [[ -z ${is_10X} ]]; then
   echo "Non-10X Recipe: ${RECIPE}. Skipping"
 else
+  echo "Searching directory ${FASTQ_DIR} for Sample_${SAMPLE_TAG} directory"
+  # Find All Sample Directories, e.g. /igo/work/FASTQ/SCOTT_0339_AH2VTWBGXJ_10X/Project_11926/Sample_ESC_IGO_11926_1
+  SAMPLE_FASTQ_DIRS_ACROSS_RUNS=$(find ${FASTQ_DIR} -mindepth 3 -maxdepth 3 -type d -name "Sample_${SAMPLE_TAG}")
+  if [[ -z ${SAMPLE_FASTQ_DIRS_ACROSS_RUNS} ]]; then
+    echo "Unable to locate FASTQ DIRS"
+    exit 1
+  fi
+
+  CELLRANGER_FASTQ_INPUT=$(echo ${SAMPLE_FASTQ_DIRS_ACROSS_RUNS} | tr ' ' ',') # cellranger input: comma-delimited list
   CELLRANGER_DIR=${STATS_DIR}/${RUNNAME}/cellranger/${PROJECT_TAG}/${SAMPLE_TAG}       # Specific path to BAMs
   mkdir -p ${CELLRANGER_DIR}
   cd ${CELLRANGER_DIR}
