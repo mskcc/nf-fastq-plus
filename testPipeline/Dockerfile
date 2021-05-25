@@ -47,6 +47,7 @@ RUN git clone https://github.com/broadinstitute/picard.git && \
 
 RUN curl http://springdale.princeton.edu/data/springdale/7/x86_64/os/RPM-GPG-KEY-springdale > /etc/pki/rpm-gpg/RPM-GPG-KEY-springdale
 
+# Installs YUM repo needed to install BWA (REF - https://springdale.math.ias.edu/wiki/YumRepositories7)
 RUN echo "[computational-core]" > /etc/yum.repos.d/springdale.computational.repo && \
   echo "name=Springdale computational Base \$releasever - \$basearch" >> /etc/yum.repos.d/springdale.computational.repo && \
   echo "#baseurl=file:///springdale/computational/\$releasever/\$basearch" >> /etc/yum.repos.d/springdale.computational.repo && \
