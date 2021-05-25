@@ -126,6 +126,23 @@ for fs in "${FILE_SUFFIXES[@]}"; do
   fi
 done
 
+echo "TEST 3: Checking for cellranger stat output"
+CELLRANGER_OUTPUT=$(find ${STATS_DIR} -maxdepth 2 -type d -name cellranger)
+if [ -z ${CELLRANGER_OUTPUT} ]; then
+  ERROR="\tERROR: Pipeline didn't create cellranger output\n"
+  ERRORS="${ERRORS}${ERROR}"
+  printf "$ERROR"
+else
+  printf "\tFound CELLRANGER_OUTPUT=${CELLRANGER_OUTPUT}\n"
+  WEB_SUMMARY_FILE=$(find ${CELLRANGER_OUTPUT} -type d -name "*.html")
+  if [ -z ${CELLRANGER_OUTPUT} ]; then
+    ERROR="\tERROR: Pipeline didn't create websummary.html\n"
+    ERRORS="${ERRORS}${ERROR}"
+    printf "$ERROR"
+  fi
+fi
+
+
 if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"
   rm -rf ${TEST_OUTPUT}
