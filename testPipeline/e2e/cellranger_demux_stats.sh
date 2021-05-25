@@ -81,7 +81,7 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   # | sed -E "s#=.*#=\"${}\"#" \
 
 # Download raw cellranger BCL files
-curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz > cellranger-tiny-bcl-1.2.0.tar.gz
+curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz -o cellranger-tiny-bcl-1.2.0.tar.gz > /dev/null
 
 # Unpack the files
 TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
