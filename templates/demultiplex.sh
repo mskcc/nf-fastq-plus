@@ -8,7 +8,8 @@
 #   FASTQ_DIR:        Directory w/ FASTQ files
 #   DEMUX_LOG_FILE:   Log file where demux output is written to
 #   CMD_FILE:         Log file to write commands to
-#   DATA_TEAM_EMAIL: emails of data team members who should be notified
+#   DATA_TEAM_EMAIL:  emails of data team members who should be notified
+#   EXECUTOR:         Type of nextflow executor (e.g. local/lsf)
 # Nextflow Outputs:
 #   DEMUXED_DIR, env: path to where the run has been demuxed to
 #   SAMPLE_SHEET,env: path to samplesheet used to demultiplex
@@ -137,10 +138,16 @@ else
     export PATH=$(dirname ${BCL2FASTQ}):$PATH
     if grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
-      JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=lsf --mempercore=32 --disable-ui --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
+      JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
+      JOB_CMD+=" --mempercore=32 --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
     else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
-      JOB_CMD="/igo/work/bin/cellranger-4.0.0/cellranger mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --nopreflight --jobmode=local --localmem=216 --localcores=36  --barcode-mismatches 1 >> ${BCL_LOG}"
+      JOB_CMD="${CELL_RANGER} mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
+      echo "EXECUTOR=${EXECUTOR} localmem=${LOCAL_MEM}"
+      if [[ ${EXECUTOR} = "local" ]]; then
+        JOB_CMD+=" --localmem=${LOCAL_MEM}"
+      fi
+      JOB_CMD+=" --disable-ui  --barcode-mismatches 1 --jobmode=${EXECUTOR} >> ${BCL_LOG}"
     fi
   else
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
@@ -177,7 +184,7 @@ else
     fi
 
     echo "Running bcl2fastq w/ mismatches=${BARCODE_MISMATCH}"
-    JOB_CMD="${BCL2FASTQ} ${MASK_OPT} ${LANE_SPLIT_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl  --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
+    JOB_CMD="${BCL2FASTQ} ${MASK_OPT} ${LANE_SPLIT_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
   fi
   echo ${JOB_CMD} >> ${CMD_FILE}
 
