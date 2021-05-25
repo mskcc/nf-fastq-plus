@@ -36,9 +36,10 @@ mkdir -p ${FASTQ_SAMPLE_DIR}
 touch ${FASTQ_SAMPLE_DIR}/Sample_ESC_IGO_00001_1_R1.fastq.gz
 touch ${FASTQ_SAMPLE_DIR}/Sample_ESC_IGO_00001_1_R2.fastq.gz
 
-run_cellranger GeneExpression
+TEST=GeneExpression
+run_cellranger ${TEST}
 EXPECTED_OUT="count --id=ESC_IGO_00001_1 --transcriptome=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A --fastqs=/Users/streidd/work/nf-fastq-plus/testPipeline/templates/cellranger/RUN/Project_10001/Sample_ESC_IGO_00001_1 --nopreflight --jobmode=lsf --mempercore=64 --disable-ui --maxjobs=200"
-ACTUAL_OUT=$(cat ${OUTPUT_FILE})
+ACTUAL_OUT=$(cat ${OUTPUT_FILE} | tr '\n' '   ')
 if [[ ! -z $(echo ${ACTUAL_OUT} | grep "${EXPECTED_OUT}") ]]; then
   echo "Passed ${TEST}: ${EXPECTED_OUT}"
   rm ${OUTPUT_FILE}
@@ -48,7 +49,8 @@ else
   exit 1
 fi
 
-run_cellranger vdj
+TEST=vdj
+run_cellranger ${TEST}
 EXPECTED_OUT="vdj --id=ESC_IGO_00001_1 --reference=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 --fastqs=/Users/streidd/work/nf-fastq-plus/testPipeline/templates/cellranger/RUN/Project_10001/Sample_ESC_IGO_00001_1 --sample=ESC_IGO_00001_1 --nopreflight --jobmode=lsf --mempercore=64 --disable-ui --maxjobs=200"
 ACTUAL_OUT=$(cat ${OUTPUT_FILE})
 if [[ ! -z $(echo ${ACTUAL_OUT} | grep "${EXPECTED_OUT}") ]]; then
@@ -60,7 +62,8 @@ else
   exit 1
 fi
 
-run_cellranger atac
+TEST=atac
+run_cellranger ${TEST}
 EXPECTED_OUT="count --id=ESC_IGO_00001_1 --fastqs=/Users/streidd/work/nf-fastq-plus/testPipeline/templates/cellranger/RUN/Project_10001/Sample_ESC_IGO_00001_1 --reference=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 --nopreflight --jobmode=lsf --mempercore=64 --disable-ui --maxjobs=200"
 ACTUAL_OUT=$(cat ${OUTPUT_FILE})
 if [[ ! -z $(echo ${ACTUAL_OUT} | grep "${EXPECTED_OUT}") ]]; then
