@@ -132,14 +132,8 @@ if [ -z ${CELLRANGER_OUTPUT} ]; then
   printf "$ERROR"
 else
   printf "\tFound CELLRANGER_OUTPUT=${CELLRANGER_OUTPUT}\n"
-  WEB_SUMMARY_FILE=$(find ${CELLRANGER_OUTPUT} -type d -name "*.html")
-  if [ -z ${WEB_SUMMARY_FILE} ]; then
-    ERROR="\tERROR: Pipeline didn't create websummary.html\n"
-    ERRORS="${ERRORS}${ERROR}"
-    printf "$ERROR"
-  else
-    printf "\tFound websummary file - ${WEB_SUMMARY_FILE}"
-  fi
+  # Note - can't currently test for the cellranger output (e.g. web_summary.html & .cloupe files). The required
+  # reference files are at least 20-30 GB of space
 fi
 
 if [ -z "${ERRORS}" ]; then
