@@ -100,3 +100,37 @@ eval $CMD
 # TODO - Add verification
 
 tail -100 ${RUN_OUT}
+
+
+FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
+ERRORS=""
+echo "TEST 1: Checking for bam"
+FOUND_BAM=$(find ${STATS_DIR} -type f -name "*MD.bam")
+if [ -z ${FOUND_BAM} ]; then
+  ERROR="\tERROR: Pipeline didn't create MarkDuplicate BAM files\n"
+  ERRORS="${ERRORS}${ERROR}"
+  printf "$ERROR"
+else
+  printf "\tFound BAM: ${FOUND_BAM}\n"
+fi
+
+echo "TEST 2: Checking for following output stat files - ${FILE_SUFFIXES[@]}"
+for fs in "${FILE_SUFFIXES[@]}"; do
+  FOUND_FILES=$(find ${STATSDONEDIR} -type f -name "*${fs}")
+  if [ -z ${FOUND_FILES} ]; then
+    ERROR="\tERROR: Pipeline didn't create ${fs} files\n"
+    printf "$ERROR"
+    ERRORS="${ERRORS}${ERROR}"
+  else
+    printf "\tFound ${FOUND_FILES}\n"
+  fi
+done
+
+if [ -z "${ERRORS}" ]; then
+  echo "All tests successful - removing ${TEST_OUTPUT}"
+  rm -rf ${TEST_OUTPUT}
+else
+  cat ${OUT_FILE}
+  printf "ERRORS were found - \n${ERRORS}"
+  exit 1
+fi
