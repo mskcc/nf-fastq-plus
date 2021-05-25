@@ -87,7 +87,7 @@ curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz -
 TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
 TEST_BCL_DIR=${TEST_MACHINE_DIR}/${RUN}
 mkdir -p ${TEST_MACHINE_DIR}
-tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR}
+tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR} 2> /dev/null
 rm cellranger-tiny-bcl-1.2.0.tar.gz
 mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
 
@@ -97,11 +97,9 @@ CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${R
 echo $CMD
 eval $CMD
 
-# TODO - Add verification
-
 tail -100 ${RUN_OUT}
 
-
+# VERIFICATIONS OF OUTPUT
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
 ERRORS=""
 echo "TEST 1: Checking for bam"
@@ -135,13 +133,14 @@ if [ -z ${CELLRANGER_OUTPUT} ]; then
 else
   printf "\tFound CELLRANGER_OUTPUT=${CELLRANGER_OUTPUT}\n"
   WEB_SUMMARY_FILE=$(find ${CELLRANGER_OUTPUT} -type d -name "*.html")
-  if [ -z ${CELLRANGER_OUTPUT} ]; then
+  if [ -z ${WEB_SUMMARY_FILE} ]; then
     ERROR="\tERROR: Pipeline didn't create websummary.html\n"
     ERRORS="${ERRORS}${ERROR}"
     printf "$ERROR"
+  else
+    printf "\tFound websummary file - ${WEB_SUMMARY_FILE}"
   fi
 fi
-
 
 if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"

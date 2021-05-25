@@ -191,7 +191,6 @@ else
   echo "Running demux"
   # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
   set +e
-  echo ${JOB_CMD}
   eval ${JOB_CMD}
   UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
   PROJECT_SIZE=$(du -sh ${DEMUXED_DIR}/Proj*/*);

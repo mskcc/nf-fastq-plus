@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Sets up and runs stats pipeline
 
 LOCATION=$(dirname "$0")
 
