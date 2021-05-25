@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sets up and runs stats pipeline
+# Sets up and runs stats pipeline for human whole genome (HWG)
 
 LOCATION=$(dirname "$0")
 
