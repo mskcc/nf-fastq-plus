@@ -17,8 +17,6 @@ process task {
     env DATA_TEAM_EMAIL
     env CMD_FILE
     env DEMUX_LOG_FILE
-    env EXECUTOR
-    env LOCAL_MEM
 
   output:
     stdout()
@@ -40,8 +38,6 @@ workflow demultiplex_wkflw {
     DATA_TEAM_EMAIL
     CMD_FILE
     DEMUX_LOG_FILE
-    EXECUTOR
-    LOCAL_MEM
 
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
@@ -53,7 +49,7 @@ workflow demultiplex_wkflw {
       }
       .set{ split_ch }
     task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, split_ch.RUNNAME, BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL,
-      DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE, EXECUTOR, LOCAL_MEM )
+      DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE )
     out( task.out[0], "demultiplex" )
 
   emit:

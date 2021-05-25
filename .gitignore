@@ -7,4 +7,3 @@ igo-pipeline.log
 pipeline_out
 work
 *.pyc
-testPipeline/e2e/main_test
