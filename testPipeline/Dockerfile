@@ -4,10 +4,12 @@ FROM centos:7
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes/H.sapiens/GRCh37 && \
   curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
   /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
-  rm refdata-GRCh37-1.0.0.tar.gz && \
   cd /igo/work/genomes/H.sapiens/GRCh37 && \
   FILES=$(find . -type f -name "genome.fa*") && \
-  for f in $FILES; do mv $f ${f/genome.fa/GRCh37.fasta}; done
+  for f in $FILES; do mv $f ${f/genome.fa/GRCh37.fasta}; done && \
+  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/genome.fa.pac --strip-components 2 && \
+  mv genome.fa.pac GRCh37.fasta.pac && \
+  rm refdata-GRCh37-1.0.0.tar.gz
 
 # Install utilities needed for bcl2fastq
 RUN yum -y install rpm cpio
