@@ -1,6 +1,11 @@
 #!/bin/bash
 # Sets up and runs full pipeline for BCL files downloaded from cellranger
 #   Reference - https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/mkfastq
+# RUN:
+#   $ IMAGE=nf-fastq-plus-playground
+#   $ docker image build -t ${IMAGE} .
+#   $ docker run -m=4g -it --entrypoint /bin/bash -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus
+#   [root@1080a8b84933 /]$ /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh
 
 LOCATION=$(realpath $(dirname "$0"))
 RUN=200514_ROSALIND_0001_FLOWCELL
@@ -88,6 +93,10 @@ mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
 
 RUN_OUT=${RUN}.out
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
-CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}" # > ${RUN_OUT}"
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN} > ${RUN_OUT}"
 echo $CMD
 eval $CMD
+
+# TODO - Add verification
+
+tail -100 ${RUN_OUT}
