@@ -4,22 +4,24 @@
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
 #
+#   RUNNAME (Input): Name of the run
 #   DEMUXED_DIR (Input): Absolute path to directory that is the output of the demultiplexing
 #   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
 # Nextflow Outputs:
 #   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
-# Run: 
-#   Can't be run - relies on ./bin
+# Run:
+#   RUNNAME=JAX_0514_AHKNJVBBXY DEMUXED_DIR=/igo/work/FASTQ/JAX_0514_AHKNJVBBXY SAMPLESHEET=/home/igo/SampleSheetCopies/SampleSheet_210323_JAX_0514_AHKNJVBBXY.csv  RUN_PARAMS_FILE=sample_params.txt ./generate_run_params.sh
+#   Can't be run - relies on ./bin/create_multiple_sample_sheets.py
+
+if [[ -z "${RUN_PARAMS_FILE}" ]]; then
+  RUN_PARAMS_FILE="sample_params.txt"
+fi
 
 SPLIT_RUNNAME=$(basename ${DEMUXED_DIR})
 MACHINE=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX_DLP -> MICHELLE
 RUN_NUM=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX_DLP -> 0347
 FLOWCELL=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX_DLP -> BHWN55DMXX
 RUNNAME="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
-
-if [[ -z "${RUN_PARAMS_FILE}" ]]; then
-  RUN_PARAMS_FILE="sample_params.txt"
-fi
 
 # These are inputs to the nextflow process
 echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} (RUN_PARAMS_FILE=${RUN_PARAMS_FILE})"
@@ -46,12 +48,12 @@ function get_project_species_recipe() {
 }
 
 #########################################
-# Returns sequencing lanes of a sample based on sample sheet
+# Returns the RGID of a sample based on its sample sheet (Format: "[BARCODE].[LANE]")
 # Arguments:
 #   INPUT_SAMPLE_NAME - "Sample_Name" as listed on sample sheet
 #   INPUT_SAMPLE_SHEET - Absolute path to sample sheet
 #########################################
-function get_lanes_of_sample() {
+function get_rgids_of_sample() {
   INPUT_SAMPLE_NAME=$1
   INPUT_SAMPLE_SHEET=$2
 
@@ -59,14 +61,23 @@ function get_lanes_of_sample() {
 
   # Regex of demux headers - include only required in the order they appear
   SAMPLE_SHEET_HEADER="^Lane,.*Sample_ID,.*index.*"
-
-  LANES=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
+ 
+  LANE_IDX=1
+  INDEX_IDX=7
+  LANE_INDEX=$(grep -A ${num_lines} ${SAMPLE_SHEET_HEADER} ${INPUT_SAMPLE_SHEET} | \
     grep -v SAMPLE_SHEET_HEADER | \
     grep "${INPUT_SAMPLE_NAME}" | \
-    cut -d',' -f1 | \
+    cut -d',' -f${LANE_IDX},${INDEX_IDX} --output-delimiter '.' | \
     sort | uniq)
 
-  echo $LANES
+  RGIDS=""
+  for LI in ${LANE_INDEX}; do
+    LANE=$(echo $LI | cut -d'.' -f1)
+    INDEX=$(echo $LI | cut -d'.' -f2)
+    RGIDS="${RGIDS} ${INDEX}.${LANE}"
+  done
+  
+  echo $RGIDS
 }
 
 if [[ -z "${SAMPLESHEET}" ]]; then
@@ -129,18 +140,19 @@ else
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
-        SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
+        RGIDS=$(get_rgids_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
         SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
-        for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
+        for RGID in $(echo ${RGIDS} | tr ' ' '\n'); do
+          LANE=$(echo ${RGID} | cut -d'.' -f2)
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
 
-          # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
-          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}" # TODO - replace RGID w/ [INDEX].[LANE]
+          # TODO - replace RGID w/ [INDEX].[LANE]
+          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}"
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
