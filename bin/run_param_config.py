@@ -9,6 +9,11 @@ REFERENCE = "REFERENCE"
 REF_FLAT = "REF_FLAT"
 RIBOSOMAL_INTERVALS = "RIBOSOMAL_INTERVALS"
 GTAG = "GTAG"
+CELLRANGER_ATAC = "CELLRANGER_ATAC"
+CELLRANGER_VDJ = "CELLRANGER_VDJ"
+CELLRANGER_CNV = "CELLRANGER_CNV"
+CELLRANGER_COUNT = "CELLRANGER_COUNT"
+
 # 3) Determined by recipe (see: recipe_options_mapping)
 BAITS="BAITS"
 TARGETS="TARGETS"
@@ -66,7 +71,10 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 """ Recipes that should have determine recipe (instead of species -> genome logic) """
 recipe_overrides = {
     "ADCC1_v3": "GRCh37",
-    "CH_v1": "hg19"
+    "CH_v1": "hg19",
+    "MSK-ACCESS_v1":"GRCh38",
+    "IMPACT505":"GRCh38",
+    "IDT_Exome_v2_FP_Viral_Probes":"GRCh38"
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
@@ -86,6 +94,7 @@ species_genome_mapping_UNORDERED = {
     "S.Pombe": "pombe",
     "R.norvegicus": "rn6",
     "E.Lambda": "elambda",
+    "Plasmid": "ecolik12",
     # FOR NEW ENTRIES
     # "{regex}": "{GENOME}"
 
@@ -114,7 +123,11 @@ genome_reference_mapping_UNORDERED = {
     "grch37": {
         DEFAULT: {
             GENOME: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta",
-            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta"
+            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta",
+            CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1",
+            CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
+            CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A"
         },
         "RNA": {
             GENOME: '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa',
@@ -125,8 +138,12 @@ genome_reference_mapping_UNORDERED = {
     },
     "grch38": {
         DEFAULT: {
-            GENOME: "/igo/work/nabors/genomes/GRCh38_100/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
-            REFERENCE: "/igo/work/nabors/genomes/GRCh38_100/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+            GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
+            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
+            CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1",
+            CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
+            CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A"
         },
         "RNA": {
             REF_FLAT: '/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat',
@@ -136,7 +153,11 @@ genome_reference_mapping_UNORDERED = {
     "grcm38": {
         DEFAULT: {
             GENOME: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',
-            REFERENCE: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa'
+            REFERENCE: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',
+            CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-mm10-1.1.0",
+            CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCm38-alts-ensembl-2.2.0",
+            CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCm38-1.0.0",
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-mm10-2020-A"
         },
         "RNA": {
             REF_FLAT: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat',
@@ -161,7 +182,11 @@ genome_reference_mapping_UNORDERED = {
     "mm10": {
         DEFAULT: {
             GENOME: "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa",
-            REFERENCE: "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa"
+            REFERENCE: "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa",
+            CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-mm10-1.1.0",
+            CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCm38-alts-ensembl-2.2.0",
+            CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCm38-1.0.0",
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-mm10-2020-A"
         },
         "RNA": {
             GENOME: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',
@@ -317,8 +342,8 @@ recipe_options_mapping_UNORDERED = {
     },
     "IMPACT505": {
         # NOTE: interval list file name "IMPACT468_BAITS" is stored in LIMS and passed to pipelines, change file name with caution
-        BAITS: "/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList",
-        TARGETS: "/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList",
+        BAITS: "/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_BAITS.intervalList",
+        TARGETS: "/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_TARGETS.intervalList",
         MSKQ: "yes",
         MD: "yes"
     },
@@ -377,8 +402,10 @@ recipe_options_mapping_UNORDERED = {
         MD: "yes"
     },
     "IDT_Exome_v2_FP_Viral_Probes": {
-      BAITS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_baits.intervalList",
-      TARGETS: "/igo/home/igo/resources/ilist/IDT_Exome_v2_FP_Viral_Probes/IDT_Exome_v2_FP_b37_targets.intervalList"
+      BAITS: "/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_BAITS.intervalList",
+      TARGETS: "/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_TARGETS.intervalList",
+      MSKQ: "no",
+      MD: "yes"
     },
     "IDT_Exome_v1": {
         BAITS: "/home/igo/resources/BED-Targets/xgen-exome-research-panel-BAITS.iList",
@@ -558,8 +585,8 @@ recipe_options_mapping_UNORDERED = {
         MD: "yes"
     },
     "MSK-ACCESS_v1": {
-        BAITS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list",
-        TARGETS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list",
+        BAITS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
+        TARGETS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
         MSKQ: "no",
         MD: "yes"
     },

@@ -9,12 +9,19 @@
 #   SAMPLESHEET (Input): Absolute path to the sample sheet used to produce the demultiplexing output
 # Nextflow Outputs:
 #   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
-# Run: 
+# Run:
 #   RUNNAME=JAX_0514_AHKNJVBBXY DEMUXED_DIR=/igo/work/FASTQ/JAX_0514_AHKNJVBBXY SAMPLESHEET=/home/igo/SampleSheetCopies/SampleSheet_210323_JAX_0514_AHKNJVBBXY.csv  RUN_PARAMS_FILE=sample_params.txt ./generate_run_params.sh
 #   Can't be run - relies on ./bin/create_multiple_sample_sheets.py
+
 if [[ -z "${RUN_PARAMS_FILE}" ]]; then
   RUN_PARAMS_FILE="sample_params.txt"
 fi
+
+SPLIT_RUNNAME=$(basename ${DEMUXED_DIR})
+MACHINE=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX_DLP -> MICHELLE
+RUN_NUM=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX_DLP -> 0347
+FLOWCELL=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX_DLP -> BHWN55DMXX
+RUNNAME="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
 
 # These are inputs to the nextflow process
 echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} (RUN_PARAMS_FILE=${RUN_PARAMS_FILE})"
@@ -119,11 +126,8 @@ else
 
       # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
       if [[ "${RECIPE}" = "DLP" ]]; then
-        DLP_PARAM_FILE="DLP___${RUN_PARAMS_FILE}"
-        echo "DLP recipes will be skipped. Writing params to ${DLP_PARAM_FILE}"
-        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___DLP___${GTAG}" # RUN_TAG will determine the name of output stats
-        TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=DLP LANE_TAG=X"
-        echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
+        echo "DLP recipes will be skipped. Not writting a ${RUN_PARAMS_FILE} file"
+        # echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
         continue
       fi
 
@@ -140,13 +144,13 @@ else
           LANE=$(echo ${RGID} | cut -d'.' -f2)
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
 
-          # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
-          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${RGID}"
+          # TODO - replace RGID w/ [INDEX].[LANE]
+          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}"
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
-            echo "!{RUN_ERROR}: No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
+            echo "No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
             exit 1
           fi
 

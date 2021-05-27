@@ -1,85 +1,149 @@
 # nf-fastq-plus
 Generate IGO fastqs, bams, stats and fingerprinting
 
-## TODO
-1) `commands.sh`: A script that marks all the commands run to produce the output
-2) Run the nextflow pipeline per project, i.e. cut out the `detect_runs` workflow into separate process and feed output into remining nextflow pipeline
-
 ## Run
-### Run Pipeline
+There are two options for running the modules in this pipeline - 
+* [End-to-End](#end-to-end): Includes all demultiplexing and stats for a sequencing run
+* [Stats](#stats): Runs only the stats on a specified demultiplexed directory
+
+### [Demultiplex and Stats](#end-to-end)
+**Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing run
 ```
-$ nextflow run main.nf --force true 	# Also, "make run"
+# Basic
+nextflow main.nf --run ${RUN}
+
+# Skip demultiplexing
+nextflow main.nf --run ${RUN} --force true
+
+# Run in background
+nohup nextflow main.nf --run ${RUN} --force true -bg
+ 
+# Push pipeline updates to nf-dashboard
+nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb1:4500/api/nextflow/receive-nextflow-event' -bg  
+```
+
+#### Arguments `(--arg)`
+* `--run`: string (required), directory name of the sequencing directory 
+  > Eg: `210406_JOHNSAWYERS_0277_000000000-G7H54`
+* `--force`: string (optional), skips the demultiplexing if already completed
+  > Eg: `true`,  `false`
+
+#### Options `(-opt)`
+* `-bg`: run process in background 
+* `-with-weblog`: publish events to an API
+
+### [Statistics on Demultiplex Output (Skips Demultiplexing)](#stats)
+**Description**: Runs stats given a demultiplex output
+```
+# Basic
+nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET}
+
+# Run in background
+nohup nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET} -bg  
+```
+
+#### Arguments `(--arg)`
+* `--dir`: string (required), Absolute path to the directory name of the demultiplexed directory 
+  > Eg: `/igo/work/FASTQ/DIANA_0333_BH53GNDRXY_i7`
+* `--ss`: string (required), Absolute path to the sample sheet that CREATED the value of `--dir`
+  > Eg: `/home/igo/DividedSampleSheets/SampleSheet_210407_DIANA_0333_BH53GNDRXY_i7.csv`
+
+#### Options `(-opt)`
+* `-bg`: run process in background 
+                                                  
+### Example Output
+```
+$ nextflow /igo/work/streidd/nf-fastq-plus/main.nf --run 210406_SCOTT_0325_AH2VTCBGXJ
 N E X T F L O W  ~  version 20.07.1
-Launching `main.nf` [wise_goldstine] - revision: 9846bedd48
+Launching `/igo/work/streidd/nf-fastq-plus/main.nf` [infallible_descartes] - revision: c24ecac024
 WARN: DSL 2 IS AN EXPERIMENTAL FEATURE UNDER DEVELOPMENT -- SYNTAX MAY CHANGE IN FUTURE RELEASE
+WARN: Access to undefined parameter `force` -- Initialise it to a default value eg. `params.force = some_value`
          I G O   P I P E L I N E
 ==========================================
-PARAMS
-DEMUX_ALL=true
+RUN=210406_SCOTT_0325_AH2VTCBGXJ
+DEMUX_ALL=false
 
 SEQUENCER_DIR="/igo/sequencers"
-RUNS_TO_DEMUX_FILE="Run_to_Demux.txt"
-Output=./pipeline_out
-Log=/home/streidd/work/nf-fastq-plus/igo-pipeline.log
+FASTQ_DIR=/igo/stats/NF_TESTING/FASTQ
+STATS_DIR=/igo/stats/NF_TESTING/stats
+STATSDONEDIR="/igo/stats/DONE"
 
-VERSIONS
+DEMUX_LOG_FILE=/igo/stats/NF_TESTING/commands/bcl2fastq.log
+LOG_FILE=/igo/stats/NF_TESTING/log/nf_fastq_run.log
+CMD_FILE=/igo/stats/NF_TESTING/commands/commands.log
+
+LAB_SAMPLE_SHEET_DIR=/pskis34/LIMS/LIMS_SampleSheets
+PROCESSED_SAMPLE_SHEET_DIR=/igo/stats/NF_TESTING/DividedSampleSheets
+CROSSCHECK_DIR=/home/igo/nextflow/crosscheck_metrics
+
+DATA_TEAM_EMAIL=streidd@mskcc.org
+IGO_EMAIL=streidd@mskcc.org
+
 BWA: /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa
 PICARD: java -jar /home/igo/resources/picard2.21.8/picard.jar
+CELL_RANGER_ATAC: /home/nabors/cellranger-atac-1.1.0/cellranger-atac
 
-executor >  local (1248)
-[a9/86fe85] process > dependency_check_wkflw:task          [100%] 1 of 1 ✔
-[74/0dac77] process > dependency_check_wkflw:out           [100%] 1 of 1 ✔
-[9f/11822a] process > detect_runs_wkflw:task               [100%] 1 of 1 ✔
-[2f/2198aa] process > detect_runs_wkflw:out                [100%] 1 of 1 ✔
-[bd/adc254] process > demultiplex_wkflw:task (1)           [100%] 1 of 1 ✔
-[ff/953c55] process > demultiplex_wkflw:out (1)            [100%] 1 of 1 ✔
-[cb/bbd50c] process > generate_run_params_wkflw:task (1)   [100%] 1 of 1 ✔
-[01/e7a250] process > generate_run_params_wkflw:out (1)    [100%] 1 of 1 ✔
-[30/ac4b83] process > send_project_params_wkflw:task (155) [100%] 155 of 155 ✔
-[32/7af71c] process > send_project_params_wkflw:out (155)  [100%] 155 of 155 ✔
-[0c/f0d74c] process > align_to_reference_wkflw:task (155)  [100%] 155 of 155 ✔
-[95/854509] process > align_to_reference_wkflw:out (155)   [100%] 155 of 155 ✔
-[37/36c29a] process > merge_sams_wkflw:task (155)          [100%] 155 of 155 ✔
-[95/ad85a0] process > merge_sams_wkflw:out (155)           [100%] 155 of 155 ✔
-[76/fa8706] process > mark_duplicates_wkflw:task (155)     [100%] 155 of 155 ✔
-[23/a16510] process > mark_duplicates_wkflw:out (155)      [100%] 155 of 155 ✔
+executor >  lsf (304), local (16)
+[92/fece7b] process > dependency_check_wkflw:task                                                [100%] 1 of 1 ✔
+[95/694167] process > dependency_check_wkflw:out                                                 [100%] 1 of 1 ✔
+[0c/b7e73e] process > detect_runs_wkflw:task                                                     [100%] 1 of 1 ✔
+[ef/f3c804] process > detect_runs_wkflw:out                                                      [100%] 1 of 1 ✔
+[80/62c568] process > split_sample_sheet_wkflw:split_sample_sheet_task                           [100%] 1 of 1 ✔
+[4e/475c03] process > split_sample_sheet_wkflw:out                                               [100%] 1 of 1 ✔
+[14/f1a2a3] process > demultiplex_wkflw:task (1)                                                 [100%] 1 of 1 ✔
+[12/fffb67] process > demultiplex_wkflw:out (1)                                                  [100%] 1 of 1 ✔
+[a9/a410ad] process > generate_run_params_wkflw:generate_run_params_task (SCOTT_0325_AH2VTCBGXJ) [100%] 1 of 1 ✔
+[2d/e1dfb9] process > generate_run_params_wkflw:out (1)                                          [100%] 1 of 1 ✔
+[18/005ef1] process > generate_run_params_wkflw:create_sample_lane_jobs (14)                     [100%] 14 of 14 ✔
+[ac/227a3d] process > generate_run_params_wkflw:out2 (14)                                        [100%] 14 of 14 ✔
+[6a/ff5d15] process > align_to_reference_wkflw:align_to_reference_task (14)                      [100%] 14 of 14 ✔
+[a1/4d1cdf] process > align_to_reference_wkflw:out (14)                                          [100%] 14 of 14 ✔
+[43/d25e3e] process > merge_sams_wkflw:task (R34_T0_1_IGO_11878_14)                              [100%] 14 of 14 ✔
+[09/1c1205] process > merge_sams_wkflw:out (14)                                                  [100%] 14 of 14 ✔
+[b5/19c7c3] process > mark_duplicates_wkflw:task (R34_GL_2_IGO_11878_8)                          [100%] 14 of 14 ✔
+[36/117ba3] process > mark_duplicates_wkflw:out (14)                                             [100%] 14 of 14 ✔
+[36/df72c9] process > alignment_summary_wkflw:task (R34_GL_2_IGO_11878_8)                        [100%] 14 of 14 ✔
+[19/14f0b7] process > alignment_summary_wkflw:out (14)                                           [100%] 14 of 14 ✔
+[92/148ae9] process > collect_hs_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                       [100%] 14 of 14 ✔
+[38/6909f2] process > collect_hs_metrics_wkflw:out (14)                                          [100%] 14 of 14 ✔
+[b6/b9a14c] process > collect_oxoG_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                     [100%] 14 of 14 ✔
+[8e/69f233] process > collect_oxoG_metrics_wkflw:out (14)                                        [100%] 14 of 14 ✔
+[1f/dacf9a] process > collect_wgs_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                      [100%] 14 of 14 ✔
+[a6/a02bbb] process > collect_wgs_metrics_wkflw:out (14)                                         [100%] 14 of 14 ✔
+[e0/82ebfa] process > collect_rna_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                      [100%] 14 of 14 ✔
+[45/aca57a] process > collect_rna_metrics_wkflw:out (14)                                         [100%] 14 of 14 ✔
+[9a/66f99a] process > collect_gc_bias_wkflw:task (R34_GL_2_IGO_11878_8)                          [100%] 14 of 14 ✔
+[79/bf3f13] process > collect_gc_bias_wkflw:out (14)                                             [100%] 14 of 14 ✔
+[f5/f25d51] process > upload_stats_wkflw:task (14)                                               [100%] 14 of 14 ✔
+[e6/77ee93] process > upload_stats_wkflw:email                                                   [100%] 1 of 1 ✔
+[d6/fea9e9] process > upload_stats_wkflw:out (14)                                                [100%] 14 of 14 ✔
+[96/2bd792] process > fingerprint_wkflw:task (1)                                                 [100%] 1 of 1 ✔
+Completed at: 07-Apr-2021 10:41:25
+Duration    : 15m 14s
+CPU hours   : 21.4
+Succeeded   : 320
 ```
 
-#### Options
-To run locally (instead of via LSF), modify the `nextflow.config` to be blank instead of `LSF`
-```
-process {
-  executor=""
-}
-...
-```
+### Logging
+There are three files that log information - 
+* `LOG_FILE`: All output is logged here (except commands)
+* `CMD_FILE`: All stat commands are logged to this file
+* `DEMUX_LOG_FILE`: All demultiplexing commands are logged here
 
-### Clean outputs
-```
-$ make clean
-rm -rf work && rm -rf pipeline_out
-```
-## Templates
-The templates folder contains the scripts that run the pipeline. To run an individual step, define all nextflow context variables (e.g. all variables specified in a process's `input`), and run call that script directly.
-
-### Detect Runs
-```
-SEQUENCER_DIR="/igo/sequencers" RUN_AGE=6000 RUNS_TO_DEMUX_FILE="Run_to_Demux.txt" ./templates/detect_runs.sh
-Detected 10 new runs
-Outputting new runs to
-Processing RUN=200807_JOHNSAWYERS_0241_000000000-J72K7 RUNNAME=JOHNSAWYERS_0241_000000000-J72K7 RUNPATH=/igo/sequencers/johnsawyers/200807_JOHNSAWYERS_0241_000000000-J72K7 DEMUX_TYPE=
-Processing RUN=200811_JOHNSAWYERS_0242_000000000-CYF3M RUNNAME=JOHNSAWYERS_0242_000000000-CYF3M RUNPATH=/igo/sequencers/johnsawyers/200811_JOHNSAWYERS_0242_000000000-CYF3M DEMUX_TYPE=
-Processing RUN=200807_JOHNSAWYERS_0241_000000000-J72K7 RUNNAME=JOHNSAWYERS_0241_000000000-J72K7 RUNPATH=/igo/sequencers/johnsawyers/200807_JOHNSAWYERS_0241_000000000-J72K7 DEMUX_TYPE=
-Processing RUN=200811_JOHNSAWYERS_0242_000000000-CYF3M RUNNAME=JOHNSAWYERS_0242_000000000-CYF3M RUNPATH=/igo/sequencers/johnsawyers/200811_JOHNSAWYERS_0242_000000000-CYF3M DEMUX_TYPE=
-Processing RUN=200807_TOMS_5396_000000000-J746K RUNNAME=TOMS_5396_000000000-J746K RUNPATH=/igo/sequencers/toms/200807_TOMS_5396_000000000-J746K DEMUX_TYPE=
-Processing RUN=200811_MICHELLE_0247_AHL53KDRXX RUNNAME=MICHELLE_0247_AHL53KDRXX RUNPATH=/igo/sequencers/michelle/200811_MICHELLE_0247_AHL53KDRXX DEMUX_TYPE=
-Processing RUN=200807_PITT_0490_AHHWV7BBXY RUNNAME=PITT_0490_AHHWV7BBXY RUNPATH=/igo/sequencers/pitt/200807_PITT_0490_AHHWV7BBXY DEMUX_TYPE=
-Processing RUN=200807_PITT_0491_BHHY5VBBXY RUNNAME=PITT_0491_BHHY5VBBXY RUNPATH=/igo/sequencers/pitt/200807_PITT_0491_BHHY5VBBXY DEMUX_TYPE=
-Processing RUN=200811_SCOTT_0196_AHJ5VFBGXF RUNNAME=SCOTT_0196_AHJ5VFBGXF RUNPATH=/igo/sequencers/scott/200811_SCOTT_0196_AHJ5VFBGXF DEMUX_TYPE=
-Processing RUN=200807_AYYAN_0032_000000000-J7464 RUNNAME=AYYAN_0032_000000000-J7464 RUNPATH=/igo/sequencers/ayyan/200807_AYYAN_0032_000000000-J7464 DEMUX_TYPE=
-```
+### Outputs
+See `nextflow.config` to see where data is being written 
+* `FASTQ_DIR`: Directory where all demultiplexing outputs are written to
+* `STATS_DIR`: Directory where stats are written to while pipeline is running
+* `STATSDONEDIR`: Directory where stats ready for upload are written (`STATS_DIR` may write stats that shouldn't be uploaded) 
 
 ## DEV
+
+Notes:
+* Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
+* Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
+* Follow the project structure below -
+
+
 To add a new process, please follow the following steps.
 
 ### Project Structure
@@ -196,6 +260,15 @@ workflow task_wkflw { 	// This is what will actually be exported
   main:
     task | out
 }
+```
+
+### Options
+To run locally (instead of via LSF), modify the `nextflow.config` to be blank instead of `LSF`
+```
+process {
+  executor=""
+}
+...
 ```
 
 ## Crontab Setup

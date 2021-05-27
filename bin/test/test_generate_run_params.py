@@ -66,6 +66,16 @@ class TestSetupStats(unittest.TestCase):
         self.assertEqual(genome, "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa")
         self.assertEqual(ref, "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa")
 
+    def test_main_AmpliconSeq_Plasmid(self):
+        argv = [ "-r", "AmpliconSeq", "-s", "Plasmid" ]
+        params = main(argv)
+        genome = parse_param(params, GENOME)
+        ref = parse_param(params, REFERENCE)
+        typ = parse_param(params, TYPE)
+        self.assertEqual(typ, "DNA")
+        self.assertEqual(genome, "/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa")
+        self.assertEqual(ref, "/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa")
+
     def verify_params(self,params, expected_params, recipe, species):
         actual = params.strip().split(" ")
         expected = expected_params.strip().split(" ")
@@ -85,7 +95,10 @@ class TestSetupStats(unittest.TestCase):
         for k,v in expected_dic.items():
             self.assertTrue(k in actual_dic, "Missing {}{}".format(k, DEBUG_MSG))
             self.assertEqual(v, actual_dic[k], "{} not equal to {}{}".format(k,v,DEBUG_MSG))
-        self.assertEqual(len(actual_dic), len(expected_dic), DEBUG_MSG)
+
+        # Since cell-ranger, we no longer care if there are more actual params than expected params because not all
+        #   actual params will be used by the pipeline
+        # self.assertEqual(len(actual_dic), len(expected_dic), DEBUG_MSG)
 
     def test_RNASeq(self):
         params = get_recipe_species_params("RNASeq", "Mouse")
@@ -156,7 +169,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_IMPACT505(self):
         params = get_recipe_species_params("IMPACT505", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/IMPACT505/IMPACT505_TARGETS.intervalList TYPE=DNA"
+        expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_TARGETS.intervalList TYPE=DNA"
         self.verify_params(params, expected_params, "IMPACT505", "Human")
 
     def test_ShallowWGS(self):
@@ -165,9 +178,9 @@ class TestSetupStats(unittest.TestCase):
         self.verify_params(params, expected_params, "ShallowWGS", "Human")
 
     def test_IDT_Exome(self):
-        params = get_recipe_species_params("IDT_Exome_v1_FP_Viral_Probes", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list GTAG=GRCh37 GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list TYPE=DNA"
-        self.verify_params(params, expected_params, "IDT_Exome_v1_FP_Viral_Probes", "Human")
+        params = get_recipe_species_params("IDT_Exome_v2_FP_Viral_Probes", "Human")
+        expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_BAITS.intervalList GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_TARGETS.intervalList TYPE=DNA"
+        self.verify_params(params, expected_params, "IDT_Exome_v2_FP_Viral_Probes", "Human")
 
     def test_Agilent(self):
         params = get_recipe_species_params("Agilent_MouseAllExonV1", "Mouse")
@@ -199,7 +212,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_MSK_ACCESS(self):
         params = get_recipe_species_params("MSK-ACCESS_v1", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS.interval_list GTAG=GRCh37 GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-TARGETS.interval_list TYPE=DNA"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "MSK-ACCESS_v1", "Human")
 
     def test_CH_v1(self):
@@ -216,6 +229,45 @@ class TestSetupStats(unittest.TestCase):
         params = get_recipe_species_params("WholeGenomeSequencing", "Bacteria")
         expected_params = "GENOME=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa GTAG=ecolik12 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/E.coli/K12/MG1655/BWA_0.7.x/eColi__MG1655.fa TYPE=WGS"
         self.verify_params(params, expected_params, "WholeGenomeSequencing", "Bacteria")
+
+    def test_10xGeneExpression_Human(self):
+        species = "Human"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        geneExpression_recipes = [ "10X_Genomics_GeneExpression", "10X_Genomics_GeneExpression-3", "10X_Genomics_GeneExpression-5", "10X_Genomics_NextGEM-GeneExpression", "10X_Genomics_NextGEM-GeneExpression-5", "10X_Genomics_NextGEM_GeneExpression-5" ]
+
+        for recipe in geneExpression_recipes:
+            params = get_recipe_species_params(recipe, species)
+            self.verify_params(params, expected_params, recipe, species)
+
+    def test_10xVDJ_Human(self):
+        species = "Human"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        geneExpression_recipes = [ "10X_Genomics_NextGem_VDJ", "10X_Genomics_NextGEM_VDJ", "10X_Genomics_NextGEM-VDJ", "10X_Genomics_VDJ", "10X_Genomics-VDJ" ]
+
+        for recipe in geneExpression_recipes:
+            params = get_recipe_species_params(recipe, species)
+            self.verify_params(params, expected_params, recipe, species)
+
+    def test_10xVisium_Human(self):
+        species = "Human"
+        recipe = "10X_Genomics_Visium"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        params = get_recipe_species_params(recipe, species)
+        self.verify_params(params, expected_params, recipe, species)
+
+    def test_10xATAC_Human(self):
+        species = "Human"
+        recipe = "10X_Genomics_ATAC"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        params = get_recipe_species_params(recipe, species)
+        self.verify_params(params, expected_params, recipe, species)
+
+    def test_10xCNV_Human(self):
+        species = "Human"
+        recipe = "10X_Genomics_CNV"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        params = get_recipe_species_params(recipe, species)
+        self.verify_params(params, expected_params, recipe, species)
 
     def test_get_recipe_options(self):
         wes_options = get_recipe_options("WholeExomeSequencing")

@@ -1,3 +1,5 @@
+testPipeline/e2e/test_output__*
+crontab/**/*.log
 .nextflow
 .nextflow.log*
 igo-pipeline.log
@@ -5,3 +7,4 @@ igo-pipeline.log
 pipeline_out
 work
 *.pyc
+testPipeline/e2e/main_test

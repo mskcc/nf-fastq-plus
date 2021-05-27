@@ -326,7 +326,7 @@ const updateTraceModel = async function(nextflowEvent) {
   };
   const traceDoc = await TraceModel(traceInfo).save();
   if(traceDoc === null){
-    console.log('BIG PROBLEM - Couldn\'t save trace');
+    console.log('BIG PROBLEM - Could not save trace');
   }
 
   const nxfRunQuery = getNxfRunQry(nextflowEvent);

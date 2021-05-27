@@ -7,11 +7,14 @@ process align_to_reference_task {
     path LANE_PARAM_FILES
     env RUN_PARAMS_FILE
     env CMD_FILE
+    env BWA
+    env PICARD
+    env EXECUTOR
 
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
-    path '*.sam', emit: SAM_CH
+    path '*RGP.sam', emit: SAM_CH
     env SAMPLE_TAG, emit: SAMPLE_TAG
 
   shell:
@@ -23,8 +26,11 @@ workflow align_to_reference_wkflw {
     LANE_PARAM_FILES
     RUN_PARAMS_FILE
     CMD_FILE
+    BWA
+    PICARD
+    EXECUTOR
   main:
-    align_to_reference_task( LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE )
+    align_to_reference_task( LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE, BWA, PICARD, EXECUTOR )
     out( align_to_reference_task.out[0], "align_to_reference" )
 
   emit:

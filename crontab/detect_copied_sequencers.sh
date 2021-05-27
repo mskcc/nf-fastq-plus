@@ -42,7 +42,11 @@ echo "Checking whether each run has been copied over completely..."
 for RUN in ${NEW_RUNS[@]}; do
   printf "\tVERIFYING: $RUN\n"
   # Run the nextflow process script that determines if the run is good to be demultiplexed. On error, run is skipped
-  DEMUX_ALL=false FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQUENCER_DIR} RUN=${RUN} "${LOCATION}/../templates/detect_runs.sh" > /dev/null
+  RUN_LOG_DIR=/home/igo/nf-fastq-plus/crontab/runs_detected
+  mkdir -p ${RUN_LOG_DIR}
+  RUN_LOG=${RUN_LOG_DIR}/$(basename ${RUN}).log
+  touch $RUN_LOG
+  DEMUX_ALL=false FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQUENCER_DIR} RUN=${RUN} "${LOCATION}/../templates/detect_runs.sh" > ${RUN_LOG}
   if [ $? -eq 0 ]; then
     RUNNAME=$(basename ${RUN})
     RUN_DIR=${WORK_DIR}/${RUNNAME}
