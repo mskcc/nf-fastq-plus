@@ -140,8 +140,6 @@ if [[ ${SPECIES_PARAM} == "Human" && ${TYPE_PARAM} == "RNA" ]]; then
   # Option 1 - Write BAM to this directory
   # Option 2 - Write BAM elsewhere and provide symbolic link in this directory
 else
-  echo "EXITING"
-  exit 0
   for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
     REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
     TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
