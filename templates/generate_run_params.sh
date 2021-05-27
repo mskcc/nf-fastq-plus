@@ -97,6 +97,11 @@ else
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
+
+    if [[ -z ${PROJECT} || -z ${SPECIES} || -z ${RECIPE} ]]; then
+      echo "Detected invalid PSR - PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+      continue
+    fi
    
     SAMPLE_SHEET_PARAMS="PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE} RUN_TYPE=${RUN_TYPE} DUAL=${DUAL}"
     echo "SAMPLE_SHEET_PARAMS: ${SAMPLE_SHEET_PARAMS}"
