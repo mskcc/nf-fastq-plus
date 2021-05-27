@@ -98,6 +98,8 @@ else
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
 
+    # Stats calculated only if w/ valid project, species, & recipe
+    # Note: Controls like FFPE POOLED NORMAL don't need recipe, but we skip the stat-calculations
     if [[ -z ${PROJECT} || -z ${SPECIES} || -z ${RECIPE} ]]; then
       echo "Detected invalid PSR - PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
       continue
