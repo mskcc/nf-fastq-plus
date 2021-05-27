@@ -3,6 +3,8 @@ include { log_out as out } from './log_out'
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
+  label 'LOCAL'
+
   tag "$RUN_TAG"
 
   input:
