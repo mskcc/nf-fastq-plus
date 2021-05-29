@@ -36,10 +36,10 @@ nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb
 **Description**: Runs stats given a demultiplex output
 ```
 # Basic
-nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET}
+nextflow /home/igo/nf-fastq-plus/samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY} 
 
 # Run in background
-nohup nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET} -bg  
+nohup nextflow /home/igo/nf-fastq-plus/samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY} -bg  
 ```
 
 #### Arguments `(--arg)`
