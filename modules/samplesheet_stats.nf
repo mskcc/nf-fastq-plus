@@ -51,6 +51,6 @@ workflow samplesheet_stats_wkflw {
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR,
         IGO_EMAIL
     )
-    create_sample_bams_wkflw( create_run_bams_wkflw.out.PARAMS, RUN_PARAMS_FILE )
+    create_sample_bams_wkflw( mark_duplicates_wkflw.out.PARAMS, RUN_PARAMS_FILE )
     fingerprint_wkflw( SAMPLESHEET, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE, CMD_FILE )
 }
