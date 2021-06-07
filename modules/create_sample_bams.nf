@@ -1,6 +1,6 @@
 include { log_out as out } from './log_out'
 
-task {
+process task {
   label 'BSUB_OPTIONS_SMALL'
 
   tag "$INPUT_ID"
