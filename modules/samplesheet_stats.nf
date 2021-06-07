@@ -12,6 +12,7 @@ include { collect_gc_bias_wkflw } from './collect_gc_bias_metrics';
 include { upload_stats_wkflw } from './upload_stats';
 include { fingerprint_wkflw } from './fingerprint';
 include { cellranger_wkflw } from './cellranger';
+include { create_sample_bams_wkflw } from './create_sample_bams';
 
 workflow samplesheet_stats_wkflw {
   take:
@@ -50,5 +51,6 @@ workflow samplesheet_stats_wkflw {
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR,
         IGO_EMAIL
     )
+    create_sample_bams_wkflw( create_run_bams_wkflw.out.PARAMS, RUN_PARAMS_FILE )
     fingerprint_wkflw( SAMPLESHEET, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE, CMD_FILE )
 }
