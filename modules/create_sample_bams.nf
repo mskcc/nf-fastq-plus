@@ -21,6 +21,6 @@ workflow create_sample_bams_wkflw {
     PARAMS
     RUN_PARAMS_FILE
   main:
-    task( PARAMS )
+    task( PARAMS, RUN_PARAMS_FILE )
     out( task.out[0], "create_sample_bams" )
 }
