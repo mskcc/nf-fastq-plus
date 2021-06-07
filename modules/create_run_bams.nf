@@ -27,7 +27,7 @@ workflow create_run_bams_wkflw {
 
   emit:
     BAM_CH = mark_duplicates_wkflw.out.BAM_CH
-    OUTPUT_ID = mark_duplicates_wkflw.out.SAMPLE_TAG
+    OUTPUT_ID = mark_duplicates_wkflw.out.OUTPUT_ID
     PARAMS = mark_duplicates_wkflw.out.PARAMS
     METRICS_FILE = mark_duplicates_wkflw.out.METRICS_FILE
 }
