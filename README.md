@@ -141,6 +141,16 @@ See `nextflow.config` to see where data is being written
 Notes:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
 * Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
+* Passing parameters is done via a params file w/ `key=value` space-delimited values. To use this file, make sure that 
+the following inputs are passed to a nextflow workflow,
+    ```
+    # PARAMS - path channel
+    # RUN_PARAMS_FILE - env variable defined in nextflow.config that is the name of PARAMS
+    next_wkflw( prev_wkflw.out.PARAMS, RUN_PARAMS_FILE )
+    ```
+    Note - make sure to use the `.out.PARAMS` of the workflow that the `next_wkflw` should be dependent on. I've noticed 
+    that nextflow won't pass all outputs of a workflow together (e.g. BAM of one task and the run params
+    folder of another task) 
 * Follow the project structure below -
 
 
