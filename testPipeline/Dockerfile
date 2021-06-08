@@ -70,4 +70,5 @@ RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /igo/stats/DONE && \
-  mkdir -p /home/igo/nextflow/crosscheck_metrics
+  mkdir -p /home/igo/nextflow/crosscheck_metrics && \
+  mkdir -p /pskis34/LIMS/LIMS_SampleSheets
