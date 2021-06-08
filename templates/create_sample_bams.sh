@@ -7,10 +7,21 @@
 # Run:
 #   TODO
 
-# Import utils
-LOCATION=$0
-TEMPLATE_DIR=$(dirname $LOCATION)
-source ${TEMPLATE_DIR}/utils/utils.sh
+#########################################
+# Reads input file and outputs param value
+# Globals:
+#   FILE - file of format "P1=V1 P2=V2 ..."
+#   PARAM_NAME - name of parameter
+# Arguments:
+#   Lane - Sequencer Lane, e.g. L001
+#   FASTQ* - absolute path to FASTQ
+#########################################
+parse_param() {
+  FILE=$1
+  PARAM_NAME=$2
+
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
+}
 
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
 
