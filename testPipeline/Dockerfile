@@ -69,5 +69,6 @@ RUN ln -s /bin/echo /bin/mail
 RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
+  mkdir -p /igo/staging/stats && \
   mkdir -p /igo/stats/DONE && \
   mkdir -p /home/igo/nextflow/crosscheck_metrics
