@@ -36,10 +36,10 @@ nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb
 **Description**: Runs stats given a demultiplex output
 ```
 # Basic
-nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET}
+nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY} 
 
 # Run in background
-nohup nextflow request_stats_main.nf --dir ${DEMULTIPLEX_DIRECTORY} --s ${SAMPLE_SHEET} -bg  
+nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY} -bg  
 ```
 
 #### Arguments `(--arg)`
@@ -141,6 +141,16 @@ See `nextflow.config` to see where data is being written
 Notes:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
 * Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
+* Passing parameters is done via a params file w/ `key=value` space-delimited values. To use this file, make sure that 
+the following inputs are passed to a nextflow workflow,
+    ```
+    # PARAMS - path channel
+    # RUN_PARAMS_FILE - env variable defined in nextflow.config that is the name of PARAMS
+    next_wkflw( prev_wkflw.out.PARAMS, RUN_PARAMS_FILE )
+    ```
+    Note - make sure to use the `.out.PARAMS` of the workflow that the `next_wkflw` should be dependent on. I've noticed 
+    that nextflow won't pass all outputs of a workflow together (e.g. BAM of one task and the run params
+    folder of another task) 
 * Follow the project structure below -
 
 
@@ -281,4 +291,30 @@ PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
 
 # Load the LSF profile prior to running the command
 * * * * * . /igoadmin/lsfigo/lsf10/conf/profile.lsf; lsload; bhosts; /PATH/TO/detect_copied_sequencers.sh >> /PATH/TO/nf-fastq-plus.log 2>&1
+```
+
+## nextflow.config
+Modify directory locations, binaries, etc. in this file
+
+### Important Files
+``` 
+LOG_FILE        # Logs all output from the pipeline
+CMD_FILE        # Logs all commands from the pipeline (e.g. was bcl2fastq run w/ 1 or 0 mistmaches?)
+DEMUX_LOG_FILE  # Logs output of bcl2fastq commands
+```
+
+### Important Directories
+```
+STATS_DIR                   # Where final BAMS are written to
+STATSDONEDIR                # Where stat (.txt) files & cellranger ouptut is written to
+PROCESSED_SAMPLE_SHEET_DIR  # Where split samplesheets go (these are used for demuxing and stats)
+LAB_SAMPLE_SHEET_DIR        # Original source of samplesheets
+COPIED_SAMPLE_SHEET_DIR     # Where original samplesheets are copied to
+CROSSCHECK_DIR              # Directory used for fingerprinting
+SHARED_SINGLE_CELL_DIR      # Directory used by DLP process to create metadata.yaml (should happen automatically)
+```
+
+### Other
+```
+LOCAL_MEM                   # GB of memory to give a process (e.g. demultiplexing) if executor=local
 ```
