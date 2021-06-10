@@ -297,28 +297,24 @@ PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
 Modify directory locations, binaries, etc. in this file
 
 ### Important Files
-```
-/igo/work/working/${RUN_NAME}/nf_${RUN_NAME}.log                # Where crontab writes work and output to
- 
-LOG_FILE="/home/igo/log/nf_fastq_plus/nf_fastq_run.log"         # Logs all output from the pipeline
-CMD_FILE="/home/igo/log/nf_fastq_plus/commands.log"             # Logs all commands from the pipeline (e.g. was bcl2fastq run w/ 1 or 0 mistmaches?)
-DEMUX_LOG_FILE="/home/igo/log/nf_fastq_plus/bcl2fastq.log"      # Logs output of bcl2fastq commands
+``` 
+LOG_FILE        # Logs all output from the pipeline
+CMD_FILE        # Logs all commands from the pipeline (e.g. was bcl2fastq run w/ 1 or 0 mistmaches?)
+DEMUX_LOG_FILE  # Logs output of bcl2fastq commands
 ```
 
 ### Important Directories
 ```
-/igo/work/working/                                           # Where crontab writes work and output to
- 
-STATS_DIR="/igo/stats"                                       # Where final BAMS are written to
-STATSDONEDIR="/igo/stats/DONE"                               # Where stat (.txt) files & cellranger ouptut is written to
-PROCESSED_SAMPLE_SHEET_DIR="/home/igo/DividedSampleSheets"   # Where split samplesheets go (these are used for demuxing and stats)
-LAB_SAMPLE_SHEET_DIR="/pskis34/LIMS/LIMS_SampleSheets"       # Original source of samplesheets
-COPIED_SAMPLE_SHEET_DIR="/home/igo/SampleSheetCopies"        # Where original samplesheets are copied to
-CROSSCHECK_DIR="/home/igo/nextflow/crosscheck_metrics"       # Directory used for fingerprinting
-SHARED_SINGLE_CELL_DIR="/home/igo/shared-single-cell"        # Directory used by DLP process to create metadata.yaml (should happen automatically)
+STATS_DIR                   # Where final BAMS are written to
+STATSDONEDIR                # Where stat (.txt) files & cellranger ouptut is written to
+PROCESSED_SAMPLE_SHEET_DIR  # Where split samplesheets go (these are used for demuxing and stats)
+LAB_SAMPLE_SHEET_DIR        # Original source of samplesheets
+COPIED_SAMPLE_SHEET_DIR     # Where original samplesheets are copied to
+CROSSCHECK_DIR              # Directory used for fingerprinting
+SHARED_SINGLE_CELL_DIR      # Directory used by DLP process to create metadata.yaml (should happen automatically)
 ```
 
 ### Other
 ```
-LOCAL_MEM=1                                                  # GB of memory to give a process (e.g. demultiplexing) if executor=local
+LOCAL_MEM                   # GB of memory to give a process (e.g. demultiplexing) if executor=local
 ```
