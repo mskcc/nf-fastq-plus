@@ -118,7 +118,7 @@ else
 
       # TODO - Make "___" a delimiter
       PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
-      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
+      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d | grep -Ev 'Sample_210526-Col5_IGO_05500_HG_11')
 
       # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
       if [[ "${RECIPE}" = "DLP" ]]; then
@@ -130,12 +130,15 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
+        echo "SAMPLE_TAG=${SAMPLE_TAG}"
+        echo "${SAMPLESHEET}"
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
         SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
+        echo "SAMPLE_LANES=${SAMPLE_LANES}"
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
 
@@ -143,6 +146,7 @@ else
           TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}" # TODO - replace RGID w/ [INDEX].[LANE]
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
+          echo "find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX}"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
             echo "No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
