@@ -12,7 +12,7 @@ process task {
     path "run_samplesheet.txt", emit: RUNS_TO_ALIGN_FILE
 
   shell:
-    template 'create_sample_bams.sh'
+    template 'retrieve_all_sample_runs.sh'
 }
 
 workflow retrieve_all_sample_runs_wkflw {
