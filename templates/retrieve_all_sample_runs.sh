@@ -25,6 +25,7 @@ parse_param() {
 
 # List of runs and samplesheets
 RUN_SS_FILE="run_samplesheet.txt"
+touch ${RUN_SS_FILE}
 
 # File with all the run directories that need to have BAMs (output of process)
 RUN_FOLDERS_UNIQUE_FILE="run_dirs_uniq.txt"
