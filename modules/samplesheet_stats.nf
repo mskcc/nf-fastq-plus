@@ -16,7 +16,6 @@ workflow samplesheet_stats_wkflw {
     SAMPLESHEET
     STATS_DIR
     STATSDONEDIR
-    ARCHIVED_DIR
 
   main:
     create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR )

@@ -1,4 +1,5 @@
 include { retrieve_all_sample_runs_wkflw } from './retrieve_all_sample_runs';
+include { create_run_bams_wkflw } from './create_run_bams';
 
 workflow create_sample_bams_wkflw {
   take:
