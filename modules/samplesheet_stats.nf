@@ -36,8 +36,7 @@ workflow samplesheet_stats_wkflw {
     upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
-        collect_gc_bias_wkflw.out.METRICS_FILE.collect(), create_run_bams_wkflw.out.RUNNAME, STATSDONEDIR,
-        IGO_EMAIL
+        collect_gc_bias_wkflw.out.METRICS_FILE.collect(), create_run_bams_wkflw.out.RUNNAME, STATSDONEDIR, IGO_EMAIL
     )
     create_sample_bams_wkflw( DEMUXED_DIR, ARCHIVED_DIR, STATS_DIR, STATSDONEDIR )
     fingerprint_wkflw( SAMPLESHEET, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE, CMD_FILE )
