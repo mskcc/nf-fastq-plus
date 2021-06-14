@@ -129,12 +129,14 @@ else
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
+        FINAL_BAM=${BAM_DIR}/${RUN_TAG}.bam
+
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
         SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
-        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
@@ -155,7 +157,7 @@ else
             FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
           done
           # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-          echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
+          echo "RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
         if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
           echo "Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"
