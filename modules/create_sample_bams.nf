@@ -1,22 +1,23 @@
 include { retrieve_all_sample_runs_wkflw } from './retrieve_all_sample_runs';
 include { create_run_bams_wkflw } from './create_run_bams';
 include { get_sample_merge_commands_wkflw } from './get_sample_merge_commands'
+include { log_out as out } from './log_out'
 
 process task {
   label 'BSUB_OPTIONS_SMALL'
 
   input:
     env MERGE_CMD
+    env CMD_FILE
 
   output:
     stdout()
 
   script:
     '''
-    SAMPLE_MERGE_FILE="merge.sh"
-    echo ${MERGE_CMD} > ${SAMPLE_MERGE_FILE}
-    cat ${merge.sh}
-    ./${SAMPLE_MERGE_FILE}
+    # Evaluate the merge command (e.g. "samtools merge ${TARGET_BAM} ${SRC_BAM_1} ${SRC_BAM_2}...")
+    echo ${MERGE_CMD} > ${CMD_FILE}
+    eval ${MERGE_CMD}
     '''
 }
 
@@ -26,6 +27,7 @@ workflow create_sample_bams_wkflw {
     ARCHIVED_DIR
     STATS_DIR
     STATSDONEDIR
+    CMD_FILE
 
   main:
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR )
@@ -39,11 +41,12 @@ workflow create_sample_bams_wkflw {
       .set{ related_runs_ch }
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
     create_run_bams_wkflw.out.BAM_CH
-      .collectFile( name: 'run_bams.txt', newLine: true)
+      .collect()
       .set{ run_bams_ch }
     get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
       .set { merge_cmd_ch }
-    task( merge_cmd_ch )
+    task( merge_cmd_ch, CMD_FILE )
+    out( task.out[0], "create_sample_bams" )
 }

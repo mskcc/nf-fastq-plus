@@ -11,18 +11,8 @@ process task {
     stdout()
     path "merge_commands.sh", emit: MERGE_COMMANDS
 
-  script:
-    '''
-    INPUT_FILE='run_bams.txt'
-    if [[ ! -f ${INPUT_FILE} ]]; then
-      echo "Couldn't find ${INPUT_FILE}. Exiting"
-      exit 1
-    fi
-
-    bam_files=$(cat ${INPUT_FILE})
-    OUTPUT_FILE="merge_commands.sh"
-    create_merge_commands.py ${OUTPUT_FILE} ${RUNNAME} $bam_files
-    '''
+  shell:
+    template 'get_sample_merge_commands.sh'
 }
 
 workflow get_sample_merge_commands_wkflw {

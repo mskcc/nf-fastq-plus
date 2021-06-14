@@ -55,7 +55,7 @@ echo "Adapter,,,,,,,," >> ${SAMPLE_SHEET}
 echo ",,,,,,,," >> ${SAMPLE_SHEET}
 echo "[Data],,,,,,,," >> ${SAMPLE_SHEET}
 echo "Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Sample_Project,Description" >> ${SAMPLE_SHEET}
-echo "1,Sample_10001_1,test_sample,Human,10X_Genomics_GeneExpression,SI-GA-A3,SI-GA-A3,Project_10001,Investigator_1" >> ${SAMPLE_SHEET}
+echo "1,Sample_IGO_10001_1,test_sample,Human,10X_Genomics_GeneExpression,SI-GA-A3,SI-GA-A3,Project_10001,Investigator_1" >> ${SAMPLE_SHEET}
 
 # Create nextflow config that 1) runs locally, 2) Has relative directory paths, 3) Has Docker images
 echo "executor {" > ${TEST_NEXTFLOW_CONFIG}
@@ -103,7 +103,7 @@ tail -100 ${RUN_OUT}
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
 ERRORS=""
 echo "TEST 1: Checking for bam"
-FOUND_BAM=$(find ${STATS_DIR} -type f -name "*MD.bam")
+FOUND_BAM=$(find ${STATS_DIR} -type f -name "*.bam")
 if [ -z ${FOUND_BAM} ]; then
   ERROR="\tERROR: Pipeline didn't create MarkDuplicate BAM files\n"
   ERRORS="${ERRORS}${ERROR}"
