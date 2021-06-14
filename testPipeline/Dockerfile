@@ -62,6 +62,12 @@ RUN yum -y install bwa
 # Install nextflow (Should be to directory in PATH)
 RUN cd /usr/local/bin && curl -s https://get.nextflow.io | bash
 
+#
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
+  python get-pip.py && \
+  pip install requests && \
+  pip install pandas
+
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
 
