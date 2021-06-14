@@ -8,7 +8,7 @@ workflow create_sample_bams_wkflw {
     STATSDONEDIR
 
   main:
-    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR )     # Output file w/ demux_dir, ss, bam_dir per line. TODO - remove BAM_DIR?
+    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
         .splitText()
         .multiMap { it ->
