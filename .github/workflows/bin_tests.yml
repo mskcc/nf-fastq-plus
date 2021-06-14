@@ -57,7 +57,8 @@ jobs:
       # NOTE - DOCKER MEMORY (-m):
       #   - cellranger will stall w/o enough. LOCAL_MEM=1 is fine as long as Docker has > 4GB memory
       #   - CollectGcBiasMetrics will sometimes receive "java.lang.OutOfMemoryError: Java heap space" w/ -m=4g
+      #   - Exit code 137 Instances: (2 unit-tests running w/ -m=8g)
       - name: main.nf cellranger (demux & stats)
         run: >
           cd testPipeline &&
-          docker run -m=8g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+          docker run -m=10g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
