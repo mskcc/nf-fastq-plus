@@ -11,12 +11,12 @@ process task {
     stdout()
 
   shell:
-    ```
+    '''
     SAMPLE_MERGE_FILE="merge.sh"
     echo ${MERGE_CMD} > ${SAMPLE_MERGE_FILE}
     cat ${merge.sh}
     ./${SAMPLE_MERGE_FILE}
-    ```
+    '''
 }
 
 workflow create_sample_bams_wkflw {
