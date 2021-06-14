@@ -1,5 +1,6 @@
 include { retrieve_all_sample_runs_wkflw } from './retrieve_all_sample_runs';
 include { create_run_bams_wkflw } from './create_run_bams';
+include { get_sample_merge_commands_wkflw } from './get_sample_merge_commands'
 
 process task {
   label 'BSUB_OPTIONS_SMALL'
@@ -10,7 +11,7 @@ process task {
   output:
     stdout()
 
-  shell:
+  script:
     '''
     SAMPLE_MERGE_FILE="merge.sh"
     echo ${MERGE_CMD} > ${SAMPLE_MERGE_FILE}
