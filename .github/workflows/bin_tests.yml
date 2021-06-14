@@ -39,6 +39,9 @@ jobs:
       - name: Test Barcode Collision Detection
         run: cd ./bin/test && python test_detect_barcode_collision.py
 
+      - name: Testing create_merge_commands.py
+        run: cd ./bin/test && python create_merge_commands_test.py
+
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
 
