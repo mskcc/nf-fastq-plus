@@ -13,6 +13,14 @@ process task {
   echo "Starting Run $(date)"
   echo "BWA: $(${BWA} 2>&1 | grep "Version")"
   echo "PICARD: $(echo ${PICARD})"
+
+  required_python_packages="requests pandas"
+  for pkg in ${required_python_packages}; do
+    if [[ -z ${pkg} ]]; then
+      echo "/usr/bin/env python missing package: ${pkg}"
+      exit 1
+    fi
+  done
   '''
 }
 

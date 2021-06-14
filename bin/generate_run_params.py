@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """Determines run parameters to generate stats for input recipe & species
 Args:
     recipe: Project recipe

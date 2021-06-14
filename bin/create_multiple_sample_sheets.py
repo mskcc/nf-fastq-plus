@@ -1,4 +1,4 @@
-#!/usr/bin/env /igo/work/nabors/tools/venvpy2/bin/python
+#!/usr/bin/env python
 
 import csv
 import pandas as pd
