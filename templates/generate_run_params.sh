@@ -130,7 +130,7 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
-        FINAL_BAM=${BAM_DIR}/${RUN_TAG}.bam
+        FINAL_BAM=${STATS_DIR}/${RUN_TAG}.bam
 
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 

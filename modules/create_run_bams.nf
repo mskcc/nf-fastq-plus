@@ -15,7 +15,7 @@ workflow create_run_bams_wkflw {
     STATSDONEDIR
 
   main:
-    generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE )
+    generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, STATS_DIR )
     create_sample_lane_jobs_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, RUN_PARAMS_FILE )
     align_to_reference_wkflw( create_sample_lane_jobs_wkflw.out.LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE,
       BWA, PICARD, config.executor.name )
