@@ -80,18 +80,29 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   >> ${TEST_NEXTFLOW_CONFIG}
   # | sed -E "s#=.*#=\"${}\"#" \
 
-# Download raw cellranger BCL files
-curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz -o cellranger-tiny-bcl-1.2.0.tar.gz 2> /dev/null
 
 # Unpack the files
 TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
 TEST_BCL_DIR=${TEST_MACHINE_DIR}/${RUN}
-mkdir -p ${TEST_MACHINE_DIR}
-tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR} 2> /dev/null
-rm cellranger-tiny-bcl-1.2.0.tar.gz
-mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
+
+if [[ -d ${TEST_BCL_DIR} ]]; then
+  echo "${TEST_BCL_DIR} already exists. Skipping cellranger download"
+else
+  echo "Downloading cellranger BCL files"
+  # Download raw cellranger BCL files
+  curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz -o cellranger-tiny-bcl-1.2.0.tar.gz 2> /dev/null
+  mkdir -p ${TEST_MACHINE_DIR}
+  tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR} 2> /dev/null
+  rm cellranger-tiny-bcl-1.2.0.tar.gz
+  mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
+fi
 
 RUN_OUT=${RUN}.out
+
+# Go to directory where all other outputs will be written to
+echo "Running nextflow form ${TEST_OUTPUT}"
+cd ${TEST_OUTPUT}
+
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}"
 echo $CMD
