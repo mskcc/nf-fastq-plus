@@ -45,6 +45,9 @@ jobs:
       - name: Test cellranger outputs
         run: testPipeline/templates/cellranger/cellranger_test.sh
 
+      - name: Get Memory
+        run: grep MemTotal /proc/meminfo
+
       # INTEGRATION TESTS - Put after building the docker image
       - name: Build Docker nf-fastq-plus-playground
         run: cd testPipeline && docker build -t nf-fastq-plus-playground .
@@ -61,4 +64,4 @@ jobs:
       - name: main.nf cellranger (demux & stats)
         run: >
           cd testPipeline &&
-          docker run -m=12g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+          docker run -m=14g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
