@@ -23,7 +23,7 @@ process task {
     '''
 }
 
-workflow create_sample_bams_wkflw {
+workflow OTHER_create_sample_bams_wkflw {
   take:
     OUTPUT_ID
     DEMUXED_DIR
