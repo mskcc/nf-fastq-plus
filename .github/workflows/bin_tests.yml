@@ -64,4 +64,4 @@ jobs:
       - name: main.nf cellranger (demux & stats)
         run: >
           cd testPipeline &&
-          docker run -m=7000000g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+          docker run -m=7000000m --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
