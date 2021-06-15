@@ -6,6 +6,8 @@ include { log_out as out } from './log_out'
 process task {
   label 'BSUB_OPTIONS_SMALL'
 
+  tag 'SAMPLE_BAM_$OUTPUT_ID'
+
   input:
     env MERGE_CMD
     env CMD_FILE
@@ -23,6 +25,7 @@ process task {
 
 workflow create_sample_bams_wkflw {
   take:
+    OUTPUT_ID
     DEMUXED_DIR
     ARCHIVED_DIR
     STATS_DIR
