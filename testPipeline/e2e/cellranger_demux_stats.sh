@@ -108,7 +108,7 @@ OUT=out.txt
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}"
 echo $CMD
-eval $CMD > ${OUT}
+eval $CMD > ${OUT} &
 
 tail -f ${OUT} | sed 's/:/\n\t/g' # | cut -d':' -f3,4,5,6
 
