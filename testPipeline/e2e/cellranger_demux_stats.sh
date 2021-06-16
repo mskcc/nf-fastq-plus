@@ -103,12 +103,25 @@ RUN_OUT=${RUN}.out
 echo "Running nextflow form ${TEST_OUTPUT}"
 cd ${TEST_OUTPUT}
 
-# nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
-CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}"
-echo $CMD
-eval $CMD > out.txt &
 
-watch -n 5 'cat /proc/meminfo | head -5'
+DONE_FILE="nextflow_done.txt"
+# nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}; touch ${DONE_FILE}"
+echo $CMD
+
+CMD_LOG="nextflow_cmd.out"
+# Let the command execute, regardless of errors
+set +e
+eval $CMD > ${CMD_LOG} &
+set -e
+
+# Print memory usage (important to debug in docker). Remove once script finishes, which will definitely finish and create done file
+while [[ ! -f ${DONE_FILE} ]]; do
+  watch -n 2 'cat /proc/meminfo | head 5'
+done
+rm ${DONE_FILE}
+
+tail -100 ${CMD_LOG}
 
 # VERIFICATIONS OF OUTPUT
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
