@@ -110,7 +110,7 @@ CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${R
 echo $CMD
 eval $CMD > ${OUT}
 
-tail -f ${OUT} # sed 's/:/\n\t/g' # | cut -d':' -f3,4,5,6
+tail -f ${OUT} | sed 's/:/\n\t/g' # | cut -d':' -f3,4,5,6
 
 # VERIFICATIONS OF OUTPUT
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
