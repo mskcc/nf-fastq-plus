@@ -34,22 +34,4 @@ workflow OTHER_create_sample_bams_wkflw {
 
   main:
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR )
-    retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
-      .splitText()
-      .multiMap { it ->
-        RUN_DEMUX_DIR: it.split(' ')[0]
-        RUN_SAMPLE_SHEET: it.split(' ')[1]
-        BAM_DIR: it.split(' ')[2]
-      }
-      .set{ related_runs_ch }
-    create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
-    create_run_bams_wkflw.out.BAM_CH
-      .collect()
-      .set{ run_bams_ch }
-    get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME )
-    get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
-      .splitText()
-      .set { merge_cmd_ch }
-    task( merge_cmd_ch, CMD_FILE )
-    out( task.out[0], "create_sample_bams" )
 }
