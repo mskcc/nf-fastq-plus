@@ -47,4 +47,9 @@ workflow OTHER_create_sample_bams_wkflw {
       .collect()
       .set{ run_bams_ch }
     get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME )
+    get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
+      .splitText()
+      .set { merge_cmd_ch }
+    task( merge_cmd_ch, CMD_FILE )
+    out( task.out[0], "create_sample_bams" )
 }
