@@ -115,9 +115,12 @@ set +e
 eval $CMD > ${CMD_LOG} &
 set -e
 
+echo "Getting memory usage"
 # Print memory usage (important to debug in docker). Remove once script finishes, which will definitely finish and create done file
 while [[ ! -f ${DONE_FILE} ]]; do
+  echo "starting"
   watch -n 2 'cat /proc/meminfo | head 5'
+  echo "done"
 done
 rm ${DONE_FILE}
 
