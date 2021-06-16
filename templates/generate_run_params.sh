@@ -132,6 +132,11 @@ else
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
         FINAL_BAM=${STATS_DIR}/${RUN_TAG}.bam
 
+        if [[ -f ${FINAL_BAM} ]]; then
+          echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
+          continue
+        fi
+
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
