@@ -103,23 +103,24 @@ RUN_OUT=${RUN}.out
 echo "Running nextflow form ${TEST_OUTPUT}"
 cd ${TEST_OUTPUT}
 
+CMD_LOG="nextflow_out"
+touch ${CMD_LOG}
 
-DONE_FILE="nextflow_done.txt"
+
+DONE_FILE="nextflow_done"
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}; touch ${DONE_FILE}"
 echo $CMD
 
-CMD_LOG="nextflow_cmd.out"
-touch ${CMD_LOG}
 # Let the command execute, regardless of errors
 set +e
-eval $CMD > ${CMD_LOG} &
+eval $CMD >> ${CMD_LOG} &
 set -e
 
 echo "Getting memory usage" # TODO - remove
 # Print memory usage (important to debug in docker). Remove once script finishes, which will definitely finish and create done file
 while [[ ! -f ${DONE_FILE} ]]; do
-  cat /proc/meminfo | head -5
+  cat /proc/meminfo | head -2
   sleep 10
 done
 rm ${DONE_FILE}
