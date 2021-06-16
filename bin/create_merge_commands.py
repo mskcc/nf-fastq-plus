@@ -240,11 +240,12 @@ def create_merge_commands(merge_info):
     """
     bash_commands = ""
     for target_file, file_list in merge_info.items():
+        mkdir_cmd="mkdir -p $(dirname %s)" % target_file  # Create parent directory for merged bam prior to writing it
         if len(file_list) == 1:
-            # Don't merge a single file. Move it and create a symbolic link from the moved to its original location
-            bash_commands += "mv %s %s && ln -s %s %s\n" % (file_list[0], target_file, target_file, file_list[0])
+            # Don't merge a single file. Create directory for project, move it, and create a symbolic link from the moved to its original location
+            bash_commands += "%s && cp %s %s && ln -s %s %s\n" % (mkdir_cmd, file_list[0], target_file, target_file, file_list[0])
         else:
-            bash_commands += "samtools merge %s %s\n" % (target_file, ' '.join(file_list))
+            bash_commands += "%s && samtools merge %s %s\n" % (mkdir_cmd, target_file, ' '.join(file_list))
     return bash_commands
 
 
