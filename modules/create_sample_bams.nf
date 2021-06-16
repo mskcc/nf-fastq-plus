@@ -34,7 +34,7 @@ workflow create_sample_bams_wkflw {
     SAMPLE_BAM_DIR
 
   main:
-    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR )
+    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, OUTPUT_ID.collect() )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
       .multiMap { it ->
