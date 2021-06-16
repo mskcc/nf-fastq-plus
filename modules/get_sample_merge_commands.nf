@@ -6,6 +6,7 @@ process task {
   input:
     path BAM_LIST_FILE
     env RUNNAME
+    env SAMPLE_BAM_DIR
 
   output:
     stdout()
@@ -19,9 +20,10 @@ workflow get_sample_merge_commands_wkflw {
   take:
     BAM_LIST_FILE
     RUNNAME
+    SAMPLE_BAM_DIR
 
   main:
-    task( BAM_LIST_FILE, RUNNAME )
+    task( BAM_LIST_FILE, RUNNAME, SAMPLE_BAM_DIR )
     out( task.out[0], "get_sample_merge_commands" )
 
   emit:

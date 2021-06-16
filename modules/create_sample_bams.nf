@@ -23,7 +23,7 @@ process task {
     '''
 }
 
-workflow OTHER_create_sample_bams_wkflw {
+workflow create_sample_bams_wkflw {
   take:
     OUTPUT_ID
     DEMUXED_DIR
@@ -31,6 +31,7 @@ workflow OTHER_create_sample_bams_wkflw {
     STATS_DIR
     STATSDONEDIR
     CMD_FILE
+    SAMPLE_BAM_DIR
 
   main:
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR )
@@ -46,7 +47,7 @@ workflow OTHER_create_sample_bams_wkflw {
     create_run_bams_wkflw.out.BAM_CH
       .collect()
       .set{ run_bams_ch }
-    get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME )
+    get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME, SAMPLE_BAM_DIR )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
       .set { merge_cmd_ch }

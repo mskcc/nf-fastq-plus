@@ -1,5 +1,12 @@
 FROM centos:7
 
+# Download cellranger BCLs if we ever need them
+# RUN curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz -o cellranger-tiny-bcl-1.2.0.tar.gz 2> /dev/null && \
+#   mkdir -p /igo/sequencers/rosalind && \
+#   tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz 2> /dev/null && \
+#   rm cellranger-tiny-bcl-1.2.0.tar.gz && \
+#   mv cellranger-tiny-bcl-1.2.0 /igo/sequencers/rosalind/200514_ROSALIND_0001_FLOWCELL
+
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes/H.sapiens/GRCh37 && \
   curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
@@ -78,4 +85,5 @@ RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   mkdir -p /igo/staging/stats && \
   mkdir -p /igo/stats/DONE && \
   mkdir -p /home/igo/nextflow/crosscheck_metrics && \
-  mkdir -p /pskis34/LIMS/LIMS_SampleSheets
+  mkdir -p /pskis34/LIMS/LIMS_SampleSheets && \
+  mkdir -p /igo/staging/BAM

@@ -103,14 +103,13 @@ RUN_OUT=${RUN}.out
 echo "Running nextflow form ${TEST_OUTPUT}"
 cd ${TEST_OUTPUT}
 
-OUT=out.txt
+# TODO - temporary fix
+mkdir /igo/staging/BAM/P10001/
 
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}"
 echo $CMD
-eval $CMD > ${OUT} &
-
-tail -f ${OUT} # | cut -d':' -f3,4,5,6
+eval $CMD
 
 # VERIFICATIONS OF OUTPUT
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
@@ -151,7 +150,7 @@ fi
 
 if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"
-  rm -rf ${TEST_OUTPUT}
+  # rm -rf ${TEST_OUTPUT}
 else
   cat ${OUT_FILE}
   printf "ERRORS were found - \n${ERRORS}"

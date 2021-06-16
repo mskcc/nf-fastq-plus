@@ -17,4 +17,4 @@ fi
 echo ${BAMS}
 
 OUTPUT_FILE="merge_commands.sh"
-create_merge_commands.py ${OUTPUT_FILE} ${RUNNAME} ${BAMS}
+create_merge_commands.py ${OUTPUT_FILE} ${SAMPLE_BAM_DIR} ${BAMS}
