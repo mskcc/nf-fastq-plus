@@ -103,12 +103,14 @@ RUN_OUT=${RUN}.out
 echo "Running nextflow form ${TEST_OUTPUT}"
 cd ${TEST_OUTPUT}
 
+OUT=out.txt
+
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}"
 echo $CMD
-eval $CMD | sed 's/:/\n\t/g' # | cut -d':' -f3,4,5,6
+eval $CMD > ${OUT}
 
-tail -100 ${RUN_OUT}
+tail -f ${OUT} # sed 's/:/\n\t/g' # | cut -d':' -f3,4,5,6
 
 # VERIFICATIONS OF OUTPUT
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
