@@ -103,13 +103,12 @@ RUN_OUT=${RUN}.out
 echo "Running nextflow form ${TEST_OUTPUT}"
 cd ${TEST_OUTPUT}
 
-# TODO - temporary fix
-mkdir /igo/staging/BAM/P10001/
-
 # nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}"
 echo $CMD
-eval $CMD
+eval $CMD > out.txt &
+
+watch -n 5 'cat /proc/meminfo | head -5'
 
 # VERIFICATIONS OF OUTPUT
 FILE_SUFFIXES=( ___MD.txt ___AM.txt ___gc_bias_metrics.txt )
