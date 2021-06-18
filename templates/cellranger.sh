@@ -34,9 +34,17 @@ run_cmd () {
 RUN_PARAMS_FILE=$(realpath ${RUN_PARAMS_FILE})           # Take absolute path since we navigate to the cellranger dir
 RECIPE=$(parse_param ${RUN_PARAMS_FILE} RECIPE)          # Musts include a WGS genome to run CollectWgsMetrics
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
-PROJECT_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
+PROJECT_TAG=$(parse_param ${RUN_PARAMS_FILE} PROJECT_TAG)
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 SPECIES=$(parse_param ${RUN_PARAMS_FILE} SPECIES)
+
+# File that will be populated w/ directory & stat files to upload
+#   e.g.
+#     /igo/staging/stats/RUN/cellranger/project/sample runname project sample web_summary.html metrics_summary.csv
+launched_cellranger_dirs="launched_cellranger_dirs.txt"
+METRICS_FILE="metrics_summary.csv"
+WEB_SUMMARY="web_summary.html"
+touch ${launched_cellranger_dirs}
 
 is_10X=$(echo $RECIPE | grep "10X_Genomics_")
 if [[ -z ${is_10X} ]]; then
@@ -51,7 +59,9 @@ else
   fi
 
   CELLRANGER_FASTQ_INPUT=$(echo ${SAMPLE_FASTQ_DIRS_ACROSS_RUNS} | tr ' ' ',') # cellranger input: comma-delimited list
-  CELLRANGER_DIR=${STATS_DIR}/${RUNNAME}/cellranger/${PROJECT_TAG}/${SAMPLE_TAG}       # Specific path to BAMs
+  CELLRANGER_DIR=${STATS_DIR}/${RUNNAME}/cellranger/${PROJECT_TAG}             # Specific path to BAMs - will write sample folder
+  SAMPLE_CELLRANGER_DIR=${CELLRANGER_DIR}/${SAMPLE_TAG}                        # Cellranger writes to this location a directory of the name passed to "--id=${SAMPLE_TAG}"
+
   mkdir -p ${CELLRANGER_DIR}
   cd ${CELLRANGER_DIR}
   echo "Detected 10X Recipe: ${RECIPE} (${SPECIES})"
@@ -74,6 +84,8 @@ else
     CMD+=" --disable-ui"
     CMD+=" --maxjobs=200"
     run_cmd $CMD
+
+    echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE} ${WEB_SUMMARY}" >> ${launched_cellranger_dirs}
   fi
   if [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_VDJ}") ]]; then
     CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_VDJ)
@@ -94,6 +106,8 @@ else
     CMD+=" --disable-ui"
     CMD+=" --maxjobs=200"
     run_cmd $CMD
+
+    echo "${SAMPLE_CELLRANGER_DIR} vdj ${METRICS_FILE}" >> ${launched_cellranger_dirs}
   fi
 
   # Check if a command has been sent, if not, it is a more specialized recipe
@@ -116,6 +130,8 @@ else
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
       run_cmd $CMD
+
+      echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
     elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_CNV}") ]]; then
       echo "Processing cnv count"
       # 10X_Genomics_CNV
@@ -131,6 +147,8 @@ else
       CMD+=" --maxjobs=200"
       echo "Processing ATAC"
       run_cmd $CMD
+
+      echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
     else
       echo "ERROR - Did not recognize cellranger command"
       # TODO
