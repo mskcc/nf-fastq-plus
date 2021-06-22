@@ -1,7 +1,7 @@
 include { log_out as out } from './log_out'
 
 process task {
-  label 'LOCAL'
+  label 'simple_lsf_task'
 
   input:
     path LAUNCHED_CELLRANGER
