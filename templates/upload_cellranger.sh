@@ -21,7 +21,7 @@ cp launched_cellranger_dirs.txt ${ORIGINAL_FILE}
 echo "Checking for directories to upload: $(cat ${ORIGINAL_FILE} | cut -d' ' -f1 | tr '\n' ' ')"
 
 # As long as this file is populated with directories to check, continue
-while [[ -z $(cat launched_cellranger_dirs.txt) ]]; do
+while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
   ts=$(date +'%m_%d_%Y')
   upload_file=to_upload_${ts}.txt
 
