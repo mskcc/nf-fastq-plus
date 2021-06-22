@@ -29,7 +29,15 @@ if [ -d "${RUN}" ]; then
 else
   RUNDIR=${RUN}
   # STRUCTURE: /{SEQUENCER_DIR}/{MACHINE}/{RUNNAME}
-  RUNPATH=$(find ${SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNDIR}")
+  if [[ -z $(echo ${RUN} | grep VH00564) ]]; then
+    echo "Regular sequencer output directory: ${RUN}"
+    RUNPATH=$(find ${SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNDIR}")
+  else
+    # NextSeq 1000/2000 runs are nested one directory lower in their output directory
+    echo "NextSeq 1000/2000 sequencer output directory: ${RUN}"
+    RUNPATH=$(find ${SEQUENCER_DIR}/pepe/output -mindepth 1 -maxdepth 1 -type d -name "${RUNDIR}")
+  fi
+
   if [[ -z "${RUNPATH}" ]]; then
     echo "Failed to find ${RUNDIR} in ${SEQUENCER_DIR}"
     exit 1 
