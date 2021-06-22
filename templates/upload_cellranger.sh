@@ -14,9 +14,11 @@
 #   launched_cellranger_dirs.txt    # File MUST be present
 #   ./upload_cellranger.sh
 
-cp launched_cellranger_dirs.txt original_launched_cellranger_dirs.txt
+# We create a copy of the original file
+ORIGINAL_FILE=original_launched_cellranger_dirs.txt
+cp launched_cellranger_dirs.txt ${ORIGINAL_FILE}
 
-echo "Checking for directories to upload: $(cat ${original_launched_cellranger_dirs.txt} | cut -d' ' -f1 | tr '\n' ' ')"
+echo "Checking for directories to upload: $(cat ${ORIGINAL_FILE} | cut -d' ' -f1 | tr '\n' ' ')"
 
 # As long as this file is populated with directories to check, continue
 while [[ -z $(cat launched_cellranger_dirs.txt) ]]; do
