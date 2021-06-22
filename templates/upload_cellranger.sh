@@ -18,30 +18,32 @@
 ORIGINAL_FILE=original_launched_cellranger_dirs.txt
 cp launched_cellranger_dirs.txt ${ORIGINAL_FILE}
 
+if [[ -z ${CELLRANGER_WAIT_TIME} ]]; then
+  CELLRANGER_WAIT_TIME=1800   # Amount of time to sleep in between checking for cellranger files, e.g. "1800" is 30 min
+fi
+
 echo "Checking for directories to upload: $(cat ${ORIGINAL_FILE} | cut -d' ' -f1 | tr '\n' ' ')"
 
 # As long as this file is populated with directories to check, continue
 while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
+  # Delete & repopulate launched_cellranger_dirs.txt. Save remaining pending samples to a timestamped file (upload_file)
   ts=$(date +'%m_%d_%Y')
   upload_file=to_upload_${ts}.txt
-
-  # Save current state
   cp launched_cellranger_dirs.txt ${upload_file}
   rm launched_cellranger_dirs.txt
 
   while IFS= read -r line; do
+    MISSING=
     DIR=$(echo ${line} | cut -d' ' -f1)
     CR_TYPE=$(echo ${line} | cut -d' ' -f2)   # 'count'/'vdj'
     FILES=$(echo ${line} | cut -d' ' -f3-)
 
     # DIR SHOULD HAVE THIS NAMING - /igo/staging/stats/RUN/cellranger/project/sample
-    SAMPLE=$(basename ${DIR})
+    SAMPLE=$(basename ${DIR})                     # /igo/staging/stats/RUN/cellranger/project/sample  -> sample
     PROJECT_DIR=$(dirname ${DIR})
-    PROJECT=$(basename ${PROJECT_DIR})
+    PROJECT=$(basename ${PROJECT_DIR})            # /igo/staging/stats/RUN/cellranger/project         -> project
     RUN_DIR=$(dirname $(dirname ${PROJECT_DIR}))
-    RUN=$(basename ${RUN_DIR})
-
-    UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
+    RUN=$(basename ${RUN_DIR})                    # /igo/staging/stats/RUN                            -> RUN
 
     echo "Checking RUN=${RUN} PROJECT=${PROJECT} SAMPLE=${SAMPLE} for files (${FILES})"
     for f in ${FILES}; do
@@ -50,12 +52,14 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
         printf "\tSkipping Upload: No ${f}\n"
         MISSING=YES
       else
-        printf "\tFound ${f}. Copying to ${UPLOAD_DIR}"
-        cp ${f} ${UPLOAD_DIR}
+        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
+        mkdir -p ${UPLOAD_DIR}
+        printf "\tFound ${f}. Copying to ${UPLOAD_DIR}\n"
+        cp ${completed_file} ${UPLOAD_DIR}
       fi
     done
 
-    if [[ ! -z ${MISSING} ]]; then
+    if [[ -z ${MISSING} ]]; then
       printf "\tUploading CellRanger stats for RUN=${RUN} PROJECT=${PROJECT} SAMPLE=${SAMPLE}\n"
       JSON="{ 'samples': [ { 'sample': '${SAMPLE}', 'type': '${CR_TYPE}', 'project': '${PROJECT}', 'run': '${RUN}'}]}"
       JSON_STR=$(echo ${JSON} | sed "s/'/\"/g")
@@ -69,8 +73,7 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
     fi
   done < ${upload_file}
 
-  # Sleep for 30 minutes and then check again
-  sleep 1800
+  sleep ${CELLRANGER_WAIT_TIME}
 done
 
 echo "DONE."
