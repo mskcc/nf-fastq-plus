@@ -44,7 +44,7 @@ while [[ -z $(cat launched_cellranger_dirs.txt) ]]; do
     UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
 
     echo "Checking RUN=${RUN} PROJECT=${PROJECT} SAMPLE=${SAMPLE} for files (${FILES})"
-    for f in ${FILES};
+    for f in ${FILES}; do
       completed_file=$(find ${DIR} -type f -name ${f})
       if [[ -z ${completed_file} || ! -f ${completed_file} ]]; then
         printf "\tSkipping Upload: No ${f}\n"
