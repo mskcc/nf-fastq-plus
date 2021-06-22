@@ -2,6 +2,9 @@
 # Tests that the cellranger upload waits for files to be written (mocks cellranger writing) and copies to expected
 # directory ngs-stats would be looking for, ${STATS_DIR}/CELLRANGER
 
+LOCATION=$(dirname "$0")
+cd ${LOCATION}
+
 INPUT_NEXTFLOW_FILE=launched_cellranger_dirs.txt
 WS_F="web_summary.html"
 MS_F="metrics_summary.csv"
