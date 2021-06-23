@@ -76,4 +76,4 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
   sleep ${CELLRANGER_WAIT_TIME}
 done
 
-echo "DONE."
+printf "\nDONE.\n"
