@@ -21,11 +21,12 @@ WORK_DIR=$(dirname ${FASTQ_DIR})/working
 echo "SEQUENCER_DIR=${SEQUENCER_DIR} FASTQ_DIR=${FASTQ_DIR} WORK_DIR=${WORK_DIR}"
 
 RECENTLY_CREATED_RUN_DIRS=$(find ${SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -mmin -${NUM_MINS_OLD})
+PEPE_DIR=$(find ${SEQUENCER_DIR}/pepe/output -mindepth 1 -maxdepth 1 -type d -mmin -${NUM_MINS_OLD})
 
 # We filter the previous find command by directories w/ FILES written within the past day.
 # For some reason, it looks like sequencer run folders are "touched" by res_igo_seq 
 NEW_RUNS=()
-for DIR in ${RECENTLY_CREATED_RUN_DIRS}; do
+for DIR in "${RECENTLY_CREATED_RUN_DIRS} ${PEPE_DIR}"; do
   RECENTLY_SEQUENCED_FILES=$(find $DIR -maxdepth 1 -type f -mmin -${NUM_MINS_OLD})
   if [[ ! -z "${RECENTLY_SEQUENCED_FILES}" ]]; then
     NEW_RUNS+=(${DIR})
