@@ -84,8 +84,9 @@ else
     CMD+=" --disable-ui"
     CMD+=" --maxjobs=200"
 
-    echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE} ${WEB_SUMMARY}" >> ${launched_cellranger_dirs}
     run_cmd $CMD
+    # Place after command - only if the above command fails, should we wait
+    echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE} ${WEB_SUMMARY}" >> ${launched_cellranger_dirs}
   fi
   if [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_VDJ}") ]]; then
     CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_VDJ)
@@ -106,8 +107,9 @@ else
     CMD+=" --disable-ui"
     CMD+=" --maxjobs=200"
 
-    echo "${SAMPLE_CELLRANGER_DIR} vdj ${METRICS_FILE}" >> ${launched_cellranger_dirs}
     run_cmd $CMD
+    # Place after command - only if the above command fails, should we wait
+    echo "${SAMPLE_CELLRANGER_DIR} vdj ${METRICS_FILE}" >> ${launched_cellranger_dirs}
   fi
 
   # Check if a command has been sent, if not, it is a more specialized recipe
@@ -130,8 +132,9 @@ else
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
 
-      echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
       run_cmd $CMD
+      # Place after command - only if the above command fails, should we wait
+      echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
     elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_CNV}") ]]; then
       echo "Processing cnv count"
       # 10X_Genomics_CNV
@@ -146,8 +149,10 @@ else
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
       echo "Processing ATAC"
-      echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
+
       run_cmd $CMD
+      # Place after command - only if the above command fails, should we wait
+      echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
     else
       echo "ERROR - Did not recognize cellranger command"
       # TODO
