@@ -41,7 +41,7 @@ SPECIES=$(parse_param ${RUN_PARAMS_FILE} SPECIES)
 # File that will be populated w/ directory & stat files to upload
 #   e.g.
 #     /igo/staging/stats/RUN/cellranger/project/sample runname project sample web_summary.html metrics_summary.csv
-launched_cellranger_dirs="launched_cellranger_dirs.txt"
+launched_cellranger_dirs="$(pwd)/launched_cellranger_dirs.txt"
 METRICS_FILE="metrics_summary.csv"
 WEB_SUMMARY="web_summary.html"
 touch ${launched_cellranger_dirs}
@@ -83,9 +83,9 @@ else
     CMD+=" --mempercore=64"
     CMD+=" --disable-ui"
     CMD+=" --maxjobs=200"
-    run_cmd $CMD
 
     echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE} ${WEB_SUMMARY}" >> ${launched_cellranger_dirs}
+    run_cmd $CMD
   fi
   if [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_VDJ}") ]]; then
     CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_VDJ)
@@ -105,9 +105,9 @@ else
     CMD+=" --mempercore=64"
     CMD+=" --disable-ui"
     CMD+=" --maxjobs=200"
-    run_cmd $CMD
 
     echo "${SAMPLE_CELLRANGER_DIR} vdj ${METRICS_FILE}" >> ${launched_cellranger_dirs}
+    run_cmd $CMD
   fi
 
   # Check if a command has been sent, if not, it is a more specialized recipe
@@ -129,9 +129,9 @@ else
       CMD+=" --mempercore=64"
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
-      run_cmd $CMD
 
       echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
+      run_cmd $CMD
     elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_CNV}") ]]; then
       echo "Processing cnv count"
       # 10X_Genomics_CNV
@@ -146,9 +146,8 @@ else
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
       echo "Processing ATAC"
-      run_cmd $CMD
-
       echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
+      run_cmd $CMD
     else
       echo "ERROR - Did not recognize cellranger command"
       # TODO
