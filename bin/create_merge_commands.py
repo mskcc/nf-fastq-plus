@@ -111,7 +111,11 @@ def get_sample_manifests(igo_ids, lims_host):
         url = "https://%s/LimsRest/api/getSampleManifest?%s" % (lims_host, params)
         print("Retrieving manifests from samples [%d,%d): %s" % (query_min, query_max, ", ".join(query_list)))
 
-        resp = requests.get(url, auth=(config.LIMS_USER, config.LIMS_PASSWORD), verify=False)
+        try:
+            resp = requests.get(url, auth=(config.LIMS_USER, config.LIMS_PASSWORD), verify=False)
+        except:
+            print("Request Failed: %s" % url)
+            return [ { id: '' } for id in igo_ids  ] # We need to return a list of mappings, even if empty
         content = json.loads(resp.content)
         if (resp.status_code != 200 or len(content) == 0):
             # Warning
