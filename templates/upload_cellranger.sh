@@ -62,7 +62,7 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
     if [[ -z ${MISSING} ]]; then
       printf "\tUploading CellRanger stats for RUN=${RUN} PROJECT=${PROJECT} SAMPLE=${SAMPLE}\n"
       JSON="{ 'samples': [ { 'sample': '${SAMPLE}', 'type': '${CR_TYPE}', 'project': '${PROJECT}', 'run': '${RUN}'}]}"
-      JSON_STR=$(echo ${JSON} | sed "s/'/\"/g")
+      JSON_STR=$(echo ${JSON} | sed "s/'/\"/g") # replace all single-quotes w/ double-quotes for valid json
 
       CURL_CMD="curl -d '${JSON_STR}' -H 'Content-Type: application/json' -X POST 'http://delphi.mskcc.org:8080/ngs-stats/saveCellRangerSample'"
       printf "\t${CURL_CMD}\n"
