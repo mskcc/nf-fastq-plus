@@ -9,6 +9,7 @@ include { upload_stats_wkflw } from './upload_stats';
 include { fingerprint_wkflw } from './fingerprint';
 include { cellranger_wkflw } from './cellranger';
 include { create_sample_bams_wkflw } from './create_sample_bams';
+include { upload_cellranger_wkflw } from './upload_cellranger';
 
 workflow samplesheet_stats_wkflw {
   take:
@@ -33,7 +34,8 @@ workflow samplesheet_stats_wkflw {
         RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     cellranger_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
         CELL_RANGER_ATAC, CELL_RANGER, CELL_RANGER_CNV, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR  )
-    upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
+    upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER, CELLRANGER_WAIT_TIME )
+    upload_stats_wkflw( mark_duplicates_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), create_run_bams_wkflw.out.RUNNAME, STATSDONEDIR, IGO_EMAIL

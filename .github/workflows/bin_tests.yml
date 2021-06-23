@@ -45,6 +45,9 @@ jobs:
       - name: Test cellranger outputs
         run: testPipeline/templates/cellranger/cellranger_test.sh
 
+      - name: Test upload_cellranger workflow
+        run: testPipeline/templates/upload_cellranger/upload_cellranger_test.sh
+
       # INTEGRATION TESTS - Put after building the docker image
       - name: Build Docker nf-fastq-plus-playground
         run: cd testPipeline && docker build -t nf-fastq-plus-playground .

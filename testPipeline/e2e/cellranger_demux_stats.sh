@@ -77,6 +77,7 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   | sed -E "s#LOG_FILE=.*#LOG_FILE=\"${LOG_FILE}\"#" \
   | sed -E "s#CMD_FILE=.*#CMD_FILE=\"${CMD_FILE}\"#" \
   | sed -E "s#DEMUX_LOG_FILE=.*#DEMUX_LOG_FILE=\"${DEMUX_LOG_FILE}\"#" \
+  | sed -E "s#CELLRANGER_WAIT_TIME=.*#CELLRANGER_WAIT_TIME=1#" \
   >> ${TEST_NEXTFLOW_CONFIG}
   # | sed -E "s#=.*#=\"${}\"#" \
 
