@@ -19,7 +19,11 @@ ORIGINAL_FILE=original_launched_cellranger_dirs.txt
 cp launched_cellranger_dirs.txt ${ORIGINAL_FILE}
 
 if [[ -z ${CELLRANGER_WAIT_TIME} ]]; then
-  CELLRANGER_WAIT_TIME=1800   # Amount of time to sleep in between checking for cellranger files, e.g. "1800" is 30 min
+  DEFAULT_WAIT=1800
+  echo "Using Default - CELLRANGER_WAIT_TIME=${DEFAULT_WAIT}"
+  CELLRANGER_WAIT_TIME=${DEFAULT_WAIT} # Time to sleep between checking for cellranger files, e.g. "1800" is 30 min
+else
+  echo "CELLRANGER_WAIT_TIME=${CELLRANGER_WAIT_TIME}"
 fi
 
 echo "Checking for directories to upload: $(cat ${ORIGINAL_FILE} | cut -d' ' -f1 | tr '\n' ' ')"
