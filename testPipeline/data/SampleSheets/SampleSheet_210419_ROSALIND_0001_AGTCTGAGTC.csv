@@ -18,4 +18,4 @@ Adapter,,,,,,,,
 Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Sample_Project,Description
 1,Sample_U0a_IGO_12878_1,U0a,Human,HumanWholeGenome,NA12878,GATTACA,Project_12878_NA,Giab_NA12878
 1,Sample_idtU0a_IGO_12878_1,idtU0a,Human,IDT_Exome_v2_FP_Viral_Probes,NA12878,GATTACA,Project_12878_NA,Giab_NA12878
-3,Sample_SRR8816463_IGO_16463_1,SRR8816463,Human,RNASeq_PolyA,ENA,GATTACA,Project_SRR8816463,Ena_SRR8816463
+3,Sample_SRR8816463_IGO_16463_1,SRR8816463,Human,RNASeq_PolyA,ENA,GATTACA,Project_16463,Ena_SRR8816463
