@@ -16,7 +16,7 @@ process task {
 
   output:
     stdout()
-    path "*.bam", emit: BAM_CH
+    path "STATS___*.bam", emit: BAM_CH
     env SAMPLE_TAG, emit: SAMPLE_TAG
     path "${RUN_PARAMS_FILE}", emit: PARAMS
     path "*___MD.txt", emit: METRICS_FILE
