@@ -53,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Where Am I
+        run: ls -ltr
       # INTEGRATION TESTS - Put after building the docker image
       - name: Build Docker nf-fastq-plus-playground
         run: cd testPipeline && docker build -t nf-fastq-plus-playground .
