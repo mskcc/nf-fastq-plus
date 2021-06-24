@@ -23,5 +23,4 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Build nf-fastq-plus-playground
-        id: hello
-        uses: actions/nf-fastq-plus
+        uses: mskcc/nf-fastq-plus
