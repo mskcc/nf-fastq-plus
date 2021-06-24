@@ -56,18 +56,25 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
 
   # Quit if no samplesheet is found - can't demux
   if [[ -z ${SS} || ! -f ${SS} ]]; then
-    # TODO - send an email?
-    echo "Couldn't find a samplesheet"
-    exit 0
+    NO_SS_RUN=$(basename ${run_dir})
+    echo "Failed to find SampleSheet in ${run_dir}" | mail -s "[ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
+    echo "ERROR - No SampleSheet in ${run_dir}"
+    continue
   fi
 
-  # Assign the BAM directory, unless one doesn't exist
+  # Assign the BAM directory, unless one doesn't exist. If non-existant, the BAM dir will be recreated
   RUN_BASE=$(basename ${run_dir})
   BAM_DIR=${STATS_DIR}/${RUN_BASE}
   if [[ ! -d ${BAM_DIR} ]]; then
     BAM_DIR="NO_BAM_DIR"
   fi
 
-  # TODO - create a new samplesheet just for this that just has the projects we care about?
-  echo "${run_dir} ${SS} ${BAM_DIR}" >> ${RUN_SS_FILE}
+  # Create a new samplesheet with only the Projects in this run (To avoid redoing any work)
+  TARGET_SAMPLESHEET="$(basename ${SS} | cut -d'.' -f1)___FOR_MERGE.csv"
+  sed '/Lane,/q' ${SS} > ${TARGET_SAMPLESHEET}
+  for prj in ${PROJECT_DIRS}; do
+    cat ${SS} | grep ${prj} >> ${TARGET_SAMPLESHEET}
+  done
+
+  echo "${run_dir} ${TARGET_SAMPLESHEET} ${BAM_DIR}" >> ${RUN_SS_FILE}
 done
