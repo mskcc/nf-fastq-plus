@@ -19,8 +19,52 @@ jobs:
   unit-tests:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Build nf-fastq-plus-playground
-        uses: mskcc/nf-fastq-plus@v2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+
+      # UNIT TESTS (Nothing that relies on docker - tests that can run in less than one minute)
+      - name: Test demultiplex masks
+        run: testPipeline/templates/demultiplex/demultiplex_test.sh
+
+      - name: Test Run Parameters
+        run: cd ./bin/test && python test_generate_run_params.py
+
+      - name: Test Barcode Collision Detection
+        run: cd ./bin/test && python test_detect_barcode_collision.py
+
+      - name: Test split samplesheet
+        run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
+
+      - name: Test cellranger outputs
+        run: testPipeline/templates/cellranger/cellranger_test.sh
+
+      - name: Test upload_cellranger workflow
+        run: testPipeline/templates/upload_cellranger/upload_cellranger_test.sh
+
+  # This workflow contains a single job called "build"
+  integration-tests:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # INTEGRATION TESTS - Put after building the docker image
+      - name: Build Docker nf-fastq-plus-playground
+        run: cd testPipeline && docker build -t nf-fastq-plus-playground .
+
+      - name: samplesheet_stats_main.nf HWG
+        run: >
+          cd testPipeline &&
+          docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+      # NOTE - DOCKER MEMORY (-m):
+      #   - cellranger will stall w/o enough. LOCAL_MEM=1 is fine as long as Docker has > 4GB memory
+      #   - CollectGcBiasMetrics will sometimes receive "java.lang.OutOfMemoryError: Java heap space" w/ -m=4g
+      - name: main.nf cellranger (demux & stats)
+        run: >
+          cd testPipeline &&
+          docker run -m=8g --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
