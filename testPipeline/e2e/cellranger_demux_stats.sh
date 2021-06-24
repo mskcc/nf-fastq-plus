@@ -107,8 +107,6 @@ cd ${TEST_OUTPUT}
 CMD_LOG="nextflow_out"
 touch ${CMD_LOG}
 
-
-
 # Run nextflow in ${CMD}, but while processing, get memory stats. This is helpful in GitHub actions if there are any
 #   out-of-memory errors because it lets users see the most memory-intensive tasks prior to SIGKILL
 # CMD: nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run ${RUN}

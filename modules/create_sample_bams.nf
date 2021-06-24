@@ -33,9 +33,11 @@ workflow create_sample_bams_wkflw {
     CMD_FILE
     SAMPLE_BAM_DIR
 
+  # Scatter all runs containing samples of input RUN so that they can be processed one-by-one
+  # Gather all re-run BAM outputs before doing final merge
+  # Create command to merge all relevant BAMs across runs
   main:
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, OUTPUT_ID.collect() )
-    # Scatter all runs containing samples of input RUN so that they can be processed one-by-one
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
       .multiMap { it ->
@@ -45,13 +47,9 @@ workflow create_sample_bams_wkflw {
       }
       .set{ related_runs_ch }
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
-
-    # Gather all re-run BAM outputs before doing final merge
     create_run_bams_wkflw.out.BAM_CH
       .collect()
       .set{ run_bams_ch }
-
-    # Create command to merge all relevant BAMs across runs
     get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME, SAMPLE_BAM_DIR )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
