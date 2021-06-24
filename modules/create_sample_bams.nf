@@ -32,10 +32,6 @@ workflow create_sample_bams_wkflw {
     STATSDONEDIR
     CMD_FILE
     SAMPLE_BAM_DIR
-
-  # Scatter all runs containing samples of input RUN so that they can be processed one-by-one
-  # Gather all re-run BAM outputs before doing final merge
-  # Create command to merge all relevant BAMs across runs
   main:
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, OUTPUT_ID.collect() )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
