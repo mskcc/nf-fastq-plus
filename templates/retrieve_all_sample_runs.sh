@@ -76,5 +76,5 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
     cat ${SS} | grep ${prj} >> ${TARGET_SAMPLESHEET}
   done
 
-  echo "${run_dir} ${TARGET_SAMPLESHEET} ${BAM_DIR}" >> ${RUN_SS_FILE}
+  echo "${run_dir} $(realpath ${TARGET_SAMPLESHEET}) ${BAM_DIR}" >> ${RUN_SS_FILE}
 done
