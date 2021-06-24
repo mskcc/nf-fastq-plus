@@ -53,11 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Where Am I
-        run: ls -ltr
-      - name: Build nf-fastq-plus-playground
-        id: hello
-        uses: mskcc/nf-fastq-plus@v2
+      - uses: actions/checkout@v2
+      - uses: mskcc/nf-fastq-plus@v2
       - name: samplesheet_stats_main.nf HWG
         run: >
           cd testPipeline &&
