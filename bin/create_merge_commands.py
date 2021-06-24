@@ -115,7 +115,9 @@ def get_sample_manifests(igo_ids, lims_host):
             resp = requests.get(url, auth=(config.LIMS_USER, config.LIMS_PASSWORD), verify=False)
         except:
             print("Request Failed: %s" % url)
-            return [ { id: '' } for id in igo_ids  ] # We need to return a list of mappings, even if empty
+            # We need to return a list of mappings, even if empty
+            return [ { "igoId": id, "cmoPatientId": "NO_CMO_PID", "tumorOrNormal": "NA", "sampleName": id } for id in igo_ids  ]
+
         content = json.loads(resp.content)
         if (resp.status_code != 200 or len(content) == 0):
             # Warning
@@ -246,8 +248,8 @@ def create_merge_commands(merge_info):
     for target_file, file_list in merge_info.items():
         mkdir_cmd="mkdir -p $(dirname %s)" % target_file  # Create parent directory for merged bam prior to writing it
         if len(file_list) == 1:
-            # Don't merge a single file. Create directory for project, move it, and create a symbolic link from the moved to its original location
-            bash_commands += "%s && cp %s %s && ln -s %s %s\n" % (mkdir_cmd, file_list[0], target_file, target_file, file_list[0])
+            # Don't merge a single file. Create directory for project and copy it to the BAM directory
+            bash_commands += "%s && cp %s %s\n" % (mkdir_cmd, file_list[0], target_file)
         else:
             bash_commands += "%s && samtools merge %s %s\n" % (mkdir_cmd, target_file, ' '.join(file_list))
     return bash_commands
