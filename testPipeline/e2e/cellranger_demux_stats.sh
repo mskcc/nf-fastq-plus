@@ -169,7 +169,7 @@ fi
 
 if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"
-  # rm -rf ${TEST_OUTPUT}
+  rm -rf ${TEST_OUTPUT}
 else
   cat ${OUT_FILE}
   printf "ERRORS were found - \n${ERRORS}"
