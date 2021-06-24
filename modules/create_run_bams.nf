@@ -21,7 +21,6 @@ workflow create_run_bams_wkflw {
       BWA, PICARD, config.executor.name )
     merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH, align_to_reference_wkflw.out.OUTPUT_ID,
       RUN_PARAMS_FILE, CMD_FILE, PICARD, STATS_DIR )
-    // mark_duplicates_wkflw will output the input BAM if MD=no, otherwise it will output the MD BAM
     mark_duplicates_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID,
       RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR, STATS_DIR )
 

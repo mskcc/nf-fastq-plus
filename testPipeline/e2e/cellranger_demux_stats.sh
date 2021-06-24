@@ -108,23 +108,22 @@ CMD_LOG="nextflow_out"
 touch ${CMD_LOG}
 
 
+
+# Run nextflow in ${CMD}, but while processing, get memory stats. This is helpful in GitHub actions if there are any
+#   out-of-memory errors because it lets users see the most memory-intensive tasks prior to SIGKILL
+# CMD: nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run ${RUN}
 DONE_FILE="nextflow_done"
-# nextflow -C /nf-fastq-plus/testPipeline/e2e/nextflow.config run /nf-fastq-plus/testPipeline/e2e/../../main.nf --run 200514_ROSALIND_0001_FLOWCELL
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --run ${RUN}; touch ${DONE_FILE}"
 echo $CMD
-
-# Let the command execute, regardless of errors
 set +e
 eval $CMD >> ${CMD_LOG} &
 set -e
-
-echo "Getting memory usage" # TODO - remove
-
+SLEEP_TIME=10
+echo "Getting memory usage every ${SLEEP_TIME} seconds"
 top -bn1 -o %MEM | head -20
-# Print memory usage (important to debug in docker). Remove once script finishes, which will definitely finish and create done file
 while [[ ! -f ${DONE_FILE} ]]; do
   top -bn1 -o %MEM | head -12
-  sleep 10
+  sleep ${SLEEP_TIME}
 done
 rm ${DONE_FILE}
 

@@ -50,6 +50,13 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
 
 #### Options `(-opt)`
 * `-bg`: run process in background 
+                             
+### Re-running Pipeline
+* Demultiplexing will fail if the FASTQ directory already exists.
+    * If demultiplexing is required, remove the FASTQ directory
+    * If demultiplexing can be skipped, add the `--force true` option
+* Stats will not run if the BAM for that sample has been written to the `${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam` folder
+    * If stats need to be re-run, remove the BAM from this folder
                                                   
 ### Example Output
 ```
@@ -134,7 +141,8 @@ There are three files that log information -
 See `nextflow.config` to see where data is being written 
 * `FASTQ_DIR`: Directory where all demultiplexing outputs are written to
 * `STATS_DIR`: Directory where stats are written to while pipeline is running
-* `STATSDONEDIR`: Directory where stats ready for upload are written (`STATS_DIR` may write stats that shouldn't be uploaded) 
+* `STATSDONEDIR`: Directory where stats ready for upload are written (`STATS_DIR` may write stats that shouldn't be uploaded)
+* `SAMPLE_BAM_DIR`: Directory for sample BAMs merged across runs 
 
 ## DEV
 

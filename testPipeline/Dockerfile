@@ -1,12 +1,5 @@
 FROM centos:7
 
-# Download cellranger BCLs if we ever need them
-# RUN curl https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz -o cellranger-tiny-bcl-1.2.0.tar.gz 2> /dev/null && \
-#   mkdir -p /igo/sequencers/rosalind && \
-#   tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz 2> /dev/null && \
-#   rm cellranger-tiny-bcl-1.2.0.tar.gz && \
-#   mv cellranger-tiny-bcl-1.2.0 /igo/sequencers/rosalind/200514_ROSALIND_0001_FLOWCELL
-
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
 RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes/H.sapiens/GRCh37 && \
   curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
@@ -69,7 +62,7 @@ RUN yum -y install bwa
 # Install nextflow (Should be to directory in PATH)
 RUN cd /usr/local/bin && curl -s https://get.nextflow.io | bash
 
-#
+# Download python libraries needed by /bin *.py scripts
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
   python get-pip.py && \
   pip install requests && \

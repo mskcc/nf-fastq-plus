@@ -83,7 +83,6 @@ else
   CMD="${PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${FINAL_BAM} INPUT=${INPUT_BAM}"
   run_cmd $CMD
 
-  # TODO - DELETE THIS?
   cp ${METRICS_FILE} .
 fi
 

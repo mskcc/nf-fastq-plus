@@ -1,11 +1,12 @@
 #!/bin/bash
 # Finds and merges all sample BAMs
 # Nextflow Inputs:
-#   TODO
+#   DEMUXED_DIR, env - FASTQ file directories (in-review)
+#   ARCHIVED_DIR, env - FASTQ file directories (archived)
 # Nextflow Outputs:
-#   TODO
+#   run_samplesheet.txt - Entries for each demux/bam per line:    RUN_DEMUX_DIR, RUN_SAMPLE_SHEET, BAM_DIR
 # Run:
-#   TODO
+#   DEMUXED_DIR=/path/to/FASTQ ARCHIVED_DIR=/archived/path/to/FASTQ ./retrieve_all_sample_runs.sh
 
 #########################################
 # Reads input file and outputs param value
@@ -23,7 +24,7 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-# List of runs and samplesheets
+# NEXTFLOW OUTPUT FILE - Lists sequencing output folder, samplesheet, and BAM directory if it exists
 RUN_SS_FILE="run_samplesheet.txt"
 touch ${RUN_SS_FILE}
 
@@ -49,12 +50,12 @@ for prj in ${PROJECT_DIRS}; do
 done
 cat ${ARCHIVED_RUN_FOLDERS_ALL_FILE} | tr ' ' '\n' | sort | uniq >> ${RUN_FOLDERS_UNIQUE_FILE}
 
-# TODO - Find the sample sheet
+# Locate the samplesheets for each run and output to
 for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
   # We rely on the samplesheet being in the runs folder
   SS=$(find ${run_dir} -type f -name "SampleSheet*")
 
-  # Quit if no samplesheet is found - can't demux
+  # Notify Data Team if no samplesheet has been found
   if [[ -z ${SS} || ! -f ${SS} ]]; then
     NO_SS_RUN=$(basename ${run_dir})
     echo "Failed to find SampleSheet in ${run_dir}" | mail -s "[ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
@@ -76,5 +77,6 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
     cat ${SS} | grep ${prj} >> ${TARGET_SAMPLESHEET}
   done
 
+  # Write entry - each line will be processed separately in nextflow
   echo "${run_dir} $(realpath ${TARGET_SAMPLESHEET}) ${BAM_DIR}" >> ${RUN_SS_FILE}
 done

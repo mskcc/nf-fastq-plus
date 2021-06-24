@@ -130,7 +130,7 @@ else
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
-        FINAL_BAM=${STATS_DIR}/${RUN_TAG}.bam
+        FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
         if [[ -f ${FINAL_BAM} ]]; then
           echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
