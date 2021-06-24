@@ -55,10 +55,9 @@ jobs:
     steps:
       - name: Where Am I
         run: ls -ltr
-      # INTEGRATION TESTS - Put after building the docker image
-      - name: Build Docker nf-fastq-plus-playground
-        run: cd testPipeline && docker build -t nf-fastq-plus-playground .
-
+      - name: Build nf-fastq-plus-playground
+        id: hello
+        uses: mskcc/nf-fastq-plus@v2
       - name: samplesheet_stats_main.nf HWG
         run: >
           cd testPipeline &&
