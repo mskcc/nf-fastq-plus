@@ -3,13 +3,15 @@
 # Nextflow Inputs:
 #   SAMPLESHEET:      Absolute path to the sample sheet that will be used for demultiplexing
 #   RUN_TO_DEMUX_DIR: Absolute path to bcl files
+#   EXECUTOR:         Type of nextflow executor (e.g. local/lsf)
+#
+#   (config)
 #   BCL2FASTQ:        Absolute path to bcl2fastq binary
 #   CELL_RANGER_ATAC: Absolute path to cellranger binary
 #   FASTQ_DIR:        Directory w/ FASTQ files
 #   DEMUX_LOG_FILE:   Log file where demux output is written to
 #   CMD_FILE:         Log file to write commands to
 #   DATA_TEAM_EMAIL:  emails of data team members who should be notified
-#   EXECUTOR:         Type of nextflow executor (e.g. local/lsf)
 # Nextflow Outputs:
 #   DEMUXED_DIR, env: path to where the run has been demuxed to
 #   SAMPLE_SHEET,env: path to samplesheet used to demultiplex

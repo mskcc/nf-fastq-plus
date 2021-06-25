@@ -1,4 +1,17 @@
 #!/bin/bash
+# Runs CellRanger analysis
+# Nextflow Inputs:
+#   RUN_PARAMS_FILE, path - file w/ k=v pairs of parameters
+#   BAM_CH, path - BAM file to analyz
+#   STATSDONEDIR, env - Where to write stats
+#
+#   (config)
+#   PICARD,           picard command
+#   CELL_RANGER_ATAC, cellranger binary
+#   CELL_RANGER,      cellranger binary
+#   CELL_RANGER_CNV,  cellranger binary
+#   RUN_PARAMS_FILE,  cellranger binary
+#   CMD_FILE          Absolute path to file that logs commands
 
 REGEX_10X_Genomics_ATAC="10X_Genomics_ATAC"
 REGEX_10X_Genomics_VDJ="10X_Genomics.*VDJ.*"

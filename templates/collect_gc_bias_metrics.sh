@@ -1,11 +1,13 @@
 #!/bin/bash
 # Runs Picard's CollectGcBiasMetrics
 # Nextflow Inputs:
-#   PICARD,     Picard Command
-#   STATS_DIR,  Directory to write stats files to
+#   RUN_PARAMS_FILE, path - file w/ k=v pairs of parameters
+#   BAM_CH, path - BAM file to analyz
+#   STATSDONEDIR, env - Where to write stats
 #
-#   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
-#   BAM_CH, Bam files to calculate metrics on
+#   (config)
+#   PICARD,           picard Command
+#   CMD_FILE          Absolute path to file that logs commands
 # Nextflow Outputs:
 #   None
 
