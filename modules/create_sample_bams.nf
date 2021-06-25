@@ -51,6 +51,10 @@ workflow create_sample_bams_wkflw {
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
       .set { merge_cmd_ch }
-    task( merge_cmd_ch | collect | unique, CMD_FILE )
+    merge_cmd_ch
+      .collect()
+      .unique()
+      .set{ unique_merge_cmd_ch }
+    task( unique_merge_cmd_ch, CMD_FILE )
     out( task.out[0], "create_sample_bams" )
 }
