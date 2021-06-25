@@ -34,7 +34,7 @@ jobs:
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
       - name: Test create merge commands
-        run: cd ./bin/test && pip install requests && ./bin/test/test_create_merge_commands.py
+        run: pip install requests && cd ./bin/test && python test_create_merge_commands.py
 
   # Add tests for templates/*
   unit-tests:
