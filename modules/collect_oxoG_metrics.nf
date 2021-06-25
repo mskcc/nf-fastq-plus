@@ -25,7 +25,7 @@ workflow collect_oxoG_metrics_wkflw {
     INPUT_ID
 
   main:
-    task( PARAMS, BAM_CH, INPUT_ID, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    task( PARAMS, BAM_CH, INPUT_ID )
     out( task.out[0], "collect_oxoG_metrics" )
 
   emit:
