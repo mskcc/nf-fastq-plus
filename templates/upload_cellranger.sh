@@ -48,15 +48,17 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
     PROJECT=$(basename ${PROJECT_DIR})            # /igo/staging/stats/RUN/cellranger/project         -> project
     RUN_DIR=$(dirname $(dirname ${PROJECT_DIR}))
     RUN=$(basename ${RUN_DIR})                    # /igo/staging/stats/RUN                            -> RUN
+    # Remove any trailing P's, run-qc makes request like, ".../ngs-stats/getCellRangerSample?project=12186&type=count"
+    CLEANED_PROJECT=$(echo ${PROJECT} | sed "s/^P//g")
 
-    echo "Checking RUN=${RUN} PROJECT=${PROJECT} SAMPLE=${SAMPLE} for files (${FILES})"
+    echo "Checking RUN=${RUN} CLEANED_PROJECT=${CLEANED_PROJECT} SAMPLE=${SAMPLE} for files (${FILES})"
     for f in ${FILES}; do
       completed_file=$(find ${DIR} -type f -name ${f})
       if [[ -z ${completed_file} || ! -f ${completed_file} ]]; then
         printf "\tSkipping Upload: No ${f}\n"
         MISSING=YES
       else
-        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
+        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${CLEANED_PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
         mkdir -p ${UPLOAD_DIR}
         printf "\tFound ${f}. Copying to ${UPLOAD_DIR}\n"
         cp ${completed_file} ${UPLOAD_DIR}
@@ -64,8 +66,8 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
     done
 
     if [[ -z ${MISSING} ]]; then
-      printf "\tUploading CellRanger stats for RUN=${RUN} PROJECT=${PROJECT} SAMPLE=${SAMPLE}\n"
-      JSON="{ 'samples': [ { 'sample': '${SAMPLE}', 'type': '${CR_TYPE}', 'project': '${PROJECT}', 'run': '${RUN}'}]}"
+      printf "\tUploading CellRanger stats for RUN=${RUN} CLEANED_PROJECT=${CLEANED_PROJECT} SAMPLE=${SAMPLE}\n"
+      JSON="{ 'samples': [ { 'sample': '${SAMPLE}', 'type': '${CR_TYPE}', 'project': '${CLEANED_PROJECT}', 'run': '${RUN}'}]}"
       JSON_STR=$(echo ${JSON} | sed "s/'/\"/g") # replace all single-quotes w/ double-quotes for valid json
 
       CURL_CMD="curl -d '${JSON_STR}' -H 'Content-Type: application/json' -X POST 'http://delphi.mskcc.org:8080/ngs-stats/saveCellRangerSample'"
