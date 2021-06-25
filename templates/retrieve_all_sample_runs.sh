@@ -60,6 +60,7 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
     NO_SS_RUN=$(basename ${run_dir})
     echo "Failed to find SampleSheet in ${run_dir}" | mail -s "[ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
     echo "ERROR - No SampleSheet in ${run_dir}"
+    # TODO - Add way to retrieve a samplesheet
     continue
   fi
 
