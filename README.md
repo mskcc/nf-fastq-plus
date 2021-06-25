@@ -50,86 +50,13 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
 
 #### Options `(-opt)`
 * `-bg`: run process in background 
-                             
+         
 ### Re-running Pipeline
 * Demultiplexing will fail if the FASTQ directory already exists.
     * If demultiplexing is required, remove the FASTQ directory
     * If demultiplexing can be skipped, add the `--force true` option
 * Stats will not run if the BAM for that sample has been written to the `${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam` folder
     * If stats need to be re-run, remove the BAM from this folder
-                                                  
-### Example Output
-```
-$ nextflow /igo/work/streidd/nf-fastq-plus/main.nf --run 210406_SCOTT_0325_AH2VTCBGXJ
-N E X T F L O W  ~  version 20.07.1
-Launching `/igo/work/streidd/nf-fastq-plus/main.nf` [infallible_descartes] - revision: c24ecac024
-WARN: DSL 2 IS AN EXPERIMENTAL FEATURE UNDER DEVELOPMENT -- SYNTAX MAY CHANGE IN FUTURE RELEASE
-WARN: Access to undefined parameter `force` -- Initialise it to a default value eg. `params.force = some_value`
-         I G O   P I P E L I N E
-==========================================
-RUN=210406_SCOTT_0325_AH2VTCBGXJ
-DEMUX_ALL=false
-
-SEQUENCER_DIR="/igo/sequencers"
-FASTQ_DIR=/igo/stats/NF_TESTING/FASTQ
-STATS_DIR=/igo/stats/NF_TESTING/stats
-STATSDONEDIR="/igo/stats/DONE"
-
-DEMUX_LOG_FILE=/igo/stats/NF_TESTING/commands/bcl2fastq.log
-LOG_FILE=/igo/stats/NF_TESTING/log/nf_fastq_run.log
-CMD_FILE=/igo/stats/NF_TESTING/commands/commands.log
-
-LAB_SAMPLE_SHEET_DIR=/pskis34/LIMS/LIMS_SampleSheets
-PROCESSED_SAMPLE_SHEET_DIR=/igo/stats/NF_TESTING/DividedSampleSheets
-CROSSCHECK_DIR=/home/igo/nextflow/crosscheck_metrics
-
-DATA_TEAM_EMAIL=streidd@mskcc.org
-IGO_EMAIL=streidd@mskcc.org
-
-BWA: /opt/common/CentOS_7/bwa/bwa-0.7.17/bwa
-PICARD: java -jar /home/igo/resources/picard2.21.8/picard.jar
-CELL_RANGER_ATAC: /home/nabors/cellranger-atac-1.1.0/cellranger-atac
-
-executor >  lsf (304), local (16)
-[92/fece7b] process > dependency_check_wkflw:task                                                [100%] 1 of 1 ✔
-[95/694167] process > dependency_check_wkflw:out                                                 [100%] 1 of 1 ✔
-[0c/b7e73e] process > detect_runs_wkflw:task                                                     [100%] 1 of 1 ✔
-[ef/f3c804] process > detect_runs_wkflw:out                                                      [100%] 1 of 1 ✔
-[80/62c568] process > split_sample_sheet_wkflw:split_sample_sheet_task                           [100%] 1 of 1 ✔
-[4e/475c03] process > split_sample_sheet_wkflw:out                                               [100%] 1 of 1 ✔
-[14/f1a2a3] process > demultiplex_wkflw:task (1)                                                 [100%] 1 of 1 ✔
-[12/fffb67] process > demultiplex_wkflw:out (1)                                                  [100%] 1 of 1 ✔
-[a9/a410ad] process > generate_run_params_wkflw:generate_run_params_task (SCOTT_0325_AH2VTCBGXJ) [100%] 1 of 1 ✔
-[2d/e1dfb9] process > generate_run_params_wkflw:out (1)                                          [100%] 1 of 1 ✔
-[18/005ef1] process > generate_run_params_wkflw:create_sample_lane_jobs (14)                     [100%] 14 of 14 ✔
-[ac/227a3d] process > generate_run_params_wkflw:out2 (14)                                        [100%] 14 of 14 ✔
-[6a/ff5d15] process > align_to_reference_wkflw:align_to_reference_task (14)                      [100%] 14 of 14 ✔
-[a1/4d1cdf] process > align_to_reference_wkflw:out (14)                                          [100%] 14 of 14 ✔
-[43/d25e3e] process > merge_sams_wkflw:task (R34_T0_1_IGO_11878_14)                              [100%] 14 of 14 ✔
-[09/1c1205] process > merge_sams_wkflw:out (14)                                                  [100%] 14 of 14 ✔
-[b5/19c7c3] process > mark_duplicates_wkflw:task (R34_GL_2_IGO_11878_8)                          [100%] 14 of 14 ✔
-[36/117ba3] process > mark_duplicates_wkflw:out (14)                                             [100%] 14 of 14 ✔
-[36/df72c9] process > alignment_summary_wkflw:task (R34_GL_2_IGO_11878_8)                        [100%] 14 of 14 ✔
-[19/14f0b7] process > alignment_summary_wkflw:out (14)                                           [100%] 14 of 14 ✔
-[92/148ae9] process > collect_hs_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                       [100%] 14 of 14 ✔
-[38/6909f2] process > collect_hs_metrics_wkflw:out (14)                                          [100%] 14 of 14 ✔
-[b6/b9a14c] process > collect_oxoG_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                     [100%] 14 of 14 ✔
-[8e/69f233] process > collect_oxoG_metrics_wkflw:out (14)                                        [100%] 14 of 14 ✔
-[1f/dacf9a] process > collect_wgs_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                      [100%] 14 of 14 ✔
-[a6/a02bbb] process > collect_wgs_metrics_wkflw:out (14)                                         [100%] 14 of 14 ✔
-[e0/82ebfa] process > collect_rna_metrics_wkflw:task (R34_GL_2_IGO_11878_8)                      [100%] 14 of 14 ✔
-[45/aca57a] process > collect_rna_metrics_wkflw:out (14)                                         [100%] 14 of 14 ✔
-[9a/66f99a] process > collect_gc_bias_wkflw:task (R34_GL_2_IGO_11878_8)                          [100%] 14 of 14 ✔
-[79/bf3f13] process > collect_gc_bias_wkflw:out (14)                                             [100%] 14 of 14 ✔
-[f5/f25d51] process > upload_stats_wkflw:task (14)                                               [100%] 14 of 14 ✔
-[e6/77ee93] process > upload_stats_wkflw:email                                                   [100%] 1 of 1 ✔
-[d6/fea9e9] process > upload_stats_wkflw:out (14)                                                [100%] 14 of 14 ✔
-[96/2bd792] process > fingerprint_wkflw:task (1)                                                 [100%] 1 of 1 ✔
-Completed at: 07-Apr-2021 10:41:25
-Duration    : 15m 14s
-CPU hours   : 21.4
-Succeeded   : 320
-```
 
 ### Logging
 There are three files that log information - 
@@ -146,7 +73,7 @@ See `nextflow.config` to see where data is being written
 
 ## DEV
 
-Notes:
+### Notes:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
 * Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
 * Passing parameters is done via a params file w/ `key=value` space-delimited values. To use this file, make sure that 
@@ -287,6 +214,18 @@ process {
   executor=""
 }
 ...
+```
+
+### Testing 
+Build the dockerfile from the root
+```
+docker image build -t nf-fastq-plus-playground .
+
+# Test stats-only workflow
+docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+
+# Test e2e (demux & stats)
+docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
 ```
 
 ## Crontab Setup
