@@ -1,0 +1,6 @@
+# action.yml
+name: 'Build nf-fastq-plus-playground'
+description: 'Builds nf-fastq-plus-playground w/ required bioinformatics tools & test data'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
