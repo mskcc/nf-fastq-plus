@@ -5,7 +5,6 @@ process task {
 
   input:
     path LAUNCHED_CELLRANGER
-    env CELLRANGER_WAIT_TIME
 
   output:
     stdout()
@@ -17,8 +16,7 @@ process task {
 workflow upload_cellranger_wkflw {
   take:
     LAUNCHED_CELLRANGER
-    CELLRANGER_WAIT_TIME
   main:
-    task( LAUNCHED_CELLRANGER, CELLRANGER_WAIT_TIME )
+    task( LAUNCHED_CELLRANGER )
     out( task.out[0], "upload_cellranger" )
 }
