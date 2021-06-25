@@ -6,7 +6,7 @@ include { log_out as out } from './log_out'
 process task {
   label 'BSUB_OPTIONS_SMALL'
 
-  tag 'SAMPLE_BAM_$OUTPUT_ID'
+  tag "SAMPLE_BAM_$OUTPUT_ID"
 
   input:
     env MERGE_CMD
