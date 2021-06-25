@@ -54,10 +54,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+      - uses: docker/build-push-action@v2
+        with:
+          tags: test-image:latest
+          push: false
       - uses: mskcc/nf-fastq-plus@v2
-      
-      - name: samplesheet_stats_main.nf HWG
-        run: testPipeline/e2e/samplesheet_stats_main_test_hwg.sh
-        
-      - name: main.nf cellranger (demux & stats)
-        run: testPipeline/e2e/cellranger_demux_stats.sh
+        with:
+          image: test-image:latest
+          run: testPipeline/e2e/samplesheet_stats_main_test_hwg.sh
+          name: hwg
+      - uses: mskcc/nf-fastq-plus@v2
+        with:
+          image: test-image:latest
+          run: testPipeline/e2e/cellranger_demux_stats.sh
+          name: main
