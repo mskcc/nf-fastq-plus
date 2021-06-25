@@ -5,9 +5,7 @@ process task {
 
   input:
     path SAMPLESHEET_CH
-    env CROSSCHECK_DIR
     path READY_TO_FINGERPRINT
-    env CMD_FILE
 
   shell:
     template 'fingerprint.sh'
@@ -16,10 +14,8 @@ process task {
 workflow fingerprint_wkflw {
   take:
     SAMPLESHEET_CH
-    CROSSCHECK_DIR
     READY_TO_FINGERPRINT
-    CMD_FILE
   main:
-    task( SAMPLESHEET_CH, CROSSCHECK_DIR, READY_TO_FINGERPRINT, CMD_FILE )
+    task( SAMPLESHEET_CH, READY_TO_FINGERPRINT )
 }
 

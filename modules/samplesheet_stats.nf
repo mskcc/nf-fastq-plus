@@ -45,5 +45,5 @@ workflow samplesheet_stats_wkflw {
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR,
         IGO_EMAIL
     )
-    fingerprint_wkflw( SAMPLESHEET, CROSSCHECK_DIR, upload_stats_wkflw.out.UPLOAD_DONE, CMD_FILE )
+    fingerprint_wkflw( SAMPLESHEET, upload_stats_wkflw.out.UPLOAD_DONE )
 }
