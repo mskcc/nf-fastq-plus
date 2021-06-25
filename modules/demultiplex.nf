@@ -9,6 +9,7 @@ process task {
   input:
     env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
+    env EXECUTOR
     val RUNNAME
 
   output:
@@ -24,6 +25,7 @@ workflow demultiplex_wkflw {
   take:
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
+    EXECUTOR
 
   main:
     // splitText() will submit each line (a split sample sheet .csv) of @split_sample_sheets_path seperately
@@ -34,7 +36,7 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // SampleSheet
       }
       .set{ split_ch }
-    task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, split_ch.RUNNAME )
+    task( split_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, split_ch.RUNNAME )
     out( task.out[0], "demultiplex" )
 
   emit:
