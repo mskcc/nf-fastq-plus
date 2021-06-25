@@ -9,6 +9,7 @@ process task {
     path PARAMS
     path BAM_FILES
     val INPUT_ID
+    env STATSDONEDIR
 
   output:
     stdout()
@@ -23,8 +24,9 @@ workflow cellranger_wkflw {
     PARAMS
     BAM_FILES
     INPUT_ID
+    STATSDONEDIR
   main:
-    task( PARAMS, BAM_FILES, INPUT_ID )
+    task( PARAMS, BAM_FILES, INPUT_ID, STATSDONEDIR )
     out( task.out[0], "10x" )
   emit:
     LAUNCHED_CELLRANGER = task.out.LAUNCHED_CELLRANGER

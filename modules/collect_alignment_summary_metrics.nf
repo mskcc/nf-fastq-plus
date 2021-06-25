@@ -9,6 +9,7 @@ process task {
     path PARAMS
     path BAM_FILES
     val INPUT_ID
+    env STATSDONEDIR
 
   output:
     stdout()
@@ -23,8 +24,9 @@ workflow alignment_summary_wkflw {
     PARAMS
     BAM_FILES
     INPUT_ID
+    STATSDONEDIR
   main:
-    task( PARAMS, BAM_FILES, INPUT_ID )
+    task( PARAMS, BAM_FILES, INPUT_ID, STATSDONEDIR )
     out( task.out[0], "collect_alignment-summary_metrics" )
   emit:
     METRICS_FILE = task.out.METRICS_FILE

@@ -9,6 +9,7 @@ process task {
     path PARAMS
     path BAM_CH
     val INPUT_ID
+    env STATSDONEDIR
 
   output:
     stdout()
@@ -23,8 +24,9 @@ workflow collect_gc_bias_wkflw {
     PARAMS
     BAM_CH
     INPUT_ID
+    STATSDONEDIR
   main:
-    task( PARAMS, BAM_CH, INPUT_ID )
+    task( PARAMS, BAM_CH, INPUT_ID, STATSDONEDIR )
     out( task.out[0], "collect_gc_bias" )
   emit:
     METRICS_FILE = task.out.METRICS_FILE
