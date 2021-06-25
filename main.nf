@@ -51,7 +51,6 @@ workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( RUN, DEMUX_ALL )
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH )
-  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR,
-    BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE, EXECUTOR, LOCAL_MEM )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR )
   samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, STATS_DIR, STATSDONEDIR )
 }
