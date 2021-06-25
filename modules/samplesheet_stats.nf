@@ -36,8 +36,7 @@ workflow samplesheet_stats_wkflw {
     collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
     collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
     collect_rna_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-    collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
-        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_gc_bias_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
     cellranger_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
         CELL_RANGER_ATAC, CELL_RANGER, CELL_RANGER_CNV, RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR  )
     upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER, CELLRANGER_WAIT_TIME )
