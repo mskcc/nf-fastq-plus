@@ -49,7 +49,7 @@ println """\
 
 workflow {
   dependency_check_wkflw()
-  detect_runs_wkflw( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR, DATA_TEAM_EMAIL )
+  detect_runs_wkflw( RUN, DEMUX_ALL )
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH, COPIED_SAMPLE_SHEET_DIR, PROCESSED_SAMPLE_SHEET_DIR,
     LAB_SAMPLE_SHEET_DIR, SPLIT_SAMPLE_SHEETS )
   demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR,
