@@ -32,8 +32,7 @@ workflow samplesheet_stats_wkflw {
     mark_duplicates_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID,
         RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR, STATS_DIR )
     alignment_summary_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
-    collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
-        RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
+    collect_hs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID )
     collect_oxoG_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
         RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR )
     collect_wgs_metrics_wkflw( mark_duplicates_wkflw.out.PARAMS, mark_duplicates_wkflw.out.BAM_CH, mark_duplicates_wkflw.out.OUTPUT_ID,
