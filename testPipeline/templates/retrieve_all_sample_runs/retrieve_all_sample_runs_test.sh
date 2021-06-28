@@ -1,12 +1,7 @@
-
-
+#!/bin/bash
+# Tests that retrieve_all_sample_runs workflow successfully finds projects across runs
 
 LOCATION=$(realpath $(dirname "$0"))
-
-pwd
-echo ${LOCATION}
-realpath ${LOCATION}/../../../
-ls ${LOCATION}/../../../
 
 RUN=ROSALIND_0001_FLOWCELL
 PRJ=Project_00001
