@@ -13,7 +13,8 @@ There are two options for running the modules in this pipeline -
 * [Crontab Setup](#crontab-setup)
 
 ### Demultiplex and Stats
-**Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing run
+**Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing 
+run
 ```
 # Basic
 nextflow main.nf --run ${RUN}
@@ -61,7 +62,8 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
 
 ### Please Read:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
-* Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
+* Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not
+ merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
 
 ### Project Structure
 * Follow the project structure below -
@@ -75,13 +77,16 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
 └── templates
     └── process.sh
 ```
-* `templates`: Where all scripts (bash, python, etc.) will go. Don't rename this directory because nextflow is seutp to look for a directory of this name where the nextflow script is run
+* `templates`: Where all scripts (bash, python, etc.) will go. Don't rename this directory because nextflow is seutp to 
+look for a directory of this name where the nextflow script is run
 * `modules`: Directory containing nextflow modules that can be imported into `main.nf`
 
 ### Adding a new workflow
-* Passing sample-specific parameters (e.g. Reference Genome, Recipe, etc.) is done via a params file w/ `key=value` space-delimited values. To use this file, make sure that 
-a `{PREVIOUS_WORKFLOW}.out.PARAMS` file is passed to the workflow and specified as a path-type channel. Make sure to use the `.out.PARAMS` of the workflow that the `next_wkflw` should be dependent on. I've noticed 
-that nextflow won't pass all outputs of a workflow together (e.g. BAM of one task and the run params folder of another task) 
+* Passing sample-specific parameters (e.g. Reference Genome, Recipe, etc.) is done via a params file w/ `key=value` 
+space-delimited values. To use this file, make sure that a `{PREVIOUS_WORKFLOW}.out.PARAMS` file is passed to the 
+workflow and specified as a path-type channel. Make sure to use the `.out.PARAMS` of the workflow that the `next_wkflw` 
+should be dependent on. I've noticed that nextflow won't pass all outputs of a workflow together (e.g. BAM of one task 
+and the run params folder of another task) 
 
 **Steps for Adding a New Module**
 1) Add module
@@ -101,7 +106,8 @@ process {PROCESS_NAME} {
   template '{PROCESS_SCRIPT}'
 }
 ```
-* You don't need to import the template script. From the documentation, "Nextflow looks for the template file in the directory templates that must exist in the same folder where the Nextflow script file is located"
+* You don't need to import the template script. From the documentation, "Nextflow looks for the template file in the 
+directory templates that must exist in the same folder where the Nextflow script file is located"
 * Note: Add the stdout() as an output if you would like to log the out to the configured log file
 
 2) Add template
@@ -110,7 +116,8 @@ process {PROCESS_NAME} {
     └── process.sh
 ```
 * Write whatever script with the appropriate header (e.g. `#!/bin/bash`) that includes the following
-	* `Nextflow Inputs`: Inputs defined as nextflow `Input` values. Add (Input) if defined in process `Input` or (Config) if defined in `nextflow.config
+	* `Nextflow Inputs`: Inputs defined as nextflow `Input` values. Add (Input) if defined in process `Input` or 
+	(Config) if defined in `nextflow.config
 	* `Nextflow Outputs`: Outputs that will be defined in the execution context
 	* `Run`: A sample command of how to run the script
 ```
@@ -156,15 +163,16 @@ workflow wkflw {
     VALUE = task.out.VALUE
 }
 ```
-* **Why?** Nextflow channels emit asynchronously. This means that upstream processes will emit and pass to the next available 
-process and not necessarily the expected one. For instance, if process A emits parameters used by all downstream 
-processes and process B emits the value that will be transformed by that parameter, process C will not necessarily 
-receive the proccess A parameters that apply to value emited by process B because each process has an independent, 
-asynchronous channel.
+* **Why?** Nextflow channels emit asynchronously. This means that upstream processes will emit and pass to the next 
+available process and not necessarily the expected one. For instance, if process A emits parameters used by all 
+downstream processes and process B emits the value that will be transformed by that parameter, process C will not 
+necessarily receive the proccess A parameters that apply to value emited by process B because each process has an 
+independent, asynchronous channel.
  
 4) (Optional) Add logging
 
-In the modules, convert the exported member to a workflow that calls an included `log_out` process to log everything sent to stdout by the process. See below,
+In the modules, convert the exported member to a workflow that calls an included `log_out` process to log everything 
+sent to stdout by the process. See below,
 ```
 include log_out as out from './log_out'
 
@@ -231,6 +239,8 @@ LOCAL_MEM                   # GB of memory to give a process (e.g. demultiplexin
 ```
 
 ## Crontab Setup
+The pipeline can be kicked off automatically by the `crontab/detect_copied_sequencers.sh` script. Add the following
+to enable the crontab
 ```
 # crontab -e
 SHELL=/bin/bash
