@@ -320,9 +320,10 @@ const updateTraceModel = async function(nextflowEvent) {
   const status = nextflowEvent['event'];
   const workDir = trace['workdir'];
   const process = trace['process'];
+  const isFailed = trace['status'] === 'FAILED';
 
   const traceInfo = {
-    status, runName, runId, time, trace, workDir, process
+    status, runName, runId, time, trace, workDir, process, isFailed
   };
   const traceDoc = await TraceModel(traceInfo).save();
   if(traceDoc === null){

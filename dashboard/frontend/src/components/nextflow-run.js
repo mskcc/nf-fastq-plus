@@ -17,6 +17,35 @@ function NextflowRun({nextflowRun}) {
         return [faExclamationCircle, 'mskcc-red'];
     };
 
+    /**
+     * Reads through all recorded trace events of a nextflow run and returns the failed task if present
+     * @param nxfRun {
+          nxfRuns: [
+            {
+              trace: [
+                {
+                    isFailed: bool
+                    process: string
+                }
+              ],
+            },
+        }
+     * @returns {string|*|string}
+     */
+    const failedStep = (nxfRun) => {
+        const traces = nxfRun.trace || [];
+        const failed = traces.filter(t => t.isFailed);
+        if(failed.length > 1){
+            console.log(failed);
+            return 'Multiple failed';
+        }
+        if(failed.length === 1){
+            const failedTasks = failed[0]['process'] || '';
+            return failedTasks;
+        }
+        return '';
+    };
+
     const [icon, color] = getIcon(nextflowRun);
     return <Row className={'simple-border height-inherit'}>
         <Col xs={2}>
@@ -26,6 +55,7 @@ function NextflowRun({nextflowRun}) {
             <p className={'hv-align'}>{new Date(nextflowRun.time).toLocaleString()}</p>
         </Col>
         <Col xs={8} className={'height-inherit word-wrap scroll-y'}>
+            <p>{ failedStep(nextflowRun) }</p>
             {
                 nextflowRun.errorMessage ? nextflowRun.errorMessage.map((line) => {
                     return <p
