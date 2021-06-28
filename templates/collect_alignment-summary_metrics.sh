@@ -1,10 +1,15 @@
 #!/bin/bash
 # Runs Picard's CollectAlignmentSummaryMetrics
 # Nextflow Inputs:
+#   RUN_PARAMS_FILE, path - file w/ k=v pairs of parameters
+#   BAM_CH, path - BAM file to analyz
+#   STATSDONEDIR, env - Where to write stats
+#
+#   (config)
 #   PICARD,     Picard Command
-# 
 #   RUN_PARAMS_FILE, space delimited k=v pairs of run parameters
 #   BAM_CH, Bam files to calculate metrics on
+#   CMD_FILE          Absolute path to file that logs commands
 # Nextflow Outputs:
 #   None
 
