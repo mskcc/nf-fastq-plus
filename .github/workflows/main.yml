@@ -51,6 +51,8 @@ jobs:
         run: testPipeline/templates/cellranger/cellranger_test.sh
       - name: Test upload_cellranger workflow
         run: testPipeline/templates/upload_cellranger/upload_cellranger_test.sh
+      - name: Test retrieve_all_sample_runs workflow
+        run: testPipeline/templates/retrieve_all_sample_runs/retrieve_all_sample_runs_test.sh
 
   # Add tests for end-to-end workflow validation here. These will run w/ docker image
   integration-tests:

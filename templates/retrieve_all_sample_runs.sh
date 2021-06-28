@@ -6,10 +6,11 @@
 #   (config)
 #   FASTQ_DIR, env - FASTQ file directories (in-review)
 #   ARCHIVED_DIR, env - FASTQ file directories (archived)
+#   PROCESSED_SAMPLE_SHEET, env - Directory where all SampleSheets processed by pipeline are written to
 # Nextflow Outputs:
 #   run_samplesheet.txt - Entries for each demux/bam per line:    RUN_DEMUX_DIR, RUN_SAMPLE_SHEET, BAM_DIR
 # Run:
-#   DEMUXED_DIR= FASTQ_DIR=/path/to/FASTQ ARCHIVED_DIR=/archived/path/to/FASTQ ./retrieve_all_sample_runs.sh
+#   DEMUXED_DIR=/path/to/FASTQ/PRJ_ID FASTQ_DIR=/path/to/FASTQ ARCHIVED_DIR=/archived/path/to/FASTQ ./retrieve_all_sample_runs.sh
 
 # NEXTFLOW OUTPUT FILE - Lists sequencing output folder, samplesheet, and BAM directory if it exists
 RUN_SS_FILE="run_samplesheet.txt"
@@ -50,7 +51,7 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
   RUN_SS=$(find ${run_dir} -type f -name "SampleSheet*")
 
   # SampleSheets should be present in the FASTQ directory. If not, try to find one and error if not present
-  if [[ -z ${SS} || ! -f ${SS} ]]; then
+  if [[ -z ${RUN_SS} || ! -f ${RUN_SS} ]]; then
     NO_SS_RUN=$(basename ${run_dir})
     REGEX="SampleSheet_*${NO_SS_RUN}.csv"
     PROCESSED_SAMPLE_SHEET=$(find ${PROCESSED_SAMPLE_SHEET_DIR} -type f -name "${REGEX}")
@@ -76,7 +77,7 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
 
   # Create a new samplesheet with only the Projects in this run (To avoid redoing any work)
   TARGET_SAMPLESHEET="$(basename ${RUN_SS} | cut -d'.' -f1)___FOR_MERGE.csv"
-  sed '/Lane,/q' ${SS} > ${TARGET_SAMPLESHEET}
+  sed '/Lane,/q' ${RUN_SS} > ${TARGET_SAMPLESHEET}
   for prj in ${PROJECT_DIRS}; do
     cat ${RUN_SS} | grep ${prj} >> ${TARGET_SAMPLESHEET}
   done
