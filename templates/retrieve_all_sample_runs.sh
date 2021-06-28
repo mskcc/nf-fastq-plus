@@ -1,12 +1,15 @@
 #!/bin/bash
 # Finds and merges all sample BAMs
 # Nextflow Inputs:
-#   DEMUXED_DIR, env - FASTQ file directories (in-review)
+#   DEMUXED_DIR, env - FASTQ output of Run
+#
+#   (config)
+#   FASTQ_DIR, env - FASTQ file directories (in-review)
 #   ARCHIVED_DIR, env - FASTQ file directories (archived)
 # Nextflow Outputs:
 #   run_samplesheet.txt - Entries for each demux/bam per line:    RUN_DEMUX_DIR, RUN_SAMPLE_SHEET, BAM_DIR
 # Run:
-#   DEMUXED_DIR=/path/to/FASTQ ARCHIVED_DIR=/archived/path/to/FASTQ ./retrieve_all_sample_runs.sh
+#   DEMUXED_DIR= FASTQ_DIR=/path/to/FASTQ ARCHIVED_DIR=/archived/path/to/FASTQ ./retrieve_all_sample_runs.sh
 
 #########################################
 # Reads input file and outputs param value
@@ -34,9 +37,11 @@ RUN_FOLDERS_UNIQUE_FILE="run_dirs_uniq.txt"
 # Write all runs w/ that project to a file
 RUN_FOLDERS_ALL_FILE="run_dirs_all.txt"
 PROJECT_DIRS=$(find ${DEMUXED_DIR} -mindepth 1 -maxdepth 1 -type d -name "Project_*" -exec basename {} \;)
+echo ${PROJECT_DIRS}
 for prj in ${PROJECT_DIRS}; do
   find ${FASTQ_DIR} -mindepth 2 -maxdepth 2 -type d -name ${prj} -exec dirname {} \; >> ${RUN_FOLDERS_ALL_FILE}
 done
+
 # Filter only the unique runs
 cat ${RUN_FOLDERS_ALL_FILE} | tr ' ' '\n' | sort | uniq >> ${RUN_FOLDERS_UNIQUE_FILE}
 
@@ -50,10 +55,11 @@ for prj in ${PROJECT_DIRS}; do
 done
 cat ${ARCHIVED_RUN_FOLDERS_ALL_FILE} | tr ' ' '\n' | sort | uniq >> ${RUN_FOLDERS_UNIQUE_FILE}
 
+echo "List of Related Runs: $(cat ${RUN_FOLDERS_UNIQUE_FILE} | cut -d'\n' ' ')"
 # Locate the samplesheets for each run and output to
 for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
   # We rely on the samplesheet being in the runs folder
-  SS=$(find ${run_dir} -type f -name "SampleSheet*")
+  RUN_SS=$(find ${run_dir} -type f -name "SampleSheet*")
 
   # SampleSheets should be present in the FASTQ directory. If not, try to find one and error if not present
   if [[ -z ${SS} || ! -f ${SS} ]]; then
@@ -66,8 +72,8 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
       echo "${fail_msg}" | mail -s "[FATAL ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
       exit 1
     else
-      RUN_SS_FILE=${PROCESSED_SAMPLE_SHEET}
-      err_msg="Failed to find SampleSheet in ${run_dir}. Using ${RUN_SS_FILE}"
+      RUN_SS=${PROCESSED_SAMPLE_SHEET}
+      err_msg="Failed to find SampleSheet in ${run_dir}. Using ${RUN_SS}"
       echo ${err_msg}
       echo "${err_msg}" | mail -s "[WARNING - FASTQ directory missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
     fi
@@ -81,10 +87,10 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
   fi
 
   # Create a new samplesheet with only the Projects in this run (To avoid redoing any work)
-  TARGET_SAMPLESHEET="$(basename ${SS} | cut -d'.' -f1)___FOR_MERGE.csv"
+  TARGET_SAMPLESHEET="$(basename ${RUN_SS} | cut -d'.' -f1)___FOR_MERGE.csv"
   sed '/Lane,/q' ${SS} > ${TARGET_SAMPLESHEET}
   for prj in ${PROJECT_DIRS}; do
-    cat ${SS} | grep ${prj} >> ${TARGET_SAMPLESHEET}
+    cat ${RUN_SS} | grep ${prj} >> ${TARGET_SAMPLESHEET}
   done
 
   # Write entry - each line will be processed separately in nextflow
