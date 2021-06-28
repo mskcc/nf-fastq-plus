@@ -1,4 +1,4 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 process task {
   label 'BSUB_OPTIONS_SMALL'
@@ -13,13 +13,13 @@ process task {
 
   output:
     stdout()
-    path "launched_cellranger_dirs.txt", emit: LAUNCHED_CELLRANGER
+    path "*___AM.txt", emit: METRICS_FILE
 
   shell:
-    template 'cellranger.sh'
+    template 'collect_alignment-summary_metrics.sh'
 }
 
-workflow cellranger_wkflw {
+workflow alignment_summary_wkflw {
   take:
     PARAMS
     BAM_FILES
@@ -27,7 +27,8 @@ workflow cellranger_wkflw {
     STATSDONEDIR
   main:
     task( PARAMS, BAM_FILES, INPUT_ID, STATSDONEDIR )
-    out( task.out[0], "10x" )
+    out( task.out[0], "collect_alignment-summary_metrics" )
   emit:
-    LAUNCHED_CELLRANGER = task.out.LAUNCHED_CELLRANGER
+    METRICS_FILE = task.out.METRICS_FILE
 }
+

@@ -1,4 +1,4 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 process task {
   label 'BSUB_OPTIONS_SMALL'
@@ -13,13 +13,13 @@ process task {
 
   output:
     stdout()
-    path "*___WGS.txt", emit: METRICS_FILE
+    path "*___HS.txt", emit: METRICS_FILE
 
   shell:
-    template 'collect_wgs_metrics.sh'
+    template 'collect_hs_metrics.sh'
 }
 
-workflow collect_wgs_metrics_wkflw {
+workflow collect_hs_metrics_wkflw {
   take:
     PARAMS
     BAM_CH
@@ -28,7 +28,7 @@ workflow collect_wgs_metrics_wkflw {
 
   main:
     task( PARAMS, BAM_CH, INPUT_ID, STATSDONEDIR )
-    out( task.out[0], "collect_wgs_metrics" )
+    out( task.out[0], "collect_hs_metrics" )
 
   emit:
     METRICS_FILE = task.out.METRICS_FILE

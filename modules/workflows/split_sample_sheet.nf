@@ -1,4 +1,4 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 // Takes the value of an input directory and outputs all sample sheets that should be individually processed.
 // We specifically name it "split_sample_sheet_task" because this process specifically needs to be run locally
