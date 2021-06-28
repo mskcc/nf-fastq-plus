@@ -58,7 +58,7 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
   # SampleSheets should be present in the FASTQ directory. If not, try to find one and error if not present
   if [[ -z ${SS} || ! -f ${SS} ]]; then
     NO_SS_RUN=$(basename ${run_dir})
-    REGEX="SampleSheet_.*${NO_SS_RUN}.csv"
+    REGEX="SampleSheet_*${NO_SS_RUN}.csv"
     PROCESSED_SAMPLE_SHEET=$(find ${PROCESSED_SAMPLE_SHEET_DIR} -type f -name "${REGEX}")
     if [[ -z ${PROCESSED_SAMPLE_SHEET} || ! -f ${PROCESSED_SAMPLE_SHEET} ]]; then
       fail_msg="No SampleSheet found in ${PROCESSED_SAMPLE_SHEET_DIR} w/ ${REGEX}"
