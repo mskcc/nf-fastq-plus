@@ -5,17 +5,18 @@
 #          error codes to stop demuxing a run
 # 
 # Arguments:
-#   SEQUENCER_DIR, config: Parent directory of done files
-#   FASTQ_DIR, config: Directory to find runs w/ FASTQ files
-#
 #   RUN, param: Name or path to a sequencing run to proceed down the pipeline
 #   DEMUX_ALL, param: Whether to force the demux, whether or not, it exists in FASTQ_DIR
+#
+#   (config)
+#   SEQUENCER_DIR, config: Parent directory of done files
+#   FASTQ_DIR, config: Directory to find runs w/ FASTQ files
 #   DATA_TEAM_EMAIL: emails of data team members who should be notified
 # Outputs (STD OUT):
 #   RUNNAME, env: value of what the runname (e.g. SCOTT_0277_AHKFKFBGXH)
 #   RUNPATH, env: value of the absolute path to the run to be demultiplexed (e.g. /PATH/TO/210122_SCOTT_0277_AHKFKFBGXH)
 # Run:
-#   DEMUX_ALL=true FASTQ_DIR=/igo/work/FASTQ SEQUENCER_DIR=/igo/sequencers RUN=210201_AYYAN_0051_000000000-JCT75 ../templates/detect_runs.sh
+#   DEMUX_ALL=true RUN=210201_AYYAN_0051_000000000-JCT75 SEQUENCER_DIR=/igo/sequencers FASTQ_DIR=/igo/work/FASTQ ../templates/detect_runs.sh
 
 echo "Received RUN=${RUN} DEMUX_ALL=${DEMUX_ALL} FASTQ_DIR=${FASTQ_DIR} SEQUENCER_DIR=${SEQUENCER_DIR}"
 

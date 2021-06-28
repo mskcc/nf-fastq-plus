@@ -2,10 +2,12 @@
 # Given the sequencer directory output (of bcl files), split the sample sheet based on the unique recipe-request values
 # Nextflow Inputs:
 #   RUN_TO_DEMUX_DIR:     Absolute path to directory of the Run to demux (Defined as input in nextflow process)
-#   PROCESSED_SAMPLE_SHEET_DIR: Absolute path to the directory to write all processed sample sheets
+#
 #   (config)
-#   SPLIT_SAMPLE_SHEETS   File name that the absolute paths of the split sample sheets will be written
+#   COPIED_SAMPLE_SHEET_DIR
+#   PROCESSED_SAMPLE_SHEET_DIR: Absolute path to the directory to write all processed sample sheets
 #   LAB_SAMPLE_SHEET_DIR: Absolute path to directory of the mounted filesystem the lab writes the original sample sheets (for IGO, this is mounted on only the head LSF node)
+#   SPLIT_SAMPLE_SHEETS   File name that the absolute paths of the split sample sheets will be written
 # Nextflow Outputs:
 #   DEMUXED_RUN, env: Name of run to demux, given by the name of @RUN_TO_DEMUX_DIR
 # Run: 
