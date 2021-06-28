@@ -1,9 +1,8 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 process create_sample_lane_job_task {
   input:
     path SAMPLE_FILE
-    env RUN_PARAMS_FILE
   output:
     stdout()
     path "*${RUN_PARAMS_FILE}", emit: LANE_PARAM_FILES
@@ -32,9 +31,8 @@ process create_sample_lane_job_task {
 workflow create_sample_lane_jobs_wkflw {
   take:
     SAMPLE_FILE_CH
-    RUN_PARAMS_FILE
   main:
-    create_sample_lane_job_task( SAMPLE_FILE_CH, RUN_PARAMS_FILE )
+    create_sample_lane_job_task( SAMPLE_FILE_CH )
     out( create_sample_lane_job_task.out[0], "create_sample_lane_jobs" )
   emit:
     LANE_PARAM_FILES = create_sample_lane_job_task.out.LANE_PARAM_FILES

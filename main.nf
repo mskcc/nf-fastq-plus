@@ -1,10 +1,10 @@
 nextflow.preview.dsl=2
 
-include { dependency_check_wkflw } from './modules/dependency_check';
-include { detect_runs_wkflw } from './modules/detect_runs';
-include { split_sample_sheet_wkflw } from './modules/split_sample_sheet';
-include { demultiplex_wkflw } from './modules/demultiplex';
 include { samplesheet_stats_wkflw } from './modules/samplesheet_stats';
+include { dependency_check_wkflw } from './modules/workflows/dependency_check';
+include { detect_runs_wkflw } from './modules/workflows/detect_runs';
+include { split_sample_sheet_wkflw } from './modules/workflows/split_sample_sheet';
+include { demultiplex_wkflw } from './modules/workflows/demultiplex';
 
 /**
  * Processes input parameters that are booleans
@@ -49,10 +49,8 @@ println """\
 
 workflow {
   dependency_check_wkflw()
-  detect_runs_wkflw( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR, DATA_TEAM_EMAIL )
-  split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH, COPIED_SAMPLE_SHEET_DIR, PROCESSED_SAMPLE_SHEET_DIR,
-    LAB_SAMPLE_SHEET_DIR, SPLIT_SAMPLE_SHEETS )
-  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR,
-    BCL2FASTQ, CELL_RANGER_ATAC, FASTQ_DIR, DEMUX_ALL, DATA_TEAM_EMAIL, CMD_FILE, DEMUX_LOG_FILE, EXECUTOR, LOCAL_MEM )
+  detect_runs_wkflw( RUN, DEMUX_ALL )
+  split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, split_sample_sheet_wkflw.out.RUN_TO_DEMUX_DIR, EXECUTOR )
   samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, STATS_DIR, STATSDONEDIR )
 }

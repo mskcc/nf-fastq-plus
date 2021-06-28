@@ -1,11 +1,11 @@
 /**
  * Creates the sample BAMs for a specific run
  */
-include { generate_run_params_wkflw } from './generate_run_params';
-include { create_sample_lane_jobs_wkflw } from './create_sample_lane_jobs';
-include { align_to_reference_wkflw } from './align_to_reference';
-include { merge_sams_wkflw } from './merge_sams';
-include { mark_duplicates_wkflw } from './mark_duplicates';
+include { generate_run_params_wkflw } from './workflows/generate_run_params';
+include { create_sample_lane_jobs_wkflw } from './workflows/create_sample_lane_jobs';
+include { align_to_reference_wkflw } from './workflows/align_to_reference';
+include { merge_sams_wkflw } from './workflows/merge_sams';
+include { mark_duplicates_wkflw } from './workflows/mark_duplicates';
 
 workflow create_run_bams_wkflw {
   take:
@@ -16,7 +16,7 @@ workflow create_run_bams_wkflw {
 
   main:
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, STATS_DIR )
-    create_sample_lane_jobs_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, RUN_PARAMS_FILE )
+    create_sample_lane_jobs_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH )
     align_to_reference_wkflw( create_sample_lane_jobs_wkflw.out.LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE,
       BWA, PICARD, config.executor.name )
     merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH, align_to_reference_wkflw.out.OUTPUT_ID,

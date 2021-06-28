@@ -1,4 +1,4 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
@@ -6,9 +6,6 @@ process task {
   input:
     env RUN
     env DEMUX_ALL
-    env SEQUENCER_DIR
-    env FASTQ_DIR
-    env DATA_TEAM_EMAIL
 
   output:
     stdout() 
@@ -23,11 +20,8 @@ workflow detect_runs_wkflw {
   take:
     RUN
     DEMUX_ALL
-    SEQUENCER_DIR
-    FASTQ_DIR
-    DATA_TEAM_EMAIL
   main:
-    task( RUN, DEMUX_ALL, SEQUENCER_DIR, FASTQ_DIR, DATA_TEAM_EMAIL )
+    task( RUN, DEMUX_ALL )
     out( task.out[0], "detect_runs" )
   emit:
     RUNNAME = task.out.RUNNAME

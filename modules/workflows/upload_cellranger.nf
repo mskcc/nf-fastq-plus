@@ -1,11 +1,10 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 process task {
   label 'simple_lsf_task'
 
   input:
     path LAUNCHED_CELLRANGER
-    env CELLRANGER_WAIT_TIME
 
   output:
     stdout()
@@ -17,8 +16,7 @@ process task {
 workflow upload_cellranger_wkflw {
   take:
     LAUNCHED_CELLRANGER
-    CELLRANGER_WAIT_TIME
   main:
-    task( LAUNCHED_CELLRANGER, CELLRANGER_WAIT_TIME )
+    task( LAUNCHED_CELLRANGER )
     out( task.out[0], "upload_cellranger" )
 }

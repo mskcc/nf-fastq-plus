@@ -1,4 +1,4 @@
-include { log_out as out } from './log_out'
+include { log_out as out } from '../utils/log_out'
 
 // We specifically name it "align_to_reference_task" so that it can be identified in nextflow.config to run locally
 // and submit to the LSF cluster outside of nextflow
