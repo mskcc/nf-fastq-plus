@@ -1,9 +1,12 @@
+
+
+
+LOCATION=$(dirname "$0")
+
 pwd
-ls
-ls ../../../
-
-
-LOCATION=$(dirname $0)
+echo ${LOCATION}
+realpath ${LOCATION}../../../
+ls ${LOCATION}../../../
 
 RUN=ROSALIND_0001_FLOWCELL
 PRJ=Project_00001
