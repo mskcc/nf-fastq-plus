@@ -1,4 +1,4 @@
-include { generate_run_params_wkflw } from './generate_run_params';
+include { generate_run_params_wkflw } from './workflows/generate_run_params';
 include { create_sample_lane_jobs_wkflw } from './create_sample_lane_jobs';
 include { align_to_reference_wkflw } from './align_to_reference';
 include { merge_sams_wkflw } from './merge_sams';
