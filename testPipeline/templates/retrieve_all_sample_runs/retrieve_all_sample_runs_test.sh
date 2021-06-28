@@ -1,3 +1,7 @@
+pwd
+ls
+ls ../../../
+
 
 LOCATION=$(dirname $0)
 
