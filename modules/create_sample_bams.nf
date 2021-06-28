@@ -1,6 +1,9 @@
-include { retrieve_all_sample_runs_wkflw } from './retrieve_all_sample_runs';
+/**
+ * Creates a Sample BAM by merging across all runs w/ FASTQs for that sample
+ */
 include { create_run_bams_wkflw } from './create_run_bams';
-include { get_sample_merge_commands_wkflw } from './get_sample_merge_commands'
+include { retrieve_all_sample_runs_wkflw } from './workflows/retrieve_all_sample_runs';
+include { get_sample_merge_commands_wkflw } from './workflows/get_sample_merge_commands'
 include { log_out as out } from './utils/log_out'
 
 process task {

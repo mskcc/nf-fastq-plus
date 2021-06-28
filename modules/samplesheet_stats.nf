@@ -1,6 +1,5 @@
 include { create_run_bams_wkflw } from './create_run_bams';
 include { create_sample_bams_wkflw } from './create_sample_bams';
-
 include { alignment_summary_wkflw } from './workflows/collect_alignment_summary_metrics';
 include { collect_hs_metrics_wkflw } from './workflows/collect_hs_metrics';
 include { collect_oxoG_metrics_wkflw } from './workflows/collect_oxoG_metrics';
