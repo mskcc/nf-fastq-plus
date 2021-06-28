@@ -58,7 +58,8 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
         printf "\tSkipping Upload: No ${f}\n"
         MISSING=YES
       else
-        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${CLEANED_PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
+        # EXPECTED: ...CELLRANGER/DIANA_0380_BHY3FYDMXX/Project_12133/Sample_1xx1xxP_IGO_12133_1__count/outs/
+        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${CLEANED_PROJECT}/Sample_${SAMPLE}__${CR_TYPE}/outs"
         mkdir -p ${UPLOAD_DIR}
         printf "\tFound ${f}. Copying to ${UPLOAD_DIR}\n"
         cp ${completed_file} ${UPLOAD_DIR}

@@ -55,12 +55,22 @@ for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
   # We rely on the samplesheet being in the runs folder
   SS=$(find ${run_dir} -type f -name "SampleSheet*")
 
-  # Notify Data Team if no samplesheet has been found
+  # SampleSheets should be present in the FASTQ directory. If not, try to find one and error if not present
   if [[ -z ${SS} || ! -f ${SS} ]]; then
     NO_SS_RUN=$(basename ${run_dir})
-    echo "Failed to find SampleSheet in ${run_dir}" | mail -s "[ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
-    echo "ERROR - No SampleSheet in ${run_dir}"
-    continue
+    REGEX="SampleSheet_.*${NO_SS_RUN}.csv"
+    PROCESSED_SAMPLE_SHEET=$(find ${PROCESSED_SAMPLE_SHEET_DIR} -type f -name "${REGEX}")
+    if [[ -z ${PROCESSED_SAMPLE_SHEET} || ! -f ${PROCESSED_SAMPLE_SHEET} ]]; then
+      fail_msg="No SampleSheet found in ${PROCESSED_SAMPLE_SHEET_DIR} w/ ${REGEX}"
+      echo ${fail_msg}
+      echo "${fail_msg}" | mail -s "[FATAL ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
+      exit 1
+    else
+      RUN_SS_FILE=${PROCESSED_SAMPLE_SHEET}
+      err_msg="Failed to find SampleSheet in ${run_dir}. Using ${RUN_SS_FILE}"
+      echo ${err_msg}
+      echo "${err_msg}" | mail -s "[WARNING - FASTQ directory missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
+    fi
   fi
 
   # Assign the BAM directory, unless one doesn't exist. If non-existant, the BAM dir will be recreated
