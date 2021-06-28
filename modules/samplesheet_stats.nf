@@ -1,18 +1,18 @@
-include { generate_run_params_wkflw } from './generate_run_params';
-include { create_sample_lane_jobs_wkflw } from './create_sample_lane_jobs';
-include { align_to_reference_wkflw } from './align_to_reference';
-include { merge_sams_wkflw } from './merge_sams';
-include { mark_duplicates_wkflw } from './mark_duplicates';
-include { alignment_summary_wkflw } from './collect_alignment_summary_metrics';
-include { collect_hs_metrics_wkflw } from './collect_hs_metrics';
-include { collect_oxoG_metrics_wkflw } from './collect_oxoG_metrics';
-include { collect_wgs_metrics_wkflw } from './collect_wgs_metrics';
-include { collect_rna_metrics_wkflw } from './collect_rna_metrics';
-include { collect_gc_bias_wkflw } from './collect_gc_bias_metrics';
-include { upload_stats_wkflw } from './upload_stats';
-include { fingerprint_wkflw } from './fingerprint';
-include { cellranger_wkflw } from './cellranger';
-include { upload_cellranger_wkflw } from './upload_cellranger';
+include { generate_run_params_wkflw } from './workflows/generate_run_params';
+include { create_sample_lane_jobs_wkflw } from './workflows/create_sample_lane_jobs';
+include { align_to_reference_wkflw } from './workflows/align_to_reference';
+include { merge_sams_wkflw } from './workflows/merge_sams';
+include { mark_duplicates_wkflw } from './workflows/mark_duplicates';
+include { alignment_summary_wkflw } from './workflows/collect_alignment_summary_metrics';
+include { collect_hs_metrics_wkflw } from './workflows/collect_hs_metrics';
+include { collect_oxoG_metrics_wkflw } from './workflows/collect_oxoG_metrics';
+include { collect_wgs_metrics_wkflw } from './workflows/collect_wgs_metrics';
+include { collect_rna_metrics_wkflw } from './workflows/collect_rna_metrics';
+include { collect_gc_bias_wkflw } from './workflows/collect_gc_bias_metrics';
+include { upload_stats_wkflw } from './workflows/upload_stats';
+include { fingerprint_wkflw } from './workflows/fingerprint';
+include { cellranger_wkflw } from './workflows/cellranger';
+include { upload_cellranger_wkflw } from './workflows/upload_cellranger';
 
 workflow samplesheet_stats_wkflw {
   take:

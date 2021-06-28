@@ -1,10 +1,10 @@
 nextflow.preview.dsl=2
 
-include { dependency_check_wkflw } from './modules/dependency_check';
-include { detect_runs_wkflw } from './modules/detect_runs';
-include { split_sample_sheet_wkflw } from './modules/split_sample_sheet';
-include { demultiplex_wkflw } from './modules/demultiplex';
 include { samplesheet_stats_wkflw } from './modules/samplesheet_stats';
+include { dependency_check_wkflw } from './modules/workflows/dependency_check';
+include { detect_runs_wkflw } from './modules/workflows/detect_runs';
+include { split_sample_sheet_wkflw } from './modules/workflows/split_sample_sheet';
+include { demultiplex_wkflw } from './modules/workflows/demultiplex';
 
 /**
  * Processes input parameters that are booleans
