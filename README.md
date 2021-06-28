@@ -3,10 +3,10 @@ Generate IGO fastqs, bams, stats and fingerprinting
 
 ## Run
 There are two options for running the modules in this pipeline - 
-* [End-to-End](#end-to-end): Includes all demultiplexing and stats for a sequencing run
-* [Stats](#stats): Runs only the stats on a specified demultiplexed directory
+* [Demultiplex and Stats](#demultiplex-and-stats): Includes all demultiplexing and stats for a sequencing run
+* [Stats-Only](#stats-only): Runs only the stats on a specified demultiplexed directory
 
-### [Demultiplex and Stats](#end-to-end)
+### Demultiplex and Stats
 **Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing run
 ```
 # Basic
@@ -32,7 +32,7 @@ nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb
 * `-bg`: run process in background 
 * `-with-weblog`: publish events to an API
 
-### [Statistics on Demultiplex Output (Skips Demultiplexing)](#stats)
+### Stats Only
 **Description**: Runs stats given a demultiplex output
 ```
 # Basic
