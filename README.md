@@ -4,7 +4,13 @@ Generate IGO fastqs, bams, stats and fingerprinting
 ## Run
 There are two options for running the modules in this pipeline - 
 * [Demultiplex and Stats](#demultiplex-and-stats): Includes all demultiplexing and stats for a sequencing run
-* [Stats-Only](#stats-only): Runs only the stats on a specified demultiplexed directory
+* [Stats Only](#stats-only): Runs only the stats on a specified demultiplexed directory
+
+**Links for Developers**
+* [Project Structure](#project-structure)
+* [Testing](#testing)
+* [Nextflow Config](#nextflow-config)
+* [Crontab Setup](#crontab-setup)
 
 ### Demultiplex and Stats
 **Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing run
@@ -47,49 +53,24 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
   > Eg: `/igo/work/FASTQ/DIANA_0333_BH53GNDRXY_i7`
 * `--ss`: string (required), Absolute path to the sample sheet that CREATED the value of `--dir`
   > Eg: `/home/igo/DividedSampleSheets/SampleSheet_210407_DIANA_0333_BH53GNDRXY_i7.csv`
-
+                                                                                                   >
 #### Options `(-opt)`
 * `-bg`: run process in background 
 
-### Logging
-There are three files that log information - 
-* `LOG_FILE`: All output is logged here (except commands)
-* `CMD_FILE`: All stat commands are logged to this file
-* `DEMUX_LOG_FILE`: All demultiplexing commands are logged here
+## For Development
 
-### Outputs
-See `nextflow.config` to see where data is being written 
-* `FASTQ_DIR`: Directory where all demultiplexing outputs are written to
-* `STATS_DIR`: Directory where stats are written to while pipeline is running
-* `STATSDONEDIR`: Directory where stats ready for upload are written (`STATS_DIR` may write stats that shouldn't be uploaded) 
-
-## DEV
-
-### Notes:
+### Please Read:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
 * Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not merge changes if there are failed tests**. Either talk to IGO Data Team or fix the tests.
-* Passing parameters is done via a params file w/ `key=value` space-delimited values. To use this file, make sure that 
-the following inputs are passed to a nextflow workflow,
-    ```
-    # PARAMS - path channel
-    # RUN_PARAMS_FILE - env variable defined in nextflow.config that is the name of PARAMS
-    next_wkflw( prev_wkflw.out.PARAMS, RUN_PARAMS_FILE )
-    ```
-    Note - make sure to use the `.out.PARAMS` of the workflow that the `next_wkflw` should be dependent on. I've noticed 
-    that nextflow won't pass all outputs of a workflow together (e.g. BAM of one task and the run params
-    folder of another task) 
-* Follow the project structure below -
-
-
-To add a new process, please follow the following steps.
 
 ### Project Structure
+* Follow the project structure below -
 ```
 .
 ├── README.md
 ├── main.nf
 ├── modules
-│   └── process.nf
+│   └── m1.nf
 ├── nextflow.config
 └── templates
     └── process.sh
@@ -97,6 +78,12 @@ To add a new process, please follow the following steps.
 * `templates`: Where all scripts (bash, python, etc.) will go. Don't rename this directory because nextflow is seutp to look for a directory of this name where the nextflow script is run
 * `modules`: Directory containing nextflow modules that can be imported into `main.nf`
 
+### Adding a new workflow
+* Passing sample-specific parameters (e.g. Reference Genome, Recipe, etc.) is done via a params file w/ `key=value` space-delimited values. To use this file, make sure that 
+a `{PREVIOUS_WORKFLOW}.out.PARAMS` file is passed to the workflow and specified as a path-type channel. Make sure to use the `.out.PARAMS` of the workflow that the `next_wkflw` should be dependent on. I've noticed 
+that nextflow won't pass all outputs of a workflow together (e.g. BAM of one task and the run params folder of another task) 
+
+**Steps for Adding a New Module**
 1) Add module
 ```
 ├── modules
@@ -199,14 +186,11 @@ workflow task_wkflw { 	// This is what will actually be exported
 }
 ```
 
-### Options
-To run locally (instead of via LSF), modify the `nextflow.config` to be blank instead of `LSF`
-```
-process {
-  executor=""
-}
-...
-```
+#### Logging
+There are three files that log information - 
+* `LOG_FILE`: All output is logged here (except commands)
+* `CMD_FILE`: All stat commands are logged to this file
+* `DEMUX_LOG_FILE`: All demultiplexing commands are logged here
 
 ### Testing 
 Build the dockerfile from the root
@@ -220,20 +204,8 @@ docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_t
 docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
 ```
 
-## Crontab Setup
-```
-# crontab -e
-SHELL=/bin/bash
-
-# Add path to bsub executable
-PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
-
-# Load the LSF profile prior to running the command
-* * * * * . /igoadmin/lsfigo/lsf10/conf/profile.lsf; lsload; bhosts; /PATH/TO/detect_copied_sequencers.sh >> /PATH/TO/nf-fastq-plus.log 2>&1
-```
-
-## nextflow.config
-Modify directory locations, binaries, etc. in this file
+## Nextflow Config
+Modify directory locations, binaries, etc. in the `nextflow.config` file
 
 ### Important Files
 ``` 
@@ -256,4 +228,16 @@ SHARED_SINGLE_CELL_DIR      # Directory used by DLP process to create metadata.y
 ### Other
 ```
 LOCAL_MEM                   # GB of memory to give a process (e.g. demultiplexing) if executor=local
+```
+
+## Crontab Setup
+```
+# crontab -e
+SHELL=/bin/bash
+
+# Add path to bsub executable
+PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
+
+# Load the LSF profile prior to running the command
+* * * * * . /igoadmin/lsfigo/lsf10/conf/profile.lsf; lsload; bhosts; /PATH/TO/detect_copied_sequencers.sh >> /PATH/TO/nf-fastq-plus.log 2>&1
 ```
