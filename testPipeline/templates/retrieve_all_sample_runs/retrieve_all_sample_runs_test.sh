@@ -29,7 +29,7 @@ cd ${LOCATION}
 make_dirs
 simple_test_setup
 DEMUXED_DIR=${RUN_DIR} FASTQ_DIR=${FASTQ_DIR} ARCHIVED_DIR=${ARCHIVED_DIR} \
-  PROCESSED_SAMPLE_SHEET_DIR=${PROCESSED_SAMPLE_SHEET_DIR} ../../../templates/retrieve_all_sample_runs.sh
+  PROCESSED_SAMPLE_SHEET_DIR=${PROCESSED_SAMPLE_SHEET_DIR} ${LOCATION}/../../../templates/retrieve_all_sample_runs.sh
 
 OUTPUT_SS=${LOCATION}/run_samplesheet.txt
 
