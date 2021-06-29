@@ -16,6 +16,7 @@ process task {
   output:
     stdout()
     path "*${RUN_PARAMS_FILE}", optional: true, emit: PARAMS
+    path "generated_bams.txt", optional: true, emit: GENERATED_BAMS_CH
     env RUNNAME, emit: RUNNAME
   shell:
     template 'generate_run_params.sh'
@@ -35,5 +36,6 @@ workflow generate_run_params_wkflw {
       .set{ SAMPLE_FILE_CH }
   emit:
     SAMPLE_FILE_CH = SAMPLE_FILE_CH
+    GENERATED_BAMS_CH = task.out.GENERATED_BAMS_CH
     RUNNAME = task.out.RUNNAME
 }

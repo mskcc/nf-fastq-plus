@@ -14,6 +14,7 @@ process task {
   input:
     env MERGE_CMD
     env CMD_FILE
+    val OUTPUT_ID
 
   output:
     stdout()
@@ -47,7 +48,11 @@ workflow create_sample_bams_wkflw {
       }
       .set{ related_runs_ch }
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
+    create_run_bams_wkflw.out.GENERATED_BAMS_CH
+      .splitText()
+      .set{ generated_bams_ch }
     create_run_bams_wkflw.out.BAM_CH
+      .merge( generated_bams_ch )
       .collect()
       .set{ run_bams_ch }
     get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME, SAMPLE_BAM_DIR )
@@ -57,6 +62,6 @@ workflow create_sample_bams_wkflw {
       .flatten()
       .unique()
       .set{ merge_cmd_ch }
-    task( merge_cmd_ch, CMD_FILE )
+    task( merge_cmd_ch, CMD_FILE, OUTPUT_ID )
     out( task.out[0], "create_sample_bams" )
 }

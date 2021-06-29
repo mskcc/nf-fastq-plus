@@ -69,9 +69,13 @@ function get_lanes_of_sample() {
   echo $LANES
 }
 
+# By default, BAMs processed by create_run_bams_wkflw are skipped and written to this file
+WRITTEN_BAMS="generated_bams.txt"
+
 if [[ -z "${SAMPLESHEET}" ]]; then
-  echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
-  # TODO - Alert
+  msg="No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
+  echo ${msg}
+  echo ${msg} | mail -s "[ERROR] No Samplesheet ${RUN}" ${DATA_TEAM_EMAIL}
 else
   RUN_TYPE=$(get_run_type)
   #If dual barcode (column index2 exists) then
@@ -134,6 +138,7 @@ else
 
         if [[ -f ${FINAL_BAM} ]]; then
           echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
+          echo ${FINAL_BAM} >> ${WRITTEN_BAMS}
           continue
         fi
 

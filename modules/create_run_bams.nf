@@ -30,4 +30,5 @@ workflow create_run_bams_wkflw {
     PARAMS = mark_duplicates_wkflw.out.PARAMS
     METRICS_FILE = mark_duplicates_wkflw.out.METRICS_FILE
     RUNNAME = generate_run_params_wkflw.out.RUNNAME
+    GENERATED_BAMS_CH = generate_run_params_wkflw.out.GENERATED_BAMS_CH
 }
