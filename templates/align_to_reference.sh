@@ -113,7 +113,7 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
  
   echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
-  if [[ -z ${FASTQ_ARGS} ]]; then
+  if [[ -z ${FASTQ_PARAMS} ]]; then
     echo "No FASTQ files. Skipping..."
     continue
   fi
