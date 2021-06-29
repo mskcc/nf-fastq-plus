@@ -18,6 +18,7 @@ process task {
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.bam', optional: true, emit: BAM_CH
+    env SAMPLE_TAG, optional: true, emit: SAMPLE_TAG
 
   shell:
     template 'merge_sams.sh'
@@ -40,4 +41,5 @@ workflow merge_sams_wkflw {
   emit:
     PARAMS = task.out.PARAMS
     BAM_CH = task.out.BAM_CH
+    OUTPUT_ID = task.out.SAMPLE_TAG
 }
