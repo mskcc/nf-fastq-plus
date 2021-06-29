@@ -40,5 +40,4 @@ workflow merge_sams_wkflw {
   emit:
     PARAMS = task.out.PARAMS
     BAM_CH = task.out.BAM_CH
-    OUTPUT_ID = task.out.SAMPLE_TAG
 }
