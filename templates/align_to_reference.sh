@@ -12,6 +12,8 @@
 # Make run directory in /igo/stats/, e.g. /igo/stats/DIANA_0239_AHL5G5DSXY - All alignment and stat files will go here
 
 JOB_ID_LIST_FILE=submitted_jobs.txt  # Saves job IDs submitted to LSF (populated in bwa_mem function). We will wait for them to complete
+touch ${JOB_ID_LIST_FILE}
+
 #########################################
 # Runs BWA-MEM on input FASTQs
 # SIDE-EFFECTS:
