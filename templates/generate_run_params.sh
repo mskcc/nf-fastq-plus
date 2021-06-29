@@ -187,5 +187,5 @@ SKIP_BAM=FALSE
 if [[ -z ${SAMPLES_TO_RUN} ]]; then
   echo "No samples need to be run"
   SKIP_BAM=TRUE
-  echo "SAMPLE_TAG=NONE" >> SKIP___${RUN_PARAMS_FILE}
+  echo "SAMPLE_TAG=NONE" > "sample_params.txt"
 fi
