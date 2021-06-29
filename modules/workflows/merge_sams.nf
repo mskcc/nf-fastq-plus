@@ -17,8 +17,7 @@ process task {
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
-    path '*.bam', emit: BAM_CH
-    env SAMPLE_TAG, emit: SAMPLE_TAG
+    path '*.bam', optional: true, emit: BAM_CH
 
   shell:
     template 'merge_sams.sh'

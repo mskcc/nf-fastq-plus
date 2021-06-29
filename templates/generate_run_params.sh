@@ -181,3 +181,11 @@ else
   done
   IFS=' \t\n'
 fi
+
+SAMPLES_TO_RUN=$(find . -type f -name "*${RUN_PARAMS_FILE}")
+SKIP_BAM=FALSE
+if [[ -z ${SAMPLES_TO_RUN} ]]; then
+  echo "No samples need to be run"
+  SKIP_BAM=TRUE
+  echo "SAMPLE_TAG=NONE" >> SKIP___${RUN_PARAMS_FILE}
+fi

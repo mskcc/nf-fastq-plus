@@ -16,10 +16,10 @@ process task {
 
   output:
     stdout()
-    path "STATS___*.bam", emit: BAM_CH
+    path "STATS___*.bam", optional: true, emit: BAM_CH
     env SAMPLE_TAG, emit: SAMPLE_TAG
-    path "${RUN_PARAMS_FILE}", emit: PARAMS
-    path "*___MD.txt", emit: METRICS_FILE
+    path "${RUN_PARAMS_FILE}", optional: true, emit: PARAMS
+    path "*___MD.txt", optional: true, emit: METRICS_FILE
 
   shell:
   template 'mark_duplicates.sh'

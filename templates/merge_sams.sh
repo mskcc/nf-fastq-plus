@@ -39,12 +39,19 @@ if [[ -z ${STATS_DIR} ]]; then
   STATS_DIR="."
 fi
 
+SAM_PATTERN="*.sam"
+SAMS=$(find . -mindepth 1 -maxdepth 1  -type f -name ${SAM_PATTERN} -exec realpath {} \;)
+if [[ ! -z ${SAMS} ]]; then
+  echo "No ${SAM_PATTERN} files found. Exiting w/o error"
+  exit 0
+fi
+
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 MD=$(parse_param ${RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
 
-SAMS=$(realpath *.sam)
+
 NUM_SAMS=$(echo $SAMS | tr ' ' '\n' | wc -l)
 
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then

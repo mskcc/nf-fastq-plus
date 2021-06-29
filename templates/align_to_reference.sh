@@ -96,7 +96,7 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
+for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE} | grep -v SKIP___${RUN_PARAMS_FILE}); do
   REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
   TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
   DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)

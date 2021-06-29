@@ -42,16 +42,20 @@ if [[ -z ${STATSDONEDIR} || -z ${STATS_DIR} ]]; then
   STATS_DIR="."
 fi
 
+BAM_PATTERN="___MRG.bam"
+INPUT_BAM=$(find . -type f -name "*${BAM_PATTERN}" -exec realpath {} \;)
+if [[ -z ${INPUT_BAM} ]]; then
+  echo "No ${BAM_PATTERN} files found. Exiting w/o error"
+  SAMPLE_TAG="TEST"
+  exit 0
+fi
+
 MD=$(parse_param ${RUN_PARAMS_FILE} MD)             # yes/no - must be yes for MD to run
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
 FINAL_BAM=$(parse_param ${RUN_PARAMS_FILE} FINAL_BAM)
-
 MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
-
-BAM_PATTERN="___MRG.bam"
-INPUT_BAM=$(realpath *${BAM_PATTERN})
 
 METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 BAM_DIR=${STATS_DIR}/${RUNNAME}          # Specific path to BAMs

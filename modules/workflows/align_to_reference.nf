@@ -14,8 +14,7 @@ process align_to_reference_task {
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
-    path '*RGP.sam', emit: SAM_CH
-    env SAMPLE_TAG, emit: SAMPLE_TAG
+    path '*RGP.sam', optional: true, emit: SAM_CH
 
   shell:
     template 'align_to_reference.sh'
