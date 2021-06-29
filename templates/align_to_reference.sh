@@ -98,7 +98,7 @@ parse_param() {
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
-for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE} | grep -v SKIP___${RUN_PARAMS_FILE}); do
+for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   REFERENCE_PARAM=$(parse_param ${LANE_PARAM_FILE} REFERENCE)
   TYPE_PARAM=$(parse_param ${LANE_PARAM_FILE} TYPE)
   DUAL_PARAM=$(parse_param ${LANE_PARAM_FILE} DUAL)
@@ -113,6 +113,10 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE} | grep -v SKIP___${RUN_PARAMS_FI
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
  
   echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
+  if [[ -z ${FASTQ_ARGS} ]]; then
+    echo "No FASTQ files. Skipping..."
+    continue
+  fi
   bwa_mem_out=$(bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS)
   echo "BWA JOB OUTPUT: ${bwa_mem_out}"
 done
