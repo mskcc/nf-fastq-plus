@@ -1,7 +1,7 @@
 include { log_out as out } from '../utils/log_out'
 
 process task {
-  label 'LOCAL'
+  label 'simple_lsf_task'
 
   input:
     path BAM_LIST_FILE
