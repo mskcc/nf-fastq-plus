@@ -17,7 +17,7 @@ else
   echo "CELLRANGER_WAIT_TIME=${CELLRANGER_WAIT_TIME}"
 fi
 
-echo "Checking for alignment stats for BAM to write: $(cat ${ORIGINAL_FILE} | tr '\n' ' ')"
+echo "Checking for valid BAMs to write: $(cat ${ORIGINAL_FILE} | tr '\n' ' ')"
 
 # As long as this file is populated with directories to check, continue
 while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
