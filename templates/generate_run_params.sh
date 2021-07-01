@@ -63,7 +63,7 @@ touch ${RUN_BAMS}
 RUNNAME="INVALID" # We do this b/c nextflow expects to export this environment variable
 
 echo "Received DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
-if [[ ! -f "${SAMPLESHEET}" ]]; then
+if [ ! -f ${SAMPLESHEET} ]; then
   msg="No SampleSheet found for DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
   ls -ltr ${SAMPLESHEET}
   echo ${msg}
