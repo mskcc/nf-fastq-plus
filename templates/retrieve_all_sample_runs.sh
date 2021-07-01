@@ -14,7 +14,6 @@
 
 # NEXTFLOW OUTPUT FILE - Lists sequencing output folder, samplesheet, and BAM directory if it exists
 RUN_SS_FILE="run_samplesheet.txt"
-touch ${RUN_SS_FILE}
 
 # File with all the run directories that need to have BAMs (output of process)
 RUN_FOLDERS_UNIQUE_FILE="run_dirs_uniq.txt"
@@ -92,3 +91,8 @@ for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
   # Write entry - each line will be processed separately in nextflow
   echo "${run_dir} $(realpath ${TARGET_SAMPLESHEET}) ${BAM_DIR}" >> ${RUN_SS_FILE}
 done
+
+if [[ ! -f ${RUN_SS_FILE} ]]; then
+  echo "No legacy runs for requests in ${RUNNAME}"
+  echo "NONE NONE  " > ${RUN_SS_FILE} # We add a newline to trigger merging of legacy_bams_ch w/ run_bams_ch
+fi

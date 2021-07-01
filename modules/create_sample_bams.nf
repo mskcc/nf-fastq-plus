@@ -69,7 +69,7 @@ workflow create_sample_bams_wkflw {
       }
       .set{ all_bams_ch }
 
-    get_sample_merge_commands_wkflw( all_bams_ch, create_run_bams_wkflw.out.RUNNAME, SAMPLE_BAM_DIR )
+    get_sample_merge_commands_wkflw( all_bams_ch, RUNNAME, SAMPLE_BAM_DIR )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
       .collect()
