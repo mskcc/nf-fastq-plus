@@ -137,7 +137,7 @@ else
         FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
         # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
-        echo "${FINAL_BAM} ${RUN_TAG}" >> ${WRITTEN_BAMS}
+        echo "${FINAL_BAM} ${RUN_TAG}" >> ${RUN_BAMS}
         if [[ -f ${FINAL_BAM} ]]; then
           echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
           continue
