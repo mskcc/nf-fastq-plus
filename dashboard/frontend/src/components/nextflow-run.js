@@ -55,7 +55,7 @@ function NextflowRun({nextflowRun}) {
             <p className={'hv-align'}>{new Date(nextflowRun.time).toLocaleString()}</p>
         </Col>
         <Col xs={8} className={'height-inherit word-wrap scroll-y'}>
-            <p>{ failedStep(nextflowRun) }</p>
+            <p className={'bold text-align-center'}>{ failedStep(nextflowRun) }</p>
             {
                 nextflowRun.errorMessage ? nextflowRun.errorMessage.map((line) => {
                     return <p
