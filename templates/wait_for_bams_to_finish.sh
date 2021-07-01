@@ -33,6 +33,7 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
     BAM=$(echo ${line} | cut -d' ' -f1)
     RUN_TAG=$(echo ${line} | cut -d' ' -f2)   # 'count'/'vdj'
 
+    echo "Searching ${STATSDONEDIR} for ${RUN_TAG}*.txt w/ CollectAlignmentSummaryMetrics"
     # Find the stat file for alignment summary. If this file exists, then the final BAM must have been created
     AM_STAT_FILE=$(find ${STATSDONEDIR} -type f -name "${RUN_TAG}*.txt" -exec grep -l "CollectAlignmentSummaryMetrics" {} \;)
     if [[ -f ${BAM} && -f ${AM_STAT_FILE} ]]; then

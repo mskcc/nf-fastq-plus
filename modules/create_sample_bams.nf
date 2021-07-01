@@ -61,7 +61,7 @@ workflow create_sample_bams_wkflw {
       .concat( legacy_bams_ch )
       .set{ all_bams_file }
 
-    wait_for_bams_to_finish_wkflw( all_bams_file )
+    wait_for_bams_to_finish_wkflw( all_bams_file, STATSDONEDIR )
     wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS
       .splitText()
       .multiMap { it ->
