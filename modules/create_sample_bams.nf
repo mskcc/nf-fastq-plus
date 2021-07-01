@@ -60,7 +60,7 @@ workflow create_sample_bams_wkflw {
 
     run_bams_ch
       .concat( legacy_bams_ch )
-      .collectFile(name: 'run_bams.txt', newLine: true)
+      .collectFile(name: 'run_bams.txt', newLine: false)
       .set{ all_bams_file }
 
     wait_for_bams_to_finish_wkflw( all_bams_file, STATSDONEDIR )
