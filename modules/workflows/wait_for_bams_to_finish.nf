@@ -7,7 +7,7 @@ process task {
     path RUN_BAMS_CH
   output:
     stdout()
-    path 'output_bams.txt', emit: OUTPUT_BAMS
+    path "output_bams.txt", emit: OUTPUT_BAMS
   shell:
     template 'wait_for_bams_to_finish.sh'
 }
