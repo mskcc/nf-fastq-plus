@@ -3,8 +3,9 @@
  */
 include { create_run_bams_wkflw } from './create_run_bams';
 include { retrieve_all_sample_runs_wkflw } from './workflows/retrieve_all_sample_runs';
-include { get_sample_merge_commands_wkflw } from './workflows/get_sample_merge_commands'
-include { log_out as out } from './utils/log_out'
+include { get_sample_merge_commands_wkflw } from './workflows/get_sample_merge_commands';
+include { wait_for_bams_to_finish_wkflw } from './workflows/wait_for_bams_to_finish';
+include { log_out as out } from './utils/log_out';
 
 process task {
   label 'BSUB_OPTIONS_SMALL'
@@ -31,14 +32,24 @@ process task {
 workflow create_sample_bams_wkflw {
   take:
     OUTPUT_ID
+    RUN_BAMS_CH
+    RUNNAME
     DEMUXED_DIR
     ARCHIVED_DIR
     STATS_DIR
     STATSDONEDIR
     CMD_FILE
     SAMPLE_BAM_DIR
+
   main:
-    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, OUTPUT_ID.collect() )
+    wait_for_bams_to_finish_wkflw( RUN_BAMS_CH )
+    wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS
+      .splitText()
+      .multiMap { it ->
+        BAM_DIR: it.split(' ')[1]
+      }
+      .set{ run_bams_ch }
+    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME, OUTPUT_ID.collect() )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
       .multiMap { it ->
@@ -53,6 +64,7 @@ workflow create_sample_bams_wkflw {
       .set{ generated_bams_ch }
     create_run_bams_wkflw.out.BAM_CH
       .merge( generated_bams_ch )
+      .merg( run_bams_ch )
       .collect()
       .set{ run_bams_ch }
     get_sample_merge_commands_wkflw( run_bams_ch, create_run_bams_wkflw.out.RUNNAME, SAMPLE_BAM_DIR )

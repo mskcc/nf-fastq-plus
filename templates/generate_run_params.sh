@@ -69,8 +69,8 @@ function get_lanes_of_sample() {
   echo $LANES
 }
 
-# By default, BAMs processed by create_run_bams_wkflw are skipped and written to this file
-WRITTEN_BAMS="generated_bams.txt"
+# We write the location of all the BAMs that should be created to this file
+RUN_BAMS="run_bams.txt"
 
 if [[ -z "${SAMPLESHEET}" ]]; then
   msg="No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
@@ -136,10 +136,13 @@ else
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
         FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
+        # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
+        echo "${FINAL_BAM} ${RUN_TAG}" >> ${WRITTEN_BAMS}
         if [[ -f ${FINAL_BAM} ]]; then
           echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
-          echo ${FINAL_BAM} >> ${WRITTEN_BAMS}
           continue
+        else
+          echo "BAM needs to be created - ${FINAL_BAM}. Processing."
         fi
 
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})

@@ -19,6 +19,9 @@ touch ${RUN_SS_FILE}
 # File with all the run directories that need to have BAMs (output of process)
 RUN_FOLDERS_UNIQUE_FILE="run_dirs_uniq.txt"
 
+# We remove all the run folders that include the ${RUNNAME} because these should be processed in samplesheet_stats.nf
+FILTERED_RUN_FOLDERS="run_dirs_filtered.txt"
+
 # Write all runs w/ that project to a file
 RUN_FOLDERS_ALL_FILE="run_dirs_all.txt"
 PROJECT_DIRS=$(find ${DEMUXED_DIR} -mindepth 1 -maxdepth 1 -type d -name "Project_*" -exec basename {} \;)
@@ -44,9 +47,13 @@ for prj in ${PROJECT_DIRS}; do
 done
 cat ${ARCHIVED_RUN_FOLDERS_ALL_FILE} | tr ' ' '\n' | sort | uniq >> ${RUN_FOLDERS_UNIQUE_FILE}
 
-echo "Selected FASTQ Directories: $(cat ${RUN_FOLDERS_UNIQUE_FILE} | tr '\n' ' ')"
+# Perform filtering - eliminate all ${RUNNAME} directories
+echo "ALL FASTQ Directories: $(cat ${RUN_FOLDERS_UNIQUE_FILE} | tr '\n' ' ')"
+$(cat ${RUN_FOLDERS_UNIQUE_FILE} | grep -v ${RUNNAME}) >> ${FILTERED_RUN_FOLDERS}
+echo "Selected FASTQ Directories: $(cat ${FILTERED_RUN_FOLDERS} | tr '\n' ' ')"
+
 # Locate the samplesheets for each run and output to
-for run_dir in $(cat ${RUN_FOLDERS_UNIQUE_FILE}); do
+for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
   # We rely on the samplesheet being in the runs folder
   RUN_SS=$(find ${run_dir} -type f -name "SampleSheet*")
 
