@@ -61,10 +61,7 @@ workflow create_sample_bams_wkflw {
       .set{ run_bams_ch }
 
     run_bams_ch
-      .merge( legacy_bams_ch )
-      .collectFile() { it ->
-         [ "bams_and_runname.txt", it + '\n' ]
-      }
+      .concat( legacy_bams_ch )
       .set{ all_bams_file }
 
     wait_for_bams_to_finish_wkflw( all_bams_file )
