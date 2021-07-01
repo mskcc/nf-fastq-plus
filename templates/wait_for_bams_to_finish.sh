@@ -23,6 +23,7 @@ echo "Checking for alignment stats for BAM to write: $(cat ${ORIGINAL_FILE} | tr
 while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
   # Delete & repopulate launched_cellranger_dirs.txt. Save remaining pending samples to a timestamped file (upload_file)
   ts=$(date +'%m_%d_%Y')
+  echo "Checking at ${ts}"
   upload_file=pending_${ts}.txt
   cp ${BAM_TRACKING_FILE} ${upload_file}
   rm ${BAM_TRACKING_FILE}
@@ -44,6 +45,9 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
 
   # Check again here. If re-doing a RUN that already has stats, seems silly to wait ${CELLRANGER_WAIT_TIME} minutes
   if [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; then
+    echo "Still Pending BAMs..."
     sleep ${CELLRANGER_WAIT_TIME}
   fi
 done
+
+echo "DONE."
