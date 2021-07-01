@@ -46,7 +46,7 @@ workflow create_sample_bams_wkflw {
     wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS
       .splitText()
       .multiMap { it ->
-        BAM_DIR: it.split(' ')[1]
+        BAM_DIR: it.split(' ')[0]
       }
       .set{ run_bams_ch }
 
@@ -63,7 +63,7 @@ workflow create_sample_bams_wkflw {
     create_run_bams_wkflw.out.RUN_BAMS_CH
       .splitText()
       .multiMap { it ->
-        BAM_DIR: it.split(' ')[1]
+        BAM_DIR: it.split(' ')[0]
       }
       .set{ legacy_bams_ch }
 
