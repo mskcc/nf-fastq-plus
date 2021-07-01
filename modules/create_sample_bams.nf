@@ -49,7 +49,7 @@ workflow create_sample_bams_wkflw {
         BAM_DIR: it.split(' ')[1]
       }
       .set{ run_bams_ch }
-    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME, OUTPUT_ID.collect() )
+    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
       .multiMap { it ->

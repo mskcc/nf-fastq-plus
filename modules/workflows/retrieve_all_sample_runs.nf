@@ -7,7 +7,6 @@ process task {
     env DEMUXED_DIR
     env ARCHIVED_DIR
     env RUNNAME
-    env OUTPUT_ID
 
   output:
     stdout()
@@ -22,9 +21,8 @@ workflow retrieve_all_sample_runs_wkflw {
     DEMUXED_DIR
     ARCHIVED_DIR
     RUNNAME
-    OUTPUT_ID
   main:
-    task( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME, OUTPUT_ID )
+    task( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME )
     out( task.out[0], "retrieve_all_sample_runs" )
   emit:
     RUNS_TO_ALIGN_FILE = task.out.RUNS_TO_ALIGN_FILE
