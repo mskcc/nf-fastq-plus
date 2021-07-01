@@ -42,14 +42,6 @@ workflow create_sample_bams_wkflw {
     SAMPLE_BAM_DIR
 
   main:
-    wait_for_bams_to_finish_wkflw( RUN_BAMS_CH )
-    wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS
-      .splitText()
-      .multiMap { it ->
-        BAM_DIR: it.split(' ')[0]
-      }
-      .set{ run_bams_ch }
-
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
@@ -62,14 +54,25 @@ workflow create_sample_bams_wkflw {
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
     create_run_bams_wkflw.out.RUN_BAMS_CH
       .splitText()
+      .set{ legacy_bams_ch }
+
+    RUN_BAMS_CH
+      .splitText()
+      .set{ run_bams_ch }
+
+    run_bams_ch
+      .merge( legacy_bams_ch )
+      .collectFile() { it ->
+         [ "bams_and_runname.txt", it + '\n' ]
+      }
+      .set{ all_bams_file }
+
+    wait_for_bams_to_finish_wkflw( all_bams_file )
+    wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS
+      .splitText()
       .multiMap { it ->
         BAM_DIR: it.split(' ')[0]
       }
-      .set{ legacy_bams_ch }
-
-    legacy_bams_ch
-      .merge( run_bams_ch )
-      .collect()
       .set{ all_bams_ch }
 
     get_sample_merge_commands_wkflw( all_bams_ch, create_run_bams_wkflw.out.RUNNAME, SAMPLE_BAM_DIR )

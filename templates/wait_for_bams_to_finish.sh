@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BAM_TRACKING_FILE=run_bams.txt
+BAM_TRACKING_FILE="bams_and_runname.txt"
 ORIGINAL_FILE=output_bams.txt
 if [[ ! -f ${BAM_TRACKING_FILE} ]]; then
   echo "Did not find ${BAM_TRACKING_FILE}"
