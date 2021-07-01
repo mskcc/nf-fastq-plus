@@ -2,7 +2,7 @@
 
 BAM_TRACKING_FILE=run_bams.txt
 ORIGINAL_FILE=output_bams.txt
-if [[ -f ${BAM_TRACKING_FILE} ]]; then
+if [[ ! -f ${BAM_TRACKING_FILE} ]]; then
   echo "Did not find ${BAM_TRACKING_FILE}"
   exit 1
 fi
@@ -43,5 +43,3 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
   done < ${upload_file}
   sleep ${CELLRANGER_WAIT_TIME}
 done
-
-STATUS=DONE
