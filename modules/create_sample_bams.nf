@@ -59,11 +59,7 @@ workflow create_sample_bams_wkflw {
       }
       .set{ related_runs_ch }
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
-    create_run_bams_wkflw.out.GENERATED_BAMS_CH
-      .splitText()
-      .set{ generated_bams_ch }
     create_run_bams_wkflw.out.BAM_CH
-      .merge( generated_bams_ch )
       .merg( run_bams_ch )
       .collect()
       .set{ run_bams_ch }
