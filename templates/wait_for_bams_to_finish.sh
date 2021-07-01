@@ -41,5 +41,9 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
       echo "${BAM} ${RUN_TAG}" >> ${BAM_TRACKING_FILE}
     fi
   done < ${upload_file}
-  sleep ${CELLRANGER_WAIT_TIME}
+
+  # Check again here. If re-doing a RUN that already has stats, seems silly to wait ${CELLRANGER_WAIT_TIME} minutes
+  if [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; then
+    sleep ${CELLRANGER_WAIT_TIME}
+  fi
 done
