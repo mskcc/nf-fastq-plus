@@ -10,12 +10,12 @@ include { log_out as out } from './utils/log_out';
 process task {
   label 'BSUB_OPTIONS_SMALL'
 
-  tag "SAMPLE_BAM_$OUTPUT_ID"
+  tag "MERGE_$RUNNAME"
 
   input:
     env MERGE_CMD
     env CMD_FILE
-    val OUTPUT_ID
+    val RUNNAME
 
   output:
     stdout()
@@ -31,7 +31,6 @@ process task {
 
 workflow create_sample_bams_wkflw {
   take:
-    OUTPUT_ID
     RUN_BAMS_CH
     RUNNAME
     DEMUXED_DIR
@@ -69,6 +68,6 @@ workflow create_sample_bams_wkflw {
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
       .set{ merge_cmd_ch }
-    task( merge_cmd_ch, CMD_FILE, OUTPUT_ID )
+    task( merge_cmd_ch, CMD_FILE, RUNNAME )
     out( task.out[0], "create_sample_bams" )
 }
