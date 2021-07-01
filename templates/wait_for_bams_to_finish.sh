@@ -30,7 +30,7 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
   cp ${BAM_TRACKING_FILE} ${upload_file}
   rm ${BAM_TRACKING_FILE}
 
-  for BAM in cat ${upload_file}; do
+  for BAM in $(cat ${upload_file}); do
     ${SAMTOOLS} quickcheck ${BAM} # Error if invalid headers or no EOF block, otherewise exit w/ exit code 0
     if [[ 0 -eq $? ]]; then
       echo "Valid BAM has been written: ${BAM}"
