@@ -7,7 +7,7 @@
 # Run:
 #   Can't be run - relies on ./bin
 
-BAMS=$(find -L . -type f -name "*.bam" -exec realpath {} \;)
+BAMS=$(cat output_bams.txt | tr '\n' ' ')
 if [[ -z ${BAMS} ]]; then
   echo "Couldn't find bams in directory: $(pwd). Exiting"
   exit 1

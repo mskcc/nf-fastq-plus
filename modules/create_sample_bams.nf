@@ -64,14 +64,8 @@ workflow create_sample_bams_wkflw {
       .set{ all_bams_file }
 
     wait_for_bams_to_finish_wkflw( all_bams_file, STATSDONEDIR )
-    wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS
-      .splitText()
-      .multiMap { it ->
-        BAM_DIR: it.split(' ')[0]
-      }
-      .set{ all_bams_ch }
 
-    get_sample_merge_commands_wkflw( all_bams_ch, RUNNAME, SAMPLE_BAM_DIR )
+    get_sample_merge_commands_wkflw( wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS, RUNNAME, SAMPLE_BAM_DIR )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
       .set{ merge_cmd_ch }
