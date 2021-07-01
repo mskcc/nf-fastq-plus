@@ -71,9 +71,6 @@ workflow create_sample_bams_wkflw {
     get_sample_merge_commands_wkflw( all_bams_ch, RUNNAME, SAMPLE_BAM_DIR )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
       .splitText()
-      .collect()
-      .flatten()
-      .unique()
       .set{ merge_cmd_ch }
     task( merge_cmd_ch, CMD_FILE, OUTPUT_ID )
     out( task.out[0], "create_sample_bams" )
