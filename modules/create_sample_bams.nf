@@ -48,7 +48,6 @@ workflow create_sample_bams_wkflw {
       .multiMap { it ->
         RUN_DEMUX_DIR: it.split(' ')[0]
         RUN_SAMPLE_SHEET: it.split(' ')[1]
-        BAM_DIR: it.split(' ')[2]
       }
       .set{ related_runs_ch }
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )

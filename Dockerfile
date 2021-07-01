@@ -68,6 +68,9 @@ RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
   pip install requests && \
   pip install pandas
 
+# Installs bzip2 to unzip samtools
+RUN yum -y samtools
+
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
 

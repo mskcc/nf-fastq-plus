@@ -22,27 +22,23 @@ echo "Checking for alignment stats for BAM to write: $(cat ${ORIGINAL_FILE} | tr
 # As long as this file is populated with directories to check, continue
 while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
   # Delete & repopulate launched_cellranger_dirs.txt. Save remaining pending samples to a timestamped file (upload_file)
-  ts=$(date +'%m_%d_%Y')
+  ts=$(date +'%H_%M_%m_%d_%Y')
   echo "Checking at ${ts}"
+
+  # Copy tracking file to file to iterate through then remove. Onlyl add pending BAMs back to tracking file
   upload_file=pending_${ts}.txt
   cp ${BAM_TRACKING_FILE} ${upload_file}
   rm ${BAM_TRACKING_FILE}
 
-  while IFS= read -r line; do
-    MISSING=
-    BAM=$(echo ${line} | cut -d' ' -f1)
-    RUN_TAG=$(echo ${line} | cut -d' ' -f2)   # 'count'/'vdj'
-
-    echo "Searching ${STATSDONEDIR} for ${RUN_TAG}*.txt w/ CollectAlignmentSummaryMetrics"
-    # Find the stat file for alignment summary. If this file exists, then the final BAM must have been created
-    AM_STAT_FILE=$(find ${STATSDONEDIR} -type f -name "${RUN_TAG}*.txt" -exec grep -l "CollectAlignmentSummaryMetrics" {} \;)
-    if [[ -f ${BAM} && -f ${AM_STAT_FILE} ]]; then
-      echo "BAM FINISHED BAM=${BAM} AM_STAT_FILE=${AM_STAT_FILE}"
+  for BAM in cat ${upload_file}; do
+    ${SAMTOOLS} quickcheck ${BAM} # Error if invalid headers or no EOF block, otherewise exit w/ exit code 0
+    if [[ 0 -eq $? ]]; then
+      echo "Valid BAM has been written: ${BAM}"
     else
-      echo "BAM PENDING BAM=${BAM} AM_STAT_FILE=${AM_STAT_FILE}"
-      echo "${BAM} ${RUN_TAG}" >> ${BAM_TRACKING_FILE}
+      echo "BAM PENDING BAM=${BAM}"
+      echo "${BAM}" >> ${BAM_TRACKING_FILE}
     fi
-  done < ${upload_file}
+  done
 
   # Check again here. If re-doing a RUN that already has stats, seems silly to wait ${CELLRANGER_WAIT_TIME} minutes
   if [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; then
