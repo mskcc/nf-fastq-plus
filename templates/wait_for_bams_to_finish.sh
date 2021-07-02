@@ -43,15 +43,7 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
   done
 
   if [[ ! -z ${hmm} ]]; then
-    files=$(find . -type f -name "*.txt")
-    for f in ${files}; do
-      echo ${f}
-      cat ${f}
-    done
-    ls -ltr
-    echo ${BAM}
-    ${SAMTOOLS} quickcheck ${BAM}
-    exit 1
+    which samtools
   fi
   hmm=stuff
 
