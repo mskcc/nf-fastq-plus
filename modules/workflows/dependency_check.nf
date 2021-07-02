@@ -10,12 +10,22 @@ process task {
 
   shell:
   '''
-  echo "Starting Run $(date)"
-  echo "BWA: $(${BWA} 2>&1 | grep "Version")"
-  echo "PICARD: $(echo ${PICARD})"
+  if [[ 1 -eq $(${PICARD} -h 2>&1 | grep "USAGE: PicardCommandLine" | wc -l) ]]; then
+    echo "Valid PICARD: ${PICARD}"
+  else
+    echo "Invalid PICARD: ${PICARD}"
+    exit 1
+  fi
 
-  which samtools
-  echo ${SAMTOOLS}
+  set +e
+  valid_bwa_output=$(${BWA} -h 2>&1 | grep "Program: bwa")
+  set -e
+  if [[ -z ${valid_bwa_output} ]]; then
+    echo "Valid BWA: ${BWA}"
+  else
+    echo "Invalid BWA: ${BWA}"
+    exit 1
+  fi
 
   ${SAMTOOLS} --version
   if [[ 0 -eq $? ]]; then
@@ -32,8 +42,6 @@ process task {
       exit 1
     fi
   done
-
-  exit 1
   '''
 }
 
@@ -41,7 +49,7 @@ workflow dependency_check_wkflw {
   main:
     task()
     out( task.out, "dependency_check" )
-  
+
   emit:
     out.out // Emits for downstream dependency, i.e. force other processes to come after
 }

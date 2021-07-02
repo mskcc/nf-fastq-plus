@@ -8,6 +8,7 @@ const TraceUpdateSchema = new Schema({
   time: {type: Date, required: false},
   process: {type: String, required: true},
   workDir: {type: String, required: true},
+  isFailed: {type: Boolean, required: true},
 });
 
 const NextflowRunSchema = new Schema({
