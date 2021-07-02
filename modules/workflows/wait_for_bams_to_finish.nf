@@ -15,7 +15,6 @@ process task {
 workflow wait_for_bams_to_finish_wkflw {
   take:
     RUN_BAMS_CH
-    STATSDONEDIR
   main:
     task( RUN_BAMS_CH )
     out( task.out[0], "wait_for_bams_to_finish" )
