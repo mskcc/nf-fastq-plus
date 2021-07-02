@@ -26,12 +26,6 @@ process task {
     echo "Invalid BWA: ${BWA}"
     exit 1
   fi
-  ${SAMTOOLS} --version
-  if [[ 0 -eq $? ]]; then
-    echo "Valid SAMTOOLS: ${SAMTOOLS}"
-  else
-    echo "Invalid SAMTOOLS: ${SAMTOOLS}"
-  fi
   # All bin/*py scripst use the /usr/bin/env python, which require these packages
   required_python_packages="requests pandas"
   for pkg in ${required_python_packages}; do
