@@ -16,10 +16,10 @@ process task {
     echo "Invalid PICARD: ${PICARD}"
     exit 1
   fi
+
   set +e
   valid_bwa_output=$(${BWA} -h 2>&1 | grep "Program: bwa")
   set -e
-
   if [[ -z ${valid_bwa_output} ]]; then
     echo "Valid BWA: ${BWA}"
   else
