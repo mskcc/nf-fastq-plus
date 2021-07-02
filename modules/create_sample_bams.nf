@@ -62,7 +62,7 @@ workflow create_sample_bams_wkflw {
       .collectFile(name: 'run_bams.txt', newLine: false)
       .set{ all_bams_file }
 
-    wait_for_bams_to_finish_wkflw( all_bams_file, STATSDONEDIR )
+    wait_for_bams_to_finish_wkflw( all_bams_file )
 
     get_sample_merge_commands_wkflw( wait_for_bams_to_finish_wkflw.out.OUTPUT_BAMS, RUNNAME, SAMPLE_BAM_DIR )
     get_sample_merge_commands_wkflw.out.MERGE_COMMANDS
