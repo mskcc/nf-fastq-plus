@@ -72,6 +72,7 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 recipe_overrides = {
     "ADCC1_v3": "GRCh37",
     "CH_v1": "hg19",
+    "IWG": "hg19",
     "MSK-ACCESS_v1":"GRCh38",
     "IMPACT505":"GRCh38",
     "IDT_Exome_v2_FP_Viral_Probes":"GRCh38"
