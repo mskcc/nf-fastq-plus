@@ -26,6 +26,7 @@ FASTQ_DIR=${LOCATION}/../data/FASTQ/
 cat ${ORIGINAL_CONFIG} | sed -n '/env {/,$p' \
   | sed -E "s#BWA=.*#BWA=\"/usr/bin/bwa\"#" \
   | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/local/bioinformatics/picard.jar\"#" \
+  | sed -E "s#SAMTOOLS=.*#SAMTOOLS=\"/usr/bin/samtools\"#" \
   | sed -E "s#FASTQ_DIR=.*#FASTQ_DIR=\"${FASTQ_DIR}\"#" \
   >> ${TEMP_FILE}
 

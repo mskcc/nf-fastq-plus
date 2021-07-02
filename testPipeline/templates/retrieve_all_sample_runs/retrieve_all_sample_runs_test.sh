@@ -43,15 +43,14 @@ DEMUXED_DIR=${RUN_DIR} FASTQ_DIR=${FASTQ_DIR} ARCHIVED_DIR=${ARCHIVED_DIR} \
 
 OUTPUT_SS=run_samplesheet.txt
 
-EXPECTED_ENTRIES=0
+EXPECTED_ENTRIES=1
 if [[ ${EXPECTED_ENTRIES} -eq $(cat ${OUTPUT_SS} | wc -l) ]]; then
   echo "Expected number of Entries"
 else
   echo "Expected ${EXPECTED_ENTRIES} entries. Found: $(cat ${OUTPUT_SS})"
   exit 1
 fi
-
-EXPECTED_RUNS=""
+EXPECTED_RUNS="NONE"
 for expected_run in ${EXPECTED_RUNS}; do
   if [[ -z $(cat ${OUTPUT_SS} | grep ${expected_run} ) ]]; then
     echo "ERROR - Didn't find ${expected_run}"
