@@ -16,6 +16,7 @@ process task {
     echo "Invalid PICARD: ${PICARD}"
     exit 1
   fi
+  ${BWA} -h 2>&1 | grep "Program: bwa"
   if [[ 1 -eq $(${BWA} -h 2>&1 | grep "Program: bwa" | wc -l) ]]; then
     echo "Valid BWA: ${BWA}"
   else
