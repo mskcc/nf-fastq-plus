@@ -44,6 +44,7 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
 
   if [[ ! -z ${hmm} ]]; then
     which samtools
+    exit 1
   fi
   hmm=stuff
 
