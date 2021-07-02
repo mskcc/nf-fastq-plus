@@ -65,7 +65,6 @@ RUNNAME="INVALID" # We do this b/c nextflow expects to export this environment v
 echo "Received DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
 if [ ! -f ${SAMPLESHEET} ]; then
   msg="No SampleSheet found for DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
-  ls -ltr ${SAMPLESHEET}
   echo ${msg}
   # "NONE" is used as a placeholder when trying to merge all legacy BAMs, but request has no previous runs
   if [[ ${SAMPLESHEET} != "NONE" ]]; then
