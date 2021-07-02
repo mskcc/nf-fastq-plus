@@ -34,6 +34,9 @@ RUN yum -y install java-1.8.0-openjdk-devel git
 ENV JAVA_HOME=/usr/lib/jvm/java-openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
+# Samtools
+RUN yum -y install samtools
+
 # Picard's CollectGcBiasMetrics requires R ("R is not installed on this machine. It is required for creating the chart.")
 RUN yum -y install epel-release
 RUN yum -y install R
@@ -67,9 +70,6 @@ RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
   python get-pip.py && \
   pip install requests && \
   pip install pandas
-
-# Installs samtools
-RUN yum -y install samtools
 
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
