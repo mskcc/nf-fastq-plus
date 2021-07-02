@@ -54,7 +54,7 @@ for prj_recipe in $projects_and_recipe; do
 
   mkdir $FP_PRJ_DIR
   cd $FP_PRJ_DIR
-  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --s --m ${MAP}"
+  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${MAP} --s"
   echo "Fingerprinting Command: ${CMD}"
 
   # We will ignore errors w/ fingerprinting for now
