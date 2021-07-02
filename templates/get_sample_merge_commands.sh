@@ -8,6 +8,21 @@
 #   Can't be run - relies on ./bin
 
 BAMS=$(cat output_bams.txt | tr '\n' ' ')
+
+# TODO - Remove (Check that multiple of the same BAM are not present)
+WARN_BAMS=
+for bam in ${BAMS}; do
+  bam_base=$(echo ${bam} | cut -d'.' -f1)
+  sim_bams=$(echo ${BAMS} | tr ' ' '\n' | grep ${bam_base}).
+  num_bams=$(echo ${sim_bams} | tr ' ' '\n' | wc -l)
+  if [[ 1 -ne ${num_bams} ]]; then
+    WARN_BAMS="${WARN_BAMS} ${bam}"
+  fi
+done
+if [[ -z ${WARN_BAMS} ]]; then
+  echo "BAMS: ${WARN_BAMS}" | mail -s "[WARNING] Review input for merged sample BAMs" ${DATA_TEAM_EMAIL}
+fi
+
 if [[ -z ${BAMS} ]]; then
   echo "Couldn't find bams in directory: $(pwd). Exiting"
   exit 1
