@@ -19,6 +19,8 @@ fi
 
 echo "Checking for valid BAMs to write: $(cat ${ORIGINAL_FILE} | tr '\n' ' ')"
 
+hmm=
+
 # As long as this file is populated with directories to check, continue
 while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
   # Delete & repopulate launched_cellranger_dirs.txt. Save remaining pending samples to a timestamped file (upload_file)
@@ -39,6 +41,19 @@ while [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; do
       echo "${BAM}" >> ${BAM_TRACKING_FILE}
     fi
   done
+
+  if [[ ! -z ${hmm} ]]; then
+    files=$(find . -type f -name "*.txt")
+    for f in ${files}; do
+      echo ${f}
+      cat ${f}
+    done
+    ls -ltr
+    echo ${BAM}
+    ${SAMTOOLS} quickcheck ${BAM}
+    exit 1
+  fi
+  hmm=stuff
 
   # Check again here. If re-doing a RUN that already has stats, seems silly to wait ${CELLRANGER_WAIT_TIME} minutes
   if [[ ! -z $(cat ${BAM_TRACKING_FILE}) ]]; then
