@@ -14,6 +14,9 @@ process task {
   echo "BWA: $(${BWA} 2>&1 | grep "Version")"
   echo "PICARD: $(echo ${PICARD})"
 
+  which samtools
+  echo ${SAMTOOLS}
+
   ${SAMTOOLS} --version
   if [[ 0 -eq $? ]]; then
     echo "Valid SAMTOOLS: ${SAMTOOLS}"
@@ -29,6 +32,8 @@ process task {
       exit 1
     fi
   done
+
+  exit 1
   '''
 }
 
