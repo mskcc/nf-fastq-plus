@@ -56,7 +56,7 @@ RUN echo "[computational-core]" > /etc/yum.repos.d/springdale.computational.repo
   echo "gpgcheck=1" >> /etc/yum.repos.d/springdale.computational.repo && \
   echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-springdale" >> /etc/yum.repos.d/springdale.computational.repo
 
-# Samtools
+# Samtools - relies on springdale repo
 RUN yum -y install samtools
 
 # Installs to /usr/bin/bwa
