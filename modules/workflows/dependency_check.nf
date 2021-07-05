@@ -27,8 +27,7 @@ process task {
     exit 1
   fi
 
-  which samtools
-  echo ${SAMTOOLS}
+  # Checking that samtools doesn't exit on version command
   ${SAMTOOLS} --version
   if [[ 0 -eq $? ]]; then
     echo "Valid SAMTOOLS: ${SAMTOOLS}"
@@ -44,8 +43,6 @@ process task {
       exit 1
     fi
   done
-
-  exit 1
   '''
 }
 
