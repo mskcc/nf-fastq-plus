@@ -34,9 +34,6 @@ RUN yum -y install java-1.8.0-openjdk-devel git
 ENV JAVA_HOME=/usr/lib/jvm/java-openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-# Samtools
-RUN yum -y install samtools
-
 # Picard's CollectGcBiasMetrics requires R ("R is not installed on this machine. It is required for creating the chart.")
 RUN yum -y install epel-release
 RUN yum -y install R
@@ -58,6 +55,9 @@ RUN echo "[computational-core]" > /etc/yum.repos.d/springdale.computational.repo
   echo "baseurl=http://springdale.princeton.edu/data/springdale/computational/\$releasever/\$basearch" >> /etc/yum.repos.d/springdale.computational.repo && \
   echo "gpgcheck=1" >> /etc/yum.repos.d/springdale.computational.repo && \
   echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-springdale" >> /etc/yum.repos.d/springdale.computational.repo
+
+# Samtools
+RUN yum -y install samtools
 
 # Installs to /usr/bin/bwa
 RUN yum -y install bwa
