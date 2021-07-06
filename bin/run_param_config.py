@@ -419,12 +419,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "Kinghamt20150202panel": {
-        BAITS: "/home/igo/resources/BED-Targets/Kingham_cfDNA_5626_Updated_032015.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/Kingham_cfDNA_5626_Updated_032015.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "Ventura_Dec2015": {
         BAITS: "/home/igo/resources/BED-Targets/VENTURA_V1_designed-probe-coords-SORTED.iList",
         TARGETS: "/home/igo/resources/BED-Targets/VENTURA_V1_designed-probe-coords-SORTED.iList",
