@@ -30,4 +30,4 @@ fi
 
 # TODO - use the SAMTOOLS nextflow config command
 OUTPUT_FILE="merge_commands.sh"
-create_merge_commands.py ${OUTPUT_FILE} ${SAMPLE_BAM_DIR} ${BAMS}
+create_merge_commands.py --s=${SAMTOOLS} ${OUTPUT_FILE} ${SAMPLE_BAM_DIR} ${BAMS}

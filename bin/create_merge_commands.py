@@ -51,7 +51,7 @@ sample_id_manifests = {
 
 def fail(err_msg = None):
     """ Exits Application and logs error message """
-    print("Usage is 'python ./create_merge_commands ${FILE_TO_WRITE_COMMANDS} ${DIR_TO_WRITE_BAMS} [-options] ${BAM_FILES}'")
+    print("Usage is 'python ./create_merge_commands ${FILE_TO_WRITE_COMMANDS} ${DIR_TO_WRITE_BAMS} [--t] [--s=/path/to/samtools] ${BAM_FILES}'")
     if(err_msg):
         print("ERROR: " + err_msg)
     sys.exit(1)
@@ -238,7 +238,7 @@ def get_merge_info(files, igo_id_mappings, bam_dir, mapped_fields):
     return merge_info
 
 
-def create_merge_commands(merge_info):
+def create_merge_commands(merge_info, samtools):
     """ Writes the commands to merge bam files from the @merge_info mapping of files to their files to merge
 
     :param merge_info: { TARGET_FILE: [ FILE1, FILE2, ... ], ... }
@@ -251,7 +251,7 @@ def create_merge_commands(merge_info):
             # Don't merge a single file. Create directory for project and copy it to the BAM directory
             bash_commands += "%s && cp %s %s\n" % (mkdir_cmd, file_list[0], target_file)
         else:
-            bash_commands += "%s && samtools merge %s %s\n" % (mkdir_cmd, target_file, ' '.join(file_list))
+            bash_commands += "%s && %s merge %s %s\n" % (mkdir_cmd, samtools, target_file, ' '.join(file_list))
     return bash_commands
 
 
@@ -267,7 +267,7 @@ def write_file(file_name, contents):
     merge_commands_file.close()
 
 
-def get_merge_commands(files, bam_dir, lims_host):
+def get_merge_commands(files, bam_dir, lims_host, samtools):
     """ Writes a text file of the merge commands that should be run to merge BAMS across runs
 
     :param files: string[] - List of absolute paths to files
@@ -279,11 +279,11 @@ def get_merge_commands(files, bam_dir, lims_host):
     sample_manifests = get_sample_manifests(igo_ids, lims_host)
     igo_id_mappings = get_igo_id_mappings(sample_manifests, MAPPED_FIELDS)
     merge_info = get_merge_info(files, igo_id_mappings, bam_dir, MAPPED_FIELDS)
-    return create_merge_commands(merge_info)
+    return create_merge_commands(merge_info, samtools)
 
 def main():
     """
-    Will be called as python ./create_merge_commands ${FILE_TO_WRITE_COMMANDS} ${DIR_TO_WRITE_BAMS} [-options] ${BAM_FILES}
+    Will be called as python ./create_merge_commands ${FILE_TO_WRITE_COMMANDS} ${DIR_TO_WRITE_BAMS} [--t] [--s=/path/to/samtools] ${BAM_FILES}
     """
 
     if len(sys.argv) < 3:
@@ -295,19 +295,28 @@ def main():
     output_file = args[0]
     bam_dir = args[1]
     files = args[2:]
+    if len(files) < 1:
+        fail("No Files specified")
 
     if not os.path.isdir(bam_dir):
         fail("%s is not a valid directory" % bam_dir)
 
-    opts = [ arg.lower() for arg in inputs if arg[0] == "-"]
-    use_tango = "-t" in opts
-
+    # Parse "--t" or "--s=/path/to/samtools"
+    samtools = "samtools" # Default is to rely on samtools being in the user's path
+    use_tango = False
+    opts = [ arg.lower() for arg in inputs if arg[0:2] == "--"]
+    for opt in opts:
+        opt = opt[2:]
+        if "=" in opt:
+            k,v = opt.split('=')
+            if k == 's':
+                samtools = v
+        else:
+            if opt == "t":
+                use_tango = True
     lims_host = config.LIMS_HOST_TANGO if use_tango else config.LIMS_HOST_PROD
 
-    if len(files) < 1:
-        fail("No Files specified")
-
-    merge_commands = get_merge_commands(files, bam_dir, lims_host)
+    merge_commands = get_merge_commands(files, bam_dir, lims_host, samtools)
     write_file(output_file, merge_commands)
 
 if __name__ == '__main__':
