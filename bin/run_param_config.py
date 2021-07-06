@@ -78,9 +78,9 @@ recipe_overrides = {
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
-    "Human": "GRCh37",
-    "Mouse": "mm10",
-    "Mouse_GeneticallyModified": "mm10",
+    "Human": "GRCh38",
+    "Mouse": "grcm38",
+    "Mouse_GeneticallyModified": "grcm38",
     "Drosophilia": "dm3",
     "Zebrafish": "danrer7",
     "Chicken": "galGal4",
