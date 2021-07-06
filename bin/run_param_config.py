@@ -365,12 +365,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "CHM": {
-        BAITS: "/home/igo/resources/BED-Targets/HEMEPACT/HemePACT_v4_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/HEMEPACT/HemePACT_v4_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "WholeExomeSequencing": {
         BAITS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGETS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
