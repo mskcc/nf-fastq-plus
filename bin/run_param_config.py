@@ -371,6 +371,13 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
+    "Twist_Exome": {
+        # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
+        BAITS: "/home/igo/resources/BED-Targets/Twist/Twist_Exome_Hg19_TARGETS.iList",
+        TARGETS: "/home/igo/resources/BED-Targets/Twist/Twist_Exome_Hg19_TARGETS.iList",
+        MSKQ: "no",
+        MD: "yes"
+    },
     "Agilent_v4_51MB_Human": {
         BAITS: "/home/igo/resources/ilist/AgilentExon_51MB_b37_v3/b37/AgilentExon_51MB_b37_v3_baits.interval_list",
         TARGETS: "/home/igo/resources/ilist/AgilentExon_51MB_b37_v3/b37/AgilentExon_51MB_b37_v3_targets.interval_list",
@@ -458,6 +465,12 @@ recipe_options_mapping_UNORDERED = {
     "MSK-ACCESS_v1": {
         BAITS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
         TARGETS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
+        MSKQ: "no",
+        MD: "yes"
+    },
+    "PanCancerV2": {
+        BAITS: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_BAITS.iList",
+        TARGETS: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_TARGETS.iList",
         MSKQ: "no",
         MD: "yes"
     },
