@@ -172,6 +172,11 @@ class TestSetupStats(unittest.TestCase):
         expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_BAITS.intervalList GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IMPACT505/IMPACT505_GRCh38_TARGETS.intervalList TYPE=DNA"
         self.verify_params(params, expected_params, "IMPACT505", "Human")
 
+    def test_M_IMPACT_v1(self):
+        params = get_recipe_species_params("M-IMPACT_v1", "Mouse")
+        expected_params = "REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TARGETS=/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_TARGETS.iList GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa BAITS=/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_BAITS.iList GTAG=mm10 MSKQ=yes TYPE=DNA MD=yes"
+        self.verify_params(params, expected_params, "M-IMPACT_v1", "Mouse")
+
     def test_ShallowWGS(self):
         params = get_recipe_species_params("ShallowWGS", "Human")
         expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=WGS"
@@ -181,6 +186,20 @@ class TestSetupStats(unittest.TestCase):
         params = get_recipe_species_params("IDT_Exome_v2_FP_Viral_Probes", "Human")
         expected_params = "BAITS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_BAITS.intervalList GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/igo/home/igo/resources/ilist/GRCh38.p13/IDT_Exome_v2/IDT_Exome_v2_GRCh38_TARGETS.intervalList TYPE=DNA"
         self.verify_params(params, expected_params, "IDT_Exome_v2_FP_Viral_Probes", "Human")
+
+    def test_IWG(self):
+        params = get_recipe_species_params("IWG_v2", "Human")
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList GTAG=hg19 GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa TARGETS=/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList TYPE=DNA"
+        self.verify_params(params, expected_params, "IWG_v2", "Human")
+
+    def test_PCFDDR(self):
+        # v1 & v2 should have same config
+        params = get_recipe_species_params("PCFDDR_v1", "Human")
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__BAITS.interval_list GTAG=hg19 GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa TARGETS=/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__TARGETS.interval_list TYPE=DNA"
+        self.verify_params(params, expected_params, "PCFDDR_v1", "Human")
+        params = get_recipe_species_params("PCFDDR_v2", "Human")
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__BAITS.interval_list GTAG=hg19 GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa TARGETS=/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__TARGETS.interval_list TYPE=DNA"
+        self.verify_params(params, expected_params, "PCFDDR_v2", "Human")
 
     def test_Agilent(self):
         params = get_recipe_species_params("Agilent_MouseAllExonV1", "Mouse")
