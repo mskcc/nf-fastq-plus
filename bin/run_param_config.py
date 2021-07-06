@@ -74,7 +74,8 @@ recipe_overrides = {
     "CH_v1": "hg19",
     "MSK-ACCESS_v1":"GRCh38",
     "IMPACT505":"GRCh38",
-    "IDT_Exome_v2_FP_Viral_Probes":"GRCh38"
+    "IDT_Exome_v2_FP_Viral_Probes":"GRCh38",
+    "M-IMPACT_v1": "mm10"
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
