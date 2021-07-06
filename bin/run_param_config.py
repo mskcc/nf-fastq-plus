@@ -443,12 +443,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "MTM_V2": {
-        BAITS: "/home/igo/resources/BED-Targets/Mtm_V2_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/Mtm_V2_TARGET.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "FH_MED12": {
         BAITS: "/home/igo/resources/BED-Targets/MED12_FH.iList",
         TARGETS: "/home/igo/resources/BED-Targets/MED12_FH.iList",
