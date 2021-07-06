@@ -407,12 +407,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
-    "RF-OVARIAN_V2": {
-        BAITS: "/home/igo/resources/BED-Targets/RF-OVARIAN_V2-BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/RF-OVARIAN_V2-TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "RF-BREAST_V2": {
         BAITS: "/home/igo/resources/BED-Targets/RF-BREAST_V2_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/RF-BREAST_V2_TARGETS.iList",
