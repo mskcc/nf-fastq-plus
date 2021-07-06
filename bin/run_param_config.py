@@ -359,12 +359,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
-    "OCCC": {
-        BAITS: "/home/igo/resources/BED-Targets/OCCC_316_primary_targets.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/OCCC_316_capture_targets.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "M-IMPACT_v1": {
         BAITS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_TARGETS.iList",
