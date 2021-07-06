@@ -419,12 +419,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "King_130502_276_EZ_HX3": {
-        BAITS: "/home/igo/resources/BED-Targets/04731_King_130502_276_EZ_HX3.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/04731_King_130502_276_EZ_HX3.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "ReisFilho_ESOP_EZ_HX3": {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
         BAITS: "/home/igo/resources/BED-Targets/130912_HG19_ReisFilho_ESOP_EZ_HX3_BAITS.iList",
