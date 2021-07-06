@@ -443,13 +443,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "MERTK": {
-        # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
-        BAITS: "/home/igo/resources/BED-Targets/hg19_MERTK_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/hg19_MERTK_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "myTYPE_V1": {
         BAITS: "/home/igo/resources/BED-Targets/MM_MSK_permiss_BAIT.iList",
         TARGETS: "/home/igo/resources/BED-Targets/MM_MSK_permiss_TARGET.iList",
