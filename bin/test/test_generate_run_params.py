@@ -36,15 +36,15 @@ class TestSetupStats(unittest.TestCase):
 
     def test_get_reference_configs_human_dna(self):
         genome_configs_dna = get_reference_configs("", "DNA", "Human")
-        self.assertEqual(genome_configs_dna[GENOME], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
-        self.assertEqual(genome_configs_dna[REFERENCE], "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta")
+        self.assertEqual(genome_configs_dna[GENOME], "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa")
+        self.assertEqual(genome_configs_dna[REFERENCE], "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa")
 
     def test_get_reference_configs_human_rna(self):
         genome_configs = get_reference_configs("", "RNA", "Human")
-        self.assertEqual(genome_configs[GENOME], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa')
-        self.assertEqual(genome_configs[REFERENCE], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa')
-        self.assertEqual(genome_configs[REF_FLAT], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt')
-        self.assertEqual(genome_configs[RIBOSOMAL_INTERVALS], '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list')
+        self.assertEqual(genome_configs[GENOME], '/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa')
+        self.assertEqual(genome_configs[REFERENCE], '/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa')
+        self.assertEqual(genome_configs[REF_FLAT], '/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat')
+        self.assertEqual(genome_configs[RIBOSOMAL_INTERVALS], '/igo/work/nabors/bed_files/GRCh38_100_Ensembl/SHORT__Homo_sapiens.GRCh38.100.rRNA.interval.list')
 
     def test_main_AmpliconSeq_Bacteria(self):
         argv = [ "-r", "AmpliconSeq", "-s", "Bacteria" ]
@@ -63,8 +63,8 @@ class TestSetupStats(unittest.TestCase):
         ref = parse_param(params, REFERENCE)
         typ = parse_param(params, TYPE)
         self.assertEqual(typ, "DNA")
-        self.assertEqual(genome, "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa")
-        self.assertEqual(ref, "/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa")
+        self.assertEqual(genome, "/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa")
+        self.assertEqual(ref, "/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa")
 
     def test_main_AmpliconSeq_Plasmid(self):
         argv = [ "-r", "AmpliconSeq", "-s", "Plasmid" ]
@@ -102,69 +102,69 @@ class TestSetupStats(unittest.TestCase):
 
     def test_RNASeq(self):
         params = get_recipe_species_params("RNASeq", "Mouse")
-        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=GRCm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat RIBOSOMAL_INTERVALS=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat RIBOSOMAL_INTERVALS=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "RNASeq", "Mouse")
 
     def test_RNASeq_Poly(self):
         params = get_recipe_species_params("RNASeq_PolyA", "Mouse")
-        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=GRCm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat RIBOSOMAL_INTERVALS=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat RIBOSOMAL_INTERVALS=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "RNASeq_PolyA", "Mouse")
 
         params = get_recipe_species_params("RNASeq_PolyA", "Human")
-        expected_params = "GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh38_100_Ensembl/SHORT__Homo_sapiens.GRCh38.100.rRNA.interval.list TYPE=RNA"
         self.verify_params(params, expected_params, "RNASeq_PolyA", "Human")
 
     def test_RNASeq_RiboDeplete(self):
         params = get_recipe_species_params("RNASeq_RiboDeplete", "Human")
-        expected_params = "GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh38_100_Ensembl/SHORT__Homo_sapiens.GRCh38.100.rRNA.interval.list TYPE=RNA"
         self.verify_params(params, expected_params, "RNASeq_RiboDeplete", "Human")
 
     def test_SMARTerAmpSeq(self):
         params = get_recipe_species_params("SMARTerAmpSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=GRCm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat RIBOSOMAL_INTERVALS=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.99.ref_flat RIBOSOMAL_INTERVALS=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.interval_list TYPE=RNA"
         self.verify_params(params, expected_params, "SMARTerAmpSeq", "Mouse")
 
         params = get_recipe_species_params("SMARTerAmpSeq", "Human")
-        expected_params = "GENOME=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/refFlat_ensembl.v75.txt RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.rRNA.interval_list TYPE=RNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa REF_FLAT=/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat RIBOSOMAL_INTERVALS=/igo/work/nabors/bed_files/GRCh38_100_Ensembl/SHORT__Homo_sapiens.GRCh38.100.rRNA.interval.list TYPE=RNA"
         self.verify_params(params, expected_params, "SMARTerAmpSeq", "Human")
 
     def test_ATACSeq(self):
         # SEE 11107 of JAX_0461
         params = get_recipe_species_params("ATACSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "ATACSeq", "Human")
 
         params = get_recipe_species_params("ATACSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "ATACSeq", "Mouse")
 
         params = get_recipe_species_params("ATACSeq", "Mouse_GeneticallyModified")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "ATACSeq", "Mouse_GeneticallyModified")
 
     def test_AmpliconSeq(self):
         # See 07798_T of PITT_0496
         params = get_recipe_species_params("AmpliconSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "AmpliconSeq", "Human")
 
         params = get_recipe_species_params("AmpliconSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "AmpliconSeq", "Mouse")
 
     def test_ChIPSeq(self):
         # See 10123_H of JAX_0461
         params = get_recipe_species_params("ChIPSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "ChIPSeq", "Human")
 
         params = get_recipe_species_params("ChIPSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "ChIPSeq", "Mouse")
 
     def test_IMPACT468(self):
         params = get_recipe_species_params("IMPACT468", "Human")
-        expected_params = "BAITS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TARGETS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_TARGETS.interval_list TYPE=DNA"
+        expected_params = "BAITS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_BAITS.interval_list GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=yes REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/home/igo/resources/ilist/IMPACT468/b37/IMPACT468_TARGETS.interval_list TYPE=DNA"
         self.verify_params(params, expected_params, "IMPACT468", "Human")
 
     def test_IMPACT505(self):
@@ -174,7 +174,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_ShallowWGS(self):
         params = get_recipe_species_params("ShallowWGS", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=WGS"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=WGS"
         self.verify_params(params, expected_params, "ShallowWGS", "Human")
 
     def test_IDT_Exome(self):
@@ -184,30 +184,30 @@ class TestSetupStats(unittest.TestCase):
 
     def test_Agilent(self):
         params = get_recipe_species_params("Agilent_MouseAllExonV1", "Mouse")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_baits.ilist GTAG=mm10 GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TARGETS=/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_targets.ilist TYPE=DNA"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_baits.ilist GTAG=grcm38 GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TARGETS=/home/igo/resources/BED-Targets/Agilent_MouseAllExonV1_mm10_v1_targets.ilist TYPE=DNA"
         self.verify_params(params, expected_params, "Agilent_MouseAllExonV1", "Mouse")
 
     def test_CRISPRSeq(self):
         params = get_recipe_species_params("CRISPRSeq", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRSeq", "Mouse")
 
         params = get_recipe_species_params("CRISPRSeq", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRSeq", "Human")
 
     def test_CRISPRScreen(self):
         params = get_recipe_species_params("CRISPRScreen", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRScreen", "Human")
 
         params = get_recipe_species_params("CRISPRScreen", "Mouse")
-        expected_params = "GENOME=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa GTAG=mm10 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/M.musculus/mm10/BWA_0.7.5a/mouse_mm10__All.fa TYPE=DNA"
+        expected_params = "GENOME=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa GTAG=grcm38 MD=yes MSKQ=no REFERENCE=/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CRISPRScreen", "Mouse")
 
     def test_customCapture(self):
         params = get_recipe_species_params("CustomCapture", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=DNA"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=DNA"
         self.verify_params(params, expected_params, "CustomCapture", "Human")
 
     def test_MSK_ACCESS(self):
@@ -222,7 +222,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_HumanWholeGenome(self):
         params = get_recipe_species_params("HumanWholeGenome", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta TYPE=WGS"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=WGS"
         self.verify_params(params, expected_params, "HumanWholeGenome", "Human")
 
     def test_WholeGenomeSequencing_Bacteria(self):
@@ -232,7 +232,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_10xGeneExpression_Human(self):
         species = "Human"
-        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MSKQ=no TYPE=DNA MD=yes"
         geneExpression_recipes = [ "10X_Genomics_GeneExpression", "10X_Genomics_GeneExpression-3", "10X_Genomics_GeneExpression-5", "10X_Genomics_NextGEM-GeneExpression", "10X_Genomics_NextGEM-GeneExpression-5", "10X_Genomics_NextGEM_GeneExpression-5" ]
 
         for recipe in geneExpression_recipes:
@@ -241,7 +241,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_10xVDJ_Human(self):
         species = "Human"
-        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MSKQ=no TYPE=DNA MD=yes"
         geneExpression_recipes = [ "10X_Genomics_NextGem_VDJ", "10X_Genomics_NextGEM_VDJ", "10X_Genomics_NextGEM-VDJ", "10X_Genomics_VDJ", "10X_Genomics-VDJ" ]
 
         for recipe in geneExpression_recipes:
@@ -251,21 +251,21 @@ class TestSetupStats(unittest.TestCase):
     def test_10xVisium_Human(self):
         species = "Human"
         recipe = "10X_Genomics_Visium"
-        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MSKQ=no TYPE=DNA MD=yes"
         params = get_recipe_species_params(recipe, species)
         self.verify_params(params, expected_params, recipe, species)
 
     def test_10xATAC_Human(self):
         species = "Human"
         recipe = "10X_Genomics_ATAC"
-        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MSKQ=no TYPE=DNA MD=yes"
         params = get_recipe_species_params(recipe, species)
         self.verify_params(params, expected_params, recipe, species)
 
     def test_10xCNV_Human(self):
         species = "Human"
         recipe = "10X_Genomics_CNV"
-        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GENOME=/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta GTAG=GRCh37 MSKQ=no TYPE=DNA MD=yes"
+        expected_params = "CELLRANGER_COUNT=/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A CELLRANGER_ATAC=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 CELLRANGER_VDJ=/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0 CELLRANGER_CNV=/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0 REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MSKQ=no TYPE=DNA MD=yes"
         params = get_recipe_species_params(recipe, species)
         self.verify_params(params, expected_params, recipe, species)
 
