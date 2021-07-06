@@ -419,12 +419,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "Dlevine_27gene_v1_BED": {
-        BAITS: "/home/igo/resources/BED-Targets/DLevine_27gene_probe_coverage_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/DLevine_27gene_probe_coverage_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "IDTCustom_18_20161108": {
         BAITS: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_TARGETS.iList",
