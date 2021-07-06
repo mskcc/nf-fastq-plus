@@ -419,13 +419,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "ReisFilho_ESOP_EZ_HX3": {
-        # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
-        BAITS: "/home/igo/resources/BED-Targets/130912_HG19_ReisFilho_ESOP_EZ_HX3_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/130912_HG19_ReisFilho_ESOP_EZ_HX3_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "Dlevine_27gene_v1_BED": {
         BAITS: "/home/igo/resources/BED-Targets/DLevine_27gene_probe_coverage_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/DLevine_27gene_probe_coverage_TARGETS.iList",
