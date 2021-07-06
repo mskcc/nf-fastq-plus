@@ -419,12 +419,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "Ventura_Dec2015": {
-        BAITS: "/home/igo/resources/BED-Targets/VENTURA_V1_designed-probe-coords-SORTED.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/VENTURA_V1_designed-probe-coords-SORTED.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "CCND3": {
         BAITS: "/home/igo/resources/BED-Targets/CCND3.iList",
         TARGETS: "/home/igo/resources/BED-Targets/CCND3.iList",
