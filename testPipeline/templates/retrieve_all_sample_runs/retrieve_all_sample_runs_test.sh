@@ -35,14 +35,13 @@ prjs_in_old_run_setup() {
 }
 
 cd ${LOCATION}
+OUTPUT_SS=run_samplesheet.txt
 
+# TEST 1 - Test when only in current run directory
 make_dirs
 prj_only_in_current_run_setup
 DEMUXED_DIR=${RUN_DIR} FASTQ_DIR=${FASTQ_DIR} ARCHIVED_DIR=${ARCHIVED_DIR} \
   PROCESSED_SAMPLE_SHEET_DIR=${PROCESSED_SAMPLE_SHEET_DIR} RUNNAME=${RUN} ../../../templates/retrieve_all_sample_runs.sh
-
-OUTPUT_SS=run_samplesheet.txt
-
 EXPECTED_ENTRIES=1
 if [[ ${EXPECTED_ENTRIES} -eq $(cat ${OUTPUT_SS} | wc -l) ]]; then
   echo "Expected number of Entries"
@@ -61,14 +60,11 @@ for expected_run in ${EXPECTED_RUNS}; do
 done
 clean
 
-
-
-
+# TEST 2 - Test when only in legacy run directory
 make_dirs
 prjs_in_old_run_setup
 DEMUXED_DIR=${RUN_DIR} FASTQ_DIR=${FASTQ_DIR} ARCHIVED_DIR=${ARCHIVED_DIR} \
   PROCESSED_SAMPLE_SHEET_DIR=${PROCESSED_SAMPLE_SHEET_DIR} RUNNAME=${RUN} ../../../templates/retrieve_all_sample_runs.sh
-OUTPUT_SS=run_samplesheet.txt
 EXPECTED_ENTRIES=1
 if [[ ${EXPECTED_ENTRIES} -eq $(cat ${OUTPUT_SS} | wc -l) ]]; then
   echo "Expected number of Entries"
