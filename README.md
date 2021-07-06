@@ -201,7 +201,9 @@ There are three files that log information -
 * `DEMUX_LOG_FILE`: All demultiplexing commands are logged here
 
 ### Testing 
-Build the dockerfile from the root
+Docker Container Actions run our integration tests on GitHub. To test changes, please build the dockerfile from the root
+ and verify no errors are generated from the `samplesheet_stats_main_test_hwg.sh` and `cellranger_demux_stats.sh` 
+ scripts.
 ```
 docker image build -t nf-fastq-plus-playground .
 
