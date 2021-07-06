@@ -1,5 +1,5 @@
 #!/bin/bash
-# Finds and merges all sample BAMs
+# Finds all FASTQ directories and samplesheets w/ requests in the input DEMUXED_DIR
 # Nextflow Inputs:
 #   DEMUXED_DIR, env - FASTQ output of Run
 #

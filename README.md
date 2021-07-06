@@ -62,8 +62,8 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
 * Demultiplexing will fail if the FASTQ directory already exists.
     * If demultiplexing is required, remove the FASTQ directory
     * If demultiplexing can be skipped, add the `--force true` option
-* Stats will not run if the BAM for that sample has been written to the `${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam` folder
-    * If stats need to be re-run, remove the BAM from this folder
+* Stats will be skipped if the final BAM for that sample has been written to `${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam`
+    * If stats need to be re-run, remove relevant BAMs from the `${STATS_DIR}` folder specified in `nextflow.config`
 
 ## For Development
 ### Please Read:
