@@ -443,12 +443,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "FG-Lupus_V1": {
-        BAITS: "/home/igo/resources/BED-Targets/FG-Lupus_V1.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/FG-Lupus_V1.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "Treatome_V2": {
         BAITS: "/home/igo/resources/BED-Targets/Treatome_V2_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/Treatome_V2_TARGETS.iList",
