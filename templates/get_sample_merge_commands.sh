@@ -28,5 +28,6 @@ if [[ -z ${BAMS} ]]; then
   exit 1
 fi
 
+# TODO - use the SAMTOOLS nextflow config command
 OUTPUT_FILE="merge_commands.sh"
 create_merge_commands.py ${OUTPUT_FILE} ${SAMPLE_BAM_DIR} ${BAMS}
