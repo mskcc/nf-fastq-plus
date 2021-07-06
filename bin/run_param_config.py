@@ -443,12 +443,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "Reis-Filho_ATP_V1": {
-        BAITS: "/home/igo/resources/BED-Targets/Reis-Filho_ATP_V1.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/Reis-Filho_ATP_V1.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "FG-Lupus_V1": {
         BAITS: "/home/igo/resources/BED-Targets/FG-Lupus_V1.iList",
         TARGETS: "/home/igo/resources/BED-Targets/FG-Lupus_V1.iList",
