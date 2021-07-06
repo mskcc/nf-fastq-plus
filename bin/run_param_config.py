@@ -473,6 +473,12 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
+    "WholeExome_v4": {
+        BAITS: "/home/igo/resources/BED-Targets/IDT_Exome_v1_FP_BAITS.iList",
+        TARGETS: "/home/igo/resources/BED-Targets/IDT_Exome_v1_FP_TARGETS.iList",
+        MSKQ: "no",
+        MD: "yes"
+    },
     "AmpliSeq": {
         BAITS: "/home/igo/resources/BED-Targets/AmpliSeq.ComprehensiveCancerPanel/ComprehensiveCancer.dna_manifest.20180509.BAITS.interval_list",
         TARGETS: "/home/igo/resources/BED-Targets/AmpliSeq.ComprehensiveCancerPanel/ComprehensiveCancer.dna_manifest.20180509.TARGETS.interval_list",
