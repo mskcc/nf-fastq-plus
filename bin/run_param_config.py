@@ -425,12 +425,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
-    "BRAINPACT_v1": {
-     	BAITS: "/home/igo/resources/BED-Targets/BRAINPACT_V1/BRAINPACT_V1_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/BRAINPACT_V1/BRAINPACT_V1_TARGETS.iList",
-        MSKQ: "no",
-        MD: "yes"
-    },
     "ADCC1_v2": {
      	BAITS: "/home/igo/resources/BED-Targets/ADCC1_V2/ADCC1_V2_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/ADCC1_V2/ADCC1_V2_TARGETS.iList",
