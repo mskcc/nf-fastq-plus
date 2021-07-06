@@ -707,8 +707,8 @@ recipe_options_mapping_UNORDERED = {
     },
      ".*IWG.*": {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
-        BAITS: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList",
+        BAITS: "/igo/work/nabors/bed_files/IWG2_v4/IWG2_v4.probes",
+        TARGETS: "/igo/work/nabors/bed_files/IWG2_v4/IWG2_v4.targets",
         MSKQ: "no",
         MD: "yes"
     },
