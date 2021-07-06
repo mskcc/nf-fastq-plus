@@ -413,12 +413,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "RF-BREAST_V3": {
-        BAITS: "/home/igo/resources/BED-Targets/RF-BREAST_V3_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/RF-BREAST_V3_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
     "Kigham": {
         BAITS: "/home/igo/resources/BED-Targets/Kinghamt20150127spikein_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/Kinghamt20150127spikein_TARGETS.iList",
