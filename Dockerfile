@@ -1,15 +1,15 @@
 FROM centos:7
 
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
-RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes/H.sapiens/GRCh37 && \
-  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
-  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
-  cd /igo/work/genomes/H.sapiens/GRCh37 && \
+RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh38.p13 && cd /igo/work/genomes/H.sapiens/GRCh38.p13 && \
+  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh38-1.0.0.tar.gz > refdata-GRCh38-1.0.0.tar.gz && \
+  /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
+  cd /igo/work/genomes/H.sapiens/GRCh38.p13 && \
   FILES=$(find . -type f -name "genome.fa*") && \
-  for f in $FILES; do mv $f ${f/genome.fa/GRCh37.fasta}; done && \
-  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/genome.fa.pac --strip-components 2 && \
-  rm refdata-GRCh37-1.0.0.tar.gz && \
-  mv genome.fa.pac GRCh37.fasta.pac
+  for f in $FILES; do mv $f ${f/genome.fa/GRCh38.p13.dna.primary.assembly.fa}; done && \
+  /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/genome.fa.pac --strip-components 2 && \
+  rm refdata-GRCh38-1.0.0.tar.gz && \
+  mv genome.fa.pac GRCh38.p13.dna.primary.assembly.fa.pac
 
 # Install utilities needed for bcl2fastq
 RUN yum -y install rpm cpio
