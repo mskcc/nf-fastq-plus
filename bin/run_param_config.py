@@ -130,7 +130,7 @@ genome_reference_mapping_UNORDERED = {
             CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
             CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A",
-            HAPLOTYPE_MAP: "/igo/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
+            HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/GRCh37_ACCESS.map"
         },
         "RNA": {
             GENOME: '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa',
