@@ -37,6 +37,13 @@ MD="MD"
 +------------+          |                   |
 |   species  +----------+-------------------+
 +------------+
+
+species/refr -> recipe -> opts -> type          (Later options override previous options)
+
+    species/refr, species_genome_mapping: Default reference for organism
+    recipe, recipe_overrides: Specific reference required for recipe
+    opts, recipe_options_mapping: More specific options for a recipe (Not reference)
+    type, sample_type_mapping: WGS, RNA, or DNA
 """
 
 def get_ordered_dic(unordered_dic):
