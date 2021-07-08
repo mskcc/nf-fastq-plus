@@ -19,7 +19,7 @@ for bam in ${BAMS}; do
     WARN_BAMS="${WARN_BAMS} ${bam}"
   fi
 done
-if [[ -z ${WARN_BAMS} ]]; then
+if [[ ! -z ${WARN_BAMS} ]]; then
   echo "BAMS: ${WARN_BAMS}" | mail -s "[WARNING] Review input for merged sample BAMs" ${DATA_TEAM_EMAIL}
 fi
 
