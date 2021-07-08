@@ -77,7 +77,18 @@ recipe_overrides = {
     "M-IMPACT_v1": "mm10",
     "PCFDDR_.*": "hg19",
     "IWG.*": "hg19",
-    "CH_v1": "hg19"
+    "CH_v1": "hg19",
+    "Twist_Exome": "hg19",
+    "IDT_Exome_v1": "hg19",
+    "ADCC1_v2": "hg19",
+    "RDM": "hg19",
+    "myTYPE_V1": "hg19",
+    "PanCancerV2": "hg19",
+    "MissionBio-Heme": "hg19",
+    "WholeExome_v4": "hg19",
+    "AmpliSeq": "hg19",
+    "HemeBrainPACT_v1": "hg19"
+
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {

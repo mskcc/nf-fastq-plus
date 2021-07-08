@@ -192,6 +192,13 @@ class TestSetupStats(unittest.TestCase):
         expected_params = "BAITS=/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList GTAG=hg19 GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa TARGETS=/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList TYPE=DNA"
         self.verify_params(params, expected_params, "IWG_v2", "Human")
 
+    def test_hg19_Overrides(self):
+        hg19_override_recipes = [ "PCFDDR_v1", "PCFDDR_v2", "IWG_v2", "Twist_Exome", "IDT_Exome_v1", "ADCC1_v2", "RDM", "myTYPE_V1", "PanCancerV2", "MissionBio-Heme", "WholeExome_v4", "AmpliSeq", "HemeBrainPACT_v1" ]
+        for recipe in hg19_override_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "GTAG=hg19 GENOME=/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa REFERENCE=/igo/work/genomes/H.sapiens/hg19/human_hg19.fa"
+            self.verify_params(params, expected_params, recipe, "Human")
+
     def test_PCFDDR(self):
         # v1 & v2 should have same config
         params = get_recipe_species_params("PCFDDR_v1", "Human")
