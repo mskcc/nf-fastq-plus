@@ -353,12 +353,6 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-    "IDT_Exome_V1_IMPACT468": {
-        BAITS: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDT_Exome_V1_IMPACT468/IDT_Exome_V1_IMPACT468_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDT_Exome_V1_IMPACT468/IDT_Exome_V1_IMPACT468_TARGETS.iList",
-        MSKQ: "no",
-        MD: "yes"
-    },
     "M-IMPACT_v1": {
         BAITS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/mm_IMPACT_v1_mm10_TARGETS.iList",
@@ -411,24 +405,6 @@ recipe_options_mapping_UNORDERED = {
     "IDT_Exome_v1_FP": {
         BAITS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGETS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
-        MSKQ: "no",
-        MD: "yes"
-    },
-    "RF-BREAST_V2": {
-        BAITS: "/home/igo/resources/BED-Targets/RF-BREAST_V2_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/RF-BREAST_V2_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
-    "Kigham": {
-        BAITS: "/home/igo/resources/BED-Targets/Kinghamt20150127spikein_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/Kinghamt20150127spikein_TARGETS.iList",
-        MSKQ: "yes",
-        MD: "yes"
-    },
-    "IDTCustom_18_20161108": {
-        BAITS: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/IMPACT-PLUS/IDTCustom_18_20161108_TARGETS.iList",
         MSKQ: "no",
         MD: "yes"
     },
