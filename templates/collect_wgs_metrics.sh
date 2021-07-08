@@ -47,7 +47,7 @@ METRICS_DIR=${STATSDONEDIR}/${MACHINE}  # Location of metrics & BAMs
 mkdir -p ${METRICS_DIR}
 STATS_FILENAME="${RUN_TAG}___WGS.txt"
 
-WGS_GENOMES="mm10\|wgs\|hg19\|grch37"
+WGS_GENOMES="mm10\|wgs\|hg19\|grch37\|grch38"
 if [ -z $(echo $GTAG | grep -i ${WGS_GENOMES}) ]; then
   MSG="Skipping CollectWgsMetrics for ${RUN_TAG}. GTAG (${GTAG}) not present in ${WGS_GENOMES} (TYPE: ${TYPE})";
   echo $MSG > ${STATS_FILENAME}

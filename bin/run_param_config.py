@@ -79,16 +79,30 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 """ Recipes that should have determine recipe (instead of species -> genome logic) """
 recipe_overrides = {
     "ADCC1_v3": "GRCh37",
-    "CH_v1": "hg19",
     "MSK-ACCESS_v1":"GRCh38",
     "IMPACT505":"GRCh38",
-    "IDT_Exome_v2_FP_Viral_Probes":"GRCh38"
+    "IDT_Exome_v2_FP_Viral_Probes":"GRCh38",
+    "M-IMPACT_v1": "mm10",
+    "PCFDDR_.*": "hg19",
+    "IWG.*": "hg19",
+    "CH_v1": "hg19",
+    "Twist_Exome": "hg19",
+    "IDT_Exome_v1": "hg19",
+    "ADCC1_v2": "hg19",
+    "RDM": "hg19",
+    "myTYPE_V1": "hg19",
+    "PanCancerV2": "hg19",
+    "MissionBio-Heme": "hg19",
+    "WholeExome_v4": "hg19",
+    "AmpliSeq": "hg19",
+    "HemeBrainPACT_v1": "hg19"
+
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
-    "Human": "GRCh37",
-    "Mouse": "mm10",
-    "Mouse_GeneticallyModified": "mm10",
+    "Human": "GRCh38",
+    "Mouse": "grcm38",
+    "Mouse_GeneticallyModified": "grcm38",
     "Drosophilia": "dm3",
     "Zebrafish": "danrer7",
     "Chicken": "galGal4",
@@ -486,7 +500,7 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "no",
         MD: "yes"
     },
-    "PCFDDR_v1": {
+    "PCFDDR_.*": {
         BAITS: "/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__BAITS.interval_list",
         TARGETS: "/home/igo/resources/BED-Targets/PCFDDR_v1/PCFDDR_v1__TARGETS.interval_list",
         MSKQ: "no",
@@ -582,8 +596,7 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
-     ".*IWG.*": {
-        # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
+     "IWG.*": {
         BAITS: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList",
         TARGETS: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList",
         MSKQ: "no",
