@@ -274,6 +274,27 @@ class TestSetupStats(unittest.TestCase):
         self.assertEqual(wes_options[BAITS], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list")
         self.assertEqual(wes_options[TARGETS], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list")
 
+    def test_hMap_hg19(self):
+        hg19_recipes = [ "CH_v1" ]
+        for recipe in hg19_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg19_ACCESS.map"
+            self.verify_params(params, expected_params, recipe, "Human")
+
+    def test_hMap_GRCh38(self):
+        grch38_recipes = [ "MSK-ACCESS_v1", "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes" ]
+        for recipe in grch38_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_chr.map"
+            self.verify_params(params, expected_params, recipe, "Human")
+
+    def test_hMap_GRCh37(self):
+        grch38_recipes = [ "ADCC1_v3" ]
+        for recipe in grch38_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP=/igo/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
+            self.verify_params(params, expected_params, recipe, "Human")
+
 if __name__ == '__main__':
     unittest.main()
 

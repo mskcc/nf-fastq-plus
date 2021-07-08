@@ -13,6 +13,7 @@ CELLRANGER_ATAC = "CELLRANGER_ATAC"
 CELLRANGER_VDJ = "CELLRANGER_VDJ"
 CELLRANGER_CNV = "CELLRANGER_CNV"
 CELLRANGER_COUNT = "CELLRANGER_COUNT"
+HAPLOTYPE_MAP = "HAPLOTYPE_MAP"
 
 # 3) Determined by recipe (see: recipe_options_mapping)
 BAITS="BAITS"
@@ -107,7 +108,8 @@ genome_reference_mapping_UNORDERED = {
     "hg19": {
         DEFAULT: {
             GENOME: "/igo/work/genomes/H.sapiens/hg19/BWA_0.7.5a/human_hg19.fa",
-            REFERENCE: "/igo/work/genomes/H.sapiens/hg19/human_hg19.fa"
+            REFERENCE: "/igo/work/genomes/H.sapiens/hg19/human_hg19.fa",
+            HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/hg19_ACCESS.map"
         },
         "RNA": {
             REF_FLAT: "/home/igo/resources/BED-Targets/hg19-Ref_Flat.txt",
@@ -127,7 +129,8 @@ genome_reference_mapping_UNORDERED = {
             CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1",
             CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
-            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A"
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A",
+            HAPLOTYPE_MAP: "/igo/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
         },
         "RNA": {
             GENOME: '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa',
@@ -143,7 +146,8 @@ genome_reference_mapping_UNORDERED = {
             CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1",
             CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
-            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A"
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A",
+            HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/hg38_chr.map"
         },
         "RNA": {
             REF_FLAT: '/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat',
@@ -442,7 +446,8 @@ recipe_options_mapping_UNORDERED = {
         BAITS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
         TARGETS: "/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list",
         MSKQ: "no",
-        MD: "yes"
+        MD: "yes",
+        HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
     },
     "PanCancerV2": {
         BAITS: "/home/igo/resources/BED-Targets/PanCancerV2/PanCancerV2_BAITS.iList",
