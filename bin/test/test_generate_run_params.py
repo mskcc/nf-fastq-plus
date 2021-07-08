@@ -212,7 +212,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_MSK_ACCESS(self):
         params = get_recipe_species_params("MSK-ACCESS_v1", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list TYPE=DNA"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list TYPE=DNA HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
         self.verify_params(params, expected_params, "MSK-ACCESS_v1", "Human")
 
     def test_CH_v1(self):
@@ -282,7 +282,7 @@ class TestSetupStats(unittest.TestCase):
             self.verify_params(params, expected_params, recipe, "Human")
 
     def test_hMap_GRCh38(self):
-        grch38_recipes = [ "MSK-ACCESS_v1", "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes" ]
+        grch38_recipes = [ "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes" ]
         for recipe in grch38_recipes:
             params = get_recipe_species_params(recipe, "Human")
             expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_chr.map"
