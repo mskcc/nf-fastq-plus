@@ -45,8 +45,8 @@ workflow create_sample_bams_wkflw {
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
       .multiMap { it ->
-        RUN_DEMUX_DIR: it.split(' ')[0]
-        RUN_SAMPLE_SHEET: it.split(' ')[1]
+        RUN_DEMUX_DIR: it.split(' ')[0].trim()
+        RUN_SAMPLE_SHEET: it.split(' ')[1].trim()
       }
       .set{ related_runs_ch }
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
