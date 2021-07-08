@@ -72,6 +72,7 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 recipe_overrides = {
     "ADCC1_v3": "GRCh37",
     "CH_v1": "hg19",
+    "IWG": "hg19",
     "MSK-ACCESS_v1":"GRCh38",
     "IMPACT505":"GRCh38",
     "IDT_Exome_v2_FP_Viral_Probes":"GRCh38"
@@ -572,8 +573,8 @@ recipe_options_mapping_UNORDERED = {
     },
      ".*IWG.*": {
         # TODO - Delete "Twist_Exome" or change interval lists to be GRCh37
-        BAITS: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_BAITS.iList",
-        TARGETS: "/home/igo/resources/BED-Targets/papaemme_IWG_OID43089_hg19_MHC_RNA_max10_20oct2015_TARGETS.iList",
+        BAITS: "/igo/work/nabors/bed_files/IWG2_v4/IWG2_v4.probes",
+        TARGETS: "/igo/work/nabors/bed_files/IWG2_v4/IWG2_v4.targets",
         MSKQ: "no",
         MD: "yes"
     },
