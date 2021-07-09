@@ -57,9 +57,15 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
                                                                                                    >
 #### Options `(-opt)`
 * `-bg`: run process in background 
+         
+### Re-running Pipeline
+* Demultiplexing will fail if the FASTQ directory already exists.
+    * If demultiplexing is required, remove the FASTQ directory
+    * If demultiplexing can be skipped, add the `--force true` option
+* Stats will be skipped if the final BAM for that sample has been written to `${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam`
+    * If stats need to be re-run, remove relevant BAMs from the `${STATS_DIR}` folder specified in `nextflow.config`
 
 ## For Development
-
 ### Please Read:
 * Create a `feature/{YOUR_CHANGE}` branch for new features or `hotfix/{YOUR_FIX}` for future development
 * Before merging your branch into `master`, wait for the GitHub actions to run and verify that all checks pass. **Do not
@@ -201,7 +207,9 @@ There are three files that log information -
 * `DEMUX_LOG_FILE`: All demultiplexing commands are logged here
 
 ### Testing 
-Build the dockerfile from the root
+Docker Container Actions run our integration tests on GitHub. To test changes, please build the dockerfile from the root
+ and verify no errors are generated from the `samplesheet_stats_main_test_hwg.sh` and `cellranger_demux_stats.sh` 
+ scripts.
 ```
 docker image build -t nf-fastq-plus-playground .
 

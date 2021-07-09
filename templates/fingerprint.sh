@@ -33,6 +33,22 @@ function get_samplesheet_projects_and_recipe() {
   fi
 }
 
+#########################################
+# Reads input file and outputs param value
+# Globals:
+#   FILE - file of format "P1=V1 P2=V2 ..."
+#   PARAM_NAME - name of parameter
+# Arguments:
+#   Lane - Sequencer Lane, e.g. L001
+#   FASTQ* - absolute path to FASTQ
+#########################################
+parse_param() {
+  FILE=$1
+  PARAM_NAME=$2
+
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
+}
+
 SAMPLESHEET=$(find -L . -type f -name "SampleSheet_*.csv")
 
 CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
@@ -47,14 +63,16 @@ for prj_recipe in $projects_and_recipe; do
   echo "Project $prj with recipe $recipe from $prj_recipe"
 
   FP_PRJ_DIR=Project_${prj}_${recipe}
-  MAP="/home/igo/fingerprint_maps/map_files/hg38_chr.map"
-  if [[ "$recipe" == *"ACCESS"* ]]; then
-    MAP="/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
+
+  HAPLOTYPE_MAP=$(parse_param ${RUN_PARAMS_FILE} HAPLOTYPE_MAP)
+  if [[ -z ${HAPLOTYPE_MAP} || ! -f ${HAPLOTYPE_MAP} ]]; then
+    echo "Skipping ${prj} w/ recipe ${recipe}. Invalid Haplotype Map: ${HAPLOTYPE_MAP}"
+    continue
   fi
 
   mkdir $FP_PRJ_DIR
   cd $FP_PRJ_DIR
-  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${MAP} --s"
+  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${HAPLOTYPE_MAP} --s"
   echo "Fingerprinting Command: ${CMD}"
 
   # We will ignore errors w/ fingerprinting for now

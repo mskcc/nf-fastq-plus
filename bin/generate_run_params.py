@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """Determines run parameters to generate stats for input recipe & species
 Args:
     recipe: Project recipe
@@ -60,10 +60,8 @@ def get_reference_configs(recipe, sample_type, species):
       For Example:
         {'GENOME': '/path/to/hg19.fa', 'REFERENCE': '/path/to/hg19/hg19.fa'}
     """
-    genome = None
-    if recipe in recipe_overrides:
-        genome = recipe_overrides[recipe]
-    else:
+    genome = find_mapping(recipe_overrides, recipe)
+    if genome == None:
         genome = find_mapping(species_genome_mapping, species)
 
     mapping = find_mapping(genome_reference_mapping, genome)
@@ -143,18 +141,18 @@ def main(argv):
     # Order is important because some assignments are dependent on previous assignments (see run_param_config.py)
     sample_type_dic = get_sample_type_from_recipe(recipe)
     sample_type = list(sample_type_dic.values())[0]     # { TYPE: "RNA" } -> "RNA"
-    refr = get_reference_configs(recipe, sample_type, species)
-    opts = get_recipe_options(recipe).copy()
+    refr = get_reference_configs(recipe, sample_type, species).copy()
+    opts = get_recipe_options(recipe)
     # TODO - Special Cases
     # "MethylCaptureSeq": sh $DIR/../PicardScripts/Methylseq.sh /igo/work/FASTQ/$RUNNAME/$PROJECT/
     # 10X_Genomics_*: sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --md $MARKDUPLICATES
     # DLP) echo "<<< DLP SAMPLES finished demuxing >>>"
 
     # Consolidate options
-    opts.update(refr)
-    opts.update(sample_type_dic)
+    refr.update(opts)
+    refr.update(sample_type_dic)
 
-    run_params = get_ordered_dic(opts) # Want to print in same order
+    run_params = get_ordered_dic(refr) # Want to print in same order
     output=""
     for k,v in run_params.items():
         output="{} {}".format(output, "{}={}".format(k, v))

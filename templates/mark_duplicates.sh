@@ -46,6 +46,8 @@ MD=$(parse_param ${RUN_PARAMS_FILE} MD)             # yes/no - must be yes for M
 RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
+FINAL_BAM=$(parse_param ${RUN_PARAMS_FILE} FINAL_BAM)
+
 MACHINE=$(echo $RUNNAME | cut -d'_' -f1)
 
 BAM_PATTERN="___MRG.bam"
@@ -61,28 +63,31 @@ STAT_FILE_NAME="${MD_TAG}.txt"
 
 OUTPUT_BAM=""
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
-  MSG="Skipping Mark Duplicates for ${RUN_TAG} (MD: ${MD}). Passing on Merged Bam: ${INPUT_BAM}"
+  ORIGINAL_BAM=$(realpath ${INPUT_BAM})
+
+  MSG="Skipping Mark Duplicates for ${RUN_TAG} (MD: ${MD}). Passing on Merged BAM: ${INPUT_BAM} => ${ORIGINAL_BAM} => ${FINAL_BAM}"
   echo ${MSG}
   echo ${MSG} > ${STAT_FILE_NAME}
-  OUTPUT_BAM=${INPUT_BAM}
+
+  # We move the Merged BAM to its delivey location because we are not running MarkDuplicates
+  mv ${ORIGINAL_BAM} ${FINAL_BAM}
+
   # NOTE - DO NOT EXIT (e.g. "exit 0") Module mark_duplicates outputs ENV varialbes and to do this nextflow will append
   # statements to write all environment variables to .command.env AT FILE END
   #   e.g. echo SAMPLE_TAG=$SAMPLE_TAG > .command.env
   # If you exit here, then .command.env will never be written
 else
-  MD_BAM="${BAM_DIR}/${MD_TAG}.bam"
   METRICS_FILE="${METRICS_DIR}/${STAT_FILE_NAME}"
 
   echo "Running MarkDuplicates (MD: ${MD}): ${MD_TAG}. Writing to ${METRICS_DIR}"
-  CMD="${PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${MD_BAM} INPUT=${INPUT_BAM}"
+  CMD="${PICARD} MarkDuplicates CREATE_INDEX=true METRICS_FILE=${METRICS_FILE} OUTPUT=${FINAL_BAM} INPUT=${INPUT_BAM}"
   run_cmd $CMD
 
-  # TODO - make metrics file available as output for nextlow
   cp ${METRICS_FILE} .
-  OUTPUT_BAM=${MD_BAM}
 fi
 
 LINKED_BAM="STATS___$(basename ${INPUT_BAM})"
 echo "Linking ${OUTPUT_BAM} to ${LINKED_BAM}"
+
 # Check BAM was moved and provide a symbolic link to continue nextflow pipeline if successful
-ln -s ${OUTPUT_BAM} ${LINKED_BAM}
+ln -s ${FINAL_BAM} ${LINKED_BAM}
