@@ -33,9 +33,7 @@ function get_project_species_recipe() {
   fi
 }
 
-SAMPLESHEET=$(find -L . -type f -name "SampleSheet_*.csv")
 DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
-
 project_species_recipe_list=$(get_project_species_recipe ${SAMPLESHEET} ${DUAL})
 echo "Running ${CROSSCHECK_WORKFLOW} (PROJECTS_AND_RECIPES=\"${projects_and_recipe}\" SAMPLESHEET=${SAMPLESHEET})"
 for prj_spc_rec in $project_species_recipe_list; do
