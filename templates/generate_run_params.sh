@@ -11,22 +11,6 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
-SPLIT_RUNNAME=$(basename ${DEMUXED_DIR})
-MACHINE=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX_DLP -> MICHELLE
-RUN_NUM=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX_DLP -> 0347
-FLOWCELL=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX_DLP -> BHWN55DMXX
-RUNNAME="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
-
-if [[ -z "${RUN_PARAMS_FILE}" ]]; then
-  RUN_PARAMS_FILE="sample_params.txt"
-fi
-
-# These are inputs to the nextflow process
-echo "Received RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} (RUN_PARAMS_FILE=${RUN_PARAMS_FILE})"
-
-RUN=$(basename ${DEMUXED_DIR})
-STATSDIR=${STATS_DIR}
-
 # SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {
   ROWS=$(sed -n "/Reads/,/Settings/p" $SAMPLESHEET | wc -l)
@@ -69,10 +53,36 @@ function get_lanes_of_sample() {
   echo $LANES
 }
 
-if [[ -z "${SAMPLESHEET}" ]]; then
-  echo "No SampleSheet found for Run: ${RUN} in sample sheet directory: ${SAMPLE_SHEET_DIR}"
-  # TODO - Alert
+if [[ -z "${RUN_PARAMS_FILE}" ]]; then
+  RUN_PARAMS_FILE="sample_params.txt"
+fi
+
+# We write the location of all the BAMs that should be created to this file
+RUN_BAMS="run_bams.txt"
+touch ${RUN_BAMS}
+RUNNAME="INVALID" # We do this b/c nextflow expects to export this environment variable
+
+echo "Received DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
+if [ ! -f ${SAMPLESHEET} ]; then
+  msg="No SampleSheet found for DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
+  echo ${msg}
+  # "NONE" is used as a placeholder when trying to merge all legacy BAMs, but request has no previous runs
+  if [[ ${SAMPLESHEET} != "NONE" ]]; then
+    echo ${msg} | mail -s "[ERROR] No Samplesheet" ${DATA_TEAM_EMAIL}
+  fi
 else
+  SPLIT_RUNNAME=$(basename ${DEMUXED_DIR})
+  MACHINE=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f1)  # MICHELLE_0347_BHWN55DMXX_DLP -> MICHELLE
+  RUN_NUM=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f2)  # MICHELLE_0347_BHWN55DMXX_DLP -> 0347
+  FLOWCELL=$(echo ${SPLIT_RUNNAME} | cut -d'_' -f3) # MICHELLE_0347_BHWN55DMXX_DLP -> BHWN55DMXX
+  RUNNAME="${MACHINE}_${RUN_NUM}_${FLOWCELL}"
+
+  # These are inputs to the nextflow process
+  echo "Evaluated RUNNAME=${RUNNAME} DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} (RUN_PARAMS_FILE=${RUN_PARAMS_FILE})"
+
+  RUN=$(basename ${DEMUXED_DIR})
+  STATSDIR=${STATS_DIR}
+
   RUN_TYPE=$(get_run_type)
   #If dual barcode (column index2 exists) then
   DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
@@ -80,7 +90,6 @@ else
     DUAL=$UNASSIGNED_PARAMETER # Assign constant that can be evaluated later in the pipeline
   fi
  
-  
   # Tab-delimited project, species, recipe variable,
   #   e.g. "Project_08822_HF	Human	HumanWholeGenome"
   prj_spc_rec=$(get_project_species_recipe)
@@ -129,12 +138,23 @@ else
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
+        FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
+
+        # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
+        echo "${FINAL_BAM}" >> ${RUN_BAMS}
+        if [[ -f ${FINAL_BAM} ]]; then
+          echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
+          continue
+        else
+          echo "BAM needs to be created - ${FINAL_BAM}. Processing."
+        fi
+
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
         SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
-        RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
 
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
@@ -155,7 +175,7 @@ else
             FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
           done
           # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
-          echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
+          echo "RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
         if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
           echo "Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"

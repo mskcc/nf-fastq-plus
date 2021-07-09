@@ -56,11 +56,20 @@ RUN echo "[computational-core]" > /etc/yum.repos.d/springdale.computational.repo
   echo "gpgcheck=1" >> /etc/yum.repos.d/springdale.computational.repo && \
   echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-springdale" >> /etc/yum.repos.d/springdale.computational.repo
 
+# Samtools - relies on springdale repo
+RUN yum -y install samtools
+
 # Installs to /usr/bin/bwa
 RUN yum -y install bwa
 
 # Install nextflow (Should be to directory in PATH)
 RUN cd /usr/local/bin && curl -s https://get.nextflow.io | bash
+
+# Download python libraries needed by /bin *.py scripts
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
+  python get-pip.py && \
+  pip install requests && \
+  pip install pandas
 
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
@@ -71,4 +80,6 @@ RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /igo/staging/stats && \
   mkdir -p /igo/stats/DONE && \
-  mkdir -p /home/igo/nextflow/crosscheck_metrics
+  mkdir -p /home/igo/nextflow/crosscheck_metrics && \
+  mkdir -p /pskis34/LIMS/LIMS_SampleSheets && \
+  mkdir -p /igo/staging/BAM

@@ -1,4 +1,4 @@
-#!/usr/bin/env /igo/work/nabors/tools/venvpy2/bin/python
+#!/usr/bin/env python
 """Determines whether there will be a barcode collision in the input sample sheet
 
    NOTE: A collision occurs if 2 barcodes are ambiguous, which means that their number of mismatches is too little for an
