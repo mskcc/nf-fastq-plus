@@ -26,7 +26,7 @@ run_cmd () {
 function get_project_species_recipe() {
   SAMPLESHEET_PARAM=$1
   DUAL_PARAM=$2
-  if [[ "${DUAL_PARAM}" == "$UNASSIGNED_PARAMETER" ]]; then
+  if [[ "$DUAL" == "" ]]; then
     awk '{if(found) print} /Lane/{found=1}' ${SAMPLESHEET_PARAM} | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$8,$4,$5}' | sort | uniq
   else
     awk '{if(found) print} /Lane/{found=1}' ${SAMPLESHEET_PARAM} | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$9,$4,$5}' | sort | uniq
@@ -36,16 +36,20 @@ function get_project_species_recipe() {
 DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
 project_species_recipe_list=$(get_project_species_recipe ${SAMPLESHEET} ${DUAL})
 echo "Running ${CROSSCHECK_WORKFLOW} (PROJECTS_AND_RECIPES=\"${projects_and_recipe}\" SAMPLESHEET=${SAMPLESHEET})"
+IFS=$'\n'
 for prj_spc_rec in $project_species_recipe_list; do
-  arrIN=(${prj_spc_rec//,/ })
-  prj=${arrIN[0]}
+  prj=$(echo $prj_spc_rec | awk '{printf"%s\n",$1}' );
+  spc=$(echo $prj_spc_rec | awk '{printf"%s\n",$2}' );
+  rec=$(echo $prj_spc_rec | awk '{printf"%s\n",$3}' );
+  # arrIN=(${prj_spc_rec//,/ })
+  # prj=${arrIN[0]}
   prj=${prj#Project_} # remove Project_ prefix
-  spc=${arrIN[1]}
-  rec=${arrIN[2]}
+  # spc=${arrIN[1]}
+  # rec=${arrIN[2]}
   echo "prj=${prj} spc=${spc} rec=${rec} (${prj_spc_rec})"
 
-  PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
-  HAPLOTYPE_MAP=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2)
+  PROJECT_PARAMS=$(python ./bin/generate_run_params.py -r ${rec} -s ${spc}) # Python scripts in bin of project root
+  HAPLOTYPE_MAP=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep -e "^HAPLOTYPE_MAP=" | cut -d '=' -f2)
   if [[ -z ${HAPLOTYPE_MAP} || ! -f ${HAPLOTYPE_MAP} ]]; then
     echo "Skipping ${prj} w/ rec ${rec}. Invalid Haplotype Map: ${HAPLOTYPE_MAP}"
     continue
