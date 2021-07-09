@@ -65,7 +65,7 @@ for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
       fail_msg="No SampleSheet found in ${PROCESSED_SAMPLE_SHEET_DIR} w/ ${REGEX}"
       echo ${fail_msg}
       echo "${fail_msg}" | mail -s "[FATAL ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
-      exit 1
+      continue # exit 1
     else
       RUN_SS=${PROCESSED_SAMPLE_SHEET}
       err_msg="Failed to find SampleSheet in ${run_dir}. Using ${RUN_SS}. This is needed to merge ${RUNNAME} with legacy runs"

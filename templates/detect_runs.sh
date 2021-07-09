@@ -30,7 +30,7 @@ if [ -d "${RUN}" ]; then
 else
   RUNDIR=${RUN}
   # STRUCTURE: /{SEQUENCER_DIR}/{MACHINE}/{RUNNAME}
-  if [[ -z $(echo ${RUN} | grep VH00564) ]]; then
+  if [[ -z $(echo ${RUN} | grep PEPE) ]]; then
     echo "Regular sequencer output directory: ${RUN}"
     RUNPATH=$(find ${SEQUENCER_DIR} -mindepth 2 -maxdepth 2 -type d -name "${RUNDIR}")
   else
