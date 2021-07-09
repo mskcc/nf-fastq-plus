@@ -238,7 +238,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_MSK_ACCESS(self):
         params = get_recipe_species_params("MSK-ACCESS_v1", "Human")
-        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list TYPE=DNA"
+        expected_params = "BAITS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list GTAG=GRCh38 GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TARGETS=/home/igo/resources/BED-Targets/MSK-ACCESS_v1/MSK-ACCESS-v1_0-probesAllwFP_GRCh38.interval_list TYPE=DNA HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
         self.verify_params(params, expected_params, "MSK-ACCESS_v1", "Human")
 
     def test_CH_v1(self):
@@ -299,6 +299,27 @@ class TestSetupStats(unittest.TestCase):
         wes_options = get_recipe_options("WholeExomeSequencing")
         self.assertEqual(wes_options[BAITS], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list")
         self.assertEqual(wes_options[TARGETS], "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list")
+
+    def test_hMap_hg19(self):
+        hg19_recipes = [ "CH_v1", "PCFDDR_v1", "PCFDDR_v2", "IWG_v2", "Twist_Exome", "IDT_Exome_v1", "ADCC1_v2", "RDM", "myTYPE_V1", "PanCancerV2", "MissionBio-Heme", "WholeExome_v4", "AmpliSeq", "HemeBrainPACT_v1" ]
+        for recipe in hg19_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg19_ACCESS.map"
+            self.verify_params(params, expected_params, recipe, "Human")
+
+    def test_hMap_GRCh38(self):
+        grch38_recipes = [ "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes", "IMPACT341", "HemePACT_v4", "WholeExomeSequencing", "Agilent_v4_51MB_Human", "HumanWholeGenome", "ShallowWGS", "10X_Genomics_WGS", "AmpliconSeq" ]
+        for recipe in grch38_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_chr.map"
+            self.verify_params(params, expected_params, recipe, "Human")
+
+    def test_hMap_GRCh37(self):
+        grch38_recipes = [ "ADCC1_v3" ]
+        for recipe in grch38_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/GRCh37_ACCESS.map"
+            self.verify_params(params, expected_params, recipe, "Human")
 
 if __name__ == '__main__':
     unittest.main()
