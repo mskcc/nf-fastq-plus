@@ -42,11 +42,7 @@ for prj_spc_rec in $project_species_recipe_list; do
   prj=$(echo $prj_spc_rec | awk '{printf"%s\n",$1}' );
   spc=$(echo $prj_spc_rec | awk '{printf"%s\n",$2}' );
   rec=$(echo $prj_spc_rec | awk '{printf"%s\n",$3}' );
-  # arrIN=(${prj_spc_rec//,/ })
-  # prj=${arrIN[0]}
   prj=${prj#Project_} # remove Project_ prefix
-  # spc=${arrIN[1]}
-  # rec=${arrIN[2]}
   echo "prj=${prj} spc=${spc} rec=${rec} (${prj_spc_rec})"
 
   PROJECT_PARAMS=$(generate_run_params.py -r ${rec} -s ${spc}) # Python scripts in bin of project root
