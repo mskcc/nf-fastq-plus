@@ -64,13 +64,13 @@ jobs:
       - uses: actions/checkout@v2
       # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
       - name: stats
-        uses: mskcc/nf-fastq-plus@v4
+        uses: mskcc/nf-fastq-plus@v5
         with:
           entrypoint: testPipeline/e2e/samplesheet_stats_main_test_hwg.sh
           args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus
       # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
       - name: main
-        uses: mskcc/nf-fastq-plus@v4
+        uses: mskcc/nf-fastq-plus@v5
         with:
           entrypoint: testPipeline/e2e/cellranger_demux_stats.sh
           args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus
