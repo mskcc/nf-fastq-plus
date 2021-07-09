@@ -23,53 +23,38 @@ run_cmd () {
 # Arguments:
 #   SAMPLESHEET_PARAM - abs path to SS
 #########################################
-function get_samplesheet_projects_and_recipe() {
+function get_project_species_recipe() {
   SAMPLESHEET_PARAM=$1
-  DUAL=$(cat $SAMPLESHEET_PARAM |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
-  if [[ "$DUAL" == "" ]]; then
-    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$8,$5}' | sort | uniq
+  DUAL_PARAM=$2
+  if [[ "${DUAL_PARAM}" == "$UNASSIGNED_PARAMETER" ]]; then
+    awk '{if(found) print} /Lane/{found=1}' ${SAMPLESHEET_PARAM} | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$8,$4,$5}' | sort | uniq
   else
-    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$9,$5}' | sort | uniq
+    awk '{if(found) print} /Lane/{found=1}' ${SAMPLESHEET_PARAM} | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$9,$4,$5}' | sort | uniq
   fi
-}
-
-#########################################
-# Reads input file and outputs param value
-# Globals:
-#   FILE - file of format "P1=V1 P2=V2 ..."
-#   PARAM_NAME - name of parameter
-# Arguments:
-#   Lane - Sequencer Lane, e.g. L001
-#   FASTQ* - absolute path to FASTQ
-#########################################
-parse_param() {
-  FILE=$1
-  PARAM_NAME=$2
-
-  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
 }
 
 SAMPLESHEET=$(find -L . -type f -name "SampleSheet_*.csv")
+DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
 
-CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
-projects_and_recipe=$(get_samplesheet_projects_and_recipe $SAMPLESHEET)
-
+project_species_recipe_list=$(get_project_species_recipe ${SAMPLESHEET} ${DUAL})
 echo "Running ${CROSSCHECK_WORKFLOW} (PROJECTS_AND_RECIPES=\"${projects_and_recipe}\" SAMPLESHEET=${SAMPLESHEET})"
-for prj_recipe in $projects_and_recipe; do
-  arrIN=(${prj_recipe//,/ })
+for prj_spc_rec in $project_species_recipe_list; do
+  arrIN=(${prj_spc_rec//,/ })
   prj=${arrIN[0]}
   prj=${prj#Project_} # remove Project_ prefix
-  recipe=${arrIN[1]}
-  echo "Project $prj with recipe $recipe from $prj_recipe"
+  spc=${arrIN[1]}
+  rec=${arrIN[2]}
+  echo "prj=${prj} spc=${spc} rec=${rec} (${prj_spc_rec})"
 
-  FP_PRJ_DIR=Project_${prj}_${recipe}
-
-  HAPLOTYPE_MAP=$(parse_param ${RUN_PARAMS_FILE} HAPLOTYPE_MAP)
+  PROJECT_PARAMS=$(generate_run_params.py -r ${RECIPE} -s ${SPECIES}) # Python scripts in bin of project root
+  HAPLOTYPE_MAP=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2)
   if [[ -z ${HAPLOTYPE_MAP} || ! -f ${HAPLOTYPE_MAP} ]]; then
-    echo "Skipping ${prj} w/ recipe ${recipe}. Invalid Haplotype Map: ${HAPLOTYPE_MAP}"
+    echo "Skipping ${prj} w/ rec ${rec}. Invalid Haplotype Map: ${HAPLOTYPE_MAP}"
     continue
   fi
 
+  CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
+  FP_PRJ_DIR=Project_${prj}_${rec}
   mkdir $FP_PRJ_DIR
   cd $FP_PRJ_DIR
   CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${HAPLOTYPE_MAP} --s"
