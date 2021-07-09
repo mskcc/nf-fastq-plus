@@ -20,10 +20,15 @@ echo "  scratch = true" >> ${TEMP_FILE}
 echo "  TMPDIR = '/scratch'" >> ${TEMP_FILE}
 echo "}" >> ${TEMP_FILE}
 
+FASTQ_DIR=${LOCATION}/../data/FASTQ/
+
 # Take whatever is in the original config for the environment variables. Replace bwa & picard w/ docker binaries
 cat ${ORIGINAL_CONFIG} | sed -n '/env {/,$p' \
   | sed -E "s#BWA=.*#BWA=\"/usr/bin/bwa\"#" \
   | sed -E "s#PICARD=.*#PICARD=\"java -jar /usr/local/bioinformatics/picard.jar\"#" \
+  | sed -E "s#SAMTOOLS=.*#SAMTOOLS=\"/usr/bin/samtools\"#" \
+  | sed -E "s#FASTQ_DIR=.*#FASTQ_DIR=\"${FASTQ_DIR}\"#" \
+  | sed -E "s#CELLRANGER_WAIT_TIME=.*#CELLRANGER_WAIT_TIME=1#" \
   >> ${TEMP_FILE}
 
 BACKUP=nextflow_original.config
