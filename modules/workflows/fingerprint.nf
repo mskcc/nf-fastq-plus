@@ -4,7 +4,7 @@ process task {
   label 'BSUB_OPTIONS_SMALL'
 
   input:
-    path SAMPLESHEET_CH
+    env SAMPLESHEET
     path READY_TO_FINGERPRINT
 
   shell:
@@ -13,9 +13,9 @@ process task {
 
 workflow fingerprint_wkflw {
   take:
-    SAMPLESHEET_CH
+    SAMPLESHEET
     READY_TO_FINGERPRINT
   main:
-    task( SAMPLESHEET_CH, READY_TO_FINGERPRINT )
+    task( SAMPLESHEET, READY_TO_FINGERPRINT )
 }
 
