@@ -128,7 +128,7 @@ if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
   echo "${LOG}"
   echo $LOG >> ${BCL_LOG}
 else
-  if [[ -d ${DEMUXED_FASTQS} ]]; then
+  if [[ -d ${DEMUXED_DIR} ]]; then
     ts=$(date +'%m_%d_%Y___%H:%M')
     BACKUP_DEMUX_DIR=${DEMUXED_DIR}_${ts}
     # bcl2fastq will merge new FASTQ data to existing FASTQ files, which would be inaccurate
