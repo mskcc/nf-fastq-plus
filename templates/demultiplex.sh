@@ -135,6 +135,7 @@ else
     BACKUP_DEMUX_DIR=${DEMUXED_DIR}_${ts}
     # bcl2fastq will merge new FASTQ data to existing FASTQ files, which would be inaccurate
     LOG="FASTQ files have been written to ${DEMUXED_DIR}. Moving to ${BACKUP_DEMUX_DIR}"
+    echo ${LOG}
     mv ${DEMUXED_DIR} ${BACKUP_DEMUX_DIR}
     mkdir -p ${DEMUXED_DIR}
   fi
