@@ -4,7 +4,6 @@ include { log_out as out } from '../utils/log_out'
 process task {
   label 'BSUB_OPTIONS_DEMUX'
   tag "$RUNNAME"
-  clusterOptions = { "-M 6" }
 
   input:
     env SAMPLESHEET

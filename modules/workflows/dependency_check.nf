@@ -10,9 +10,39 @@ process task {
 
   shell:
   '''
-  echo "Starting Run $(date)"
-  echo "BWA: $(${BWA} 2>&1 | grep "Version")"
-  echo "PICARD: $(echo ${PICARD})"
+  if [[ 1 -eq $(${PICARD} -h 2>&1 | grep "USAGE: PicardCommandLine" | wc -l) ]]; then
+    echo "Valid PICARD: ${PICARD}"
+  else
+    echo "Invalid PICARD: ${PICARD}"
+    exit 1
+  fi
+
+  set +e
+  valid_bwa_output=$(${BWA} -h 2>&1 | grep "Program: bwa")
+  set -e
+  if [[ -z ${valid_bwa_output} ]]; then
+    echo "Valid BWA: ${BWA}"
+  else
+    echo "Invalid BWA: ${BWA}"
+    exit 1
+  fi
+
+  # Checking that samtools doesn't exit on version command
+  ${SAMTOOLS} --version
+  if [[ 0 -eq $? ]]; then
+    echo "Valid SAMTOOLS: ${SAMTOOLS}"
+  else
+    echo "Invalid SAMTOOLS: ${SAMTOOLS}"
+  fi
+
+  # All bin/*py scripst use the /usr/bin/env python, which require these packages
+  required_python_packages="requests pandas"
+  for pkg in ${required_python_packages}; do
+    if [[ -z ${pkg} ]]; then
+      echo "/usr/bin/env python missing package: ${pkg}"
+      exit 1
+    fi
+  done
   '''
 }
 
@@ -20,7 +50,7 @@ workflow dependency_check_wkflw {
   main:
     task()
     out( task.out, "dependency_check" )
-  
+
   emit:
     out.out // Emits for downstream dependency, i.e. force other processes to come after
 }
