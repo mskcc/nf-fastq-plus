@@ -1,7 +1,7 @@
 include { log_out as out } from '../utils/log_out'
 
 process task {
-  label 'MEM_RETRY'
+  label 'BSUB_OPTIONS_LARGE'
 
   tag "$INPUT_ID"
 
