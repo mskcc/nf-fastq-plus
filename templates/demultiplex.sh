@@ -130,6 +130,14 @@ if [[ "${DEMUX_ALL}" == "true" && ! -z $DEMUXED_FASTQS  ]]; then
   echo "${LOG}"
   echo $LOG >> ${BCL_LOG}
 else
+  if [[ ! -z $DEMUXED_FASTQS ]]; then
+    ts=$(date +'%m_%d_%Y___%H:%M')
+    BACKUP_DEMUX_DIR=${DEMUXED_DIR}_${ts}
+    # bcl2fastq will merge new FASTQ data to existing FASTQ files, which would be inaccurate
+    LOG="FASTQ files have been written to ${DEMUXED_DIR}. Moving to ${BACKUP_DEMUX_DIR}"
+    mv ${DEMUXED_DIR} ${BACKUP_DEMUX_DIR}
+    mkdir -p ${DEMUXED_DIR}
+  fi
   chmod -R 775 $DEMUXED_DIR
   cp $SAMPLESHEET $DEMUXED_DIR
   echo "Writing FASTQ files to $DEMUXED_DIR"
