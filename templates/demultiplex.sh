@@ -122,14 +122,21 @@ basename ${SAMPLESHEET}
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 echo "RUN_BASENAME: ${RUN_BASENAME}"
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
-mkdir -p $DEMUXED_DIR
-DEMUXED_FASTQS=$(find ${DEMUXED_DIR} -type f -name "*.fastq.gz")
 
-if [[ "${DEMUX_ALL}" == "true" && ! -z $DEMUXED_FASTQS  ]]; then
+if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
   LOG="Skipping demux (DEMUX_ALL=${DEMUX_ALL}) of already demuxed directory: ${DEMUXED_DIR}"
   echo "${LOG}"
   echo $LOG >> ${BCL_LOG}
 else
+  if [[ -d ${DEMUXED_DIR} ]]; then
+    ts=$(date +'%m_%d_%Y___%H:%M')
+    BACKUP_DEMUX_DIR=${DEMUXED_DIR}_${ts}
+    # bcl2fastq will merge new FASTQ data to existing FASTQ files, which would be inaccurate
+    LOG="FASTQ files have been written to ${DEMUXED_DIR}. Moving to ${BACKUP_DEMUX_DIR}"
+    echo ${LOG}
+    mv ${DEMUXED_DIR} ${BACKUP_DEMUX_DIR}
+  fi
+  mkdir -p ${DEMUXED_DIR}
   chmod -R 775 $DEMUXED_DIR
   cp $SAMPLESHEET $DEMUXED_DIR
   echo "Writing FASTQ files to $DEMUXED_DIR"
