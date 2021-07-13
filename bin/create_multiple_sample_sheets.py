@@ -70,9 +70,10 @@ def tenx_genomics(sample_data, header):
 	sample_data = sample_data[ sample_data["index2"].str.match('^SI-.*') == False ].copy()
 	DATA_SHEETS[DF_IDX_REG] = sample_data
 
-	# We remove the dual-index when processing requests 10X
+	# Remove dual-index b/c older versions of cellranger would fail if 'index2' was included in the samplesheet
 	tenx_data.drop(['index2'], inplace = True, axis = 1)
 
+    # Multiome requests need to be written to their own samplesheet and demultiplexed w/ cellranger-arc
 	tenx_genomics_regular_data = tenx_data[ tenx_data["Sample_Well"].str.contains("Multiome") == False ].copy()
 	tenx_genomics_multiome_data = tenx_data[ tenx_data["Sample_Well"].str.contains("Multiome") == True ].copy()
 
