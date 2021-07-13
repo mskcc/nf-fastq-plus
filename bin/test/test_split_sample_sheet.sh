@@ -63,6 +63,14 @@ python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
+TYPE="10X_Multiome"
+echo "Testing ${TYPE} split"
+SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME.csv
+EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME_10X_Multiome.csv ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME_10X.csv )
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
+ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
+rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
+
 TYPE="6nt_dual"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv

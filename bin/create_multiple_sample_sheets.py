@@ -66,23 +66,20 @@ def get_sample_sheet_name(sample_sheet):
 	return sample_sheet_base
 
 def tenx_genomics(sample_data, header):
-	# create empty data frame
-	tenx_genomics_data = pd.DataFrame(columns = header)
-	# check for 10X samples in index2 of the sample sheet
-	for x in range(0, len(sample_data['index2']), 1):
-		if ('SI-' in sample_data['index2'].loc[x]):
-			tenx_genomics_data.loc[x] = sample_data.loc[x]  
-			sample_data.drop([x], inplace = True, axis = 0)   	
-	# drop index2 column for 10X sample data
-	tenx_genomics_data.drop(['index2'], inplace = True, axis = 1)   #this works
-	# move regular sample sheet to the last element of the list	
-	tenx_genomics_data.index = range(len(tenx_genomics_data))
-	sample_data.index = range(len(sample_data))
-
+	tenx_data = sample_data[ sample_data["index2"].str.match('^SI-.*') == True ].copy()
+	sample_data = sample_data[ sample_data["index2"].str.match('^SI-.*') == False ].copy()
 	DATA_SHEETS[DF_IDX_REG] = sample_data
-	if not tenx_genomics_data.empty:
-		DATA_SHEETS[DF_IDX_10X] = tenx_genomics_data
 
+	# We remove the dual-index when processing requests 10X
+	tenx_data.drop(['index2'], inplace = True, axis = 1)
+
+	tenx_genomics_regular_data = tenx_data[ tenx_data["Sample_Well"].str.contains("Multiome") == False ].copy()
+	tenx_genomics_multiome_data = tenx_data[ tenx_data["Sample_Well"].str.contains("Multiome") == True ].copy()
+
+	if not tenx_genomics_regular_data.empty:
+		DATA_SHEETS[DF_IDX_10X] = tenx_genomics_regular_data
+	if not tenx_genomics_multiome_data.empty:
+		DATA_SHEETS[DF_IDX_MLT] = tenx_genomics_multiome_data
 
 def dlp(sample_data, header):
 	dlp_data = sample_data[ sample_data["Sample_Well"].str.match("DLP") == True ].copy()
