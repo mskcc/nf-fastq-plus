@@ -25,6 +25,7 @@ run_cellranger() {
     CELL_RANGER="echo" \
     CELL_RANGER_CNV="echo" \
     CELL_RANGER_ATAC="echo" \
+    CELL_RANGER_ARC="echo" \
     FASTQ_DIR=$(pwd) \
     CMD_FILE=/dev/null \
     RUN_PARAMS_FILE="${rpf}" \
@@ -65,6 +66,19 @@ fi
 TEST=atac
 run_cellranger ${TEST}
 EXPECTED_OUT="count --id=ESC_IGO_00001_1 --fastqs=.*/nf-fastq-plus/testPipeline/templates/cellranger/RUN/Project_10001/Sample_ESC_IGO_00001_1 --reference=/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1 --nopreflight --jobmode=lsf --mempercore=64 --disable-ui --maxjobs=200"
+ACTUAL_OUT=$(cat ${OUTPUT_FILE})
+if [[ ! -z $(echo ${ACTUAL_OUT} | grep "${EXPECTED_OUT}") ]]; then
+  echo "Passed ${TEST}: ${EXPECTED_OUT}"
+  rm ${OUTPUT_FILE}
+  rm -rf ROSALIND_0339_AH2VTWBGXJ   # This is the FASTQ directory that we pointed the script to write to w/ FASTQ_DIR
+else
+  echo "Failed ${TEST}: ${ACTUAL_OUT}"
+  exit 1
+fi
+
+TEST=multiome
+run_cellranger ${TEST}
+EXPECTED_OUT="count --id=ESC_IGO_00001_1 --fastqs=.*/nf-fastq-plus/testPipeline/templates/cellranger/RUN/Project_10001/Sample_ESC_IGO_00001_1 --reference=/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-GRCh38-2020-A-2.0.0 --nopreflight --jobmode=lsf --mempercore=64 --disable-ui --maxjobs=200"
 ACTUAL_OUT=$(cat ${OUTPUT_FILE})
 if [[ ! -z $(echo ${ACTUAL_OUT} | grep "${EXPECTED_OUT}") ]]; then
   echo "Passed ${TEST}: ${EXPECTED_OUT}"

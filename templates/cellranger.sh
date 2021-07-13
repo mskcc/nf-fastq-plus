@@ -174,7 +174,7 @@ else
         # Place after command - only if the above command fails, should we wait
         echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
       fi
-    elif [[ ! -z $(echo ${RECIPE} | grep "${10X_MULTIOME_REGEX}") ]]; then
+    elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_MULTIOME}") ]]; then
       echo "Processing Multiome"
       CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_ARC)
       CMD="${CELL_RANGER_ARC} count"
@@ -186,7 +186,8 @@ else
       CMD+=" --mempercore=64"
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
-      echo "Processing ATAC"
+
+      run_cmd $CMD
     else
       echo "ERROR - Did not recognize cellranger command"
       # TODO
