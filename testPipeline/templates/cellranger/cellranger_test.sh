@@ -5,6 +5,12 @@ OUTPUT_FILE=output.txt
 LOCATION=$(dirname "$0")
 cd ${LOCATION}
 
+# Export REGEX environment variables
+touch env.sh
+CELLRANGER_TEST_ENV_SCRIPT=$(realpath env.sh)
+cat ./../../../nextflow.config | grep REGEX | sed 's/^/export/g' > ${CELLRANGER_TEST_ENV_SCRIPT}
+source ${CELLRANGER_TEST_ENV_SCRIPT}
+
 FASTQ_DIR=$(pwd)
 FASTQ_RUN_DIR=${FASTQ_DIR}/RUN
 FASTQ_SAMPLE_DIR=${FASTQ_RUN_DIR}/Project_10001/Sample_ESC_IGO_00001_1
@@ -91,3 +97,5 @@ fi
 
 echo "All Tests Pass - Removing ${FASTQ_RUN_DIR}"
 rm -rf ${FASTQ_RUN_DIR}
+rm launched_cellranger_dirs.txt
+rm ${CELLRANGER_TEST_ENV_SCRIPT}
