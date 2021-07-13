@@ -20,6 +20,9 @@
 #     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
 #     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
+10X_MULTIOME_REGEX="*Multiome*"
+10X_ATAC_REGEX="10X_Genomics_ATAC"
+
 #########################################
 # Returns what the mask should be
 # Params
@@ -129,6 +132,7 @@ if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
   echo $LOG >> ${BCL_LOG}
 else
   if [[ -d ${DEMUXED_DIR} ]]; then
+    # This was added for demultiplexing task's re-try logic. Manually running the pipeline from start never reaches here
     ts=$(date +'%m_%d_%Y___%H:%M')
     BACKUP_DEMUX_DIR=${DEMUXED_DIR}_${ts}
     # bcl2fastq will merge new FASTQ data to existing FASTQ files, which would be inaccurate
@@ -145,10 +149,16 @@ else
   if grep -q "10X_Genomics" $SAMPLESHEET; then
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     export PATH=$(dirname ${BCL2FASTQ}):$PATH
-    if grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
+
+    # TODO - make this consistent w/ cellranger.sh
+    if grep -q "${10X_ATAC_REGEX}" ${SAMPLESHEET}; then
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
       JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
       JOB_CMD+=" --mempercore=32 --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
+    elif grep -q "${10X_MULTIOME_REGEX}" ${SAMPLESHEET}; then
+      echo "DEMUX CMD (${RUN_BASENAME}): cellranger-arc mkfastq"
+      JOB_CMD="${CELL_RANGER_ARC} mkfastq --run=${RUN_TO_DEMUX_DIR} --samplesheet=${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
+      JOB_CMD+=" --jobmode=${EXECUTOR} --disable-ui  --barcode-mismatches 1 --jobmode=${EXECUTOR} >> ${BCL_LOG}"
     else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
       JOB_CMD="${CELL_RANGER} mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
