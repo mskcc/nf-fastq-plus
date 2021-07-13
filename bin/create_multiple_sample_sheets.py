@@ -85,38 +85,20 @@ def tenx_genomics(sample_data, header):
 
 
 def dlp(sample_data, header):
-	# create empty data frame
-	dlp_data = pd.DataFrame(columns = header)
-	# test for DLP data
-	for x in range(0, len(sample_data['Sample_Well']), 1):
-		if (sample_data['Sample_Well'].loc[x] == 'DLP'):
-			dlp_data.loc[x] = sample_data.loc[x]
-			sample_data.drop([x], inplace = True, axis = 0)
-	# clean up index and  move regular sample sheet to the last element of the list
-	dlp_data.index = range(len(dlp_data))
-	sample_data.index = range(len(sample_data))
+	dlp_data = sample_data[ sample_data["Sample_Well"].str.match("DLP") == True ].copy()
+	sample_data = sample_data[ sample_data["Sample_Well"].str.match("DLP") == False ].copy()
 	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not dlp_data.empty:
 		DATA_SHEETS[DF_IDX_DLP] = dlp_data
 
 
 def wgs(sample_data, header):
-	# create empty data frame
-	wgs_data = pd.DataFrame(columns = header)
-	ped_peg_data = pd.DataFrame(columns = header)
-	# test for wgs data
-	for x in range(0, len(sample_data['Sample_Well']), 1):
-		if (sample_data['Sample_Well'].loc[x] == 'HumanWholeGenome'):
-			if ('Project_08822' in sample_data['Sample_Project'].loc[x]):
-				ped_peg_data.loc[x] = sample_data.loc[x]
-				sample_data.drop([x], inplace = True, axis = 0)
-			else:
-				wgs_data.loc[x] = sample_data.loc[x]
-				sample_data.drop([x], inplace = True, axis = 0)
-	# clean up index and move regular sample sheet to the last element of the list
-	wgs_data.index = range(len(wgs_data))
-	ped_peg_data.index = range(len(ped_peg_data))
-	sample_data.index = range(len(sample_data))
+	all_hwg_data = sample_data[ sample_data["Sample_Well"].str.match("HumanWholeGenome") == True ].copy()
+	sample_data = sample_data[ sample_data["Sample_Well"].str.match("HumanWholeGenome") == False ].copy()
+
+	wgs_data = all_hwg_data[ all_hwg_data['Sample_Project'].str.contains("Project_08822") == False ].copy()
+	ped_peg_data = all_hwg_data[ all_hwg_data['Sample_Project'].str.contains("Project_08822") == True ].copy()
+
 	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not wgs_data.empty:
 		DATA_SHEETS[DF_IDX_WGS] = wgs_data
