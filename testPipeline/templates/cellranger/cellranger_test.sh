@@ -5,12 +5,6 @@ OUTPUT_FILE=output.txt
 LOCATION=$(dirname "$0")
 cd ${LOCATION}
 
-# Export REGEX environment variables
-touch env.sh
-CELLRANGER_TEST_ENV_SCRIPT=$(realpath env.sh)
-cat ./../../../nextflow.config | grep REGEX | sed 's/^/export/g' > ${CELLRANGER_TEST_ENV_SCRIPT}
-source ${CELLRANGER_TEST_ENV_SCRIPT}
-
 FASTQ_DIR=$(pwd)
 FASTQ_RUN_DIR=${FASTQ_DIR}/RUN
 FASTQ_SAMPLE_DIR=${FASTQ_RUN_DIR}/Project_10001/Sample_ESC_IGO_00001_1
@@ -31,7 +25,6 @@ run_cellranger() {
     CELL_RANGER="echo" \
     CELL_RANGER_CNV="echo" \
     CELL_RANGER_ATAC="echo" \
-    CELL_RANGER_ARC="echo" \
     FASTQ_DIR=$(pwd) \
     CMD_FILE=/dev/null \
     RUN_PARAMS_FILE="${rpf}" \
@@ -82,20 +75,5 @@ else
   exit 1
 fi
 
-TEST=multiome
-run_cellranger ${TEST}
-EXPECTED_OUT="count --id=ESC_IGO_00001_1 --fastqs=.*/nf-fastq-plus/testPipeline/templates/cellranger/RUN/Project_10001/Sample_ESC_IGO_00001_1 --reference=/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-GRCh38-2020-A-2.0.0 --nopreflight --jobmode=lsf --mempercore=64 --disable-ui --maxjobs=200"
-ACTUAL_OUT=$(cat ${OUTPUT_FILE})
-if [[ ! -z $(echo ${ACTUAL_OUT} | grep "${EXPECTED_OUT}") ]]; then
-  echo "Passed ${TEST}: ${EXPECTED_OUT}"
-  rm ${OUTPUT_FILE}
-  rm -rf ROSALIND_0339_AH2VTWBGXJ   # This is the FASTQ directory that we pointed the script to write to w/ FASTQ_DIR
-else
-  echo "Failed ${TEST}: ${ACTUAL_OUT}"
-  exit 1
-fi
-
 echo "All Tests Pass - Removing ${FASTQ_RUN_DIR}"
 rm -rf ${FASTQ_RUN_DIR}
-rm launched_cellranger_dirs.txt
-rm ${CELLRANGER_TEST_ENV_SCRIPT}
