@@ -184,7 +184,7 @@ else
 
       run_cmd $CMD
     else
-      echo "ERROR - Did not recognize cellranger command"
+      echo "ERROR - Did not recognize cellranger command: ${RECIPE} "
       # TODO
       # 10X_Genomics-Expression+VDJ
       # 10X_Genomics-FeatureBarcoding
