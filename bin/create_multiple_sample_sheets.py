@@ -5,9 +5,38 @@ import pandas as pd
 import numpy as np
 import argparse
 import os
+from functools import reduce
 
-""" Set of barcodes that should be masked to just the first 6 nucleotides
-"""
+###################################
+######   SAMPLESHEET SETUP   ######
+###################################
+# STEP 1 - ADD NEW EXTENSION, EXT_*
+EXT_10X = '_10X.csv'
+EXT_MLT = '_10X_Multiome.csv'
+EXT_DLP = '_DLP.csv'
+EXT_PAD = '_i7.csv'
+EXT_WGS = '_WGS.csv'
+EXT_PPG = '_PPG.csv'
+EXT_6NT = '_6nt.csv'
+EXT_REG = '.csv'
+# STEP 2 - ADD EXT_* VARIABLE HERE
+EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_PPG, EXT_6NT, EXT_REG]
+# STEP 3 - ADD IDX_* HERE
+DF_IDX_10X = EXTENSIONS.index(EXT_10X)
+DF_IDX_MLT = EXTENSIONS.index(EXT_MLT)
+DF_IDX_DLP = EXTENSIONS.index(EXT_DLP)
+DF_IDX_PAD = EXTENSIONS.index(EXT_PAD)
+DF_IDX_WGS = EXTENSIONS.index(EXT_WGS)
+DF_IDX_PPG = EXTENSIONS.index(EXT_PPG)
+DF_IDX_6NT = EXTENSIONS.index(EXT_6NT)
+DF_IDX_REG = EXTENSIONS.index(EXT_REG)
+# CREATES GLOBAL DF - Stores SampleSheet info for each EXT_*
+NO_DATA = pd.DataFrame()    # empty data set for comparison
+DATA_SHEETS = [ NO_DATA for ext in EXTENSIONS ]
+
+#######################################################################################
+######   Set of barcodes that should be masked to just the first 6 nucleotides   ######
+#######################################################################################
 BARCODE_6NT_SET = set()
 BARCODE_6NT_SET.update([ '{}'.format(i) for i in range(7001,7097) ])            # 7001-7096
 BARCODE_6NT_SET.update([ 'BC{}'.format(i) for i in range(1,9) ])                # BC1-8
@@ -25,19 +54,6 @@ BARCODE_6NT_SET.update([ 'KAPA_{}'.format(i) for i in range(1,13) ])            
 BARCODE_6NT_SET.update([ 'Garippa_{}'.format(i) for i in range(2,46) ])         # Garippa_2-45
 BARCODE_6NT_SET.update([ 'IDT-TS{}'.format(i) for i in range(1,49) ])           # IDT-TS1-48
 BARCODE_6NT_SET.update([ 'DMP{}'.format(i) for i in range(1,49) ])              # DMP1-48
-
-# 0 = 10X, 1 = DLP, 2 = padded, 3 = HumanWholeGenome, 4 = PED-PEG, 5 = 6nt, 6 = rest of sample sheet
-DF_IDX_10X = 0
-DF_IDX_DLP = 1
-DF_IDX_PAD = 2
-DF_IDX_HWG = 3
-DF_IDX_PPG = 4
-DF_IDX_6NT = 5
-DF_IDX_REG = 6
-EXTENSIONS = ['_10X.csv', '_DLP.csv', '_i7.csv', '_WGS.csv', '_PPG.csv', '_6nt.csv', '.csv']
-
-NO_DATA = pd.DataFrame()     # empty data set for comparison
-DATA_SHEETS = [NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA]
 
 def get_sample_sheet_name(sample_sheet):
 	""" Retrieves the samplesheet filename from the absolute path to the samplesheet
@@ -103,7 +119,7 @@ def wgs(sample_data, header):
 	sample_data.index = range(len(sample_data))
 	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not wgs_data.empty:
-		DATA_SHEETS[DF_IDX_HWG] = wgs_data
+		DATA_SHEETS[DF_IDX_WGS] = wgs_data
 	if not ped_peg_data.empty:
 		DATA_SHEETS[DF_IDX_PPG] = ped_peg_data
 
@@ -173,17 +189,12 @@ def i7_only(sample_data, header):
 		DATA_SHEETS[DF_IDX_PAD] = i7_data
 
 def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets = None):
-	# check to see if sample sheet has been manipulated in any way
-	if (DATA_SHEETS[DF_IDX_10X].equals(NO_DATA)) and \
-	   (DATA_SHEETS[DF_IDX_DLP].equals(NO_DATA)) and \
-	   (DATA_SHEETS[DF_IDX_PAD].equals(NO_DATA)) and \
-	   (DATA_SHEETS[DF_IDX_HWG].equals(NO_DATA)) and \
-	   (DATA_SHEETS[DF_IDX_PPG].equals(NO_DATA)) and \
-	   (DATA_SHEETS[DF_IDX_REG].equals(NO_DATA)):
+	# Check to see if any samplesheet other than the last one has been populated
+	no_changes = reduce(lambda all_dfs_empty, df : all_dfs_empty and df.equals(NO_DATA), DATA_SHEETS[:-1], True)
+	if no_changes:
 		print('NO CHANGES MADE TO THE ORIGINAL SAMPLE SHEET')
 	else:
 		print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
-
 
 	# go to new DividedSampleSheets directory
 	os.chdir(processed_dir)
@@ -198,7 +209,7 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 			data_element_list = DATA_SHEETS[y].T.reset_index().values.T.tolist()
 
 			# for BCL CONVERSION on DRAGEN, we must delete the "Adapter" tag in the SETTINGS section ( delete row 14 )
-			if y == 3:
+			if y == DF_IDX_WGS:
 				# swap headings for SAMPLE_ID and SAMPLE_NAME ROWS
 				data_element_list[0][1] = 'Sample_Name'
 				data_element_list[0][2] = 'Sample_ID'
