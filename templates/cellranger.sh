@@ -16,7 +16,7 @@
 REGEX_10X_Genomics_ATAC="10X_Genomics_ATAC"
 REGEX_10X_Genomics_VDJ="10X_Genomics.*VDJ.*"
 REGEX_10X_Genomics_CNV="10X_Genomics_CNV"
-REGEX_10X_Genomics_MULTIOME="*Multiome*"
+REGEX_10X_Genomics_MULTIOME="10X_Genomics_Multiome"
 
 #########################################
 # Reads input file and outputs param value
@@ -168,7 +168,6 @@ else
       CMD+=" --mempercore=64"
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
-      echo "Processing ATAC"
 
       run_cmd $CMD
       if [[ 0 -eq $? ]]; then

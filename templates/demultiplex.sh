@@ -20,7 +20,7 @@
 #     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
 #     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
-10X_MULTIOME_REGEX="*Multiome*"
+10X_MULTIOME_REGEX="10X_Genomics_Multiome"
 10X_ATAC_REGEX="10X_Genomics_ATAC"
 
 #########################################

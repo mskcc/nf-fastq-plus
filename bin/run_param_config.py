@@ -81,23 +81,27 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 
 """ Recipes that should have determine recipe (instead of species -> genome logic) """
 recipe_overrides = {
-    "ADCC1_v3": "GRCh37",
-    "M-IMPACT_v1": "mm10",
-    "PCFDDR_.*": "hg19",
-    "IWG.*": "hg19",
-    "CH_v1": "hg19",
-    "Twist_Exome": "hg19",
-    "IDT_Exome_v1": "hg19",
-    "ADCC1_v2": "hg19",
-    "RDM": "hg19",
-    "myTYPE_V1": "hg19",
-    "PanCancerV2": "hg19",
-    "MissionBio-Heme": "hg19",
-    "WholeExome_v4": "hg19",
-    "AmpliSeq": "hg19",
-    "HemeBrainPACT_v1": "hg19"
+    "Human": {
+        "ADCC1_v3": "GRCh37",
+        "PCFDDR_.*": "hg19",
+        "IWG.*": "hg19",
+        "CH_v1": "hg19",
+        "Twist_Exome": "hg19",
+        "IDT_Exome_v1": "hg19",
+        "ADCC1_v2": "hg19",
+        "RDM": "hg19",
+        "myTYPE_V1": "hg19",
+        "PanCancerV2": "hg19",
+        "MissionBio-Heme": "hg19",
+        "WholeExome_v4": "hg19",
+        "AmpliSeq": "hg19",
+        "HemeBrainPACT_v1": "hg19"
+    },
+    "Mouse": {
+        "M-IMPACT_v1": "mm10",
+        "10X_Genomics_Multiome": "mm10"
+    },
     # TODO - Add mouse multiome recipe name
-
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
