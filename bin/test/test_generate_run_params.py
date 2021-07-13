@@ -321,6 +321,63 @@ class TestSetupStats(unittest.TestCase):
             expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/GRCh37_ACCESS.map"
             self.verify_params(params, expected_params, recipe, "Human")
 
+    def test_10x_arc(self):
+        recipe="10X_Genomics_Multiome"
+
+        s1 = "Human"
+        params = get_recipe_species_params(recipe, s1)
+        expected_params = "CELLRANGER_ARC=/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-GRCh38-2020-A-2.0.0"
+        self.verify_params(params, expected_params, recipe, s1)
+
+        s2 = "Mouse"
+        params = get_recipe_species_params(recipe, s2)
+        expected_params = "CELLRANGER_ARC=/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-mm10-2020-A-2.0.0"
+        self.verify_params(params, expected_params, recipe, s2)
+
+    def test_recipe_overrides(self):
+        default_human = "GRCh38"
+        default_mouse = "grcm38"
+
+        overriden_recipes_hg19 = [ "PCFDDR_.*", "IWG.*", "CH_v1", "Twist_Exome", "IDT_Exome_v1", "ADCC1_v2", "RDM", "myTYPE_V1", "PanCancerV2", "MissionBio-Heme", "WholeExome_v4", "AmpliSeq", "HemeBrainPACT_v1" ]
+        overriden_recipes_grch37 = [ "ADCC1_v3" ]
+        overriden_recipes_mm10 = [ "M-IMPACT_v1", "10X_Genomics_Multiome" ]
+
+        # TEST that overrides only apply for recipes that are keys in the override_species dictionary
+
+        # Test recipes where Human should have the overrides, not Mouse
+        override_species = "Human"
+        no_override_species = "Mouse"
+        for recipe in overriden_recipes_hg19:
+            params = get_recipe_species_params(recipe, override_species)
+            expected_params = "GTAG=hg19"
+            self.verify_params(params, expected_params, recipe, override_species)
+
+            params = get_recipe_species_params(recipe, no_override_species)
+            expected_params = "GTAG=%s" % default_mouse
+            self.verify_params(params, expected_params, recipe, no_override_species)
+
+        for recipe in overriden_recipes_grch37:
+            params = get_recipe_species_params(recipe, override_species)
+            expected_params = "GTAG=GRCh37"
+            self.verify_params(params, expected_params, recipe, override_species)
+
+            params = get_recipe_species_params(recipe, no_override_species)
+            expected_params = "GTAG=%s" % default_mouse
+            self.verify_params(params, expected_params, recipe, no_override_species)
+
+        # Test recipes where Mouse should have the overrides, not Human
+        override_species = "Mouse"
+        no_override_species = "Human"
+        for recipe in overriden_recipes_mm10:
+            params = get_recipe_species_params(recipe, override_species)
+            expected_params = "GTAG=mm10"
+            self.verify_params(params, expected_params, recipe, override_species)
+
+            params = get_recipe_species_params(recipe, no_override_species)
+            expected_params = "GTAG=%s" % default_human
+            self.verify_params(params, expected_params, recipe, no_override_species)
+
+
 if __name__ == '__main__':
     unittest.main()
 
