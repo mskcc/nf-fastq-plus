@@ -15,6 +15,7 @@ CELLRANGER_ATAC = "CELLRANGER_ATAC"
 CELLRANGER_VDJ = "CELLRANGER_VDJ"
 CELLRANGER_CNV = "CELLRANGER_CNV"
 CELLRANGER_COUNT = "CELLRANGER_COUNT"
+CELLRANGER_ARC = "CELLRANGER_ARC"
 HAPLOTYPE_MAP = "HAPLOTYPE_MAP"
 
 # 3) Determined by recipe (see: recipe_options_mapping)
@@ -80,22 +81,27 @@ recipe_type_mapping = get_ordered_dic(recipe_type_mapping_UNORDERED)
 
 """ Recipes that should have determine recipe (instead of species -> genome logic) """
 recipe_overrides = {
-    "ADCC1_v3": "GRCh37",
-    "M-IMPACT_v1": "mm10",
-    "PCFDDR_.*": "hg19",
-    "IWG.*": "hg19",
-    "CH_v1": "hg19",
-    "Twist_Exome": "hg19",
-    "IDT_Exome_v1": "hg19",
-    "ADCC1_v2": "hg19",
-    "RDM": "hg19",
-    "myTYPE_V1": "hg19",
-    "PanCancerV2": "hg19",
-    "MissionBio-Heme": "hg19",
-    "WholeExome_v4": "hg19",
-    "AmpliSeq": "hg19",
-    "HemeBrainPACT_v1": "hg19"
-
+    "Human": {
+        "ADCC1_v3": "GRCh37",
+        "PCFDDR_.*": "hg19",
+        "IWG.*": "hg19",
+        "CH_v1": "hg19",
+        "Twist_Exome": "hg19",
+        "IDT_Exome_v1": "hg19",
+        "ADCC1_v2": "hg19",
+        "RDM": "hg19",
+        "myTYPE_V1": "hg19",
+        "PanCancerV2": "hg19",
+        "MissionBio-Heme": "hg19",
+        "WholeExome_v4": "hg19",
+        "AmpliSeq": "hg19",
+        "HemeBrainPACT_v1": "hg19"
+    },
+    "Mouse": {
+        "M-IMPACT_v1": "mm10",
+        "10X_Genomics_Multiome": "mm10"
+    },
+    # TODO - Add mouse multiome recipe name
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
@@ -146,10 +152,6 @@ genome_reference_mapping_UNORDERED = {
         DEFAULT: {
             GENOME: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta",
             REFERENCE: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta",
-            CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1",
-            CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
-            CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
-            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A",
             HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/GRCh37_ACCESS.map"
         },
         "RNA": {
@@ -167,6 +169,7 @@ genome_reference_mapping_UNORDERED = {
             CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
             CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A",
+            CELLRANGER_ARC: "/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-GRCh38-2020-A-2.0.0",
             HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/hg38_nochr.map"
         },
         "RNA": {
@@ -210,7 +213,8 @@ genome_reference_mapping_UNORDERED = {
             CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-mm10-1.1.0",
             CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCm38-alts-ensembl-2.2.0",
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCm38-1.0.0",
-            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-mm10-2020-A"
+            CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-mm10-2020-A",
+            CELLRANGER_ARC: "/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-mm10-2020-A-2.0.0"
         },
         "RNA": {
             GENOME: '/igo/work/nabors/genomes/GRCm38/Mus_musculus.GRCm38.dna.primary_assembly.fa',

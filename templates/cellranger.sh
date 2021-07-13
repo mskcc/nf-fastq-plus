@@ -13,10 +13,6 @@
 #   RUN_PARAMS_FILE,  cellranger binary
 #   CMD_FILE          Absolute path to file that logs commands
 
-REGEX_10X_Genomics_ATAC="10X_Genomics_ATAC"
-REGEX_10X_Genomics_VDJ="10X_Genomics.*VDJ.*"
-REGEX_10X_Genomics_CNV="10X_Genomics_CNV"
-
 #########################################
 # Reads input file and outputs param value
 # Globals:
@@ -167,13 +163,26 @@ else
       CMD+=" --mempercore=64"
       CMD+=" --disable-ui"
       CMD+=" --maxjobs=200"
-      echo "Processing ATAC"
 
       run_cmd $CMD
       if [[ 0 -eq $? ]]; then
         # Place after command - only if the above command fails, should we wait
         echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
       fi
+    elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_MULTIOME}") ]]; then
+      echo "Processing Multiome"
+      CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_ARC)
+      CMD="${CELL_RANGER_ARC} count"
+      CMD+=" --id=${SAMPLE_TAG}"
+      CMD+=" --fastqs=${CELLRANGER_FASTQ_INPUT}"
+      CMD+=" --reference=${CELLRANGER_REFERENCE}"
+      CMD+=" --nopreflight"
+      CMD+=" --jobmode=lsf"
+      CMD+=" --mempercore=64"
+      CMD+=" --disable-ui"
+      CMD+=" --maxjobs=200"
+
+      run_cmd $CMD
     else
       echo "ERROR - Did not recognize cellranger command"
       # TODO
