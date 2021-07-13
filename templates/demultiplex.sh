@@ -151,7 +151,7 @@ else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
       JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
       JOB_CMD+=" --mempercore=32 --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
-    elif grep -q "${REGEX_10X_Genomics_MULTIOME}" ${SAMPLESHEET}; then
+    elif grep -q "${REGEX_10X_Genomics_ATAC_MULTIOME}" ${SAMPLESHEET}; then
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-arc mkfastq"
       JOB_CMD="${CELL_RANGER_ARC} mkfastq --run=${RUN_TO_DEMUX_DIR} --samplesheet=${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
       JOB_CMD+=" --jobmode=${EXECUTOR} --disable-ui  --barcode-mismatches 1 --jobmode=${EXECUTOR} >> ${BCL_LOG}"

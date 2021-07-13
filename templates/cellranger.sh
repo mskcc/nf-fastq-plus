@@ -169,7 +169,7 @@ else
         # Place after command - only if the above command fails, should we wait
         echo "${SAMPLE_CELLRANGER_DIR} count ${METRICS_FILE}" >> ${launched_cellranger_dirs}
       fi
-    elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_MULTIOME}") ]]; then
+    elif [[ ! -z $(echo ${RECIPE} | grep "${REGEX_10X_Genomics_ATAC_MULTIOME}") ]]; then
       echo "Processing Multiome"
       CELLRANGER_REFERENCE=$(parse_param ${RUN_PARAMS_FILE} CELLRANGER_ARC)
       CMD="${CELL_RANGER_ARC} count"
