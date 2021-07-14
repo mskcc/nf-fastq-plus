@@ -65,12 +65,12 @@ if (( $NUM_SHEETS == 0 )); then
   fi
   echo "Writing to ${SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
   ls ${COPIED_FILE} >> ${SPLIT_SAMPLE_SHEETS}
-else
+elif [[ -z $(grep "10X.csv" ${SPLIT_SAMPLE_SHEETS}) ]]; then
   SS_BASE=$(echo  | cut -d'.' -f1)
   REFERENCE_SAMPLESHEET=${COPIED_FILENAME/./_REFERENCE.} # ..._AHHL5KDSX2.csv -> ..._AHHL5KDSX2_REFERENCE.csv
   PATH_TO_REFERENCE_SAMPLESHEET=${PROCESSED_SAMPLE_SHEET_DIR}/${REFERENCE_SAMPLESHEET}
 
-  echo "Creating unsplit SampleSheet for reference: ${PATH_TO_REFERENCE_SAMPLESHEET}"
+  echo "Detected multiple samplesheets w/o a 10X request. Creating unsplit SampleSheet for reference: ${PATH_TO_REFERENCE_SAMPLESHEET}"
   cp ${COPIED_SAMPLE_SHEET} ${PATH_TO_REFERENCE_SAMPLESHEET}
   echo "Writing to ${SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
   ls ${PATH_TO_REFERENCE_SAMPLESHEET} >> ${SPLIT_SAMPLE_SHEETS}
