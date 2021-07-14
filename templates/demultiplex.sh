@@ -143,6 +143,8 @@ else
   echo "Writing FASTQ files to $DEMUXED_DIR"
   echo "SAMPLESHEET: ${SAMPLESHEET}"
   JOB_CMD="echo NO_JOB_SPECIFIED"
+
+  # bin/create_multiple_sample_sheets.py will create a separate samplesheet for each recipe
   if grep -q "10X_Genomics" $SAMPLESHEET; then
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     export PATH=$(dirname ${BCL2FASTQ}):$PATH
@@ -151,7 +153,7 @@ else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
       JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
       JOB_CMD+=" --mempercore=32 --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
-    elif grep -q "${REGEX_10X_Genomics_MULTIOME}" ${SAMPLESHEET}; then
+    elif grep -q "${REGEX_10X_Genomics_ATAC_MULTIOME}" ${SAMPLESHEET}; then
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-arc mkfastq"
       JOB_CMD="${CELL_RANGER_ARC} mkfastq --run=${RUN_TO_DEMUX_DIR} --samplesheet=${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
       JOB_CMD+=" --jobmode=${EXECUTOR} --disable-ui  --barcode-mismatches 1 --jobmode=${EXECUTOR} >> ${BCL_LOG}"
