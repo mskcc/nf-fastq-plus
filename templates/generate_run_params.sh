@@ -130,8 +130,8 @@ else
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
 
       # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
-      if [[ "${RECIPE}" = "DLP" ]]; then
-        echo "DLP recipes will be skipped. Not writting a ${RUN_PARAMS_FILE} file"
+      if [[ "${RECIPE}" = "DLP" || ! -z $(echo ${SAMPLESHEET} | grep ".*_PPG.csv$") ]]; then
+        echo "DLP/PPG recipes will be skipped. Not writting a ${RUN_PARAMS_FILE} file"
         # echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
         continue
       fi
