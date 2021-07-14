@@ -48,7 +48,8 @@ echo "SampleSheet: ${COPIED_SAMPLE_SHEET}, OutputDir: ${PROCESSED_SAMPLE_SHEET_D
 
 # In ./bin 
 CMD="create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file ${SPLIT_SAMPLE_SHEETS}"
-create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file ${SPLIT_SAMPLE_SHEETS}
+echo ${CMD}
+eval ${CMD}
 
 NUM_SHEETS=$(cat ${SPLIT_SAMPLE_SHEETS} | wc -l)
 echo "Wrote ${NUM_SHEETS} sample sheets from ${COPIED_SAMPLE_SHEET} to file ${SPLIT_SAMPLE_SHEETS}: $(cat ${SPLIT_SAMPLE_SHEETS})"
