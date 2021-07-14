@@ -19,7 +19,7 @@ workflow demultiplex_wkflw {
       }
       .set { result }
 
-    // Create SampleSheet Channel that will be processed by the statistics workflow
+    // stat_demux_ch continues to the statistics workflow
     result.stat
       .multiMap { it ->
         SAMPLE_SHEET: it                                    // /path/to/SampleSheet.csv
@@ -29,7 +29,7 @@ workflow demultiplex_wkflw {
     stat_demultiplex_task( stat_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, stat_demux_ch.RUNNAME )
     stat_out( stat_demultiplex_task.out[0], "demultiplex_stat" )
 
-    // Create SampleSheet Channel that will be demultiplexed as a reference, without stats
+    // refr_demux_ch will only be demultiplexed as reference, without stats
     result.refr
       .multiMap { it ->
         SAMPLE_SHEET: it                                    // /path/to/SampleSheet.csv
