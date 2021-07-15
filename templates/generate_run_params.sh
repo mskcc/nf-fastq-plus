@@ -102,6 +102,9 @@ else
   fi
 
   IFS=$'\n'
+
+  # TODO - Remove when PED_PEG is integrated in nextflow pipeline
+  PPG_REQUESTS=""
   for psr in $prj_spc_rec; do
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
@@ -129,10 +132,12 @@ else
       PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
 
-      # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
-      if [[ "${RECIPE}" = "DLP" || ! -z $(echo ${SAMPLESHEET} | grep ".*_PPG.csv$") ]]; then
-        echo "DLP/PPG recipes will be skipped. Not writting a ${RUN_PARAMS_FILE} file"
-        # echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
+      if [[ "${RECIPE}" = "DLP" ]]; then
+        echo "DLP requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+        continue
+      elif [[ ! -z $(echo ${SAMPLESHEET} | grep ".*_PPG.csv$") ]]; then
+        echo "PED-PEG requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+        PPG_REQUESTS="${PROJECT} ${PPG_REQUESTS}"
         continue
       fi
 
@@ -187,5 +192,11 @@ else
       # TODO - warning?
     fi
   done
+
+  if [[ ! -z ${PPG_REQUESTS} ]]; then
+    SUBJECT="[ACTION-REQUIRED] PED-PEG Requests on ${RUNNAME}"
+    BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}"
+    echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+  fi
   IFS=' \t\n'
 fi
