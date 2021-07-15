@@ -36,7 +36,7 @@ jobs:
       - name: Test create merge commands
         run: pip install requests && cd ./bin/test && python test_create_merge_commands.py
       - name: Test retrieve failed samples
-        run: cd ./bin/test && python test_retrieve_failed_samples.py
+        run: pip install mocks && cd ./bin/test && python test_retrieve_failed_samples.py
 
   # Add tests for templates/*
   unit-tests:
