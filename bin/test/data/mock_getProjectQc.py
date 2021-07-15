@@ -7,10 +7,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013704-N01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":27631560,
                "reviewed":"false"
             },
             "baseId":"05240_W_6"
@@ -19,10 +17,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0009139-T01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":83495016,
                "reviewed":"false"
             },
             "baseId":"05240_W_3"
@@ -31,10 +27,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0009139-N01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":27784326,
                "reviewed":"false"
             },
             "baseId":"05240_W_4"
@@ -43,10 +37,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013963-T01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":89467598,
                "reviewed":"false"
             },
             "baseId":"05240_W_7"
@@ -55,10 +47,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0003796-T01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":92740484,
                "reviewed":"false"
             },
             "baseId":"05240_W_2"
@@ -67,10 +57,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0003796-N01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":25874756,
                "reviewed":"false"
             },
             "baseId":"05240_W_1"
@@ -79,10 +67,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013704-T01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":49845900,
                "reviewed":"false"
             },
             "baseId":"05240_W_5"
@@ -91,10 +77,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013963-N01-WES",
                "run":"PITT_0406_BHC5G7BBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":28344636,
                "reviewed":"false"
             },
             "baseId":"05240_W_8"
@@ -103,10 +87,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP",
             "qc":{
-               "sampleName":"P-0009139-N01-WES",
                "run":"JAX_0374_BHFFHMBBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":92075030,
                "reviewed":"false"
             },
             "baseId":"05240_W_4"
@@ -115,10 +97,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP",
             "qc":{
-               "sampleName":"P-0003796-T01-WES",
                "run":"JAX_0374_BHFFHMBBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":269486288,
                "reviewed":"false"
             },
             "baseId":"05240_W_2"
@@ -127,10 +107,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP",
             "qc":{
-               "sampleName":"P-0003796-N01-WES",
                "run":"JAX_0374_BHFFHMBBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":52916612,
                "reviewed":"false"
             },
             "baseId":"05240_W_1"
@@ -139,7 +117,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0003796-N01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
@@ -150,7 +127,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0003796-T01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
@@ -161,7 +137,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0009139-T01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"Failed",
                "reviewed":"false"
@@ -172,7 +147,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0009139-N01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
@@ -183,7 +157,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013704-T01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"Failed",
                "reviewed":"false"
@@ -194,7 +167,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013704-N01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"Failed",
                "reviewed":"false"
@@ -205,7 +177,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013963-T01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"Failed",
                "reviewed":"false"
@@ -216,7 +187,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013963-N01-WES",
                "run":"JAX_0374_BHFFHMBBXY_A1",
                "qcStatus":"Failed",
                "reviewed":"false"
@@ -227,10 +197,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013963-N01-WES",
                "run":"PITT_0414_AHFHJMBBXY",
                "qcStatus":"IGO-Complete",
-               "totalReads":100138708,
                "reviewed":"false"
             },
             "baseId":"05240_W_8"
@@ -239,10 +207,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013704-N01-WES",
                "run":"PITT_0415_BHFGNVBBXY",
                "qcStatus":"Failed",
-               "totalReads":108975400,
                "reviewed":"false"
             },
             "baseId":"05240_W_6"
@@ -251,10 +217,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0009139-T01-WES",
                "run":"PITT_0415_BHFGNVBBXY",
                "qcStatus":"Failed",
-               "totalReads":380275348,
                "reviewed":"false"
             },
             "baseId":"05240_W_3"
@@ -263,10 +227,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013963-T01-WES",
                "run":"PITT_0415_BHFGNVBBXY",
                "qcStatus":"Failed",
-               "totalReads":368010178,
                "reviewed":"false"
             },
             "baseId":"05240_W_7"
@@ -275,10 +237,8 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"IDT_Exome_v1_FP_Viral_Probes",
             "qc":{
-               "sampleName":"P-0013704-T01-WES",
                "run":"PITT_0415_BHFGNVBBXY",
                "qcStatus":"Failed",
-               "totalReads":226286720,
                "reviewed":"false"
             },
             "baseId":"05240_W_5"
@@ -287,7 +247,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0009139-T01-WES",
                "run":"PITT_0415_BHFGNVBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
@@ -298,7 +257,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013704-T01-WES",
                "run":"PITT_0415_BHFGNVBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
@@ -309,7 +267,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013704-N01-WES",
                "run":"PITT_0415_BHFGNVBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
@@ -320,7 +277,6 @@ MOCK_RESP = [
             "project":"05240_W",
             "recipe":"WholeExomeSequencing",
             "qc":{
-               "sampleName":"P-0013963-T01-WES",
                "run":"PITT_0415_BHFGNVBBXY_A1",
                "qcStatus":"IGO-Complete",
                "reviewed":"false"
