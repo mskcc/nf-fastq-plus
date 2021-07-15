@@ -11,7 +11,7 @@ from requests.models import Response
 # Configurations
 sys.path.insert(0, os.path.abspath("data"))
 from mock_getProjectQc import MOCK_RESP
-sys.path.append('..')
+sys.path.append(os.path.abspath('..'))
 from retrieve_failed_samples import retrieve_failed_sample_list
 
 class TestSetupStats(unittest.TestCase):
