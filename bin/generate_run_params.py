@@ -60,7 +60,8 @@ def get_reference_configs(recipe, sample_type, species):
       For Example:
         {'GENOME': '/path/to/hg19.fa', 'REFERENCE': '/path/to/hg19/hg19.fa'}
     """
-    genome = find_mapping(recipe_overrides, recipe)
+    species_overrides = {} if species not in recipe_overrides else recipe_overrides[species]
+    genome = find_mapping(species_overrides, recipe)
     if genome == None:
         genome = find_mapping(species_genome_mapping, species)
 

@@ -20,6 +20,9 @@
 #     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
 #     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
+# We run mkfastq only if the "index" column, which always comes before the Project_* column, has an SI-* index name
+MKFASTQ_REGEX="SI-[A-Z,0-9]{2}-[A-Z,0-9]{2},Project_"
+
 #########################################
 # Returns what the mask should be
 # Params
@@ -122,26 +125,41 @@ basename ${SAMPLESHEET}
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 echo "RUN_BASENAME: ${RUN_BASENAME}"
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
-mkdir -p $DEMUXED_DIR
-DEMUXED_FASTQS=$(find ${DEMUXED_DIR} -type f -name "*.fastq.gz")
 
-if [[ "${DEMUX_ALL}" == "true" && ! -z $DEMUXED_FASTQS  ]]; then
+if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
   LOG="Skipping demux (DEMUX_ALL=${DEMUX_ALL}) of already demuxed directory: ${DEMUXED_DIR}"
   echo "${LOG}"
   echo $LOG >> ${BCL_LOG}
 else
+  if [[ -d ${DEMUXED_DIR} ]]; then
+    # This was added for demultiplexing task's re-try logic. Manually running the pipeline from start never reaches here
+    ts=$(date +'%m_%d_%Y___%H:%M')
+    BACKUP_DEMUX_DIR=${DEMUXED_DIR}_${ts}
+    # bcl2fastq will merge new FASTQ data to existing FASTQ files, which would be inaccurate
+    LOG="FASTQ files have been written to ${DEMUXED_DIR}. Moving to ${BACKUP_DEMUX_DIR}"
+    echo ${LOG}
+    mv ${DEMUXED_DIR} ${BACKUP_DEMUX_DIR}
+  fi
+  mkdir -p ${DEMUXED_DIR}
   chmod -R 775 $DEMUXED_DIR
   cp $SAMPLESHEET $DEMUXED_DIR
   echo "Writing FASTQ files to $DEMUXED_DIR"
   echo "SAMPLESHEET: ${SAMPLESHEET}"
   JOB_CMD="echo NO_JOB_SPECIFIED"
-  if grep -q "10X_Genomics" $SAMPLESHEET; then
+
+  # bin/create_multiple_sample_sheets.py will create a separate samplesheet for each recipe
+  if grep -E "${MKFASTQ_REGEX}" $SAMPLESHEET; then
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     export PATH=$(dirname ${BCL2FASTQ}):$PATH
-    if grep -q "10X_Genomics_ATAC" $SAMPLESHEET; then
+
+    if grep -q "${REGEX_10X_Genomics_ATAC}" ${SAMPLESHEET}; then
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger-atac mkfastq"
       JOB_CMD="${CELL_RANGER_ATAC} mkfastq --input-dir ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"
       JOB_CMD+=" --mempercore=32 --maxjobs=200 --barcode-mismatches 1 >> ${BCL_LOG}"
+    elif grep -q "${REGEX_10X_Genomics_ATAC_MULTIOME}" ${SAMPLESHEET}; then
+      echo "DEMUX CMD (${RUN_BASENAME}): cellranger-arc mkfastq"
+      JOB_CMD="${CELL_RANGER_ARC} mkfastq --run=${RUN_TO_DEMUX_DIR} --samplesheet=${SAMPLESHEET} --output-dir=${DEMUXED_DIR}"
+      JOB_CMD+=" --jobmode=${EXECUTOR} --disable-ui --barcode-mismatches=1 --jobmode=${EXECUTOR} >> ${BCL_LOG}"
     else
       echo "DEMUX CMD (${RUN_BASENAME}): cellranger mkfastq"
       JOB_CMD="${CELL_RANGER} mkfastq --input-dir $RUN_TO_DEMUX_DIR/ --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR}"

@@ -48,15 +48,16 @@ echo "SampleSheet: ${COPIED_SAMPLE_SHEET}, OutputDir: ${PROCESSED_SAMPLE_SHEET_D
 
 # In ./bin 
 CMD="create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file ${SPLIT_SAMPLE_SHEETS}"
-create_multiple_sample_sheets.py --sample-sheet ${COPIED_SAMPLE_SHEET} --processed-dir ${PROCESSED_SAMPLE_SHEET_DIR} --output-file ${SPLIT_SAMPLE_SHEETS}
+echo ${CMD}
+eval ${CMD}
 
 NUM_SHEETS=$(cat ${SPLIT_SAMPLE_SHEETS} | wc -l)
 echo "Wrote ${NUM_SHEETS} sample sheets from ${COPIED_SAMPLE_SHEET} to file ${SPLIT_SAMPLE_SHEETS}: $(cat ${SPLIT_SAMPLE_SHEETS})"
 
+COPIED_FILENAME=$(basename ${COPIED_SAMPLE_SHEET})
 if (( $NUM_SHEETS == 0 )); then
-  echo "No sample sheets, copying original to ${PROCESSED_SAMPLE_SHEET_DIR}"
+  echo "No sample sheets, copying original ${COPIED_FILENAME} to ${PROCESSED_SAMPLE_SHEET_DIR}"
   cp ${COPIED_SAMPLE_SHEET} ${PROCESSED_SAMPLE_SHEET_DIR}
-  COPIED_FILENAME=$(basename ${COPIED_SAMPLE_SHEET})
   COPIED_FILE=$(find ${PROCESSED_SAMPLE_SHEET_DIR} -type f -name ${COPIED_FILENAME}) # ${PROCESSED_SAMPLE_SHEET_DIR}/$(basename ${COPIED_SAMPLE_SHEET})
   if [[ -z ${COPIED_FILE} ]]; then
     echo "Could not find ${COPIED_FILENAME} in ${PROCESSED_SAMPLE_SHEET_DIR}"
@@ -64,4 +65,13 @@ if (( $NUM_SHEETS == 0 )); then
   fi
   echo "Writing to ${SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
   ls ${COPIED_FILE} >> ${SPLIT_SAMPLE_SHEETS}
+elif [[ -z $(grep "10X.csv" ${SPLIT_SAMPLE_SHEETS}) ]]; then
+  SS_BASE=$(echo  | cut -d'.' -f1)
+  REFERENCE_SAMPLESHEET=${COPIED_FILENAME/./_REFERENCE.} # ..._AHHL5KDSX2.csv -> ..._AHHL5KDSX2_REFERENCE.csv
+  PATH_TO_REFERENCE_SAMPLESHEET=${PROCESSED_SAMPLE_SHEET_DIR}/${REFERENCE_SAMPLESHEET}
+
+  echo "Detected multiple samplesheets w/o a 10X request. Creating unsplit SampleSheet for reference: ${PATH_TO_REFERENCE_SAMPLESHEET}"
+  cp ${COPIED_SAMPLE_SHEET} ${PATH_TO_REFERENCE_SAMPLESHEET}
+  echo "Writing to ${SPLIT_SAMPLE_SHEETS}: ${COPIED_FILE}"
+  ls ${PATH_TO_REFERENCE_SAMPLESHEET} >> ${SPLIT_SAMPLE_SHEETS}
 fi
