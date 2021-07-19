@@ -148,7 +148,7 @@ else
   JOB_CMD="echo NO_JOB_SPECIFIED"
 
   # bin/create_multiple_sample_sheets.py will create a separate samplesheet for each recipe
-  if grep -q "${MKFASTQ_REGEX}" $SAMPLESHEET; then
+  if grep -E "${MKFASTQ_REGEX}" $SAMPLESHEET; then
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     export PATH=$(dirname ${BCL2FASTQ}):$PATH
 
