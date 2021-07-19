@@ -110,6 +110,12 @@ else
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
 
+    # Create list of failed samples in a request, e.g. "FAILED_SAMPLES___${REUQEST}.txt" (Skip if previous loop created)
+    FAILED_PRJ_SAMPLES_FILE="Failed___${RUNNAME}_${PROJECT}"
+    if [[ -f ${FAILED_PRJ_SAMPLES_FILE} ]]; then
+      retrieve_failed_samples.py --r=${RUNNAME} --p=${prj} --n=${FAILED_PRJ_SAMPLES_FILE}
+    fi
+
     # Stats calculated only if w/ valid project, species, & recipe
     # Note: Controls like FFPE POOLED NORMAL don't need recipe, but we skip the stat-calculations
     if [[ -z ${PROJECT} || -z ${SPECIES} || -z ${RECIPE} ]]; then
@@ -143,6 +149,17 @@ else
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
+          echo "Skipping Failed Sample: ${SAMPLE_TAG}"
+
+          # TODO - Remove after verifying in production
+          BODY="Skipping Stat Generation of ${SAMPLE_TAG} on run ${RUNNAME}"
+          SUBJECT="[ACTION REQUIRED] Check Failed Sample ${SAMPLE_TAG} (${RUNNAME})"
+          echo ${BODY} | mail -s "${SUBJECT}" streidd@mskcc.org
+          
+          continue
+        fi
+
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
         FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
