@@ -20,6 +20,9 @@
 #     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
 #     DEMUX_LOG_FILE=demux.txt demultiplex.sh
 
+# We run mkfastq only if the "index" column, which always comes before the Project_* column, has an SI-* index name
+MKFASTQ_REGEX="SI-[A-Z,0-9]{2}-[A-Z,0-9]{2},Project_"
+
 #########################################
 # Returns what the mask should be
 # Params
@@ -145,7 +148,7 @@ else
   JOB_CMD="echo NO_JOB_SPECIFIED"
 
   # bin/create_multiple_sample_sheets.py will create a separate samplesheet for each recipe
-  if grep -q "10X_Genomics" $SAMPLESHEET; then
+  if grep -q "${MKFASTQ_REGEX}" $SAMPLESHEET; then
     export LD_LIBRARY_PATH=/opt/common/CentOS_6/gcc/gcc-4.9.2/lib64:$LD_LIBRARY_PATH
     export PATH=$(dirname ${BCL2FASTQ}):$PATH
 
