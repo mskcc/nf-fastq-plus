@@ -28,6 +28,10 @@ NUM_OLD_DIRS=$(echo ${OLD_DIRS} | tr ' ' '\n' | wc -l)
 echo "Removing ${NUM_OLD_DIRS} Directories: ${OLD_DIRS}"
 
 for dir in ${OLD_DIRS}; do
+  if [[ ! -d ${dir}/.nextflow ]]; then
+    echo "Skipping ${dir} b/c it doesn't look like a nextflow directory"
+    continue
+  fi
   echo "Removing ${dir}"
   rm -rf ${dir}
 done
