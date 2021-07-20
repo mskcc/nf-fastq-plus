@@ -29,5 +29,5 @@ echo "Removing ${NUM_OLD_DIRS} Directories: ${OLD_DIRS}"
 
 for dir in ${OLD_DIRS}; do
   echo "Removing ${dir}"
-  # rm -rf ${dir}
+  rm -rf ${dir}
 done
