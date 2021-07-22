@@ -102,10 +102,19 @@ else
   fi
 
   IFS=$'\n'
+
+  # TODO - Remove when PED_PEG is integrated in nextflow pipeline
+  PPG_REQUESTS=""
   for psr in $prj_spc_rec; do
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
     RECIPE=$(echo $psr | awk '{printf"%s\n",$3}' );
+
+    # Create list of failed samples in a request, e.g. "FAILED_SAMPLES___${REUQEST}.txt" (Skip if previous loop created)
+    FAILED_PRJ_SAMPLES_FILE="Failed___${RUNNAME}_${PROJECT}"
+    if [[ -f ${FAILED_PRJ_SAMPLES_FILE} ]]; then
+      retrieve_failed_samples.py --r=${RUNNAME} --p=${prj} --n=${FAILED_PRJ_SAMPLES_FILE}
+    fi
 
     # Stats calculated only if w/ valid project, species, & recipe
     # Note: Controls like FFPE POOLED NORMAL don't need recipe, but we skip the stat-calculations
@@ -129,15 +138,28 @@ else
       PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
 
-      # For the DLP recipe, we output a single param line and skip as there are no Sample subdirectories of the demux directory
-      if [[ "${RECIPE}" = "DLP" || ! -z $(echo ${SAMPLESHEET} | grep ".*_PPG.csv$") ]]; then
-        echo "DLP/PPG recipes will be skipped. Not writting a ${RUN_PARAMS_FILE} file"
-        # echo "RUNNAME=${RUNNAME} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS" >> ${DLP_PARAM_FILE}
+      if [[ "${RECIPE}" = "DLP" ]]; then
+        echo "DLP requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+        continue
+      elif [[ ! -z $(echo ${SAMPLESHEET} | grep ".*_PPG.csv$") ]]; then
+        echo "PED-PEG requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+        PPG_REQUESTS="${PROJECT} ${PPG_REQUESTS}"
         continue
       fi
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
         SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
+          echo "Skipping Failed Sample: ${SAMPLE_TAG}"
+
+          # TODO - Remove after verifying in production
+          BODY="Skipping Stat Generation of ${SAMPLE_TAG} on run ${RUNNAME}"
+          SUBJECT="[ACTION REQUIRED] Check Failed Sample ${SAMPLE_TAG} (${RUNNAME})"
+          echo ${BODY} | mail -s "${SUBJECT}" streidd@mskcc.org
+          
+          continue
+        fi
+
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}" # RUN_TAG will determine the name of output stats
         FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
@@ -187,5 +209,11 @@ else
       # TODO - warning?
     fi
   done
+
+  if [[ ! -z ${PPG_REQUESTS} ]]; then
+    SUBJECT="[ACTION-REQUIRED] PED-PEG Requests on ${RUNNAME}"
+    BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}"
+    echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+  fi
   IFS=' \t\n'
 fi

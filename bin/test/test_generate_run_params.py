@@ -311,7 +311,7 @@ class TestSetupStats(unittest.TestCase):
         grch38_recipes = [ "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes", "IMPACT341", "HemePACT_v4", "WholeExomeSequencing", "Agilent_v4_51MB_Human", "HumanWholeGenome", "ShallowWGS", "10X_Genomics_WGS", "AmpliconSeq" ]
         for recipe in grch38_recipes:
             params = get_recipe_species_params(recipe, "Human")
-            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_nochr.map"
+            expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_igo.map"
             self.verify_params(params, expected_params, recipe, "Human")
 
     def test_hMap_GRCh37(self):
