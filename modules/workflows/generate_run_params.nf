@@ -3,6 +3,8 @@ include { log_out as out } from '../utils/log_out'
 process task {
   publishDir PIPELINE_OUT, mode:'copy'
 
+  errorStrategy 'ignore'
+
   label 'simple_lsf_task'
 
   tag "$RUN_TAG"
