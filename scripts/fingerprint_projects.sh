@@ -24,10 +24,12 @@ for prj in ${PROJECTS}; do
     echo "Invalid Samplesheet: ${latest_ss}"
     exit 1
   else
-    species_recipe=$(cat ${latest_ss} | grep ${prj} | cut -d',' -f4,5 | sort | uniq)
+    species_recipe=$(cat ${latest_ss} | grep ${prj} | cut -d',' -f4,5 | sort | uniq | head -1)
     species=$(echo ${species_recipe} | cut -d',' -f1)
     recipe=$(echo ${species_recipe} | cut -d',' -f2)
-    HAPLOTYPE_MAP=$(${GENERATE_RUN_PARAMS_SCRIPT} -r ${recipe} -s ${species} | tr ' ' '\n' | grep HAPLOTYPE_MAP | cut -d'=' -f2)
+    PARAM_CMD="${GENERATE_RUN_PARAMS_SCRIPT} -r ${recipe} -s ${species}"
+    echo ${PARAM_CMD}
+    HAPLOTYPE_MAP=$(${PARAM_CMD} | tr ' ' '\n' | grep HAPLOTYPE_MAP | cut -d'=' -f2)
     if [[ ! -z ${HAPLOTYPE_MAP} && -f ${HAPLOTYPE_MAP} ]]; then
       echo "PROJECT=${prj} HAPLOTYPE_MAP=${HAPLOTYPE_MAP}"
       mkdir ${prj}
