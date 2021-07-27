@@ -18,9 +18,11 @@ EXT_PAD = '_i7.csv'
 EXT_WGS = '_WGS.csv'
 EXT_PPG = '_PPG.csv'
 EXT_6NT = '_6nt.csv'
+EXT_MB_DNA = '_MB_DNA.csv'
+EXT_MB_PTN = '_MB_PTN.csv'
 EXT_REG = '.csv'
 # STEP 2 - ADD EXT_* VARIABLE HERE
-EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_PPG, EXT_6NT, EXT_REG]
+EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_PPG, EXT_6NT, EXT_REG, EXT_MB_DNA, EXT_MB_PTN]
 # STEP 3 - ADD IDX_* HERE
 DF_IDX_10X = EXTENSIONS.index(EXT_10X)
 DF_IDX_MLT = EXTENSIONS.index(EXT_MLT)
@@ -29,6 +31,8 @@ DF_IDX_PAD = EXTENSIONS.index(EXT_PAD)
 DF_IDX_WGS = EXTENSIONS.index(EXT_WGS)
 DF_IDX_PPG = EXTENSIONS.index(EXT_PPG)
 DF_IDX_6NT = EXTENSIONS.index(EXT_6NT)
+DF_IDX_MB_DNA = EXTENSIONS.index(EXT_MB_DNA)
+DF_IDX_MB_PTN = EXTENSIONS.index(EXT_MB_PTN)
 DF_IDX_REG = EXTENSIONS.index(EXT_REG)
 # CREATES GLOBAL DF - Stores SampleSheet info for each EXT_*
 NO_DATA = pd.DataFrame()    # empty data set for comparison
@@ -54,6 +58,9 @@ BARCODE_6NT_SET.update([ 'KAPA_{}'.format(i) for i in range(1,13) ])            
 BARCODE_6NT_SET.update([ 'Garippa_{}'.format(i) for i in range(2,46) ])         # Garippa_2-45
 BARCODE_6NT_SET.update([ 'IDT-TS{}'.format(i) for i in range(1,49) ])           # IDT-TS1-48
 BARCODE_6NT_SET.update([ 'DMP{}'.format(i) for i in range(1,49) ])              # DMP1-48
+
+RECIPE_MISSION_BIO_REGEX = 'MissionBio*'
+BARCODE_MISSION_BIO_PROTEIN_REGEX = 'MB_Protein_*'
 
 def get_sample_sheet_name(sample_sheet):
 	""" Retrieves the samplesheet filename from the absolute path to the samplesheet
@@ -212,6 +219,17 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 				f.write("{}/{}\n".format(processed_dir, data_element_sample_sheet_name))
 				f.close()
 
+def mission_bio(sample_data, header):
+	mission_bio = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == True ].copy()
+
+	mb_protein = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == True ].copy()
+	mb_dna = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == False ].copy()
+
+	if not mb_protein.empty and not mb_dna.empty:
+		DATA_SHEETS[DF_IDX_REG] = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == False ].copy()
+		DATA_SHEETS[DF_IDX_MB_PTN] = mb_protein
+		DATA_SHEETS[DF_IDX_MB_DNA] = mb_dna
+
 def main():
 	parser = argparse.ArgumentParser(description = 'This script takes a dual indexed sample sheet and splits it if there are DLP, PADDED or 10X indices')
 	parser.add_argument('--sample-sheet', type = str, required = True, help = 'The name and path of the sample sheet to be split')
@@ -278,6 +296,9 @@ def main():
 
 		# check for padding
 		i7_only(DATA_SHEETS[DF_IDX_REG], header)
+
+		# check for Mission Bio
+		mission_bio(DATA_SHEETS[DF_IDX_REG], header)
 
 	if dual_index or made_6nt_sample_sheet:
 		# did we have to split sample sheets?

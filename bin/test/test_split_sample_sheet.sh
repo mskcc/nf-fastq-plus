@@ -87,6 +87,14 @@ python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
+TYPE="MB_DNA_PRT"
+echo "Testing ${TYPE} split"
+SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME.csv
+EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME_MB_DNA.csv ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME_MB_PTN.csv SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME_MB_WGS.csv )
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
+ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
+rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
+
 TYPE="NO"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210503_ROSALIND_0005_FLOWCELLNAME.csv
