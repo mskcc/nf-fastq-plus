@@ -1,5 +1,4 @@
-#/bin/bash
-
+#!/bin/bash
 LOCATION=$(dirname "$0")
 
 EXPECTED_DIR=${LOCATION}/data/split_sampleSheet/split
