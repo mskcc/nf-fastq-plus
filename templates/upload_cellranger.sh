@@ -43,7 +43,7 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
     FILES=$(echo ${line} | cut -d' ' -f3-)
 
     # DIR SHOULD HAVE THIS NAMING - /igo/staging/stats/RUN/cellranger/project/sample
-    SAMPLE=$(basename ${DIR})                     # /igo/staging/stats/RUN/cellranger/project/sample  -> sample
+    SAMPLE="Sample_$(basename ${DIR})"                     # /igo/staging/stats/RUN/cellranger/project/sample  -> sample
     PROJECT_DIR=$(dirname ${DIR})
     PROJECT=$(basename ${PROJECT_DIR})            # /igo/staging/stats/RUN/cellranger/project         -> project
     RUN_DIR=$(dirname $(dirname ${PROJECT_DIR}))
@@ -59,7 +59,7 @@ while [[ ! -z $(cat launched_cellranger_dirs.txt) ]]; do
         MISSING=YES
       else
         # EXPECTED: ...CELLRANGER/DIANA_0380_BHY3FYDMXX/Project_12133/Sample_1xx1xxP_IGO_12133_1__count/outs/
-        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${CLEANED_PROJECT}/Sample_${SAMPLE}__${CR_TYPE}/outs"
+        UPLOAD_DIR="${STATSDONEDIR}/../CELLRANGER/${RUN}/${CLEANED_PROJECT}/${SAMPLE}__${CR_TYPE}/outs"
         mkdir -p ${UPLOAD_DIR}
         printf "\tFound ${f}. Copying to ${UPLOAD_DIR}\n"
         cp ${completed_file} ${UPLOAD_DIR}

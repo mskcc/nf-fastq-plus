@@ -23,38 +23,39 @@ run_cmd () {
 # Arguments:
 #   SAMPLESHEET_PARAM - abs path to SS
 #########################################
-function get_samplesheet_projects_and_recipe() {
+function get_project_species_recipe() {
   SAMPLESHEET_PARAM=$1
-  DUAL=$(cat $SAMPLESHEET_PARAM |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
-  if [[ "$DUAL" == "" ]]; then
-    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$8,$5}' | sort | uniq
+  DUAL_PARAM=${2:-NULL}
+  if [[ "${DUAL_PARAM}" == "NULL" ]]; then
+    awk '{if(found) print} /Lane/{found=1}' ${SAMPLESHEET_PARAM} | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$8,$4,$5}' | sort | uniq
   else
-    awk '{if(found) print} /Lane/{found=1}' $SAMPLESHEET_PARAM | awk 'BEGIN { FS = "," } ;{printf"%s,%s\n",$9,$5}' | sort | uniq
+    awk '{if(found) print} /Lane/{found=1}' ${SAMPLESHEET_PARAM} | awk 'BEGIN { FS = "," } ;{printf"%s\t%s\t%s\n",$9,$4,$5}' | sort | uniq
   fi
 }
 
-SAMPLESHEET=$(find -L . -type f -name "SampleSheet_*.csv")
-
+DUAL=$(cat $SAMPLESHEET |  awk '{pos=match($0,"index2"); if (pos>0) print pos}')
+project_species_recipe_list=$(get_project_species_recipe ${SAMPLESHEET} ${DUAL})
 CROSSCHECK_WORKFLOW=${CROSSCHECK_DIR}/main.nf
-projects_and_recipe=$(get_samplesheet_projects_and_recipe $SAMPLESHEET)
-
-echo "Running ${CROSSCHECK_WORKFLOW} (PROJECTS_AND_RECIPES=\"${projects_and_recipe}\" SAMPLESHEET=${SAMPLESHEET})"
-for prj_recipe in $projects_and_recipe; do
-  arrIN=(${prj_recipe//,/ })
-  prj=${arrIN[0]}
+echo "Running ${CROSSCHECK_WORKFLOW} (PROJECTS_AND_RECIPES=\"${project_species_recipe_list}\" SAMPLESHEET=${SAMPLESHEET})"
+IFS=$'\n'
+for prj_spc_rec in $project_species_recipe_list; do
+  prj=$(echo $prj_spc_rec | awk '{printf"%s\n",$1}' );
+  spc=$(echo $prj_spc_rec | awk '{printf"%s\n",$2}' );
+  rec=$(echo $prj_spc_rec | awk '{printf"%s\n",$3}' );
   prj=${prj#Project_} # remove Project_ prefix
-  recipe=${arrIN[1]}
-  echo "Project $prj with recipe $recipe from $prj_recipe"
+  echo "prj=${prj} spc=${spc} rec=${rec} (${prj_spc_rec})"
 
-  FP_PRJ_DIR=Project_${prj}_${recipe}
-  MAP="/home/igo/fingerprint_maps/map_files/hg38_chr.map"
-  if [[ "$recipe" == *"ACCESS"* ]]; then
-    MAP="/home/igo/fingerprint_maps/map_files/hg38_ACCESS.map"
+  PROJECT_PARAMS=$(generate_run_params.py -r ${rec} -s ${spc}) # Python scripts in bin of project root
+  HAPLOTYPE_MAP=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep -e "^HAPLOTYPE_MAP=" | cut -d '=' -f2)
+  if [[ -z ${HAPLOTYPE_MAP} || ! -f ${HAPLOTYPE_MAP} ]]; then
+    echo "Skipping ${prj} w/ rec ${rec}. Invalid Haplotype Map: ${HAPLOTYPE_MAP}"
+    continue
   fi
 
+  FP_PRJ_DIR=Project_${prj}_${rec}
   mkdir $FP_PRJ_DIR
   cd $FP_PRJ_DIR
-  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${MAP} --s"
+  CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${HAPLOTYPE_MAP} --s"
   echo "Fingerprinting Command: ${CMD}"
 
   # We will ignore errors w/ fingerprinting for now

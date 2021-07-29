@@ -16,7 +16,7 @@ echo ""
 echo "[$(date "+%Y%m%d") $(date +"%T")] Running ${LOCATION}/${WHOAMI}"
 echo "Taking SEQUENCER_DIR & FASTQ_DIR from ${NEXTFLOW_CONFIG}"
 eval $(cat ${NEXTFLOW_CONFIG} | grep SEQUENCER_DIR)	# e.g. eval SEQUENCER_DIR="/igo/sequencers"
-eval $(cat ${NEXTFLOW_CONFIG} | grep FASTQ_DIR)		# e.g. eval FASTQ_DIR="/igo/stats/NF_TESTING/FASTQ"
+eval $(cat ${NEXTFLOW_CONFIG} | grep FASTQ_DIR)		  # e.g. eval FASTQ_DIR="/igo/stats/NF_TESTING/FASTQ"
 WORK_DIR=$(dirname ${FASTQ_DIR})/working
 echo "SEQUENCER_DIR=${SEQUENCER_DIR} FASTQ_DIR=${FASTQ_DIR} WORK_DIR=${WORK_DIR}"
 

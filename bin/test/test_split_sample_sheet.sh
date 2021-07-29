@@ -1,5 +1,4 @@
-#/bin/bash
-
+#!/bin/bash
 LOCATION=$(dirname "$0")
 
 EXPECTED_DIR=${LOCATION}/data/split_sampleSheet/split
@@ -43,7 +42,7 @@ TYPE="DLP_WGS"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210422_ROSALIND_0001_FLOWCELLNAME.csv
 EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210422_ROSALIND_0001_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_210422_ROSALIND_0001_FLOWCELLNAME_DLP.csv ${EXPECTED_DIR}/SampleSheet_210422_ROSALIND_0001_FLOWCELLNAME_WGS.csv )
-python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION} > /dev/null
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
@@ -51,7 +50,7 @@ TYPE="i7"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME.csv
 EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME_i7.csv )
-python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION[@]} > /dev/null
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION[@]}
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
@@ -59,7 +58,15 @@ TYPE="10X"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0003_FLOWCELLNAME.csv
 EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0003_FLOWCELLNAME_10X.csv )
-python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION} > /dev/null
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
+ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
+rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
+
+TYPE="10X_Multiome"
+echo "Testing ${TYPE} split"
+SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME.csv
+EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME_10X_Multiome.csv ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME_10X.csv )
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
@@ -67,7 +74,7 @@ TYPE="6nt_dual"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv
 EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME_6nt.csv )
-python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION} > /dev/null
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
@@ -75,7 +82,15 @@ TYPE="6nt_single"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210504_ROSALIND_0006_FLOWCELLNAME.csv
 EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210504_ROSALIND_0006_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_210504_ROSALIND_0006_FLOWCELLNAME_6nt.csv )
-python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION} > /dev/null
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
+ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
+rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
+
+TYPE="MB_DNA_PRT"
+echo "Testing ${TYPE} split"
+SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME.csv
+EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME___MISSION_BIO_DNA.csv ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME___MISSION_BIO_PROTEIN.csv SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME_WGS.csv )
+python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 

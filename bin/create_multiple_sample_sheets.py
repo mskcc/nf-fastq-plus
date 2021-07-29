@@ -1,13 +1,46 @@
-#!/usr/bin/env /igo/work/nabors/tools/venvpy2/bin/python
+#!/usr/bin/env python
 
 import csv
 import pandas as pd
 import numpy as np
 import argparse
 import os
+from functools import reduce
 
-""" Set of barcodes that should be masked to just the first 6 nucleotides
-"""
+###################################
+######   SAMPLESHEET SETUP   ######
+###################################
+# STEP 1 - ADD NEW EXTENSION, EXT_*
+EXT_10X = '_10X.csv'
+EXT_MLT = '_10X_Multiome.csv'
+EXT_DLP = '_DLP.csv'
+EXT_PAD = '_i7.csv'
+EXT_WGS = '_WGS.csv'
+EXT_PPG = '_PPG.csv'
+EXT_6NT = '_6nt.csv'
+EXT_MB_DNA = '___MISSION_BIO_DNA.csv'
+EXT_MB_PTN = '___MISSION_BIO_PROTEIN.csv'
+EXT_REG = '.csv'
+# STEP 2 - ADD EXT_* VARIABLE HERE
+EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_PPG, EXT_6NT, EXT_REG, EXT_MB_DNA, EXT_MB_PTN]
+# STEP 3 - ADD IDX_* HERE
+DF_IDX_10X = EXTENSIONS.index(EXT_10X)
+DF_IDX_MLT = EXTENSIONS.index(EXT_MLT)
+DF_IDX_DLP = EXTENSIONS.index(EXT_DLP)
+DF_IDX_PAD = EXTENSIONS.index(EXT_PAD)
+DF_IDX_WGS = EXTENSIONS.index(EXT_WGS)
+DF_IDX_PPG = EXTENSIONS.index(EXT_PPG)
+DF_IDX_6NT = EXTENSIONS.index(EXT_6NT)
+DF_IDX_MB_DNA = EXTENSIONS.index(EXT_MB_DNA)
+DF_IDX_MB_PTN = EXTENSIONS.index(EXT_MB_PTN)
+DF_IDX_REG = EXTENSIONS.index(EXT_REG)
+# CREATES GLOBAL DF - Stores SampleSheet info for each EXT_*
+NO_DATA = pd.DataFrame()    # empty data set for comparison
+DATA_SHEETS = [ NO_DATA for ext in EXTENSIONS ]
+
+#######################################################################################
+######   Set of barcodes that should be masked to just the first 6 nucleotides   ######
+#######################################################################################
 BARCODE_6NT_SET = set()
 BARCODE_6NT_SET.update([ '{}'.format(i) for i in range(7001,7097) ])            # 7001-7096
 BARCODE_6NT_SET.update([ 'BC{}'.format(i) for i in range(1,9) ])                # BC1-8
@@ -26,6 +59,9 @@ BARCODE_6NT_SET.update([ 'Garippa_{}'.format(i) for i in range(2,46) ])         
 BARCODE_6NT_SET.update([ 'IDT-TS{}'.format(i) for i in range(1,49) ])           # IDT-TS1-48
 BARCODE_6NT_SET.update([ 'DMP{}'.format(i) for i in range(1,49) ])              # DMP1-48
 
+RECIPE_MISSION_BIO_REGEX = 'MissionBio*'
+BARCODE_MISSION_BIO_PROTEIN_REGEX = 'MB_Protein_*'
+
 def get_sample_sheet_name(sample_sheet):
 	""" Retrieves the samplesheet filename from the absolute path to the samplesheet
 	:param sample_sheet_file, str: absolute path to sample sheet
@@ -37,61 +73,42 @@ def get_sample_sheet_name(sample_sheet):
 	return sample_sheet_base
 
 def tenx_genomics(sample_data, header):
-	# create empty data frame
-	tenx_genomics_data = pd.DataFrame(columns = header)
-	# check for 10X samples in index2 of the sample sheet
-	for x in range(0, len(sample_data['index2']), 1):
-		if ('SI-' in sample_data['index2'].loc[x]):
-			tenx_genomics_data.loc[x] = sample_data.loc[x]  
-			sample_data.drop([x], inplace = True, axis = 0)   	
-	# drop index2 column for 10X sample data
-	tenx_genomics_data.drop(['index2'], inplace = True, axis = 1)   #this works
-	# move regular sample sheet to the last element of the list	
-	tenx_genomics_data.index = range(len(tenx_genomics_data))
-	sample_data.index = range(len(sample_data))
-	data_sheets[6] = sample_data
-	if not tenx_genomics_data.empty:
-		data_sheets[0] = tenx_genomics_data
+	tenx_data = sample_data[ sample_data["index2"].str.match('^SI-.*') == True ].copy()
+	sample_data = sample_data[ sample_data["index2"].str.match('^SI-.*') == False ].copy()
+	DATA_SHEETS[DF_IDX_REG] = sample_data
 
-		
+	# Remove dual-index b/c older versions of cellranger would fail if 'index2' was included in the samplesheet
+	tenx_data.drop(['index2'], inplace = True, axis = 1)
+
+    # Multiome requests need to be written to their own samplesheet and demultiplexed w/ cellranger-arc
+	tenx_genomics_regular_data = tenx_data[ tenx_data["Sample_Well"].str.contains("Multiome") == False ].copy()
+	tenx_genomics_multiome_data = tenx_data[ tenx_data["Sample_Well"].str.contains("Multiome") == True ].copy()
+
+	if not tenx_genomics_regular_data.empty:
+		DATA_SHEETS[DF_IDX_10X] = tenx_genomics_regular_data
+	if not tenx_genomics_multiome_data.empty:
+		DATA_SHEETS[DF_IDX_MLT] = tenx_genomics_multiome_data
+
 def dlp(sample_data, header):
-	# create empty data frame
-	dlp_data = pd.DataFrame(columns = header)
-	# test for DLP data
-	for x in range(0, len(sample_data['Sample_Well']), 1):
-		if (sample_data['Sample_Well'].loc[x] == 'DLP'):
-			dlp_data.loc[x] = sample_data.loc[x]
-			sample_data.drop([x], inplace = True, axis = 0)
-	# clean up index and  move regular sample sheet to the last element of the list
-	dlp_data.index = range(len(dlp_data))
-	sample_data.index = range(len(sample_data))
-	data_sheets[6] = sample_data
+	dlp_data = sample_data[ sample_data["Sample_Well"].str.match("DLP") == True ].copy()
+	sample_data = sample_data[ sample_data["Sample_Well"].str.match("DLP") == False ].copy()
+	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not dlp_data.empty:
-		data_sheets[1] = dlp_data
-		
-		
+		DATA_SHEETS[DF_IDX_DLP] = dlp_data
+
+
 def wgs(sample_data, header):
-	# create empty data frame
-	wgs_data = pd.DataFrame(columns = header)
-	ped_peg_data = pd.DataFrame(columns = header)
-	# test for wgs data
-	for x in range(0, len(sample_data['Sample_Well']), 1):
-		if (sample_data['Sample_Well'].loc[x] == 'HumanWholeGenome'):
-			if ('Project_08822' in sample_data['Sample_Project'].loc[x]):
-				ped_peg_data.loc[x] = sample_data.loc[x]
-				sample_data.drop([x], inplace = True, axis = 0)
-			else:
-				wgs_data.loc[x] = sample_data.loc[x]
-				sample_data.drop([x], inplace = True, axis = 0)
-	# clean up index and move regular sample sheet to the last element of the list
-	wgs_data.index = range(len(wgs_data))
-	ped_peg_data.index = range(len(ped_peg_data))
-	sample_data.index = range(len(sample_data))
-	data_sheets[6] = sample_data
+	all_hwg_data = sample_data[ sample_data["Sample_Well"].str.match("HumanWholeGenome") == True ].copy()
+	sample_data = sample_data[ sample_data["Sample_Well"].str.match("HumanWholeGenome") == False ].copy()
+
+	wgs_data = all_hwg_data[ all_hwg_data['Sample_Project'].str.contains("Project_08822") == False ].copy()
+	ped_peg_data = all_hwg_data[ all_hwg_data['Sample_Project'].str.contains("Project_08822") == True ].copy()
+
+	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not wgs_data.empty:
-		data_sheets[3] = wgs_data
+		DATA_SHEETS[DF_IDX_WGS] = wgs_data
 	if not ped_peg_data.empty:
-		data_sheets[4] = ped_peg_data
+		DATA_SHEETS[DF_IDX_PPG] = ped_peg_data
 
 def is_6nt_index(index_name):
     """ Returns whether the input index_name is an index that should be masked to the first 6 nucleotides
@@ -104,7 +121,7 @@ def has_6nt(sample_data, header):
 	""" Creates a 6_nt dataframe if 6nt indices are present
 			Side Effects:
 				- Modifies @sample_data in-place (Removes and re-orders indices)
-				- Creates a 6_nt dataframe and adds it to global @data_sheets
+				- Creates a 6_nt dataframe and adds it to global @DATA_SHEETS
 
 	:param sample_data, df: original sample sheet
 	:param sample_data, header: original sample sheet headers
@@ -123,10 +140,10 @@ def has_6nt(sample_data, header):
 			sample_data.drop([x], inplace = True, axis = 0)
 
 	if not has_6nt_data.empty:
-		data_sheets[5] = has_6nt_data
+		DATA_SHEETS[DF_IDX_6NT] = has_6nt_data
 		# Reset the index to 0 (if this isn't done, the indices of sample_data will have missing positions that will cause errors)
 		sample_data.index = range(len(sample_data))
-		data_sheets[6] = sample_data
+		DATA_SHEETS[DF_IDX_REG] = sample_data
 		return True
 
 	return False
@@ -151,36 +168,35 @@ def i7_only(sample_data, header):
 			# move the padded project to another data frame
 			i7_data = i7_data.append(requests_group.get_group(req))
 			sample_data.drop(sample_data[sample_data['Sample_Project'] == req].index, inplace = True)
-	# move regular sample sheet to the last element of the list	
+	# move regular sample sheet to the last element of the list
 	i7_data.index = range(len(i7_data))
 	sample_data.index = range(len(sample_data))
-	data_sheets[6] = sample_data
+	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not i7_data.empty:
-		data_sheets[2] = i7_data
+		DATA_SHEETS[DF_IDX_PAD] = i7_data
 
 def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets = None):
-	# check to see if sample sheet has been manipulated in any way
-	if (data_sheets[0].equals(no_data)) and (data_sheets[1].equals(no_data)) and (data_sheets[2].equals(no_data)) and (data_sheets[3].equals(no_data)) and (data_sheets[4].equals(no_data)) and (data_sheets[5].equals(no_data)):
+	# Check to see if any samplesheet other than the last one has been populated
+	no_changes = reduce(lambda all_dfs_empty, df : all_dfs_empty and df.equals(NO_DATA), DATA_SHEETS[:-1], True)
+	if no_changes:
 		print('NO CHANGES MADE TO THE ORIGINAL SAMPLE SHEET')
 	else:
 		print('WRITING NEW SAMPLE SHEETS: ' + processed_dir)
-	# list for sample sheet extensions
-	extensions = ['_10X.csv', '_DLP.csv', '_i7.csv', '_WGS.csv', '_PPG.csv', '_6nt.csv', '.csv']
-	
+
 	# go to new DividedSampleSheets directory
 	os.chdir(processed_dir)
 
 	# create a csv sheet for all valid data sheets
-	for y in range(0, len(data_sheets), 1):
+	for y in range(0, len(DATA_SHEETS), 1):
 		# break the loop in there were no changes in regular sample sheet or all of the samples were 10X, DLP or PADDED
-		if data_sheets[y].empty:
+		if DATA_SHEETS[y].empty:
 			continue
 		else:
-			data_sheets[y].sort_values('Lane')
-			data_element_list = data_sheets[y].T.reset_index().values.T.tolist()
+			DATA_SHEETS[y].sort_values('Lane')
+			data_element_list = DATA_SHEETS[y].T.reset_index().values.T.tolist()
 
 			# for BCL CONVERSION on DRAGEN, we must delete the "Adapter" tag in the SETTINGS section ( delete row 14 )
-			if y == 3:
+			if y == DF_IDX_WGS:
 				# swap headings for SAMPLE_ID and SAMPLE_NAME ROWS
 				data_element_list[0][1] = 'Sample_Name'
 				data_element_list[0][2] = 'Sample_ID'
@@ -191,7 +207,7 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 			else:
 				data_element_sample_sheet = top_of_sheet + data_element_list
 
-			data_element_sample_sheet_name = sample_sheet_name + extensions[y]
+			data_element_sample_sheet_name = sample_sheet_name + EXTENSIONS[y]
 			print("Writing " + data_element_sample_sheet_name)
 			data_element_csv_file = open(data_element_sample_sheet_name, 'w')
 			with data_element_csv_file:
@@ -203,13 +219,24 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 				f.write("{}/{}\n".format(processed_dir, data_element_sample_sheet_name))
 				f.close()
 
+def mission_bio(sample_data, header):
+	mission_bio = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == True ].copy()
+
+	mb_protein = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == True ].copy()
+	mb_dna = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == False ].copy()
+
+	if not mb_protein.empty and not mb_dna.empty:
+		DATA_SHEETS[DF_IDX_REG] = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == False ].copy()
+		DATA_SHEETS[DF_IDX_MB_PTN] = mb_protein
+		DATA_SHEETS[DF_IDX_MB_DNA] = mb_dna
+
 def main():
 	parser = argparse.ArgumentParser(description = 'This script takes a dual indexed sample sheet and splits it if there are DLP, PADDED or 10X indices')
 	parser.add_argument('--sample-sheet', type = str, required = True, help = 'The name and path of the sample sheet to be split')
 	parser.add_argument('--processed-dir', type = str, required = True, help = 'Directory to write processed sample sheets to')
 	parser.add_argument('--output-file', type = str, required = False, help = '(Optional) File to write names of created sample-sheets')
 	args = parser.parse_args()
-	
+
 	# grab sample sheet
 	sample_sheet = args.sample_sheet
 	processed_dir = args.processed_dir
@@ -221,16 +248,7 @@ def main():
 		created_sample_sheets = "{}/{}".format(working_dir, created_sample_sheets)
 		output += ", OUTPUT FILE={}".format(created_sample_sheets)
 	print(output)
-	
-	# hold area for the sample sheet created
-	# index listing
-	# 0 = 10X, 1 = DLP, 2 = padded, 3 = HumanWholeGenome, 4 = PED-PEG, 5 = 6nt, 6 = rest of sample sheet
-	global data_sheets, no_data, dual_index
-	dual_index = True  
-	# empty data set for comparison
-	no_data = pd.DataFrame()
-	data_sheets = [no_data, no_data, no_data, no_data, no_data, no_data, no_data]
-		
+
 	# this will hold the top of the sample sheet
 	top_of_sheet = list()
 
@@ -252,10 +270,8 @@ def main():
 
 	# this is the data part of the sheet
 	sample_data = pd.DataFrame(csv_sample_data, columns = header)
-	
 	# check to see if 'index2'  in header, if not set dual_index = False
-	if 'index2' not in header:
-		dual_index = False
+	dual_index = False if 'index2' not in header else True
 
 	sample_sheet_name = get_sample_sheet_name(sample_sheet)
 
@@ -263,8 +279,8 @@ def main():
 	made_6nt_sample_sheet = has_6nt(sample_data, header)
 	if made_6nt_sample_sheet:
 	    # RE-ASSIGN 6nt Samples - an input sample_data w/ 6nt samples will have its 6nt samples removed. The remaining
-	    # samples are placed in data_sheets[6]
-	    sample_data = data_sheets[6]
+	    # samples are placed in DATA_SHEETS[6]
+	    sample_data = DATA_SHEETS[DF_IDX_REG]
 
 	# testing to see if we have dual barcodes, if not, we just quit.
 	# first check for 10X samples
@@ -273,13 +289,16 @@ def main():
 		tenx_genomics(sample_data, header)
 
 		# call the DLP routine
-		dlp(data_sheets[6], header)
+		dlp(DATA_SHEETS[DF_IDX_REG], header)
 
 		# routine for taking out HumanWholeGenome
-		wgs(data_sheets[6], header)
+		wgs(DATA_SHEETS[DF_IDX_REG], header)
 
 		# check for padding
-		i7_only(data_sheets[6], header)
+		i7_only(DATA_SHEETS[DF_IDX_REG], header)
+
+		# check for Mission Bio
+		mission_bio(DATA_SHEETS[DF_IDX_REG], header)
 
 	if dual_index or made_6nt_sample_sheet:
 		# did we have to split sample sheets?
