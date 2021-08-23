@@ -9,8 +9,9 @@
 #   PICARD,     Picard Command
 # Nextflow Outputs:
 #   None
+
 #########################################
-# Executes and logs command
+# Executes and logs command. Exits script if there is an errro
 # Arguments:
 #   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
 #########################################
@@ -18,6 +19,12 @@ run_cmd () {
   INPUT_CMD=$@
   echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
+
+  # We exit the script w/ the exit code (this is to capture out-of-memory errors)
+  exit_code=$?
+  if [[ ${exit_code} -ne 0 ]]; then
+    exit ${exit_code}
+  fi
 }
 
 #########################################
