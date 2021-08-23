@@ -8,14 +8,20 @@
 #   SAMPLESHEET=/PATH/TO/SAMPLESHEET CROSSCHECK_DIR=/PATH/TO/CROSSCHECK_DIR ./fingerprint.sh
 
 #########################################
-# Executes and logs command
+# Executes and logs command. Exits script if there is an errro
 # Arguments:
 #   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
 #########################################
 run_cmd () {
   INPUT_CMD=$@
-  echo ${INPUT_CMD}  >> ${CMD_FILE}
+  echo ${INPUT_CMD} >> ${CMD_FILE}
   eval ${INPUT_CMD}
+
+  # We exit the script w/ the exit code (this is to capture out-of-memory errors)
+  exit_code=$?
+  if [[ ${exit_code} -ne 0 ]]; then
+    exit ${exit_code}
+  fi
 }
 
 #########################################
@@ -58,10 +64,7 @@ for prj_spc_rec in $project_species_recipe_list; do
   CMD="nextflow ${CROSSCHECK_DIR}/crosscheck_metrics.nf --projects $prj --m ${HAPLOTYPE_MAP} --s"
   echo "Fingerprinting Command: ${CMD}"
 
-  # We will ignore errors w/ fingerprinting for now
-  set +e
   run_cmd $CMD
-  set -e
 
   cd -
 done
