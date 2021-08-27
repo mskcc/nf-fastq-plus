@@ -18,6 +18,7 @@ process task {
     val RUNNAME
 
   output:
+    path "MERGE_DONE.txt", emit: UPLOAD_DONE
     stdout()
 
   script:
@@ -26,6 +27,7 @@ process task {
     echo ${MERGE_CMD} >> ${CMD_FILE}
     echo ${MERGE_CMD}
     eval ${MERGE_CMD}
+    touch MERGE_DONE.txt
     '''
 }
 
@@ -70,4 +72,5 @@ workflow create_sample_bams_wkflw {
       .set{ merge_cmd_ch }
     task( merge_cmd_ch, CMD_FILE, RUNNAME )
     out( task.out[0], "create_sample_bams" )
+    task.out[1].collect()
 }
