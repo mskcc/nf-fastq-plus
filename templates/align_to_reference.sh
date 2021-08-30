@@ -105,14 +105,22 @@ for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do
   PROJECT_TAG_PARAM=$(parse_param ${LANE_PARAM_FILE} PROJECT_TAG)
   RGID_PARAM=$(parse_param ${LANE_PARAM_FILE} RGID)
   SAMPLE_TAG=$(parse_param ${LANE_PARAM_FILE} SAMPLE_TAG)  # Assign output ID for downstream task
+  RECIPE=$(parse_param ${RUN_PARAMS_FILE} RECIPE) 
 
   # TODO - to run this script alone, we need a way to pass in this manually, e.g. FASTQ_LINKS=$(find . -type l -name "*.fastq.gz")
   FASTQ_PARAMS=$(parse_param ${LANE_PARAM_FILE} FASTQ) # new-line separated list of FASTQs
   FASTQ_ARGS=$(echo $FASTQ_PARAMS | tr '\n' ' ')      # If DUAL-Ended, then there will be a new line between the FASTQs
  
-  echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
-  bwa_mem_out=$(bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS)
-  echo "BWA JOB OUTPUT: ${bwa_mem_out}"
+  # if RECIPE is RNASEQ and REFERENCE is HUMAN or MOUSE call DRAGEN for bam creation
+  if [[ "${RECIPE}" == "RNASeq*" && "${REFERENCE_PARAM}" == "Human" ]]; then # for all recipes including: RNASeq-SMARTerAmp, RNASeq-TruSeqPolyA, RNASeq-TrueSeqRiboDeplete
+    
+    -r /staging/ref/GRCh38_rna --annotation-file /igo/work/genomes/H.sapiens/ncbi/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.gtf -1 /igo/work/mcmanamd/SAMPLE_R1.fastq.gz -2 /igo/work/mcmanamd/SAMPLE_R2.fastq.gz --output-directory /igo/work/mcmanamd/test_rna --output-file-prefix SRR7878045 --enable-rna true --RGID SRR7878045 --RGSM SRR7878045
+    # Then add to the JOB_ID_LIST
+  else
+    echo "BWA MEM ARGS: $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS"
+    bwa_mem_out=$(bwa_mem $LANE_TAG_PARAM $REFERENCE_PARAM $TYPE_PARAM $DUAL_PARAM $RUN_TAG_PARAM $PROJECT_TAG_PARAM $RGID_PARAM $FASTQ_ARGS)
+    echo "BWA JOB OUTPUT: ${bwa_mem_out}"
+  fi
 done
 
 ALL_JOBS=$(cat ${JOB_ID_LIST_FILE} | tr '\n' ' ')
