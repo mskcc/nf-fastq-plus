@@ -45,12 +45,12 @@ class CreateMergeCommand(unittest.TestCase):
         content = get_merge_commands(files, bam_dir, config.LIMS_HOST_PROD, "/usr/bin/samtools")
 
         expected_commands = [
-            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_1___C-7JJ452___NA.bam) &&",
-              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-48533_IGO_09455_S_1___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_1___C-7JJ452___NA.bam" ],
-            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_5___C-J0UH5P___NA.bam) &&",
-              "cp JAX_0375_AHFGVNBBXY___P09455_S___C-19-208557_IGO_09455_S_5___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_5___C-J0UH5P___NA.bam" ],
-            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_2___C-2M22RC___NA.bam) &&",
-              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-53420_IGO_09455_S_2___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_2___C-2M22RC___NA.bam" ]
+            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_1___NO_CMO_PID___NA.bam) &&",
+              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-48533_IGO_09455_S_1___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_1___NO_CMO_PID___NA.bam" ],
+            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_5___NO_CMO_PID___NA.bam) &&",
+              "cp JAX_0375_AHFGVNBBXY___P09455_S___C-19-208557_IGO_09455_S_5___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_5___NO_CMO_PID___NA.bam" ],
+            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_2___NO_CMO_PID___NA.bam) &&",
+              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-53420_IGO_09455_S_2___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_2___NO_CMO_PID___NA.bam" ]
         ]
 
         verify_commands(self, content, expected_commands)
@@ -103,7 +103,10 @@ class CreateMergeCommand(unittest.TestCase):
 
         f = open(output, "r")
         command = f.read().strip()
-        bam_name = command.split(' ')[-1]
+
+        # Ahhh...
+        bams = [ f for f in command.split() if f[-4:] == ".bam" ]
+        bam_name = bams[1]
 
         self.assertEqual(bam_name, TANGO_BAM)
 
@@ -128,7 +131,10 @@ class CreateMergeCommand(unittest.TestCase):
 
         f = open(output, "r")
         command = f.read().strip()
-        bam_name = command.split(' ')[-1]
+
+        # Ahhh...
+        bams = [ f for f in command.split() if f[-4:] == ".bam" ]
+        bam_name = bams[1]
 
         print(command)
 
@@ -151,13 +157,13 @@ class CreateMergeCommand(unittest.TestCase):
             ...
         ]
         """
-        original_bam = '/ifs/res/GCL/hiseq/Stats/JAX_0435_AHH3F7BBXY/JAX_0435_AHH3F7BBXY___P10862___HSS12_IGO_10862_3___GRCh37.bam'
+        original_bam = '/ifs/res/GCL/hiseq/Stats/JAX_0435_AHH3F7BBXY/JAX_0435_AHH3F7BBXY___P10862___NO_CMO_PID_IGO_10862_3___GRCh37.bam'
         files = [ original_bam ]
         project = '10862'
         content = get_merge_commands(files, project, config.LIMS_HOST_PROD, "/usr/bin/samtools")
         expected_content = [
-            [ "mkdir -p $(dirname 10862/P10862/10862_3___HSS12___Normal.bam) &&",
-              "cp /ifs/res/GCL/hiseq/Stats/JAX_0435_AHH3F7BBXY/JAX_0435_AHH3F7BBXY___P10862___HSS12_IGO_10862_3___GRCh37.bam 10862/P10862/10862_3___HSS12___Normal.bam" ]
+            [ "mkdir -p $(dirname 10862/P10862/10862_3___NO_CMO_PID___NA.bam) &&",
+              "cp /ifs/res/GCL/hiseq/Stats/JAX_0435_AHH3F7BBXY/JAX_0435_AHH3F7BBXY___P10862___NO_CMO_PID_IGO_10862_3___GRCh37.bam 10862/P10862/10862_3___NO_CMO_PID___NA.bam" ]
         ]
 
         verify_commands(self, content, expected_content)
