@@ -6,8 +6,8 @@ sys.path.append('..')       # If running from bin
 from create_merge_commands import get_merge_commands, main
 import config
 
-PROD_BAM = './P06302_AG/06302_AG_125___C-4RKTFD___Tumor.bam'        # TODO - now there isn't an example of same
-TANGO_BAM = './P06302_AG/06302_AG_125___C-4RKTFD___Tumor.bam'
+PROD_BAM = './P06302_AG/06302_AG_125___NO_CMO_PID___NA.bam'        # TODO - now there isn't an example of same
+TANGO_BAM = './P06302_AG/06302_AG_125___NO_CMO_PID___NA.bam'
 
 def verify_commands(self, cmd_file, expected_commands):
     actual_commands = cmd_file.strip().split("\n")
@@ -45,12 +45,12 @@ class CreateMergeCommand(unittest.TestCase):
         content = get_merge_commands(files, bam_dir, config.LIMS_HOST_PROD, "/usr/bin/samtools")
 
         expected_commands = [
-            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_1___C-7JJ452___Tumor.bam) &&",
-              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-48533_IGO_09455_S_1___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_1___C-7JJ452___Tumor.bam" ],
-            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_5___C-J0UH5P___Tumor.bam) &&",
-              "cp JAX_0375_AHFGVNBBXY___P09455_S___C-19-208557_IGO_09455_S_5___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_5___C-J0UH5P___Tumor.bam" ],
-            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_2___C-2M22RC___Tumor.bam) &&",
-              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-53420_IGO_09455_S_2___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_2___C-2M22RC___Tumor.bam" ]
+            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_1___C-7JJ452___NA.bam) &&",
+              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-48533_IGO_09455_S_1___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_1___C-7JJ452___NA.bam" ],
+            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_5___C-J0UH5P___NA.bam) &&",
+              "cp JAX_0375_AHFGVNBBXY___P09455_S___C-19-208557_IGO_09455_S_5___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_5___C-J0UH5P___NA.bam" ],
+            [ "mkdir -p $(dirname /igo/staging/BAM/P09455_S/09455_S_2___C-2M22RC___NA.bam) &&",
+              "cp JAX_0375_AHFGVNBBXY___P09455_S___S19-53420_IGO_09455_S_2___GRCh37.bam /igo/staging/BAM/P09455_S/09455_S_2___C-2M22RC___NA.bam" ]
         ]
 
         verify_commands(self, content, expected_commands)
