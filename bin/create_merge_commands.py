@@ -239,19 +239,34 @@ def get_merge_info(files, igo_id_mappings, bam_dir, mapped_fields):
 
 
 def create_merge_commands(merge_info, samtools):
-    """ Writes the commands to merge bam files from the @merge_info mapping of files to their files to merge
+    """ Writes a text file composed of encapsulated commands that are line-delimited. Each line encapsulates,
+            1. Create request directory             (@mkdir_cmd)
+            2. Run merge command                    (@merge_cmd)
+            3. Log command to request directory     (@cmd_log)
 
     :param merge_info: { TARGET_FILE: [ FILE1, FILE2, ... ], ... }
     :return: string
+        e.g.
+            '''
+            mkdir -p ${DIR} && cp ${ORIGINAL_BAM} ${FINAL_BAM_NAME} && echo cp ${ORIGINAL_BAM} ${FINAL_BAM_NAME} >> log
+            mkdir -p ${DIR} && ...
+            '''
     """
     bash_commands = ""
     for target_file, file_list in merge_info.items():
-        mkdir_cmd="mkdir -p $(dirname %s)" % target_file  # Create parent directory for merged bam prior to writing it
+        to_write_dir = "$(dirname %s)" % target_file
+        mkdir_cmd="mkdir -p %" % to_write_dir  # Create parent directory for merged bam prior to writing it
         if len(file_list) == 1:
             # Don't merge a single file. Create directory for project and copy it to the BAM directory
-            bash_commands += "%s && cp %s %s\n" % (mkdir_cmd, file_list[0], target_file)
+            merge_cmd = "cp %s %s" % (file_list[0], target_file)
         else:
-            bash_commands += "%s && %s merge %s %s\n" % (mkdir_cmd, samtools, target_file, ' '.join(file_list))
+            merge_cmd = "%s merge %s %s" % (samtools, target_file, ' '.join(file_list))
+
+        # We log output so that we know the command that was run
+        cmd_log = "echo '%s' >> %s/merge_commands.out" % (merge_cmd, to_write_dir)
+
+        bash_commands += "%s && %s && %s\n" % (mkdir_cmd, merge_cmd, cmd_log)
+
     return bash_commands
 
 
