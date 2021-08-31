@@ -255,7 +255,7 @@ def create_merge_commands(merge_info, samtools):
     bash_commands = ""
     for target_file, file_list in merge_info.items():
         to_write_dir = "$(dirname %s)" % target_file
-        mkdir_cmd="mkdir -p %" % to_write_dir  # Create parent directory for merged bam prior to writing it
+        mkdir_cmd="mkdir -p %s" % to_write_dir  # Create parent directory for merged bam prior to writing it
         if len(file_list) == 1:
             # Don't merge a single file. Create directory for project and copy it to the BAM directory
             merge_cmd = "cp %s %s" % (file_list[0], target_file)
