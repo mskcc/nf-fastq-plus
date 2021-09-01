@@ -48,7 +48,7 @@ cat ${ARCHIVED_RUN_FOLDERS_ALL_FILE} | tr ' ' '\n' | sort | uniq >> ${RUN_FOLDER
 
 # Perform filtering - eliminate all ${RUNNAME} directories & any "_REFERENCE" folder
 echo "ALL FASTQ Directories: $(cat ${RUN_FOLDERS_UNIQUE_FILE} | tr '\n' ' ')"
-cat ${RUN_FOLDERS_UNIQUE_FILE} | grep -v ${RUNNAME} | grep -v "_REFERENCE$" > "${FILTERED_RUN_FOLDERS}"
+cat ${RUN_FOLDERS_UNIQUE_FILE} | grep -v ${RUNNAME} | grep -v "_REFERENCE" > "${FILTERED_RUN_FOLDERS}"
 echo "Selected FASTQ Directories: $(cat ${FILTERED_RUN_FOLDERS} | tr '\n' ' ')"
 
 # Locate the samplesheets for each run and output to
