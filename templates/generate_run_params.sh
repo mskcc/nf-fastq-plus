@@ -131,12 +131,17 @@ else
     GTAG=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep 'GTAG' | cut -d'=' -f2)
 
     PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
+    echo ${PROJECT_DIR}
+    if [[ ! -z ${FILTER} && $(echo ${PROJECT_DIR} | grep -c "${FILTER}$") -eq 0 ]]; then
+      echo "${PROJECT_DIR} did not pass filter: ${FILTER}"
+      continue
+    fi
     if [ -d "$PROJECT_DIR" ]; then
       RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
 
       # TODO - Make "___" a delimiter
       PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
-      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d | grep ${FILTER})
+      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d )
 
       if [[ "${RECIPE}" = "DLP" ]]; then
         echo "DLP requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
