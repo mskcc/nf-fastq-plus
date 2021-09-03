@@ -62,7 +62,7 @@ RUN_BAMS="run_bams.txt"
 touch ${RUN_BAMS}
 RUNNAME="INVALID" # We do this b/c nextflow expects to export this environment variable
 
-echo "Received DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
+echo "Received DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET} FILTER=${FILTER}"
 if [ ! -f ${SAMPLESHEET} ]; then
   msg="No SampleSheet found for DEMUXED_DIR=${DEMUXED_DIR} SAMPLESHEET=${SAMPLESHEET}"
   echo ${msg}
@@ -136,7 +136,7 @@ else
 
       # TODO - Make "___" a delimiter
       PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
-      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d)
+      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d | grep ${FILTER})
 
       if [[ "${RECIPE}" = "DLP" ]]; then
         echo "DLP requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"

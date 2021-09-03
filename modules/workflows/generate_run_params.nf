@@ -13,6 +13,7 @@ process task {
     val RUN_TAG
     env RUN_PARAMS_FILE
     env STATS_DIR
+    env FILTER
   output:
     stdout()
     path "*${RUN_PARAMS_FILE}", optional: true, emit: PARAMS
@@ -28,8 +29,9 @@ workflow generate_run_params_wkflw {
     SAMPLESHEET
     RUN_PARAMS_FILE
     STATS_DIR
+    FILTER
   main:
-    task( DEMUXED_DIR, SAMPLESHEET, DEMUXED_DIR, RUN_PARAMS_FILE, STATS_DIR )
+    task( DEMUXED_DIR, SAMPLESHEET, DEMUXED_DIR, RUN_PARAMS_FILE, STATS_DIR, FILTER )
     out( task.out[0], "generate_run_params" )
     task.out.PARAMS
       .flatten()
