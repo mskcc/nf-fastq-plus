@@ -61,7 +61,6 @@ mkdir -p ${BAM_DIR}
 MD_TAG="${RUN_TAG}___MD"
 STAT_FILE_NAME="${MD_TAG}.txt"
 
-OUTPUT_BAM=""
 if [[ -z $(echo ${MD} | grep -i "yes") ]]; then
   ORIGINAL_BAM=$(realpath ${INPUT_BAM})
 
@@ -87,7 +86,7 @@ else
 fi
 
 LINKED_BAM="STATS___$(basename ${INPUT_BAM})"
-echo "Linking ${OUTPUT_BAM} to ${LINKED_BAM}"
+echo "Linking ${FINAL_BAM} to ${LINKED_BAM}"
 
 # Check BAM was moved and provide a symbolic link to continue nextflow pipeline if successful
 ln -s ${FINAL_BAM} ${LINKED_BAM}
