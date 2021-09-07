@@ -15,7 +15,7 @@ DEMUXED_DIR=params.dir
 SAMPLESHEET=params.ss
 STATS_DIR=process_param(params.stats_dir, STATS_DIR)
 STATSDONEDIR=process_param(params.done_dir, STATSDONEDIR)
-
+FILTER=process_param(params.filter, "")
 EXECUTOR=config.executor.name
 
 println """\
@@ -43,5 +43,5 @@ println """\
 
 
 workflow {
-  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR )
+  samplesheet_stats_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
 }

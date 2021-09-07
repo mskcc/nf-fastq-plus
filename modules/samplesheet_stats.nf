@@ -18,9 +18,10 @@ workflow samplesheet_stats_wkflw {
     SAMPLESHEET
     STATS_DIR
     STATSDONEDIR
+    FILTER
 
   main:
-    create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR )
+    create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
     alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
         create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
     collect_hs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
@@ -42,6 +43,6 @@ workflow samplesheet_stats_wkflw {
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), create_run_bams_wkflw.out.RUNNAME, STATSDONEDIR, IGO_EMAIL
     )
     create_sample_bams_wkflw( create_run_bams_wkflw.out.RUN_BAMS_CH, create_run_bams_wkflw.out.RUNNAME,
-        DEMUXED_DIR, ARCHIVED_DIR, STATS_DIR, STATSDONEDIR, CMD_FILE, SAMPLE_BAM_DIR )
+        DEMUXED_DIR, ARCHIVED_DIR, STATS_DIR, STATSDONEDIR, CMD_FILE, SAMPLE_BAM_DIR, FILTER )
     fingerprint_wkflw( SAMPLESHEET, upload_stats_wkflw.out.UPLOAD_DONE )
 }

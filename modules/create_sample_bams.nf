@@ -34,6 +34,7 @@ workflow create_sample_bams_wkflw {
     STATSDONEDIR
     CMD_FILE
     SAMPLE_BAM_DIR
+    FILTER
 
   main:
     retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME )
@@ -44,7 +45,7 @@ workflow create_sample_bams_wkflw {
         RUN_SAMPLE_SHEET: it.split(' ')[1].trim()
       }
       .set{ related_runs_ch }
-    create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR )
+    create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR, FILTER )
     create_run_bams_wkflw.out.RUN_BAMS_CH
       .splitText()
       .set{ legacy_bams_ch }
