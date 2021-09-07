@@ -230,7 +230,12 @@ else
     echo "MAIL: Starting stats for run ${RUN_BASENAME} ${DATA_TEAM_EMAIL}"
     echo $FULL | mail -s "[SUCCESSFUL DEMUX] Starting stats for run ${RUN_BASENAME}" ${DATA_TEAM_EMAIL}
   else
-    # Important Notification - Some sequencers (e.g. SCOTT) delete their old data w/ each new run, i.e. $30,000 run could be deleted just b/c the copy didn't work correctly
+    # Do not remove this noticiation because ...
+    #   - FAILED SEQUENCER COPIES - Some sequencers (e.g. SCOTT) delete their old data w/ each new run,
+    #     i.e. $30,000 run could be deleted just b/c the copy didn't work correctly
+    #   - IGNORE ERROR STRATEGY - current nextflow error strategy for the demultiplex task is "ignore", meaning this
+    #     will NOT exit the workflow and this task will fail quietly. Without this notification, there will be a delay
+    #     to when this failed demux is caught
     echo "MAIL: Failed Demux Run ${RUN_TO_DEMUX} ${DATA_TEAM_EMAIL}"
     echo $FULL | mail -s "[FAILED DEMUX] ${RUN_TO_DEMUX}" ${DATA_TEAM_EMAIL}
     exit 1
