@@ -196,8 +196,17 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 			data_element_list = DATA_SHEETS[y].T.reset_index().values.T.tolist()
 
 			# for BCL CONVERSION on DRAGEN, we must delete the "Adapter" tag in the SETTINGS section ( delete row 14 )
-			# will possibly out this code back later when DRAGEN BCL Conversion is being utilized in an automated format
-			
+			if y == DF_IDX_WGS:
+				# swap headings for SAMPLE_ID and SAMPLE_NAME ROWS
+				data_element_list[0][1] = 'Sample_Name'
+				data_element_list[0][2] = 'Sample_ID'
+				# wgs_top_of_sheet = top_of_sheet.copy()   # for python 3.3 and later
+				wgs_top_of_sheet = top_of_sheet[:]
+				del wgs_top_of_sheet[14]
+				data_element_sample_sheet = wgs_top_of_sheet + data_element_list
+			else:
+				data_element_sample_sheet = top_of_sheet + data_element_list
+
 			data_element_sample_sheet = top_of_sheet + data_element_list
 			data_element_sample_sheet_name = sample_sheet_name + EXTENSIONS[y]
 			print("Writing " + data_element_sample_sheet_name)
