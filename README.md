@@ -22,9 +22,12 @@ nextflow main.nf --run ${RUN}
 # Skip demultiplexing
 nextflow main.nf --run ${RUN} --force true
 
+# Run demux and stats only on one request
+nextflow main.nf --run ${RUN} --filter ${REUQEST_ID}
+
 # Run in background
 nohup nextflow main.nf --run ${RUN} --force true -bg
- 
+
 # Push pipeline updates to nf-dashboard
 nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb1:4500/api/nextflow/receive-nextflow-event' -bg  
 ```
@@ -34,6 +37,8 @@ nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb
   > Eg: `210406_JOHNSAWYERS_0277_000000000-G7H54`
 * `--force`: string (optional), skips the demultiplexing if already completed
   > Eg: `true`,  `false`
+* `--filter`: string (optional), only run requests that match this filter
+  > Eg: `10000_B` (only runs samples in 10000 request), `10000` (only runs samples in 10000 request, i.e. NOT `10000_B` samples)
 
 #### Options `(-opt)`
 * `-bg`: run process in background 
@@ -45,6 +50,9 @@ nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb
 # Basic
 nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY} 
 
+# Run stats only on one request
+samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY}  --filter ${REUQEST_ID}
+
 # Run in background
 nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLEX_DIRECTORY} -bg  
 ```
@@ -54,7 +62,9 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
   > Eg: `/igo/work/FASTQ/DIANA_0333_BH53GNDRXY_i7`
 * `--ss`: string (required), Absolute path to the sample sheet that CREATED the value of `--dir`
   > Eg: `/home/igo/DividedSampleSheets/SampleSheet_210407_DIANA_0333_BH53GNDRXY_i7.csv`
-                                                                                                   >
+* `--filter`: string (optional), only run requests that match this filter
+  > Eg: `10000_B` (only runs samples in 10000 request), `10000` (only runs samples in 10000 request, i.e. NOT `10000_B` samples)
+
 #### Options `(-opt)`
 * `-bg`: run process in background 
          
