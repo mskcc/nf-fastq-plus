@@ -207,7 +207,6 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 			else:
 				data_element_sample_sheet = top_of_sheet + data_element_list
 
-			data_element_sample_sheet = top_of_sheet + data_element_list
 			data_element_sample_sheet_name = sample_sheet_name + EXTENSIONS[y]
 			print("Writing " + data_element_sample_sheet_name)
 			data_element_csv_file = open(data_element_sample_sheet_name, 'w')
