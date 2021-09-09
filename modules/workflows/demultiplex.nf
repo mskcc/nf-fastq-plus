@@ -17,7 +17,7 @@ workflow demultiplex_wkflw {
       .splitText()
       .branch {
         refr: it.contains("REFERENCE")
-        stat: ! it.contains("REFERENCE") && it.contains("_WGS.csv")
+        stat: ! it.contains("REFERENCE") && ! it.contains("_WGS.csv")
         dgn: it.contains("_WGS.csv")
       }
       .set { result }
