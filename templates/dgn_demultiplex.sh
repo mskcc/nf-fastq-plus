@@ -53,7 +53,7 @@ else
   echo "Writing FASTQ files to $DEMUXED_DIR"
   echo "SAMPLESHEET: ${SAMPLESHEET}"
 
-  JOB_CMD="/opt/edico/bin/dragen --bcl-conversion-only true --bcl-input-directory $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-directory ${DEMUXED_DIR}"
+  JOB_CMD="/opt/edico/bin/dragen --bcl-conversion-only true --bcl-input-directory ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-directory ${DEMUXED_DIR}"
 
   echo ${JOB_CMD} >> ${CMD_FILE}
 
