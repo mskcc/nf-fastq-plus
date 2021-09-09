@@ -115,9 +115,7 @@ SAMPLESHEET=$(echo $SAMPLESHEET | tr -d " \t\n\r")	# Sometimes "\n" or "\t" char
 BSUB_CMD="echo 'No work assigned'"
 JOB_NAME="NO_JOB"
 JOB_CMD="echo 'No command specified'"
-JOB_OUT="${OUTPUT}/not_assigned.txt"
 echo "Procesisng SampleSheet ${SAMPLESHEET} (DEMUX_ALL=${DEMUX_ALL})"
-samplesheet_file=$(basename ${SAMPLESHEET})
 
 # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
 basename ${SAMPLESHEET}
