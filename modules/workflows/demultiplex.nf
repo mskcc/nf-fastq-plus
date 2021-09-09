@@ -1,5 +1,6 @@
 include { log_out as refr_out } from '../utils/log_out'
 include { log_out as stat_out } from '../utils/log_out'
+include { log_out as dgn_out } from '../utils/log_out'
 include { demultiplex_task as stat_demultiplex_task } from '../utils/demultiplex_task'
 include { demultiplex_task as refr_demultiplex_task } from '../utils/demultiplex_task'
 include { dgn_demultiplex_task } from '../utils/dgn_demultiplex_task'
@@ -39,7 +40,7 @@ workflow demultiplex_wkflw {
       }
       .set{ dgn_demux_ch }
     dgn_demultiplex_task( dgn_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, dgn_demux_ch.RUNNAME )
-    stat_out( dgn_demultiplex_task.out[0], "demultiplex_dgn" )
+    dgn_out( dgn_demultiplex_task.out[0], "demultiplex_dgn" )
 
     // refr_demux_ch will only be demultiplexed as reference, without stats
     result.refr
