@@ -376,8 +376,8 @@ recipe_options_mapping_UNORDERED = {
         MD: "yes"
     },
     "HemePACT_v4": {
-        BAITS: "/home/igo/resources/ilist/HemePACT_v4/b37/HemePACT_v4_BAITS.ilist",
-        TARGETS: "/home/igo/resources/ilist/HemePACT_v4/b37/HemePACT_v4_TARGETS.ilist",
+        BAITS: "/igo/home/igo/resources/ilist/HemePACT_v4/b38/HemePACT_v4_BAITS.iList",
+        TARGETS: "/igo/home/igo/resources/ilist/HemePACT_v4/b38/HemePACT_v4_TARGETS.iList",
         MSKQ: "yes",
         MD: "yes"
     },
