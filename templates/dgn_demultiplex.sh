@@ -27,10 +27,9 @@ SAMPLESHEET=$(echo $SAMPLESHEET | tr -d " \t\n\r")	# Sometimes "\n" or "\t" char
 basename ${SAMPLESHEET}
 # TODO - fix "perl-regexp" for portability
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
-echo "RUN_BASENAME: ${RUN_BASENAME}"
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
 
-echo "Procesisng SampleSheet ${SAMPLESHEET} (DEMUX_ALL=${DEMUX_ALL})"
+echo "Procesisng DRAGEN demultiplex Job SampleSheet=${SAMPLESHEET} RUN_BASENAME=${RUN_BASENAME} DEMUX_ALL=${DEMUX_ALL} DEMUXED_DIR=${DEMUXED_DIR}"
 
 if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
   LOG="Skipping demux (DEMUX_ALL=${DEMUX_ALL}) of already demuxed directory: ${DEMUXED_DIR}"
@@ -47,17 +46,10 @@ else
     mv ${DEMUXED_DIR} ${BACKUP_DEMUX_DIR}
   fi
 
-  mkdir -p ${DEMUXED_DIR}
-  chmod -R 775 $DEMUXED_DIR
-  cp $SAMPLESHEET $DEMUXED_DIR
-  echo "Writing FASTQ files to $DEMUXED_DIR"
-  echo "SAMPLESHEET: ${SAMPLESHEET}"
-
   JOB_CMD="/opt/edico/bin/dragen --bcl-conversion-only true --bcl-input-directory ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-directory ${DEMUXED_DIR}"
-
   echo ${JOB_CMD} >> ${CMD_FILE}
 
-  echo "Running demux"
+  echo "Runnign DRAGEN demultiplex..."
   # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
   set +e
   eval ${JOB_CMD}
@@ -69,14 +61,17 @@ else
 
   # TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed
   # NEXTFLOW ENVIRONMENT VARIABLES - These environment variables are passed to the next nextflow process
-  echo "Demultiplexed DEMUXED_DIR: ${DEMUXED_DIR}, SAMPLESHEET: ${SAMPLESHEET}"
   FILE_OUTPUT_SIZE=$(printf "%s\n\n%s\n" "${UNDETERMINED_SIZE}" "$Proj_Size")
   REPORT="To view reports visit: ${DEMUXED_DIR}/Reports/html/index.html"
   FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
 
   echo "DEMUX_UPDATE: ${FULL}"
+
+  echo "Copying SampleSheet to: ${DEMUXED_DIR}"
+  cp $SAMPLESHEET $DEMUXED_DIR
+
   if [ -n "$FILE_OUTPUT_SIZE" ]; then
-    echo "MAIL: Starting stats for run ${RUN_BASENAME} ${DATA_TEAM_EMAIL}"
+    echo "Demultiplex Success! Starting stats for run ${RUN_BASENAME}. Notified: ${DATA_TEAM_EMAIL}"
     echo $FULL | mail -s "[SUCCESSFUL DEMUX] Starting stats for run ${RUN_BASENAME}" ${DATA_TEAM_EMAIL}
   else
     # Do not remove this noticiation because ...
