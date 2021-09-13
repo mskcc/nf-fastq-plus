@@ -545,6 +545,9 @@ recipe_options_mapping_UNORDERED = {
         # TODO
         # sh $DIR/../PicardScripts/LaunchPipelines.sh $RUNTYPE --input /igo/work/FASTQ/$RUNNAME/$PROJECT/ --genome $GENOME --type WGS --md $MARKDUPLICATES --mskq $MSKQ
     },
+    "SingleCellCNV": {
+        MD: "no"
+    },
     "CustomAmplificationPCR": {
         MSKQ: "no",
         MD: "no"
