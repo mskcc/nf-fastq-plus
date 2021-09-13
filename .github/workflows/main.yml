@@ -33,6 +33,10 @@ jobs:
         run: cd ./bin/test && python test_detect_barcode_collision.py
       - name: Test split samplesheet
         run: pip install pandas && ./bin/test/test_split_sample_sheet.sh
+      - name: Test create merge commands
+        run: pip install requests && cd ./bin/test && python test_create_merge_commands.py
+      - name: Test retrieve failed samples
+        run: pip install mock && cd ./bin/test && python test_retrieve_failed_samples.py
 
   # Add tests for templates/*
   unit-tests:
@@ -49,6 +53,8 @@ jobs:
         run: testPipeline/templates/cellranger/cellranger_test.sh
       - name: Test upload_cellranger workflow
         run: testPipeline/templates/upload_cellranger/upload_cellranger_test.sh
+      - name: Test retrieve_all_sample_runs workflow
+        run: testPipeline/templates/retrieve_all_sample_runs/retrieve_all_sample_runs_test.sh
 
   # Add tests for end-to-end workflow validation here. These will run w/ docker image
   integration-tests:
@@ -60,13 +66,13 @@ jobs:
       - uses: actions/checkout@v2
       # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
       - name: stats
-        uses: mskcc/nf-fastq-plus@v2
+        uses: mskcc/nf-fastq-plus@v1.0.0
         with:
           entrypoint: testPipeline/e2e/samplesheet_stats_main_test_hwg.sh
           args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus
       # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
       - name: main
-        uses: mskcc/nf-fastq-plus@v2
+        uses: mskcc/nf-fastq-plus@v1.0.0
         with:
           entrypoint: testPipeline/e2e/cellranger_demux_stats.sh
           args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus

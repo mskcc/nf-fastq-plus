@@ -1,15 +1,15 @@
 FROM centos:7
 
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
-RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh37 && cd /igo/work/genomes/H.sapiens/GRCh37 && \
-  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh37-1.0.0.tar.gz > refdata-GRCh37-1.0.0.tar.gz && \
-  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
-  cd /igo/work/genomes/H.sapiens/GRCh37 && \
+RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh38.p13 && cd /igo/work/genomes/H.sapiens/GRCh38.p13 && \
+  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh38-1.0.0.tar.gz > refdata-GRCh38-1.0.0.tar.gz && \
+  /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
+  cd /igo/work/genomes/H.sapiens/GRCh38.p13 && \
   FILES=$(find . -type f -name "genome.fa*") && \
-  for f in $FILES; do mv $f ${f/genome.fa/GRCh37.fasta}; done && \
-  /bin/tar -xvf refdata-GRCh37-1.0.0.tar.gz refdata-GRCh37-1.0.0/fasta/genome.fa.pac --strip-components 2 && \
-  rm refdata-GRCh37-1.0.0.tar.gz && \
-  mv genome.fa.pac GRCh37.fasta.pac
+  for f in $FILES; do mv $f ${f/genome.fa/GRCh38.p13.dna.primary.assembly.fa}; done && \
+  /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/genome.fa.pac --strip-components 2 && \
+  rm refdata-GRCh38-1.0.0.tar.gz && \
+  mv genome.fa.pac GRCh38.p13.dna.primary.assembly.fa.pac
 
 # Install utilities needed for bcl2fastq
 RUN yum -y install rpm cpio
@@ -56,11 +56,20 @@ RUN echo "[computational-core]" > /etc/yum.repos.d/springdale.computational.repo
   echo "gpgcheck=1" >> /etc/yum.repos.d/springdale.computational.repo && \
   echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-springdale" >> /etc/yum.repos.d/springdale.computational.repo
 
+# Samtools - relies on springdale repo
+RUN yum -y install samtools
+
 # Installs to /usr/bin/bwa
 RUN yum -y install bwa
 
 # Install nextflow (Should be to directory in PATH)
 RUN cd /usr/local/bin && curl -s https://get.nextflow.io | bash
+
+# Download python libraries needed by /bin *.py scripts
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
+  python get-pip.py && \
+  pip install requests && \
+  pip install pandas
 
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
@@ -71,4 +80,6 @@ RUN mkdir -p /home/igo/log/nf_fasltq_plus && \
   mkdir -p /home/igo/log/nf_fastq_plus && \
   mkdir -p /igo/staging/stats && \
   mkdir -p /igo/stats/DONE && \
-  mkdir -p /home/igo/nextflow/crosscheck_metrics
+  mkdir -p /home/igo/nextflow/crosscheck_metrics && \
+  mkdir -p /pskis34/LIMS/LIMS_SampleSheets && \
+  mkdir -p /igo/staging/BAM

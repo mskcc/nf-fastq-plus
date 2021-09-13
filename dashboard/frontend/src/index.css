@@ -74,10 +74,6 @@ code {
 	overflow-y: scroll;
 }
 
-.status-icon {
-
-}
-
 .hv-align {
 	top: 50%;
 	left: 50%;
@@ -111,6 +107,10 @@ code {
 	padding-top: 25px;
 	width: 85%;
 	margin: auto;
+}
+
+.bold {
+	font-weight: bold;
 }
 
 .code {
