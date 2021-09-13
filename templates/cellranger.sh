@@ -13,7 +13,6 @@
 #   RUN_PARAMS_FILE,  cellranger binary
 #   CMD_FILE          Absolute path to file that logs commands
 
-
 #########################################
 # Reads input file and outputs param value
 # Globals:
