@@ -112,7 +112,7 @@ else
 
     # Create list of failed samples in a request, e.g. "FAILED_SAMPLES___${REUQEST}.txt" (Skip if previous loop created)
     FAILED_PRJ_SAMPLES_FILE="Failed___${RUNNAME}_${PROJECT}"
-    if [[ -f ${FAILED_PRJ_SAMPLES_FILE} ]]; then
+    if [[ ! -f ${FAILED_PRJ_SAMPLES_FILE} ]]; then
       retrieve_failed_samples.py --r=${RUNNAME} --p=${prj} --n=${FAILED_PRJ_SAMPLES_FILE}
     fi
 
