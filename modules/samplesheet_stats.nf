@@ -10,7 +10,7 @@ include { upload_stats_wkflw } from './workflows/upload_stats';
 include { fingerprint_wkflw } from './workflows/fingerprint';
 include { cellranger_wkflw } from './workflows/cellranger';
 include { upload_cellranger_wkflw } from './workflows/upload_cellranger';
-
+include { generate_run_params_wkflw } from './workflows/generate_run_params';
 
 workflow samplesheet_stats_wkflw {
   take:
@@ -21,7 +21,9 @@ workflow samplesheet_stats_wkflw {
     FILTER
 
   main:
-    create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
+    generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, STATS_DIR, FILTER )
+    create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
+        generate_run_params_wkflw.out.SAMPLE_FILE_CH )
     alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
         create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
     collect_hs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
@@ -40,9 +42,9 @@ workflow samplesheet_stats_wkflw {
     upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
-        collect_gc_bias_wkflw.out.METRICS_FILE.collect(), create_run_bams_wkflw.out.RUNNAME, STATSDONEDIR, IGO_EMAIL
+        collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR, IGO_EMAIL
     )
-    create_sample_bams_wkflw( create_run_bams_wkflw.out.RUN_BAMS_CH, create_run_bams_wkflw.out.RUNNAME, DEMUXED_DIR,
+    create_sample_bams_wkflw( generate_run_params_wkflw.out.RUN_BAMS_CH, create_run_bams_wkflw.out.RUNNAME, DEMUXED_DIR,
         ARCHIVED_DIR, STATS_DIR, STATSDONEDIR, CMD_FILE, SAMPLE_BAM_DIR, FILTER,
         upload_stats_wkflw.out.UPLOAD_DONE.collect() )
     fingerprint_wkflw( SAMPLESHEET, upload_stats_wkflw.out.UPLOAD_DONE )
