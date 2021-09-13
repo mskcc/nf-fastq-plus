@@ -22,7 +22,13 @@ workflow samplesheet_stats_wkflw {
 
   main:
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
-    create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
+    DEMUXED_DIR
+        .branch {
+            bwa: ! it.contains("_WGS")
+            dgn: it.contains("_WGS")
+        }
+        .set { dir_to_align }
+    create_run_bams_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
         generate_run_params_wkflw.out.SAMPLE_FILE_CH )
     alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
         create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
