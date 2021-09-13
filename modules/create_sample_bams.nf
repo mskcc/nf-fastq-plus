@@ -35,9 +35,10 @@ workflow create_sample_bams_wkflw {
     CMD_FILE
     SAMPLE_BAM_DIR
     FILTER
+    UPLOAD_DONE
 
   main:
-    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME )
+    retrieve_all_sample_runs_wkflw( DEMUXED_DIR, ARCHIVED_DIR, RUNNAME, UPLOAD_DONE )
     retrieve_all_sample_runs_wkflw.out.RUNS_TO_ALIGN_FILE
       .splitText()
       .multiMap { it ->
