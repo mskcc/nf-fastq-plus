@@ -11,6 +11,7 @@ include { fingerprint_wkflw } from './workflows/fingerprint';
 include { cellranger_wkflw } from './workflows/cellranger';
 include { upload_cellranger_wkflw } from './workflows/upload_cellranger';
 include { generate_run_params_wkflw } from './workflows/generate_run_params';
+include { dragen_align_wkflw } from './workflows/dragen_align';
 
 workflow samplesheet_stats_wkflw {
   take:
@@ -27,6 +28,7 @@ workflow samplesheet_stats_wkflw {
             dgn: it != null && it.contains("_WGS")
         }
         .set { dir_to_align }
+    dragen_align_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, dir_to_align.dgn )
     create_run_bams_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
         generate_run_params_wkflw.out.SAMPLE_FILE_CH )
     alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
