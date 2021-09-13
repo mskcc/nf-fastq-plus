@@ -23,6 +23,7 @@ workflow samplesheet_stats_wkflw {
   main:
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
     Channel.from( DEMUXED_DIR ).branch {
+            it.toString().view()
             bwa: ! it.contains("_WGS")
             dgn: it.contains("_WGS")
         }
