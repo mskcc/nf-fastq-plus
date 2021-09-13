@@ -16,7 +16,7 @@ workflow create_run_bams_wkflw {
     FILTER
 
   main:
-    generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, RUN_PARAMS_FILE, STATS_DIR, FILTER )
+    generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
     create_sample_lane_jobs_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH )
     align_to_reference_wkflw( create_sample_lane_jobs_wkflw.out.LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE,
       BWA, PICARD, config.executor.name )
