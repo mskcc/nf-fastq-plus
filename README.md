@@ -38,7 +38,7 @@ nohup nextflow main.nf --run ${RUN} --force true -with-weblog 'http://dlviigoweb
 * `--force`: string (optional), skips the demultiplexing if already completed
   > Eg: `true`,  `false`
 * `--filter`: string (optional), only run requests that match this filter
-  > Eg: `10000_B` (only runs samples in 10000 request), `10000` (only runs samples in 10000 request, i.e. NOT `10000_B` samples)
+  > Eg: `10000_B` (only runs samples in 10000_B request), `10000` (only runs samples in 10000 request, i.e. NOT `10000_B` samples)
 
 #### Options `(-opt)`
 * `-bg`: run process in background 
@@ -63,7 +63,7 @@ nohup nextflow samplesheet_stats_main.nf --ss ${SAMPLE_SHEET} --dir ${DEMULTIPLE
 * `--ss`: string (required), Absolute path to the sample sheet that CREATED the value of `--dir`
   > Eg: `/home/igo/DividedSampleSheets/SampleSheet_210407_DIANA_0333_BH53GNDRXY_i7.csv`
 * `--filter`: string (optional), only run requests that match this filter
-  > Eg: `10000_B` (only runs samples in 10000 request), `10000` (only runs samples in 10000 request, i.e. NOT `10000_B` samples)
+  > Eg: `10000_B` (only runs samples in 10000_B request), `10000` (only runs samples in 10000 request, i.e. NOT `10000_B` samples)
 
 #### Options `(-opt)`
 * `-bg`: run process in background 
