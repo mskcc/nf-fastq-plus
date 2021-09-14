@@ -5,6 +5,7 @@ include { create_run_bams_wkflw } from './create_run_bams';
 include { retrieve_all_sample_runs_wkflw } from './workflows/retrieve_all_sample_runs';
 include { get_sample_merge_commands_wkflw } from './workflows/get_sample_merge_commands';
 include { wait_for_bams_to_finish_wkflw } from './workflows/wait_for_bams_to_finish';
+include { generate_run_params_wkflw } from './workflows/generate_run_params';
 include { log_out as out } from './utils/log_out';
 
 process task {
@@ -46,8 +47,10 @@ workflow create_sample_bams_wkflw {
         RUN_SAMPLE_SHEET: it.split(' ')[1].trim()
       }
       .set{ related_runs_ch }
-    create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR, FILTER )
-    create_run_bams_wkflw.out.RUN_BAMS_CH
+    generate_run_params_wkflw( DEMUXED_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, FILTER )
+    create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR,
+      FILTER, generate_run_params_wkflw.out.SAMPLE_FILE_CH )
+    generate_run_params_wkflw.out.RUN_BAMS_CH
       .splitText()
       .set{ legacy_bams_ch }
     RUN_BAMS_CH
