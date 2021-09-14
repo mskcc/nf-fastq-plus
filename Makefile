@@ -1,5 +1,2 @@
-run:
-	nextflow run main.nf --force true
-
-clean:
-	rm -rf work && rm -rf pipeline_out
+docker_build:
+	docker image build -t nf-fastq-plus-playground .
