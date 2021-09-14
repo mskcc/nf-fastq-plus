@@ -1,6 +1,9 @@
 include { log_out as out } from '../utils/log_out'
 
 process task {
+  label 'DGN'
+  tag "$DGN_DEMUX"
+
   input:
     path RUN_PARAMS
     path DGN_DEMUX

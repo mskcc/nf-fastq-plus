@@ -1,10 +1,6 @@
-/**
- * Creates the sample BAMs for a specific run
- */
-include { create_sample_lane_jobs_wkflw } from './workflows/create_sample_lane_jobs';
-include { align_to_reference_wkflw } from './workflows/align_to_reference';
-include { merge_sams_wkflw } from './workflows/merge_sams';
-include { mark_duplicates_wkflw } from './workflows/mark_duplicates';
+include { generate_run_params_wkflw } from './workflows/generate_run_params';
+include { bwa_picard_align_wkflw } from './alignment/bwa_picard_align';
+include { dragen_align_wkflw } from './alignment/dragen_align';
 
 workflow create_run_bams_wkflw {
   take:
@@ -13,21 +9,39 @@ workflow create_run_bams_wkflw {
     STATS_DIR
     STATSDONEDIR
     FILTER
-    SAMPLE_FILE_CH
 
   main:
-    create_sample_lane_jobs_wkflw( SAMPLE_FILE_CH )
-    align_to_reference_wkflw( create_sample_lane_jobs_wkflw.out.LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE,
-      BWA, PICARD, config.executor.name )
-    merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH,
-      align_to_reference_wkflw.out.OUTPUT_ID,
-      RUN_PARAMS_FILE, CMD_FILE, PICARD, STATS_DIR )
-    mark_duplicates_wkflw( merge_sams_wkflw.out.PARAMS, merge_sams_wkflw.out.BAM_CH, merge_sams_wkflw.out.OUTPUT_ID,
-      RUN_PARAMS_FILE, CMD_FILE, PICARD, STATSDONEDIR, STATS_DIR )
+    generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
+
+    // BRANCH - Alignment Jobs
+    Channel.from( DEMUXED_DIR ).branch {
+            bwa: ! it.toString().contains("_WGS")
+            dgn: it.toString().contains("_WGS")
+        }
+        .set { dir_to_align }
+    dragen_align_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, dir_to_align.dgn )
+    bwa_picard_align_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
+        generate_run_params_wkflw.out.SAMPLE_FILE_CH )
+
+    // COMBINE - Alignment Outputs
+    bwa_picard_align_wkflw.out.PARAMS
+        .mix( dragen_align_wkflw.out.PARAMS )
+        .set{ PARAMS }
+    bwa_picard_align_wkflw.out.BAM_CH
+        .mix( dragen_align_wkflw.out.BAM_CH )
+        .set{ BAM_CH }
+    bwa_picard_align_wkflw.out.OUTPUT_ID
+        .mix( dragen_align_wkflw.out.OUTPUT_ID )
+        .set{ OUTPUT_ID }
+    bwa_picard_align_wkflw.out.METRICS_FILE
+        .mix( dragen_align_wkflw.out.METRICS_FILE )
+        .set{ METRICS_FILE }
 
   emit:
-    BAM_CH = mark_duplicates_wkflw.out.BAM_CH
-    OUTPUT_ID = mark_duplicates_wkflw.out.OUTPUT_ID
-    PARAMS = mark_duplicates_wkflw.out.PARAMS
-    METRICS_FILE = mark_duplicates_wkflw.out.METRICS_FILE
+    RUNNAME = generate_run_params_wkflw.out.RUNNAME
+    RUN_BAMS_CH = generate_run_params_wkflw.out.RUN_BAMS_CH
+    PARAMS = PARAMS
+    BAM_CH = BAM_CH
+    OUTPUT_ID = OUTPUT_ID
+    METRICS_FILE = METRICS_FILE
 }
