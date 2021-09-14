@@ -196,6 +196,7 @@ else
             BODY="No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
             echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
             echo "${BODY}"
+            continue
           fi
 
           FASTQ_PARAMS=""
@@ -207,8 +208,9 @@ else
           echo "RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
         if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
-          echo "Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"
-          exit 1
+          SUBJECT="[ACTION-REQUIRED] Skipping SAMPLE stats for ${SAMPLE_TAG}"
+          BODY="Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"
+          echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
         fi
       done
     else
