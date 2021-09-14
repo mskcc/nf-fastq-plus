@@ -28,31 +28,28 @@ workflow samplesheet_stats_wkflw {
             dgn: it.toString().contains("_WGS")
         }
         .set { dir_to_align }
-
     dragen_align_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, dir_to_align.dgn )
     create_run_bams_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
         generate_run_params_wkflw.out.SAMPLE_FILE_CH )
 
-    create_run_bams_wkflw.out
-      .mix( dragen_align_wkflow.out )
-      .set{ ALIGN_CH }
 
-    alignment_summary_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
-    collect_hs_metrics_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
-    collect_oxoG_metrics_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
-    collect_wgs_metrics_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
-    collect_rna_metrics_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
-    collect_gc_bias_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
-    cellranger_wkflw( ALIGN_CH.PARAMS, ALIGN_CH.BAM_CH,
-        ALIGN_CH.OUTPUT_ID, STATSDONEDIR )
+
+    alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_hs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_oxoG_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_wgs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_rna_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_gc_bias_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    cellranger_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
     upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER )
-    upload_stats_wkflw( ALIGN_CH.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
+    upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_wgs_metrics_wkflw.out.METRICS_FILE.collect(), collect_rna_metrics_wkflw.out.METRICS_FILE.collect(),
         collect_gc_bias_wkflw.out.METRICS_FILE.collect(), generate_run_params_wkflw.out.RUNNAME, STATSDONEDIR, IGO_EMAIL

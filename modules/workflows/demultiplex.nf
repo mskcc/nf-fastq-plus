@@ -52,11 +52,15 @@ workflow demultiplex_wkflw {
     refr_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, refr_demux_ch.RUNNAME )
     refr_out( stat_demultiplex_task.out[0], "demultiplex_refr" )
 
-    stat_demultiplex_task.out
-      .mix( dgn_demultiplex_task.out )
-      .set{ DEMUX_OUT }
+    // Set outputs
+    stat_demultiplex_task.out.DEMUXED_DIR
+      .mix( dgn_demultiplex_task.out.DEMUXED_DIR )
+      .set{ DEMUXED_DIR }
+    stat_demultiplex_task.out.SAMPLESHEET
+      .mix( dgn_demultiplex_task.out.SAMPLESHEET )
+      .set{ SAMPLESHEET }
 
   emit:
-    DEMUXED_DIR = DEMUX_OUT.out.DEMUXED_DIR
-    SAMPLESHEET = DEMUX_OUT.out.SAMPLESHEET
+    DEMUXED_DIR = DEMUXED_DIR
+    SAMPLESHEET = SAMPLESHEET
 }
