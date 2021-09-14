@@ -22,20 +22,20 @@ workflow samplesheet_stats_wkflw {
 
   main:
     alignment_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
-    alignment_summary_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
-    collect_hs_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
-    collect_oxoG_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
-    collect_wgs_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
-    collect_rna_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
-    collect_gc_bias_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
-    cellranger_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH,
-        alignment_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    alignment_summary_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
+    collect_hs_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
+    collect_oxoG_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
+    collect_wgs_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
+    collect_rna_metrics_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
+    collect_gc_bias_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
+    cellranger_wkflw( alignment_wkflw.out.PARAMS, alignment_wkflw.out.BAM_CH, alignment_wkflw.out.OUTPUT_ID,
+        STATSDONEDIR )
     upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER )
     upload_stats_wkflw( alignment_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),

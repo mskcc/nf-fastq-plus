@@ -24,6 +24,7 @@ workflow alignment_wkflw {
   main:
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
 
+    // BRANCH - Alignment Jobs
     Channel.from( DEMUXED_DIR ).branch {
             bwa: ! it.toString().contains("_WGS")
             dgn: it.toString().contains("_WGS")
@@ -33,6 +34,7 @@ workflow alignment_wkflw {
     create_run_bams_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
         generate_run_params_wkflw.out.SAMPLE_FILE_CH )
 
+    // COMBINE - Alignment Outputs
     create_run_bams_wkflw.out.PARAMS
         .mix( dragen_align_wkflw.out.PARAMS )
         .set{ PARAMS }
@@ -47,11 +49,10 @@ workflow alignment_wkflw {
         .set{ METRICS_FILE }
 
   emit:
+    RUNNAME = generate_run_params_wkflw.out.RUNNAME
+    RUN_BAMS_CH = generate_run_params_wkflw.out.RUN_BAMS_CH
     PARAMS = PARAMS
     BAM_CH = BAM_CH
     OUTPUT_ID = OUTPUT_ID
     METRICS_FILE = METRICS_FILE
-
-    RUNNAME = generate_run_params_wkflw.out.RUNNAME
-    RUN_BAMS_CH = generate_run_params_wkflw.out.RUN_BAMS_CH
 }
