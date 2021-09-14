@@ -105,6 +105,9 @@ else
 
   # TODO - Remove when PED_PEG is integrated in nextflow pipeline
   PPG_REQUESTS=""
+
+  SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS="
+  SKIPPING_SAMPLE_STATS_BODY=""
   for psr in $prj_spc_rec; do
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
     SPECIES=$(echo $psr | awk '{printf"%s\n",$2}' );
@@ -192,10 +195,13 @@ else
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
-            SUBJECT="[ACTION-REQUIRED] Missing Sample FASTQs SAMPLE_TAG=${SAMPLE_TAG}"
-            BODY="No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
-            echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
-            echo "${BODY}"
+            # Pipeline has failed for this sample - Data Team needs to be alerted, which will happen if
+            # SAMPLE_PARAMS_FILE is removed and we continue
+            echo "ERROR - Missing FASTQs (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
+            if [[ -f ${SAMPLE_PARAMS_FILE} ]]; then
+              echo "Deleting existing file: ${SAMPLE_PARAMS_FILE}"
+              rm ${SAMPLE_PARAMS_FILE}
+            fi
             continue
           fi
 
@@ -208,9 +214,9 @@ else
           echo "RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
         if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
-          SUBJECT="[ACTION-REQUIRED] Skipping SAMPLE stats for ${SAMPLE_TAG}"
-          BODY="Failed to write param file for ${SAMPLE_TAG} (${SAMPLE_PARAMS_FILE}). Failed to extract lane(s) or find FASTQ files"
-          echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+          # "[ACTION-REQUIRED] Skipping Sample Stats (..." + PROJECT_TAG    <- We will close this when we send the email
+          SKIPPING_SAMPLE_STATS_SUBJ+="${PROJECT_TAG} "
+          SKIPPING_SAMPLE_STATS_BODY="(${PROJECT_TAG},${SAMPLE_TAG}) "
         fi
       done
     else
@@ -224,5 +230,12 @@ else
     BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}"
     echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
   fi
+
+  if [[ ! -z ${SKIPPING_SAMPLE_STATS_BODY} ]]; then
+    # IMPORTANT - SKIPPING_SAMPLE_STATS_BODY is only set when a @SAMPLE_PARAMS_FILE was deleted or not created
+    SKIPPING_SAMPLE_STATS_SUBJ+=")"
+    echo ${SKIPPING_SAMPLE_STATS_BODY} | mail -s "${SKIPPING_SAMPLE_STATS_SUBJ}" ${DATA_TEAM_EMAIL}
+  fi
+
   IFS=' \t\n'
 fi
