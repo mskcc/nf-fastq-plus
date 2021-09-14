@@ -9,7 +9,6 @@ include { upload_stats_wkflw } from './workflows/upload_stats';
 include { fingerprint_wkflw } from './workflows/fingerprint';
 include { cellranger_wkflw } from './workflows/cellranger';
 include { upload_cellranger_wkflw } from './workflows/upload_cellranger';
-
 include { alignment_wkflw } from './alignment/alignment';
 
 workflow samplesheet_stats_wkflw {
