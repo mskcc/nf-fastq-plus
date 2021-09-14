@@ -34,4 +34,7 @@ ln -s ${OUTPUT_BAM} .
 
 SYMLINK=$(find -L . -type l -name "${OUTPUT_PREFIX}*")
 
+# TODO - Actually grab DRAGEN stats
+touch DRAGEN_STATS.txt
+
 echo "DRAGEN BAM Successfully Created: ${OUTPUT_BAM}. SYMLINK=${SYMLINK}"
