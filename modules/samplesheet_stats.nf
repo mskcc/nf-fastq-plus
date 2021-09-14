@@ -24,8 +24,8 @@ workflow samplesheet_stats_wkflw {
   main:
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
     Channel.from( DEMUXED_DIR ).branch {
-            bwa: it != null && ! it.contains("_WGS")
-            dgn: it != null && it.contains("_WGS")
+            bwa: ! it.toString().contains("_WGS")
+            dgn: it.toString().contains("_WGS")
         }
         .set { dir_to_align }
     dragen_align_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, dir_to_align.dgn )
