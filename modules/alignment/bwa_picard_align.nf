@@ -1,10 +1,10 @@
 /**
  * Creates the sample BAMs for a specific run
  */
-include { create_sample_lane_jobs_wkflw } from './workflows/create_sample_lane_jobs';
-include { align_to_reference_wkflw } from './workflows/align_to_reference';
-include { merge_sams_wkflw } from './workflows/merge_sams';
-include { mark_duplicates_wkflw } from './workflows/mark_duplicates';
+include { create_sample_lane_jobs_wkflw } from '../workflows/create_sample_lane_jobs';
+include { align_to_reference_wkflw } from '../workflows/align_to_reference';
+include { merge_sams_wkflw } from '../workflows/merge_sams';
+include { mark_duplicates_wkflw } from '../workflows/mark_duplicates';
 
 workflow bwa_picard_align_wkflw {
   take:
