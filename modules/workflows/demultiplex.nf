@@ -54,10 +54,10 @@ workflow demultiplex_wkflw {
 
     // Set outputs
     stat_demultiplex_task.out.DEMUXED_DIR
-      .join( dgn_demultiplex_task.out.DEMUXED_DIR )
+      .mix( dgn_demultiplex_task.out.DEMUXED_DIR )
       .set{ DEMUXED_DIR }
     stat_demultiplex_task.out.SAMPLESHEET
-      .join( dgn_demultiplex_task.out.SAMPLESHEET )
+      .mix( dgn_demultiplex_task.out.SAMPLESHEET )
       .set{ SAMPLESHEET }
 
   emit:
