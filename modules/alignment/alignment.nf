@@ -1,17 +1,6 @@
-include { create_run_bams_wkflw } from './create_run_bams';
-include { create_sample_bams_wkflw } from './create_sample_bams';
-include { alignment_summary_wkflw } from './workflows/collect_alignment_summary_metrics';
-include { collect_hs_metrics_wkflw } from './workflows/collect_hs_metrics';
-include { collect_oxoG_metrics_wkflw } from './workflows/collect_oxoG_metrics';
-include { collect_wgs_metrics_wkflw } from './workflows/collect_wgs_metrics';
-include { collect_rna_metrics_wkflw } from './workflows/collect_rna_metrics';
-include { collect_gc_bias_wkflw } from './workflows/collect_gc_bias_metrics';
-include { upload_stats_wkflw } from './workflows/upload_stats';
-include { fingerprint_wkflw } from './workflows/fingerprint';
-include { cellranger_wkflw } from './workflows/cellranger';
-include { upload_cellranger_wkflw } from './workflows/upload_cellranger';
-include { generate_run_params_wkflw } from './workflows/generate_run_params';
-include { dragen_align_wkflw } from './workflows/dragen_align';
+include { generate_run_params_wkflw } from '../workflows/generate_run_params';
+include { create_run_bams_wkflw } from '../create_run_bams';
+include { dragen_align_wkflw } from '../workflows/dragen_align';
 
 workflow alignment_wkflw {
   take:
