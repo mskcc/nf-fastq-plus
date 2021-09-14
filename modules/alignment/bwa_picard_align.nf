@@ -1,5 +1,9 @@
 /**
- * Creates the sample BAMs for a specific run
+ * Creates the sample BAMs for a specific run using BWA & Picard MergeSamFiles & MarkDuplicates
+ *
+ * Processes/aligns each lane separately, merges, and marks duplicates.
+ * TODO - The alignments do NOT use the lsf executor of nextflow b/c scattering and gathering at the sample level is
+ *        not supported. Any combining operator (e.g. .collect()) will force all tasks to wait until all are collected
  */
 include { create_sample_lane_jobs_wkflw } from '../workflows/create_sample_lane_jobs';
 include { align_to_reference_wkflw } from '../workflows/align_to_reference';
