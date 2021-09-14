@@ -192,8 +192,10 @@ else
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
-            echo "No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR"	# Catch this exception, but don't fail
-            exit 1
+            SUBJECT="[ACTION-REQUIRED] Missing Sample FASTQs SAMPLE_TAG=${SAMPLE_TAG}"
+            BODY="No FASTQS (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
+            echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+            echo "${BODY}"
           fi
 
           FASTQ_PARAMS=""
