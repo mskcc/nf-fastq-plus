@@ -47,9 +47,11 @@ workflow create_sample_bams_wkflw {
         RUN_SAMPLE_SHEET: it.split(' ')[1].trim()
       }
       .set{ related_runs_ch }
-    generate_run_params_wkflw( DEMUXED_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, FILTER )
+
+    generate_run_params_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, FILTER )
     create_run_bams_wkflw( related_runs_ch.RUN_DEMUX_DIR, related_runs_ch.RUN_SAMPLE_SHEET, STATS_DIR, STATSDONEDIR,
       FILTER, generate_run_params_wkflw.out.SAMPLE_FILE_CH )
+
     generate_run_params_wkflw.out.RUN_BAMS_CH
       .splitText()
       .set{ legacy_bams_ch }
