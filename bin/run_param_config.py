@@ -529,6 +529,12 @@ recipe_options_mapping_UNORDERED = {
     	BAITS: "/home/igo/resources/ilist/Twist_Kentsis_spikeinWES_RK_V3/Twist_Kentsis_spikeinWES_RK_V3_BAITS.intervalList",
 	    TARGETS: "/home/igo/resources/ilist/Twist_Kentsis_spikeinWES_RK_V3/Twist_Kentsis_spikeinWES_RK_V3_TARGETS.intervalList"
     },
+    "UBA1_plus_v1": {
+        BAITS: "/home/igo/resources/BED-Targets/UBA1_plus_v1/UBA1_plus_v1.baits",
+        TARGETS: "/home/igo/resources/BED-Targets/UBA1_plus_v1/UBA1_plus_v1.targets",
+        MSKQ: "no",
+        MD: "yes"
+    },
     "HumanWholeGenome": {
         MSKQ: "no",
         MD: "yes"
