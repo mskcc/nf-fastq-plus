@@ -43,7 +43,7 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
       }
       .set{ dgn_demux_ch }
-    dgn_demultiplex_task( dgn_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, dgn_demux_ch.RUNNAME )
+    dgn_demultiplex_task( dgn_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, dgn_demux_ch.RUNNAME )
     dragen_out( dgn_demultiplex_task.out[0], "demultiplex_dragen" )
 
     samplesheet_ch.reference

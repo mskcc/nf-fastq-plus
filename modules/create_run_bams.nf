@@ -15,10 +15,11 @@ workflow create_run_bams_wkflw {
 
     // BRANCH - Alignment Jobs
     Channel.from( DEMUXED_DIR ).branch {
-            bwa: ! it.toString().contains("_WGS")
-            dgn: it.toString().contains("_WGS")
+            dgn: ~/.*_WGS$/ 		// it.toString().contains("_WGS")
+            bwa: ~/.*(?<!_WGS)$/ 	// ! it.toString().contains("_WGS")
         }
         .set { dir_to_align }
+
     dragen_align_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, dir_to_align.dgn )
     bwa_picard_align_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
         generate_run_params_wkflw.out.SAMPLE_FILE_CH )

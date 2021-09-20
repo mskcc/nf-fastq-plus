@@ -6,7 +6,7 @@ process task {
 
   input:
     path RUN_PARAMS
-    path DGN_DEMUX
+    env DGN_DEMUX
 
   output:
     stdout()

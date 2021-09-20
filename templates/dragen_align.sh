@@ -7,14 +7,40 @@
 #   RUN_PARAMS_FILE, file - Output all individual param files
 #   SAM_CH, Outputs SAM w/ Readgroups (*.sam)
 
-# TODO - this is really only to make only DRAGEN FASTQs go here
-echo "Received DGN_DEMUX=${DGN_DEMUX}"
+#########################################
+# Executes and logs command
+# Arguments:
+#   INPUT_CMD - string of command to run, e.g. "picard CollectAlignmentSummaryMetrics ..."
+#########################################
+run_cmd () {
+  INPUT_CMD=$@
+  echo ${INPUT_CMD} >> ${CMD_FILE}
+  eval ${INPUT_CMD}
+}
 
+#########################################
+# Reads input file and outputs param value
+# Globals:
+#   FILE - file of format "P1=V1 P2=V2 ..."
+#   PARAM_NAME - name of parameter
+# Arguments:
+#   Lane - Sequencer Lane, e.g. L001
+#   FASTQ* - absolute path to FASTQ
+#########################################
+parse_param() {
+  FILE=$1
+  PARAM_NAME=$2
+
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
+}
+
+SAMPLE_PARAMS_FILE=$(ls *${RUN_PARAMS_FILE})
+echo "SAMPLE_PARAMS_FILE=${SAMPLE_PARAMS_FILE}"
 DGN_REFERENCE="/staging/ref/GRCh37_dna" # TODO - DGN_REFERENCE=$(parse_param ${LANE_PARAM_FILE} DGN_REFERENCE)
-RUN_TAG_PARAM=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
-DGN_BAM=$(parse_param ${RUN_PARAMS_FILE} DGN_BAM)
-FASTQ_LIST_FILE=$(parse_param ${RUN_PARAMS_FILE} FASTQ_LIST_FILE)
-SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG)
+RUN_TAG_PARAM=$(parse_param ${SAMPLE_PARAMS_FILE} RUN_TAG)
+DGN_BAM=$(parse_param ${SAMPLE_PARAMS_FILE} DGN_BAM)
+FASTQ_LIST_FILE=$(parse_param ${SAMPLE_PARAMS_FILE} FASTQ_LIST_FILE)
+SAMPLE_TAG=$(parse_param ${SAMPLE_PARAMS_FILE} SAMPLE_TAG)
 
 OUTPUT_PREFIX="$(basename ${DGN_BAM} | cut -d'.' -f1)"
 OUTPUT_DIR="$(dirname ${DGN_BAM})"
@@ -24,10 +50,17 @@ CMD+=" --enable-map-align-output true --enable-variant-caller true --output-dire
 CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
 
 echo ${CMD} >> ${CMD_FILE}
-eval ${CMD}
+
+echo ${CMD}
+
+# TODO - Actually run DRAGEN command
+touch "${OUTPUT_PREFIX}*.bam"
+# eval ${CMD}
 
 # TODO - is this needed, since this may be a symbolic link?
-cat ${RUN_PARAMS_FILE} > ${RUN_PARAMS_FILE}
+cat ${SAMPLE_PARAMS_FILE} > ${SAMPLE_PARAMS_FILE}
+
+
 
 OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
 ln -s ${OUTPUT_BAM} .

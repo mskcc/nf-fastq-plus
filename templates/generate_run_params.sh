@@ -11,7 +11,7 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
-DGN_DEMUX_ALN_RECIPES="WGS"
+DGN_DEMUX_ALN_RECIPES="HumanWholeGenome"
 
 # SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {
@@ -135,8 +135,8 @@ else
     # Extract GTAG value from generate_run_params.py output for ${RUN_TAG}, e.g. "...GTAG=GRCh37..." => "GRCh37"
     GTAG=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep 'GTAG' | cut -d'=' -f2)
 
+    PROJECT_TAG=$(echo ${PROJECT} | sed 's/Project_/P/g')
     PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
-    echo ${PROJECT_DIR}
     if [[ ! -z ${FILTER} && $(echo ${PROJECT_DIR} | grep -c "${FILTER}$") -eq 0 ]]; then
       echo "${PROJECT_DIR} did not pass filter: ${FILTER}"
       continue
@@ -145,7 +145,6 @@ else
       RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
 
       # TODO - Make "___" a delimiter
-      PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d )
 
       if [[ "${RECIPE}" = "DLP" ]]; then
@@ -158,7 +157,8 @@ else
       fi
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
-        SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        SAMPLESHEET_SAMPLE=$(echo ${SAMPLE_DIR} | xargs basename)
+        SAMPLE_TAG=$(echo ${SAMPLESHEET_SAMPLE} | sed 's/Sample_//g')
         if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
           echo "Skipping Failed Sample: ${SAMPLE_TAG}"
 
@@ -222,35 +222,43 @@ else
         fi
       done
     else
+      echo "Could not find ${PROJECT_DIR}"
+      echo "Checking if RECIPE=${RECIPE} is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]"
       if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
         echo "Detected a DRAGEN Recipe and generating params for DRAGEN alignment"
         # DRAGEN will NOT output request directories
         FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
-        SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2) #  | grep -oP "(?<=IGO_).*[0-9]{5}_[A-Z]{1,2}" | sort | uniq)
-        echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
-        for SAMPLE_TAG in ${SAMPLES}; do
-          RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG will determine the name of output stats
-          FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
-          DGN_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
+        if [[ ! ${FASTQ_LIST_FILE} ]]; then
+          SUBJECT="[WARNING] Request directory not found and not DRAGEN: ${PROJECT}"
+          BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} and did not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
+          echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+        else  
+          SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2) #  | grep -oP "(?<=IGO_).*[0-9]{5}_[A-Z]{1,2}" | sort | uniq)
+          echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
+          for SAMPLE_TAG in ${SAMPLES}; do
+            RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG will determine the name of output stats
+            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
+            DGN_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
 
-          # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
-          echo "${FINAL_BAM}" >> ${RUN_BAMS}
-          if [[ -f ${FINAL_BAM} ]]; then
-            echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
-            continue
-          else
-            echo "BAM needs to be created - ${FINAL_BAM}. Processing."
-          fi
+            # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
+            echo "${FINAL_BAM}" >> ${RUN_BAMS}
+            if [[ -f ${FINAL_BAM} ]]; then
+              echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
+              continue
+            else
+              echo "BAM needs to be created - ${FINAL_BAM}. Processing."
+            fi
 
-          # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
-          # lane of processing
-          SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
+            # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
+            # lane of processing
+            SAMPLE_PARAMS_FILE="DGN___${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
 
-          TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG}"
-          INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RGID=${SAMPLE_TAG}_${LANE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} DGN_BAM=${DGN_BAM}" # TODO - replace RGID w/ [INDEX].[LANE]
+            TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
+            INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} DGN_BAM=${DGN_BAM}" 
 
-          echo "${SAMPLE_SHEET_PARAMS} ${PROJECT_PARAMS} ${TAGS} ${INFO}" >> ${SAMPLE_PARAMS_FILE}
-        done
+            echo "${SAMPLE_SHEET_PARAMS} ${PROJECT_PARAMS} ${TAGS} ${INFO}" >> ${SAMPLE_PARAMS_FILE}
+          done
+        fi
       else
         SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
         BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} (RUNNAME=${RUNNAME}). Stats were not run for this request"

@@ -6,6 +6,7 @@ process dgn_demultiplex_task {
   input:
     env SAMPLESHEET
     env RUN_TO_DEMUX_DIR
+    env DEMUX_ALL
     env EXECUTOR
     val RUNNAME
 
