@@ -9,6 +9,7 @@ workflow demultiplex_wkflw {
   take:
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
+    DEMUX_ALL
     EXECUTOR
 
   main:
@@ -33,7 +34,7 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
       }
       .set{ stats_demux_ch }
-    stats_demultiplex_task( stats_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, stats_demux_ch.RUNNAME )
+    stats_demultiplex_task( stats_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, stats_demux_ch.RUNNAME )
     stats_out( stats_demultiplex_task.out[0], "demultiplex_stats" )
 
     samplesheet_ch.dragen
@@ -51,7 +52,8 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
       }
       .set{ refr_demux_ch }
-    reference_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, refr_demux_ch.RUNNAME )
+
+    reference_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, refr_demux_ch.RUNNAME )
     reference_out( reference_demultiplex_task.out[0], "demultiplex_reference" )
 
     // BRANCH - Demultiplex Outputs

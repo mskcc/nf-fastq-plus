@@ -64,7 +64,6 @@ mkdir -p ${STATSDONEDIR}
 
 cd ${TEST_OUTPUT}
 touch ${RECIPE}.out
-OUT_FILE=$(realpath ${RECIPE}.out)
 CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR}"
 echo ${CMD}
 eval ${CMD}
@@ -93,6 +92,46 @@ for fs in "${FILE_SUFFIXES[@]}"; do
   fi
 done
 
+
+echo "TEST 3: Checking that redoing the pipeline fails because the BCLs were already demultiplexed"
+
+cd ${TEST_OUTPUT}
+TEST_FILE=${RECIPE}_redo.out
+touch OUT_FILE=$(realpath ${RECIPE}.out)
+CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --force false --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} >> ${OUT_FILE}"
+echo ${CMD}
+eval ${CMD}
+cd -
+
+grep "Has Been Demuxed (Skip)" ${OUT_FILE}
+found_success=$?
+if [[ ${found_success} -eq 0 ]]; then
+  echo "Expected fail from trying to run on an already demuxed run"
+else
+  ERROR="\tERROR: Did not fail because of already demuxed run\n"
+  printf "$ERROR"
+  ERRORS="${ERRORS}${ERROR}"
+fi
+
+echo "TEST 4: Demux is skipped w/ --force true option"
+cd ${TEST_OUTPUT}
+TEST_FILE=${RECIPE}_redo.out
+touch OUT_FILE=$(realpath ${RECIPE}.out)
+CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --force true --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} >> ${OUT_FILE}"
+echo ${CMD}
+eval ${CMD}
+cd -
+
+grep "Has Been Demuxed (Skip)" ${OUT_FILE}
+found_success=$?
+if [[ ${found_success} -eq 1 ]]; then
+  echo "[SUCCESS] Did not fail because of already demuxed run"
+else
+  ERROR="\tERROR: Did not skip demultiplex\n"
+  printf "$ERROR"
+  ERRORS="${ERRORS}${ERROR}"
+fi
+
 if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"
   rm -rf ${TEST_OUTPUT}
@@ -101,3 +140,5 @@ else
   printf "ERRORS were found - \n${ERRORS}"
   exit 1
 fi
+
+

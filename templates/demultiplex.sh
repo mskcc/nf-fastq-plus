@@ -202,7 +202,10 @@ else
     fi
 
     echo "Running bcl2fastq w/ mismatches=${BARCODE_MISMATCH}"
-    JOB_CMD="${BCL2FASTQ} ${MASK_OPT} ${LANE_SPLIT_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH} --loading-threads 12 --processing-threads 24 >> ${BCL_LOG} 2>&1"
+    JOB_CMD="${BCL2FASTQ} ${MASK_OPT} ${LANE_SPLIT_OPT} --minimum-trimmed-read-length 0 --mask-short-adapter-reads 0 --ignore-missing-bcl --runfolder-dir  $RUN_TO_DEMUX_DIR --sample-sheet ${SAMPLESHEET} --output-dir ${DEMUXED_DIR} --ignore-missing-filter --ignore-missing-positions --ignore-missing-control --barcode-mismatches ${BARCODE_MISMATCH}"
+    # Important to balance threads - https://www.biostars.org/p/9489458/#9489499
+    JOB_CMD+=" --loading-threads 12 --processing-threads 24 --writing-threads 24"
+    JOB_CMD+=" >> ${BCL_LOG} 2>&1"
   fi
   echo ${JOB_CMD} >> ${CMD_FILE}
 
