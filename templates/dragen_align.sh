@@ -54,13 +54,11 @@ echo ${CMD} >> ${CMD_FILE}
 echo ${CMD}
 
 # TODO - Actually run DRAGEN command
-touch "${OUTPUT_PREFIX}*.bam"
+mkdir -p ${OUTPUT_DIR}
+touch ${OUTPUT_DIR}/${OUTPUT_PREFIX}*.bam
 # eval ${CMD}
 
-# TODO - is this needed, since this may be a symbolic link?
-cat ${SAMPLE_PARAMS_FILE} > ${SAMPLE_PARAMS_FILE}
-
-
+cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}
 
 OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
 ln -s ${OUTPUT_BAM} .
