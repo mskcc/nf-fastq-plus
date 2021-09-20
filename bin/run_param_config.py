@@ -387,6 +387,12 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
+    "M-IMPACT_v2": {
+        BAITS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/M-IMPACT_v2.baits",
+        TARGETS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/M-IMPACT_v2.targets",
+        MSKQ: "yes",
+        MD: "yes"
+    },
     "WholeExomeSequencing": {
         BAITS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGETS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
