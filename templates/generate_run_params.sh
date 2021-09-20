@@ -223,9 +223,11 @@ else
       done
     else
       if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
+        echo "Detected a DRAGEN Recipe and generating params for DRAGEN alignment"
         # DRAGEN will NOT output request directories
         FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
         SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2) #  | grep -oP "(?<=IGO_).*[0-9]{5}_[A-Z]{1,2}" | sort | uniq)
+        echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
         for SAMPLE_TAG in ${SAMPLES}; do
           RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG will determine the name of output stats
           FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
