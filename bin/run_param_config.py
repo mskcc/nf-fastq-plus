@@ -387,6 +387,12 @@ recipe_options_mapping_UNORDERED = {
         MSKQ: "yes",
         MD: "yes"
     },
+    "M-IMPACT_v2": {
+        BAITS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/M-IMPACT_v2.baits",
+        TARGETS: "/home/igo/resources/BED-Targets/IMPACT/MM_IMPACT/M-IMPACT_v2.targets",
+        MSKQ: "yes",
+        MD: "yes"
+    },
     "WholeExomeSequencing": {
         BAITS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_baits.interval_list",
         TARGETS: "/home/igo/resources/ilist/IDT_Exome_v1_FP/b37/IDT_Exome_v1_FP_b37_targets.interval_list",
@@ -522,6 +528,12 @@ recipe_options_mapping_UNORDERED = {
     "Twist_Kentsis_spikeinWES_RK_V3": {
     	BAITS: "/home/igo/resources/ilist/Twist_Kentsis_spikeinWES_RK_V3/Twist_Kentsis_spikeinWES_RK_V3_BAITS.intervalList",
 	    TARGETS: "/home/igo/resources/ilist/Twist_Kentsis_spikeinWES_RK_V3/Twist_Kentsis_spikeinWES_RK_V3_TARGETS.intervalList"
+    },
+    "UBA1_plus_v1": {
+        BAITS: "/home/igo/resources/BED-Targets/UBA1_plus_v1/UBA1_plus_v1.baits",
+        TARGETS: "/home/igo/resources/BED-Targets/UBA1_plus_v1/UBA1_plus_v1.targets",
+        MSKQ: "no",
+        MD: "yes"
     },
     "HumanWholeGenome": {
         MSKQ: "no",
