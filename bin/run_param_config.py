@@ -23,6 +23,7 @@ BAITS="BAITS"
 TARGETS="TARGETS"
 MSKQ="MSKQ"
 MD="MD"
+DGN_REFERENCE="DGN_REFERENCE"
 """
         D E P E N D E N C Y    G R A P H
                   +-----------+
@@ -537,7 +538,8 @@ recipe_options_mapping_UNORDERED = {
     },
     "HumanWholeGenome": {
         MSKQ: "no",
-        MD: "yes"
+        MD: "yes",
+        DGN_REFERENCE: "/staging/ref/GRCh37_dna"
     },
     "MouseWholeGenome": {
         MSKQ: "no",

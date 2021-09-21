@@ -248,7 +248,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_HumanWholeGenome(self):
         params = get_recipe_species_params("HumanWholeGenome", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=WGS"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=WGS DGN_REFERENCE=/staging/ref/GRCh37_dna"
         self.verify_params(params, expected_params, "HumanWholeGenome", "Human")
 
     def test_WholeGenomeSequencing_Bacteria(self):
