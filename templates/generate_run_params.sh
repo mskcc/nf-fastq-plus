@@ -244,12 +244,8 @@ else
           for SAMPLE_TAG in ${SAMPLES}; do
             RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG is prefix of bam/stats
 
-            # DRAGEN BAM is what we actually want to deliver to the user
-            DGN_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
-
             # Location of final sample BAM
-            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam
-
+            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
 
             # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
             echo "${FINAL_BAM}" >> ${RUN_BAMS}
@@ -265,7 +261,7 @@ else
             SAMPLE_PARAMS_FILE="DGN___${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
 
             TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
-            INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} DGN_BAM=${DGN_BAM}" 
+            INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM}"
 
             echo "${SAMPLE_SHEET_PARAMS} ${PROJECT_PARAMS} ${TAGS} ${INFO}" >> ${SAMPLE_PARAMS_FILE}
           done
