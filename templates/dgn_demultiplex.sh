@@ -27,7 +27,6 @@ BCL_LOG="bcl2fastq.log"
 # SampleSheet_201204_PITT_0527_BHK752BBXY_i7.csv   ->   "PITT_0527_BHK752BBXY_i7"
 SAMPLESHEET=$(echo $SAMPLESHEET | tr -d " \t\n\r")	# Sometimes "\n" or "\t" characters can be appended
 basename ${SAMPLESHEET}
-# TODO - fix "perl-regexp" for portability
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
 
@@ -51,8 +50,8 @@ else
   JOB_CMD="/opt/edico/bin/dragen --bcl-conversion-only true --bcl-input-directory ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-directory ${DEMUXED_DIR}"
   echo ${JOB_CMD} >> ${CMD_FILE}
 
-  echo "Runnign DRAGEN demultiplex..."
   # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
+  echo "Running DRAGEN demultiplex..."
   set +e
   eval ${JOB_CMD}
   UNDETERMINED_SIZE=$(du -sh  ${DEMUXED_DIR}/Undet*);
@@ -61,12 +60,10 @@ else
   cat ${BCL_LOG} >> ${DEMUX_LOG_FILE}
   cat ${BCL_LOG}
 
-  # TODO - Add a filtering process to determine which demux files are valid since it's possible for a job to have failed
   # NEXTFLOW ENVIRONMENT VARIABLES - These environment variables are passed to the next nextflow process
   FILE_OUTPUT_SIZE=$(printf "%s\n\n%s\n" "${UNDETERMINED_SIZE}" "$Proj_Size")
   REPORT="To view reports visit: ${DEMUXED_DIR}/Reports/html/index.html"
   FULL=$(printf "%s\n\n%s\n" "$FILE_OUTPUT_SIZE" "$REPORT")
-
   echo "DEMUX_UPDATE: ${FULL}"
 
   echo "Copying SampleSheet to: ${DEMUXED_DIR}"

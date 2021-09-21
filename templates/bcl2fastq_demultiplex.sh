@@ -1,6 +1,7 @@
 #!/bin/bash
-# Given an input sample sheet, submit the demultiplexing job. Each demux tool is or internally uses bcl2fastq
-#
+# Given an input sample sheet, submit the demultiplexing job. Each demux tool is or internally uses bcl2fastq.
+#   NOTE - The output structure of bcl2fastq demultiplexing is different from DRAGEN. Therefore, the downstream
+#          alignment tasks must be sent to the bwa-mem/picard alignment workflow (@bwa_picard_align_wkflw)
 # Nextflow Inputs:
 #   SAMPLESHEET:      Absolute path to the sample sheet that will be used for demultiplexing
 #   RUN_TO_DEMUX_DIR: Absolute path to bcl files

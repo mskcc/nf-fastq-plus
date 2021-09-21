@@ -228,23 +228,28 @@ else
         fi
       done
     else
-      echo "Could not find ${PROJECT_DIR}"
-      echo "Checking if RECIPE=${RECIPE} is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]"
+      echo "Couldn't find ${PROJECT_DIR}. Checking if '${RECIPE}' is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]..."
       if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
         echo "Detected a DRAGEN Recipe and generating params for DRAGEN alignment"
-        # DRAGEN will NOT output request directories
+
         FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
-        if [[ ! ${FASTQ_LIST_FILE} ]]; then
-          SUBJECT="[WARNING] Request directory not found and not DRAGEN: ${PROJECT}"
-          BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} and did not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
+        if [[ -z ${FASTQ_LIST_FILE} ]]; then
+          SUBJECT="[ACTION REQUIRED] Skipping DRAGEN sample - Missing fastq_list.csv file"
+          BODY="Sample in ${PROJECT_TAG} in ${DEMUXED_DIR} was identified as a project to run through DRAGEN, but did "
+          BODY+="not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
           echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
         else  
-          SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2) #  | grep -oP "(?<=IGO_).*[0-9]{5}_[A-Z]{1,2}" | sort | uniq)
+          SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2)
           echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
           for SAMPLE_TAG in ${SAMPLES}; do
-            RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG will determine the name of output stats
-            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
+            RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG is prefix of bam/stats
+
+            # DRAGEN BAM is what we actually want to deliver to the user
             DGN_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
+
+            # Location of final sample BAM
+            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam
+
 
             # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
             echo "${FINAL_BAM}" >> ${RUN_BAMS}

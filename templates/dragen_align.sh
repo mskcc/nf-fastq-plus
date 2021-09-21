@@ -1,5 +1,5 @@
 #!/bin/bash
-# Submits an alignment job to DRAGEN based off of the demultiplexing output
+# Submits an alignment job to DRAGEN based off of the demultiplexing output of a DRAGEN demultiplex job
 # Nextflow Inputs:
 #   RUN_PARAMS_FILE, env - The suffix of the files we care about
 # Nextflow Outputs:
@@ -15,7 +15,8 @@
 run_cmd () {
   INPUT_CMD=$@
   echo ${INPUT_CMD} >> ${CMD_FILE}
-  eval ${INPUT_CMD}
+  # TODO - undo this
+  # eval ${INPUT_CMD}
 }
 
 #########################################
@@ -53,23 +54,17 @@ CMD="/opt/edico/bin/dragen --ref-dir ${DGN_REFERENCE} --enable-duplicate-marking
 CMD+=" --enable-map-align-output true --enable-variant-caller true --output-directory ${OUTPUT_DIR}"
 CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
 
-echo ${CMD} >> ${CMD_FILE}
-
-echo ${CMD}
-
 # TODO - Actually run DRAGEN command
 mkdir -p ${OUTPUT_DIR}
 touch ${OUTPUT_DIR}/${OUTPUT_PREFIX}*.bam
-# eval ${CMD}
+run_cmd "${CMD} >> ${CMD_FILE}"
+# TODO - Actually grab DRAGEN stats
+touch DRAGEN_STATS.txt
 
-cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}
+run_cmd "cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}"
 
 OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
 ln -s ${OUTPUT_BAM} .
-
 SYMLINK=$(find -L . -type l -name "${OUTPUT_PREFIX}*")
-
-# TODO - Actually grab DRAGEN stats
-touch DRAGEN_STATS.txt
 
 echo "DRAGEN BAM Successfully Created: ${OUTPUT_BAM}. SYMLINK=${SYMLINK}"
