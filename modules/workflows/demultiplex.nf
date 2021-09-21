@@ -1,9 +1,9 @@
 include { log_out as reference_out } from '../utils/log_out'
 include { log_out as stats_out } from '../utils/log_out'
 include { log_out as dragen_out } from '../utils/log_out'
-include { bcl2fastq_demultiplex_task as stats_demultiplex_task } from '../utils/bcl2fastq_demultiplex_task'
-include { bcl2fastq_demultiplex_task as reference_demultiplex_task } from '../utils/bcl2fastq_demultiplex_task'
-include { dgn_demultiplex_task } from '../utils/dgn_demultiplex_task'
+include { demultiplex_bcl2fastq_task as stats_demultiplex_task } from '../demultiplex/demultiplex_bcl2fastq_task'
+include { demultiplex_bcl2fastq_task as reference_demultiplex_task } from '../demultiplex/demultiplex_bcl2fastq_task'
+include { demultiplex_dragen_task } from '../utils/demultiplex_dragen_task'
 
 workflow demultiplex_wkflw {
   take:
@@ -53,15 +53,15 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
       }
       .set{ dgn_demux_ch }
-    dgn_demultiplex_task( dgn_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, dgn_demux_ch.RUNNAME )
-    dragen_out( dgn_demultiplex_task.out[0], "demultiplex_dragen" )
+    demultiplex_dragen_task( dgn_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, dgn_demux_ch.RUNNAME )
+    dragen_out( demultiplex_dragen_task.out[0], "demultiplex_dragen" )
 
     // COMBINE - Demultiplex Outputs
     stats_demultiplex_task.out.DEMUXED_DIR
-      .mix( dgn_demultiplex_task.out.DEMUXED_DIR )
+      .mix( demultiplex_dragen_task.out.DEMUXED_DIR )
       .set{ DEMUXED_DIR }
     stats_demultiplex_task.out.SAMPLESHEET
-      .mix( dgn_demultiplex_task.out.SAMPLESHEET )
+      .mix( demultiplex_dragen_task.out.SAMPLESHEET )
       .set{ SAMPLESHEET }
 
   emit:

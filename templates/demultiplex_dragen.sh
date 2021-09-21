@@ -20,7 +20,7 @@
 # Run:
 #   SAMPLESHEET=/path/to/SampleSheet...csv RUN_TO_DEMUX_DIR=/path/to/bcl_files BCL2FASTQ=/path/to/bcl2fastq/binary \
 #     CELL_RANGER_ATAC=/path/to/cellranger/binary FASTQ_DIR=/path/to/write/FASTQs CMD_FILE=cmds.txt \
-#     DEMUX_LOG_FILE=demux.txt dgn_demultiplex.sh
+#     DEMUX_LOG_FILE=demux.txt demultiplex_dragen_task.sh
 
 BCL_LOG="bcl2fastq.log"
 

@@ -1,5 +1,5 @@
 // Takes the value of an input directory and outputs all sample sheets that should be individually processed
-process dgn_demultiplex_task {
+process demultiplex_dragen_task {
   label 'DGN'
   tag "$RUNNAME"
 
@@ -16,5 +16,5 @@ process dgn_demultiplex_task {
     env SAMPLESHEET, emit: SAMPLESHEET
 
   shell:
-    template 'dgn_demultiplex.sh'
+    template 'demultiplex_dragen.sh'
 }
