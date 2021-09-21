@@ -199,12 +199,12 @@ echo ${CMD}
 echo ""
 set +e
 eval ${CMD}
-set -e
 cd -
 
 echo "Pipeline finished. Running check..."
 grep "Has Been Demuxed (Skip)" ${OUT_FILE}
 found_success=$?
+set -e      # We put this AFTER the grep b/c we want the grep to fail
 if [[ ${found_success} -eq 1 ]]; then
   echo "[SUCCESS] Did not fail because of already demuxed run"
 else
