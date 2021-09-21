@@ -28,6 +28,16 @@ workflow demultiplex_wkflw {
         dragen: it.contains("_WGS.csv")
       }
       .set { samplesheet_ch }
+
+    samplesheet_ch.reference                                // reference demux will not proceed to stats
+      .multiMap { it ->
+        SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
+        RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
+      }
+      .set{ refr_demux_ch }
+    reference_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, refr_demux_ch.RUNNAME )
+    reference_out( reference_demultiplex_task.out[0], "demultiplex_reference" )
+
     samplesheet_ch.stats
       .multiMap { it ->
         SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
@@ -46,17 +56,7 @@ workflow demultiplex_wkflw {
     dgn_demultiplex_task( dgn_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, dgn_demux_ch.RUNNAME )
     dragen_out( dgn_demultiplex_task.out[0], "demultiplex_dragen" )
 
-    samplesheet_ch.reference
-      .multiMap { it ->
-        SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
-        RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
-      }
-      .set{ refr_demux_ch }
-
-    reference_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, refr_demux_ch.RUNNAME )
-    reference_out( reference_demultiplex_task.out[0], "demultiplex_reference" )
-
-    // BRANCH - Demultiplex Outputs
+    // COMBINE - Demultiplex Outputs
     stats_demultiplex_task.out.DEMUXED_DIR
       .mix( dgn_demultiplex_task.out.DEMUXED_DIR )
       .set{ DEMUXED_DIR }
