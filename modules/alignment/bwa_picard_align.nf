@@ -1,5 +1,5 @@
 /**
- * Creates the sample BAMs for a specific run using BWA & Picard MergeSamFiles & MarkDuplicates
+ * Creates samples BAMs for a SINGLE SAMPLE. Uses BWA & Picard MergeSamFiles & MarkDuplicates
  *
  * Processes/aligns each lane separately, merges, and marks duplicates.
  * TODO - The alignments do NOT use the lsf executor of nextflow b/c scattering and gathering at the sample level is
@@ -20,9 +20,12 @@ workflow bwa_picard_align_wkflw {
     SAMPLE_FILE_CH
 
   main:
+    // BRANCH - Alignment Jobs (1 alignment job per lane)
     create_sample_lane_jobs_wkflw( SAMPLE_FILE_CH )
     align_to_reference_wkflw( create_sample_lane_jobs_wkflw.out.LANE_PARAM_FILES, RUN_PARAMS_FILE, CMD_FILE,
       BWA, PICARD, config.executor.name )
+
+    // MERGE - All Lane BAMS -> Single sample BAM
     merge_sams_wkflw( align_to_reference_wkflw.out.PARAMS, align_to_reference_wkflw.out.SAM_CH,
       align_to_reference_wkflw.out.OUTPUT_ID,
       RUN_PARAMS_FILE, CMD_FILE, PICARD, STATS_DIR )
