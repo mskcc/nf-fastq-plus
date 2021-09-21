@@ -17,16 +17,16 @@ process task {
     path "DRAGEN_STATS.txt", emit: METRICS_FILE
 
   shell:
-    template 'dragen_align.sh'
+    template 'align_dragen.sh'
 }
 
-workflow dragen_align_wkflw {
+workflow align_dragen_wkflw {
   take:
     RUN_PARAMS
     DGN_DEMUX
   main:
     task( RUN_PARAMS, DGN_DEMUX, DGN_DEMUX )
-    out( task.out[0], "dragen_align" )
+    out( task.out[0], "align_dragen" )
 
   emit:
     PARAMS = task.out.PARAMS

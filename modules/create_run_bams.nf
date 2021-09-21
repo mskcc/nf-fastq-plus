@@ -1,6 +1,6 @@
 include { generate_run_params_wkflw } from './workflows/generate_run_params';
 include { bwa_picard_align_wkflw } from './alignment/bwa_picard_align';
-include { dragen_align_wkflw } from './alignment/dragen_align';
+include { align_dragen_wkflw } from './workflows/align_dragen';
 
 workflow create_run_bams_wkflw {
   take:
@@ -21,21 +21,21 @@ workflow create_run_bams_wkflw {
             bwa: it.toString() =~ /^(?!DGN).*/
         }
         .set { sample_file_ch }
-    dragen_align_wkflw( sample_file_ch.dgn, DEMUXED_DIR )
+    align_dragen_wkflw( sample_file_ch.dgn, DEMUXED_DIR )
     bwa_picard_align_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER, sample_file_ch.bwa )
 
     // COMBINE - Alignment Outputs
     bwa_picard_align_wkflw.out.PARAMS
-        .mix( dragen_align_wkflw.out.PARAMS )
+        .mix( align_dragen_wkflw.out.PARAMS )
         .set{ PARAMS }
     bwa_picard_align_wkflw.out.BAM_CH
-        .mix( dragen_align_wkflw.out.BAM_CH )
+        .mix( align_dragen_wkflw.out.BAM_CH )
         .set{ BAM_CH }
     bwa_picard_align_wkflw.out.OUTPUT_ID
-        .mix( dragen_align_wkflw.out.OUTPUT_ID )
+        .mix( align_dragen_wkflw.out.OUTPUT_ID )
         .set{ OUTPUT_ID }
     bwa_picard_align_wkflw.out.METRICS_FILE
-        .mix( dragen_align_wkflw.out.METRICS_FILE )
+        .mix( align_dragen_wkflw.out.METRICS_FILE )
         .set{ METRICS_FILE }
 
   emit:
