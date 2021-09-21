@@ -7,6 +7,7 @@ workflow demultiplex_wkflw {
   take:
     split_sample_sheets_path
     RUN_TO_DEMUX_DIR
+    DEMUX_ALL
     EXECUTOR
 
   main:
@@ -26,7 +27,7 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // SampleSheet
       }
       .set{ stat_demux_ch }
-    stat_demultiplex_task( stat_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, stat_demux_ch.RUNNAME )
+    stat_demultiplex_task( stat_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, stat_demux_ch.RUNNAME )
     stat_out( stat_demultiplex_task.out[0], "demultiplex_stat" )
 
     // refr_demux_ch will only be demultiplexed as reference, without stats
@@ -36,7 +37,7 @@ workflow demultiplex_wkflw {
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // SampleSheet
       }
       .set{ refr_demux_ch }
-    refr_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, EXECUTOR, refr_demux_ch.RUNNAME )
+    refr_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, refr_demux_ch.RUNNAME )
     refr_out( stat_demultiplex_task.out[0], "demultiplex_refr" )
 
   emit:

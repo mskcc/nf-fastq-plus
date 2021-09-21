@@ -58,6 +58,6 @@ workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( RUN, DEMUX_ALL )
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH )
-  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, detect_runs_wkflw.out.RUNPATH, EXECUTOR )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, detect_runs_wkflw.out.RUNPATH, DEMUX_ALL, EXECUTOR )
   samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
 }

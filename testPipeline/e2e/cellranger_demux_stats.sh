@@ -165,6 +165,56 @@ else
   # reference files are at least 20-30 GB of space
 fi
 
+echo "TEST 4: Checking that redoing the pipeline fails because the BCLs were already demultiplexed"
+cd ${TEST_OUTPUT}
+OUT_FILE="$(pwd)/${RECIPE}_demux_redo_fail.out"
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force false --run ${RUN} >> ${OUT_FILE}"
+echo "Running Nextflow Pipeline: main.nf (ignoring errors)"
+echo ${CMD}
+echo ""
+set +e
+eval ${CMD}
+set -e
+cd -
+
+echo "Pipeline finished. Running check..."
+grep "Has Been Demuxed (Skip)" ${OUT_FILE}
+found_success=$?
+if [[ ${found_success} -eq 0 ]]; then
+  echo "Expected fail from trying to run on an already demuxed run"
+else
+  ERROR="\tERROR: Did not fail because of already demuxed run\n"
+  cat ${OUT_FILE}
+  printf "\n\n\n\n"
+  printf "$ERROR"
+  ERRORS="${ERRORS}${ERROR}"
+fi
+
+echo "TEST 5: Demux is skipped w/ --force true option"
+cd ${TEST_OUTPUT}
+OUT_FILE="$(pwd)/${RECIPE}_demux_redo_success.out"
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force true --run ${RUN} >> ${OUT_FILE}"
+echo "Running Nextflow Pipeline: main.nf (ignoring errors)"
+echo ${CMD}
+echo ""
+set +e
+eval ${CMD}
+cd -
+
+echo "Pipeline finished. Running check..."
+grep "Has Been Demuxed (Skip)" ${OUT_FILE}
+found_success=$?
+set -e      # We put this AFTER the grep b/c we want the grep to fail
+if [[ ${found_success} -eq 1 ]]; then
+  echo "[SUCCESS] Did not fail because of already demuxed run"
+else
+  ERROR="\tERROR: Did not skip demultiplex\n"
+  cat ${OUT_FILE}
+  printf "\n\n\n\n"
+  printf "$ERROR"
+  ERRORS="${ERRORS}${ERROR}"
+fi
+
 if [ -z "${ERRORS}" ]; then
   echo "All tests successful - removing ${TEST_OUTPUT}"
   rm -rf ${TEST_OUTPUT}
