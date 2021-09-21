@@ -42,6 +42,10 @@ DGN_BAM=$(parse_param ${SAMPLE_PARAMS_FILE} DGN_BAM)
 FASTQ_LIST_FILE=$(parse_param ${SAMPLE_PARAMS_FILE} FASTQ_LIST_FILE)
 SAMPLE_TAG=$(parse_param ${SAMPLE_PARAMS_FILE} SAMPLE_TAG)
 
+if [[ ! -f ${FASTQ_LIST_FILE} ]]; then
+  echo "Invalid FASTQ_LIST argument: ${FASTQ_LIST_FILE}"
+  exit 1
+fi
 OUTPUT_PREFIX="$(basename ${DGN_BAM} | cut -d'.' -f1)"
 OUTPUT_DIR="$(dirname ${DGN_BAM})"
 
