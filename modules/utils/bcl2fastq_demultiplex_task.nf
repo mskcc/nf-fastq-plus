@@ -1,5 +1,5 @@
 // Takes the value of an input directory and outputs all sample sheets that should be individually processed
-process demultiplex_task {
+process bcl2fastq_demultiplex_task {
   label 'BSUB_OPTIONS_DEMUX'
   tag "$RUNNAME"
 
@@ -16,5 +16,5 @@ process demultiplex_task {
     env SAMPLESHEET, emit: SAMPLESHEET
 
   shell:
-    template 'demultiplex.sh'
+    template 'bcl2fastq_demultiplex.sh'
 }

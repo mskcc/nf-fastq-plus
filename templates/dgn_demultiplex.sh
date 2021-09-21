@@ -1,5 +1,7 @@
 #!/bin/bash
 # Given an input sample sheet, submit the DRAGEN demultiplexing job
+#   NOTE - The output structure of DRAGEN demultiplexing is different from bcl2fastq. Therefore, the downstream
+#          alignment tasks must be sent to the DRAGEN alignment workflow (@dragen_align_wkflw)
 # Nextflow Inputs:
 #   SAMPLESHEET:      Absolute path to the sample sheet that will be used for demultiplexing
 #   RUN_TO_DEMUX_DIR: Absolute path to bcl files

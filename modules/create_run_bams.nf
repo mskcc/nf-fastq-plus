@@ -16,6 +16,7 @@ workflow create_run_bams_wkflw {
     // BRANCH - Alignment Jobs
     generate_run_params_wkflw.out.SAMPLE_FILE_CH
         .branch {
+            // it: /path/to/DGN___SAMPLEID___sample_params.txt OR /path/to/SAMPLEID___sample_params.txt
             dgn: it.toString() =~ /.*\/DGN___.*/
             bwa: it.toString() =~ /^(?!DGN).*/
         }

@@ -1,5 +1,10 @@
 # !/bin/bash
-# Configures FASTQ stats from input Runname
+# Generates parameter file, which encapsulates all values needed by all downstream downstream nextflow tasks
+#   Steps:
+#     1. Parse fields from SampleSheet (e.g. project, recipe, species)
+#     2. Create Sample Parms .txt files (*${RUN_PARAMS_FILE}.txt) - different prefixes of these files determine
+#        downstream branching logic in nextflow
+#
 # Nextflow Inputs:
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
@@ -11,7 +16,8 @@
 # Run: 
 #   Can't be run - relies on ./bin
 
-DGN_DEMUX_ALN_RECIPES="HumanWholeGenome"
+DGN_DEMUX_ALN_RECIPES="HumanWholeGenome"    # Recipes for which we send to DRAGEN
+DGN_SAMPLE_PARAMS_PREFIX="DGN___"           # Prefix for *sample_params.txt, which nextflow uses for routing
 
 # SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {

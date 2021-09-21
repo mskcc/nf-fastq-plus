@@ -1,8 +1,8 @@
 include { log_out as reference_out } from '../utils/log_out'
 include { log_out as stats_out } from '../utils/log_out'
 include { log_out as dragen_out } from '../utils/log_out'
-include { demultiplex_task as stats_demultiplex_task } from '../utils/demultiplex_task'
-include { demultiplex_task as reference_demultiplex_task } from '../utils/demultiplex_task'
+include { bcl2fastq_demultiplex_task as stats_demultiplex_task } from '../utils/bcl2fastq_demultiplex_task'
+include { bcl2fastq_demultiplex_task as reference_demultiplex_task } from '../utils/bcl2fastq_demultiplex_task'
 include { dgn_demultiplex_task } from '../utils/dgn_demultiplex_task'
 
 workflow demultiplex_wkflw {
