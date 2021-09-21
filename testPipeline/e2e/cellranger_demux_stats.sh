@@ -169,14 +169,15 @@ echo "TEST 4: Checking that redoing the pipeline fails because the BCLs were alr
 cd ${TEST_OUTPUT}
 OUT_FILE="$(pwd)/${RECIPE}_demux_redo_fail.out"
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force false --run ${RUN} >> ${OUT_FILE}"
+echo "Running Nextflow Pipeline: main.nf (ignoring errors)"
 echo ${CMD}
-
-# This should fail and that is expected
+echo ""
 set +e
 eval ${CMD}
 set -e
 cd -
 
+echo "Pipeline finished. Running check..."
 grep "Has Been Demuxed (Skip)" ${OUT_FILE}
 found_success=$?
 if [[ ${found_success} -eq 0 ]]; then
@@ -192,13 +193,16 @@ fi
 echo "TEST 5: Demux is skipped w/ --force true option"
 cd ${TEST_OUTPUT}
 OUT_FILE="$(pwd)/${RECIPE}_demux_redo_success.out"
-CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --force true --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} >> ${OUT_FILE}"
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force true --run ${RUN} >> ${OUT_FILE}"
+echo "Running Nextflow Pipeline: main.nf (ignoring errors)"
 echo ${CMD}
+echo ""
 set +e
 eval ${CMD}
 set -e
 cd -
 
+echo "Pipeline finished. Running check..."
 grep "Has Been Demuxed (Skip)" ${OUT_FILE}
 found_success=$?
 if [[ ${found_success} -eq 1 ]]; then
