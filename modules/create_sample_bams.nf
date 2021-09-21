@@ -1,11 +1,11 @@
 /**
  * Creates a Sample BAM by merging across all runs w/ FASTQs for that sample
  */
-include { create_run_bams_wkflw } from './create_run_bams';
-include { retrieve_all_sample_runs_wkflw } from './tasks/retrieve_all_sample_runs';
-include { get_sample_merge_commands_wkflw } from './tasks/get_sample_merge_commands';
-include { wait_for_bams_to_finish_wkflw } from './tasks/wait_for_bams_to_finish';
-include { log_out as out } from './utils/log_out';
+include { create_run_bams_wkflw }               from './create_run_bams';
+include { retrieve_all_sample_runs_wkflw }      from './tasks/retrieve_all_sample_runs';
+include { get_sample_merge_commands_wkflw }     from './tasks/get_sample_merge_commands';
+include { wait_for_bams_to_finish_wkflw }       from './tasks/wait_for_bams_to_finish';
+include { log_out as out }                      from './utils/log_out';
 
 process task {
   label 'BSUB_OPTIONS_SMALL'

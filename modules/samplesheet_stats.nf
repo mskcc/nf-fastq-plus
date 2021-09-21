@@ -1,15 +1,15 @@
-include { create_sample_bams_wkflw } from './create_sample_bams';
-include { create_run_bams_wkflw } from './create_run_bams';
-include { alignment_summary_wkflw } from './tasks/collect_alignment_summary_metrics';
-include { collect_hs_metrics_wkflw } from './tasks/collect_hs_metrics';
-include { collect_oxoG_metrics_wkflw } from './tasks/collect_oxoG_metrics';
-include { collect_wgs_metrics_wkflw } from './tasks/collect_wgs_metrics';
-include { collect_rna_metrics_wkflw } from './tasks/collect_rna_metrics';
-include { collect_gc_bias_wkflw } from './tasks/collect_gc_bias_metrics';
-include { upload_stats_wkflw } from './tasks/upload_stats';
-include { fingerprint_wkflw } from './tasks/fingerprint';
-include { cellranger_wkflw } from './tasks/cellranger';
-include { upload_cellranger_wkflw } from './tasks/upload_cellranger';
+include { create_sample_bams_wkflw }    from './create_sample_bams';
+include { create_run_bams_wkflw }       from './create_run_bams';
+include { alignment_summary_wkflw }     from './tasks/collect_alignment_summary_metrics';
+include { collect_hs_metrics_wkflw }    from './tasks/collect_hs_metrics';
+include { collect_oxoG_metrics_wkflw }  from './tasks/collect_oxoG_metrics';
+include { collect_wgs_metrics_wkflw }   from './tasks/collect_wgs_metrics';
+include { collect_rna_metrics_wkflw }   from './tasks/collect_rna_metrics';
+include { collect_gc_bias_wkflw }       from './tasks/collect_gc_bias_metrics';
+include { upload_stats_wkflw }          from './tasks/upload_stats';
+include { fingerprint_wkflw }           from './tasks/fingerprint';
+include { cellranger_wkflw }            from './tasks/cellranger';
+include { upload_cellranger_wkflw }     from './tasks/upload_cellranger';
 
 
 workflow samplesheet_stats_wkflw {

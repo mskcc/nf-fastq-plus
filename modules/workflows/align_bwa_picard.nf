@@ -5,10 +5,10 @@
  * TODO - The alignments do NOT use the lsf executor of nextflow b/c scattering and gathering at the sample level is
  *        not supported. Any combining operator (e.g. .collect()) will force all tasks to wait until all are collected
  */
-include { create_sample_lane_jobs_wkflw } from '../tasks/create_sample_lane_jobs';
-include { align_bwa_wkflw } from '../tasks/align_bwa';
-include { merge_sams_wkflw } from '../tasks/merge_sams';
-include { mark_duplicates_wkflw } from '../tasks/mark_duplicates';
+include { create_sample_lane_jobs_wkflw }   from '../tasks/create_sample_lane_jobs';
+include { align_bwa_wkflw }                 from '../tasks/align_bwa';
+include { merge_sams_wkflw }                from '../tasks/merge_sams';
+include { mark_duplicates_wkflw }           from '../tasks/mark_duplicates';
 
 workflow align_bwa_picard_wkflw {
   take:
