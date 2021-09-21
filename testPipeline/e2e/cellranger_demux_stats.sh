@@ -170,7 +170,11 @@ cd ${TEST_OUTPUT}
 OUT_FILE="$(pwd)/${RECIPE}_demux_redo_fail.out"
 CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force false --run ${RUN} >> ${OUT_FILE}"
 echo ${CMD}
+
+# This should fail and that is expected
+set +e
 eval ${CMD}
+set -e
 cd -
 
 grep "Has Been Demuxed (Skip)" ${OUT_FILE}
@@ -179,6 +183,8 @@ if [[ ${found_success} -eq 0 ]]; then
   echo "Expected fail from trying to run on an already demuxed run"
 else
   ERROR="\tERROR: Did not fail because of already demuxed run\n"
+  cat ${OUT_FILE}
+  printf "\n\n\n\n"
   printf "$ERROR"
   ERRORS="${ERRORS}${ERROR}"
 fi
@@ -188,7 +194,9 @@ cd ${TEST_OUTPUT}
 OUT_FILE="$(pwd)/${RECIPE}_demux_redo_success.out"
 CMD="nextflow ${LOCATION}/../../samplesheet_stats_main.nf --dir ${DEMUXED_DIR} --force true --ss ${SAMPLESHEET} --stats_dir ${STATS_DIR} --done_dir ${STATSDONEDIR} >> ${OUT_FILE}"
 echo ${CMD}
+set +e
 eval ${CMD}
+set -e
 cd -
 
 grep "Has Been Demuxed (Skip)" ${OUT_FILE}
@@ -197,6 +205,8 @@ if [[ ${found_success} -eq 1 ]]; then
   echo "[SUCCESS] Did not fail because of already demuxed run"
 else
   ERROR="\tERROR: Did not skip demultiplex\n"
+  cat ${OUT_FILE}
+  printf "\n\n\n\n"
   printf "$ERROR"
   ERRORS="${ERRORS}${ERROR}"
 fi
