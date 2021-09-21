@@ -2,11 +2,12 @@ include { log_out as out } from '../utils/log_out'
 
 process task {
   label 'DGN'
-  tag "$DGN_DEMUX"
+  tag '$DGN_DEMUX'
 
   input:
     path RUN_PARAMS
     env DGN_DEMUX
+    val DGN_DEMUX
 
   output:
     stdout()
@@ -24,7 +25,7 @@ workflow dragen_align_wkflw {
     RUN_PARAMS
     DGN_DEMUX
   main:
-    task( RUN_PARAMS, DGN_DEMUX )
+    task( RUN_PARAMS, DGN_DEMUX, DGN_DEMUX )
     out( task.out[0], "dragen_align" )
 
   emit:

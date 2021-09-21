@@ -14,15 +14,14 @@ workflow create_run_bams_wkflw {
     generate_run_params_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, FILTER )
 
     // BRANCH - Alignment Jobs
-    Channel.from( DEMUXED_DIR ).branch {
-            dgn: ~/.*_WGS$/ 		// it.toString().contains("_WGS")
-            bwa: ~/.*(?<!_WGS)$/ 	// ! it.toString().contains("_WGS")
+    generate_run_params_wkflw.out.SAMPLE_FILE_CH
+        .branch {
+            dgn: it.toString() =~ /.*\/DGN___.*/
+            bwa: it.toString() =~ /^(?!DGN).*/
         }
-        .set { dir_to_align }
-
-    dragen_align_wkflw( generate_run_params_wkflw.out.SAMPLE_FILE_CH, dir_to_align.dgn )
-    bwa_picard_align_wkflw( dir_to_align.bwa, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER,
-        generate_run_params_wkflw.out.SAMPLE_FILE_CH )
+        .set { sample_file_ch }
+    dragen_align_wkflw( sample_file_ch.dgn, DEMUXED_DIR )
+    bwa_picard_align_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER, sample_file_ch.bwa )
 
     // COMBINE - Alignment Outputs
     bwa_picard_align_wkflw.out.PARAMS
