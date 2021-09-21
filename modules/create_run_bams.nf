@@ -1,6 +1,6 @@
-include { generate_run_params_wkflw } from './workflows/generate_run_params';
-include { bwa_picard_align_wkflw } from './alignment/bwa_picard_align';
-include { align_dragen_wkflw } from './workflows/align_dragen';
+include { generate_run_params_wkflw } from './tasks/generate_run_params';
+include { bwa_picard_align_wkflw } from './workflows/bwa_picard_align';
+include { align_dragen_wkflw } from './tasks/align_dragen';
 
 workflow create_run_bams_wkflw {
   take:
