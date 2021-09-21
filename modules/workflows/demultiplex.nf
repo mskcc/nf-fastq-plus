@@ -1,9 +1,9 @@
-include { log_out as reference_out } from './utils/log_out'
-include { log_out as stats_out } from './utils/log_out'
-include { log_out as dragen_out } from './utils/log_out'
-include { demultiplex_bcl2fastq_task as stats_demultiplex_task } from './tasks/demultiplex_bcl2fastq_task'
-include { demultiplex_bcl2fastq_task as reference_demultiplex_task } from './tasks/demultiplex_bcl2fastq_task'
-include { demultiplex_dragen_task } from './tasks/demultiplex_dragen_task'
+include { log_out as reference_out } from '../utils/log_out'
+include { log_out as stats_out } from '../utils/log_out'
+include { log_out as dragen_out } from '../utils/log_out'
+include { demultiplex_bcl2fastq_task as stats_demultiplex_task } from '../tasks/demultiplex_bcl2fastq_task'
+include { demultiplex_bcl2fastq_task as reference_demultiplex_task } from '../tasks/demultiplex_bcl2fastq_task'
+include { demultiplex_dragen_task } from '../tasks/demultiplex_dragen_task'
 
 workflow demultiplex_wkflw {
   take:
