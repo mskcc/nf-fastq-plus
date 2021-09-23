@@ -171,7 +171,7 @@ genome_reference_mapping_UNORDERED = {
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
             CELLRANGER_COUNT: "/igo/work/nabors/genomes/10X_Genomics/GEX/refdata-gex-GRCh38-2020-A",
             CELLRANGER_ARC: "/igo/work/nabors/genomes/10X_Genomics/ARC/refdata-cellranger-arc-GRCh38-2020-A-2.0.0",
-            HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/hg38_igo.map"
+            HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/hg38_igo.map"	# TODO - Verify this
         },
         "RNA": {
             REF_FLAT: '/igo/work/nabors/bed_files/GRCh38_100_Ensembl/Homo_sapiens.GRCh38.100.ref.flat',
@@ -539,7 +539,10 @@ recipe_options_mapping_UNORDERED = {
     "HumanWholeGenome": {
         MSKQ: "no",
         MD: "yes",
-        DGN_REFERENCE: "/staging/ref/GRCh38.p13"
+        GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",	# References that created DRAGE reference
+        REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
+        HAPLOTYPE_MAP: "", # TODO - Add this
+        DGN_REFERENCE: "/staging/ref/GRCh38.p13___genBank_GCA_000001405.28"
     },
     "MouseWholeGenome": {
         MSKQ: "no",
