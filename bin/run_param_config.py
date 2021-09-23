@@ -539,8 +539,8 @@ recipe_options_mapping_UNORDERED = {
     "HumanWholeGenome": {
         MSKQ: "no",
         MD: "yes",
-        GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",	# References that created DRAGE reference
-        REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
+        GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",  # References that created DRAGEN reference
+        REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",
         HAPLOTYPE_MAP: "", # TODO - Add this
         DGN_REFERENCE: "/staging/ref/GRCh38.p13___genBank_GCA_000001405.28"
     },
