@@ -539,7 +539,7 @@ recipe_options_mapping_UNORDERED = {
     "HumanWholeGenome": {
         MSKQ: "no",
         MD: "yes",
-        DGN_REFERENCE: "/staging/ref/GRCh37_dna"
+        DGN_REFERENCE: "/staging/ref/GRCh38.p13"
     },
     "MouseWholeGenome": {
         MSKQ: "no",
