@@ -22,20 +22,20 @@ workflow samplesheet_stats_wkflw {
 
   main:
     create_run_bams_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
-    alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
-    collect_hs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
-    collect_oxoG_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
-    collect_wgs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
-    collect_rna_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
-    collect_gc_bias_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
-    cellranger_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH, create_run_bams_wkflw.out.OUTPUT_ID,
-        STATSDONEDIR )
+    alignment_summary_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_hs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_oxoG_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_wgs_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_rna_metrics_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    collect_gc_bias_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+    cellranger_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
+        create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
     upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER )
     upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),

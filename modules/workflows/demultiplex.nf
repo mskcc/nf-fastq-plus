@@ -13,7 +13,6 @@ workflow demultiplex_wkflw {
     EXECUTOR
 
   main:
-
     // BRANCH - Demultiplex jobs. Input file is scattered w/ splitText() to DEMUX options - stats, dragen, or reference
     //            stats:        Standard method of demultiplexing for stats
     //            dragen:       DRAGEN method of demultiplexing for stats

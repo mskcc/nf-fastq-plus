@@ -14,9 +14,3 @@ Description: DRAGEN reference
 Source: [GCF_000001405.39_GRCh38.p13_genomic.fna](#GCF_000001405.39_GRCh38.p13_genomic.fna)
 
 Script: `create_ref___GRCh38.p13___genBank_GCA_000001405.28.sh`
-
-
-
-
-
-
