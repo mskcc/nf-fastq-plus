@@ -48,15 +48,22 @@ if [[ ! -f ${FASTQ_LIST_FILE} ]]; then
 fi
 OUTPUT_PREFIX="$(basename ${FINAL_BAM} | cut -d'.' -f1)"
 OUTPUT_DIR="$(dirname ${FINAL_BAM})"
-
-CMD="/opt/edico/bin/dragen --ref-dir ${DGN_REFERENCE} --enable-duplicate-marking true"
-CMD+=" --enable-map-align-output true --enable-variant-caller true --output-directory ${OUTPUT_DIR}"
-CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
-
-run_cmd "${CMD} >> ${CMD_FILE}"
-run_cmd "cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}"
+mkdir -p ${OUTPUT_DIR}
 
 OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
+if [[ -f ${OUTPUT_BAM} ]]; then
+  echo "Skipping DRAGEN alignment. BAM already created for ${SAMPLE_TAG}: ${OUTPUT_BAM}" 
+else
+  CMD="/opt/edico/bin/dragen --ref-dir ${DGN_REFERENCE} --enable-duplicate-marking true --intermediate-results-dir /staging/temp"
+  CMD+=" --enable-map-align-output true --enable-variant-caller true --output-directory ${OUTPUT_DIR}"
+  CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
+
+  run_cmd "${CMD} >> ${CMD_FILE}"
+  run_cmd "cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}"
+
+  OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
+fi
+
 ln -s ${OUTPUT_BAM} .
 SYMLINK=$(find -L . -type l -name "${OUTPUT_PREFIX}*")
 
