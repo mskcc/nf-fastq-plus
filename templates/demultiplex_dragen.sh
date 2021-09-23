@@ -30,7 +30,7 @@ basename ${SAMPLESHEET}
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
 
-echo "Procesisng DRAGEN demultiplex Job SampleSheet=${SAMPLESHEET} RUN_BASENAME=${RUN_BASENAME} DEMUX_ALL=${DEMUX_ALL} DEMUXED_DIR=${DEMUXED_DIR}"
+echo "Processing DRAGEN demultiplex Job SampleSheet=${SAMPLESHEET} RUN_BASENAME=${RUN_BASENAME} DEMUX_ALL=${DEMUX_ALL} DEMUXED_DIR=${DEMUXED_DIR}"
 
 if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
   LOG="Skipping demux (DEMUX_ALL=${DEMUX_ALL}) of already demuxed directory: ${DEMUXED_DIR}"
