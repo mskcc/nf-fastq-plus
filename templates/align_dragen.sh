@@ -59,10 +59,11 @@ else
   CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
 
   run_cmd "${CMD} >> ${CMD_FILE}"
-  run_cmd "cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}"
 
   OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
 fi
+
+run_cmd "cat ${SAMPLE_PARAMS_FILE} > ${RUN_PARAMS_FILE}"
 
 ln -s ${OUTPUT_BAM} .
 SYMLINK=$(find -L . -type l -name "${OUTPUT_PREFIX}*")

@@ -14,7 +14,7 @@ process task {
     path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.bam', emit: BAM_CH
     env SAMPLE_TAG, emit: SAMPLE_TAG
-    path "DRAGEN_STATS.txt", emit: METRICS_FILE
+    path "*bam", emit: ALIGN_SUCCESS // Used as a downstream indicator of successful alignment
 
   shell:
     template 'align_dragen.sh'
@@ -32,5 +32,5 @@ workflow align_dragen_wkflw {
     PARAMS = task.out.PARAMS
     BAM_CH = task.out.BAM_CH
     OUTPUT_ID = task.out.SAMPLE_TAG
-    METRICS_FILE = task.out.METRICS_FILE
+    METRICS_FILE = task.out.ALIGN_SUCCESS	// TOOD - this is to make it compatible w/ create_run_bams_wkflw
 }
