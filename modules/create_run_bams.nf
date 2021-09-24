@@ -21,7 +21,7 @@ workflow create_run_bams_wkflw {
             bwa: it.toString() =~ /^(?!DGN).*/
         }
         .set { sample_file_ch }
-    align_dragen_wkflw( sample_file_ch.dgn, DEMUXED_DIR )
+    align_dragen_wkflw( sample_file_ch.dgn )
     align_bwa_picard_wkflw( DEMUXED_DIR, SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER, sample_file_ch.bwa )
 
     // COMBINE - Alignment Outputs

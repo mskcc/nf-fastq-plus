@@ -2,19 +2,18 @@ include { log_out as out } from '../utils/log_out'
 
 process task {
   label 'DGN'
-  tag "$DGN_DEMUX"
+  tag "$RUN_PARAMS"
 
   input:
     path RUN_PARAMS
-    env DGN_DEMUX
-    val DGN_DEMUX
+    val RUN_PARAMS				// 2nd value is passed to provide the task's LSF job name
 
   output:
     stdout()
     path "${RUN_PARAMS_FILE}", emit: PARAMS
     path '*.bam', emit: BAM_CH
     env SAMPLE_TAG, emit: SAMPLE_TAG
-    path "*bam", emit: ALIGN_SUCCESS // Used as a downstream indicator of successful alignment
+    path "*bam", emit: ALIGN_SUCCESS 		// Used as a downstream indicator of successful alignment
 
   shell:
     template 'align_dragen.sh'
@@ -23,9 +22,8 @@ process task {
 workflow align_dragen_wkflw {
   take:
     RUN_PARAMS
-    DGN_DEMUX
   main:
-    task( RUN_PARAMS, DGN_DEMUX, DGN_DEMUX )
+    task( RUN_PARAMS, RUN_PARAMS )
     out( task.out[0], "align_dragen" )
 
   emit:
