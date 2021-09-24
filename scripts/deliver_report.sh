@@ -19,4 +19,4 @@ for prj in ${PROJECTS}; do
 done
 
 echo "TO ARCHIVE:"
-echo ${TO_ARCHIVE} | tr ' ' '\n' | sort | uniq | sed 's/^/\t/g'
+echo ${TO_ARCHIVE} | tr ' ' '\n' | sort | uniq | grep -v "_REFERENCE" | sed 's/^/\t/g'
