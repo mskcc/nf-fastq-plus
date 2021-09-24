@@ -58,7 +58,7 @@ else
   CMD+=" --enable-map-align-output true --enable-variant-caller true --output-directory ${OUTPUT_DIR}"
   CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
 
-  run_cmd "${CMD} >> ${CMD_FILE}"
+  run_cmd "${CMD}"
 
   OUTPUT_BAM=$(find ${OUTPUT_DIR} -type f -name "${OUTPUT_PREFIX}*.bam")
 fi
