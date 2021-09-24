@@ -55,6 +55,10 @@ code {
 	margin: 16px 16px 16px 16px;
 }
 
+.separate-cols-margin {
+	margin: 14px 14px;
+}
+
 .non-nextflow-runs {
 	margin: 2px 4px;
 	border: 1px solid black;
