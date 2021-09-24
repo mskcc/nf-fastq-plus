@@ -3,11 +3,14 @@ import SequencingRun from './sequencing-run';
 import NonNextflowRun from './not-nextflow';
 import { getEvents, getSequencingRuns } from '../services/tracker-service';
 import {getLatestNextflowRunFromSeqRun} from '../services/util';
+import { Button, TextField } from '@material-ui/core';
 
 function TrackerView() {
   const [sequencingRuns, setSequencingRuns] = useState([]);
   const [nxfEvents, setNxfEvents] = useState([]);             //
   const [nonNxfSeqRuns, setNonNxfSeqRuns] = useState([]);     // Sequencing runs that have been processed by nextflow
+  const [numDays, setnumDays] = React.useState(14);
+  const [lastSearched, setLastSearched] = React.useState(14);
 
   // Set up our eventSource to listen
   useEffect(() => {
@@ -59,10 +62,15 @@ function TrackerView() {
     })();
   }, [sequencingRuns]);
   useEffect(() => {
-    getSequencingRuns(14).then((runs) => {
-      setSequencingRuns(runs);
-    });
+    updateSequencingRuns(14);
   }, []);
+
+  const updateSequencingRuns = (numDays) => {
+    getSequencingRuns(numDays).then((runs) => {
+      setSequencingRuns(runs);
+      setLastSearched(numDays);
+    });
+  };
 
   const isSuccessfulRun = (nxfEvt) => {
     const latest = getLatestNextflowRunFromSeqRun(nxfEvt);
@@ -78,11 +86,26 @@ function TrackerView() {
     return nxfEvt['pending'];
   };
 
+  const handleChange = (event) => {
+    setnumDays(event.target.value);
+  };
+
   const pendingRuns = nxfEvents.filter(isPendingRun);
   const failedRuns = nxfEvents.filter(isFailedRun);
   const successfulRuns = nxfEvents.filter(isSuccessfulRun);
 
   return <div className={'seq-run-container'}>
+    <div>
+      <TextField id='numDays' label='Days' variant='outlined' value={numDays} onChange={handleChange} />
+      {
+        lastSearched != numDays ? <Button id='gridExport' onClick={() => updateSequencingRuns(numDays)} color='primary' variant='contained' type='submit'>
+          Update
+        </Button> : <span></span>
+      }
+      <div className={'inline-block separate-cols-margin'}>
+        <p>Showing runs w/ incomplete requests from past {lastSearched} day(s)</p>
+      </div>
+    </div>
     {
       nonNxfSeqRuns.length === 0 ? <div></div> :
           <NonNextflowRun sequencingRuns={nonNxfSeqRuns}></NonNextflowRun>
