@@ -114,7 +114,7 @@ else
   # TODO - Remove when PED_PEG is integrated in nextflow pipeline
   PPG_REQUESTS=""
 
-  SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS="
+  SKIPPING_SAMPLE_STATS_PRJS=""
   SKIPPING_SAMPLE_STATS_BODY=""
   for psr in $prj_spc_rec; do
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
@@ -223,8 +223,8 @@ else
         done
         if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
           # "[ACTION-REQUIRED] Skipping Sample Stats (..." + PROJECT_TAG    <- We will close this when we send the email
-          SKIPPING_SAMPLE_STATS_SUBJ+="${PROJECT_TAG} "
-          SKIPPING_SAMPLE_STATS_BODY="(${PROJECT_TAG},${SAMPLE_TAG}) "
+          SKIPPING_SAMPLE_STATS_PRJS+="${PROJECT_TAG} "
+          SKIPPING_SAMPLE_STATS_BODY+="(${PROJECT_TAG},${SAMPLE_TAG}) "
         fi
       done
     else
@@ -282,7 +282,8 @@ else
 
   if [[ ! -z ${SKIPPING_SAMPLE_STATS_BODY} ]]; then
     # IMPORTANT - SKIPPING_SAMPLE_STATS_BODY is only set when a @SAMPLE_PARAMS_FILE was deleted or not created
-    SKIPPING_SAMPLE_STATS_SUBJ+=")"
+    UNIQ_SKIPPING_SAMPLE_STATS_PRJS=$(echo ${SKIPPING_SAMPLE_STATS_PRJS} | sort | uniq)
+    SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS=${UNIQ_SKIPPING_SAMPLE_STATS_PRJS})"
     echo ${SKIPPING_SAMPLE_STATS_BODY} | mail -s "${SKIPPING_SAMPLE_STATS_SUBJ}" ${DATA_TEAM_EMAIL}
   fi
 
