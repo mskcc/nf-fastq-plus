@@ -7,7 +7,7 @@ process task {
     env DEMUXED_DIR
     env ARCHIVED_DIR
     env RUNNAME
-    path UPLOAD_DONE	// GATE - Not used in task, but holds task until upload completes
+    val GATE   // GATE - Not used in task, but holds task until upload completes
 
   output:
     stdout()
