@@ -51,9 +51,6 @@ echo "ALL FASTQ Directories: $(cat ${RUN_FOLDERS_UNIQUE_FILE} | tr '\n' ' ')"
 cat ${RUN_FOLDERS_UNIQUE_FILE} | grep -v ${RUNNAME} | grep -v "_REFERENCE" > "${FILTERED_RUN_FOLDERS}"
 echo "Selected FASTQ Directories: $(cat ${FILTERED_RUN_FOLDERS} | tr '\n' ' ')"
 
-# A SampleSheet is needed to verify Sample BAMs are present. This tracks any sample sheets that cannot be found
-RUNS_MISSING_SS=""
-
 # Locate the samplesheets for each run and output to
 for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
   # We rely on the samplesheet being in the runs folder
@@ -65,7 +62,10 @@ for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
     REGEX="SampleSheet_*${NO_SS_RUN}.csv"
     PROCESSED_SAMPLE_SHEET=$(find ${PROCESSED_SAMPLE_SHEET_DIR} -type f -name "${REGEX}")
     if [[ -z ${PROCESSED_SAMPLE_SHEET} || ! -f ${PROCESSED_SAMPLE_SHEET} ]]; then
-      RUNS_MISSING_SS+=" ${NO_SS_RUN}"
+      fail_msg="[PARENT RUN: ${RUNNAME}] No SampleSheet found in ${PROCESSED_SAMPLE_SHEET_DIR} w/ ${REGEX}. Samples on this run will not be included in final sample BAM"
+      echo ${fail_msg}
+      echo "${fail_msg}" | mail -s "[SAMPLE BAM CREATION FATAL ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
+      continue # exit 1
     else
       RUN_SS=${PROCESSED_SAMPLE_SHEET}
       err_msg="Failed to find SampleSheet in ${run_dir}. Using ${RUN_SS}. This is needed to merge ${RUNNAME} with legacy runs"
@@ -91,14 +91,6 @@ for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
   # Write entry - each line will be processed separately in nextflow
   echo "${run_dir} $(realpath ${TARGET_SAMPLESHEET})" >> ${RUN_SS_FILE}
 done
-
-if [[ ! -z ${RUNS_MISSING_SS} ]]; then
-  fail_msg="Samples on the following runs will not be included in final sample BAM."
-  fail_msg+="Demuxed Runs Missing SampleSheets: ${RUNS_MISSING_SS}"
-  num_missing_samplesheets=$(echo ${RUNS_MISSING_SS} | tr ' ' '\n' | wc -l)
-  echo ${fail_msg}
-  echo "${fail_msg}" | mail -s "[WARNING - Missing Samplesheets] ${num_missing_samplesheets} Runs Excluded from Sample BAM"
-else
 
 if [[ ! -f ${RUN_SS_FILE} ]]; then
   echo "No legacy runs for requests in ${RUNNAME}"
