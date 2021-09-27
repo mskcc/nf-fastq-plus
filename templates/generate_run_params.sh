@@ -184,7 +184,7 @@ else
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
         # lane of processing
-        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
+        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
 
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
