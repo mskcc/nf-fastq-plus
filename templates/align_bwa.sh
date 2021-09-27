@@ -71,7 +71,7 @@ bwa_mem () {
     LOG="RUNNING LOCAL - ${LOG}"
     ./${BSUB_SCRIPT}
   else
-    BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 5 ./${BSUB_SCRIPT}"
+    BWA_CMD="bsub -J ${JOB_NAME} -e ${JOB_NAME}_error.log -o ${JOB_NAME}.log -n 40 -M 6 ./${BSUB_SCRIPT}"
     SUBMIT=$(${BWA_CMD})                          # Submits and saves output
     JOB_ID=$(echo $SUBMIT | egrep -o '[0-9]{5,}') # Parses out job id from output
     echo ${JOB_ID} >> ${JOB_ID_LIST_FILE}         # Save job id to wait on later
@@ -93,7 +93,7 @@ parse_param() {
   FILE=$1
   PARAM_NAME=$2
 
-  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2 | sort | uniq
 }
 
 for LANE_PARAM_FILE in $(ls *${RUN_PARAMS_FILE}); do

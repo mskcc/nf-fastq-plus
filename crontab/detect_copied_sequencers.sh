@@ -55,7 +55,7 @@ for RUN in ${NEW_RUNS[@]}; do
     cd ${RUN_DIR}
     printf "\tDEMULTIPLEXING: RUN=${RUN} WORK_DIR=$(pwd)\n"
     nohup nextflow ${LOCATION}/../main.nf --run ${RUNNAME} -with-weblog "${EVENTS_API}" -bg >> "nf_${RUNNAME}.log"
-    cd -
+    cd - 2> /dev/null
   else
     printf "\tNOT DEMULTIPLEXING: ${RUN}\n"
   fi
