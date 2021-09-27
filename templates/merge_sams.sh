@@ -32,7 +32,7 @@ parse_param() {
   FILE=$1
   PARAM_NAME=$2
 
-  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2
+  cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2 | sort | uniq
 }
 
 if [[ -z ${STATS_DIR} ]]; then
