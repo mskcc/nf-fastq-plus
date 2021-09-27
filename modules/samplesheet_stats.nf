@@ -10,7 +10,7 @@ include { upload_stats_wkflw } from './workflows/upload_stats';
 include { fingerprint_wkflw } from './workflows/fingerprint';
 include { cellranger_wkflw } from './workflows/cellranger';
 include { upload_cellranger_wkflw } from './workflows/upload_cellranger';
-
+include { crispresso_wkflw } from './workflows/crispresso';
 
 workflow samplesheet_stats_wkflw {
   take:
@@ -36,6 +36,9 @@ workflow samplesheet_stats_wkflw {
         create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
     cellranger_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
         create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
+
+    crispresso_wkflw( create_run_bams_wkflw.out.PARAMS )
+
     upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER )
     upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),
         collect_hs_metrics_wkflw.out.METRICS_FILE.collect(), collect_oxoG_metrics_wkflw.out.METRICS_FILE.collect(),
