@@ -1,13 +1,21 @@
 FROM centos:7
 
+ENV REF_DIR=/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23
+
 # Add Genome reference (Important for this to be first so it can be downloaded w/ most space available)
-RUN mkdir -p /igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23 && \
-  cd /igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23 && \
-  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh38-1.0.0.tar.gz > refdata-GRCh38-1.0.0.tar.gz && \
-  /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2 && \
-  cd /igo/work/genomes/H.sapiens/GRCh38.p13 && \
+RUN mkdir -p ${REF_DIR}
+
+RUN cd ${REF_DIR} && \
+  curl https://cf.10xgenomics.com/supp/cell-dna/refdata-GRCh38-1.0.0.tar.gz > refdata-GRCh38-1.0.0.tar.gz
+
+RUN cd ${REF_DIR} && \
+  /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/ --exclude=genome.fa.flat --exclude=genome.fa.pac --strip-components 2
+
+RUN cd ${REF_DIR} && \
   FILES=$(find . -type f -name "genome.fa*") && \
-  for f in $FILES; do mv $f ${f/genome.fa/GCF_000001405.39_GRCh38.p13_genomic.fna}; done && \
+  for f in $FILES; do mv $f ${f/genome.fa/GCF_000001405.39_GRCh38.p13_genomic.fna}; done
+
+RUN cd ${REF_DIR} && \
   /bin/tar -xvf refdata-GRCh38-1.0.0.tar.gz refdata-GRCh38-1.0.0/fasta/genome.fa.pac --strip-components 2 && \
   rm refdata-GRCh38-1.0.0.tar.gz && \
   mv genome.fa.pac GCF_000001405.39_GRCh38.p13_genomic.fna.pac
