@@ -7,8 +7,6 @@ process task {
 
   input:
     path PARAMS
-    val INPUT_ID
-    env STATSDONEDIR
 
   output:
     stdout()
@@ -20,10 +18,8 @@ process task {
 workflow crispresso_wkflw {
   take:
     PARAMS
-    INPUT_ID
-    STATSDONEDIR
 
   main:
-    task( DEMUXED_DIR, INPUT_ID, STATSDONEDIR )
+    task( PARAMS )
     out( task.out[0], "crispresso_wkflw" )
 }
