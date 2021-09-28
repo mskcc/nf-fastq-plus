@@ -101,8 +101,7 @@ recipe_overrides = {
     "Mouse": {
         "M-IMPACT_v1": "mm10",
         "10X_Genomics_Multiome": "mm10"
-    },
-    # TODO - Add mouse multiome recipe name
+    }
 }
 """ Mapping of species to their genome-type """
 species_genome_mapping_UNORDERED = {
@@ -164,8 +163,8 @@ genome_reference_mapping_UNORDERED = {
     },
     "grch38": {
         DEFAULT: {
-            GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
-            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa",
+            GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",  # References that created DRAGEN reference
+            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",
             CELLRANGER_ATAC: "/igo/work/nabors/genomes/10X_Genomics/ATAC/refdata-cellranger-atac-GRCh38-1.0.1",
             CELLRANGER_VDJ: "/igo/work/nabors/genomes/10X_Genomics/VDJ/refdata-cellranger-vdj-GRCh38-alts-ensembl-2.0.0",
             CELLRANGER_CNV: "/igo/work/nabors/10X_Genomics_references/CNV/refdata-GRCh38-1.0.0",
@@ -539,8 +538,6 @@ recipe_options_mapping_UNORDERED = {
     "HumanWholeGenome": {
         MSKQ: "no",
         MD: "yes",
-        GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",  # References that created DRAGEN reference
-        REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",
         HAPLOTYPE_MAP: "", # TODO - Add this
         DGN_REFERENCE: "/staging/ref/GRCh38.p13___genBank_GCA_000001405.28"
     },

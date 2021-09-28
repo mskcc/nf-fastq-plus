@@ -193,15 +193,12 @@ fi
 echo "TEST 5: Demux is skipped w/ --force true option"
 cd ${TEST_OUTPUT}
 OUT_FILE="$(pwd)/demux_redo_success.out"
-CMD="nohup nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force true --run ${RUN} >> ${OUT_FILE} -bg"
+CMD="nextflow -C ${TEST_NEXTFLOW_CONFIG} run ${LOCATION}/../../main.nf --force true --run ${RUN} >> ${OUT_FILE}"
 echo "Running Nextflow Pipeline: main.nf (ignoring errors)"
 echo ${CMD}
 echo ""
 set +e
 eval ${CMD}
-
-tail -f ${OUT_FILE}
-
 cd -
 
 echo "Pipeline finished. Running check..."
