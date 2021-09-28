@@ -18,7 +18,7 @@ workflow create_run_bams_wkflw {
         .branch {
             // it: /path/to/DGN___SAMPLEID___sample_params.txt OR /path/to/SAMPLEID___sample_params.txt
             dgn: it.toString() =~ /.*\/DGN___.*/
-            bwa: it.toString() =~ /^(?!DGN).*/
+            bwa: it.toString() =~ /^((?!DGN___.).)*$/
         }
         .set { sample_file_ch }
     align_dragen_wkflw( sample_file_ch.dgn )
