@@ -82,6 +82,20 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   >> ${TEST_NEXTFLOW_CONFIG}
   # | sed -E "s#=.*#=\"${}\"#" \
 
+10X_REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa
+REQUIRED_DIR=$(basename ${10X_REFERENCE})
+if [[ ! -d ${REQUIRED_DIR} ]]; then
+  echo "Please run on cluster w/ ${REQUIRED_DIR}"
+  exit 0
+else
+  echo "Moving WholeGenomeSequencing reference to location for 10X"
+  # TODO - Remove once Human Whole Genome & 10X recipes use the same reference file
+  to_mv=$(find /igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23 -type f -name "GCF_000001405.39_GRCh38.p13_genomic.fna*")
+  for f in ${to_mv}; do
+    renamed_f=${f/GCF_000001405.39_GRCh38.p13_genomic.fna/GRCh38.p13.dna.primary.assembly.fa}
+    mv $f ${REQUIRED_DIR}/${renamed_f}
+  done
+fi
 
 # Unpack the files
 TEST_MACHINE_DIR=${SEQUENCER_DIR}/rosalind
