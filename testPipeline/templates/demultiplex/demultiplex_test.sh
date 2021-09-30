@@ -20,7 +20,7 @@ SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleShee
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex_bcl2fastq.sh > ${OUT_FILE}
 incorrect_mask="use-bases-mask"
 ls ${OUT_FILE}
 has_mask=$(cat ${OUT_FILE} | grep "${incorrect_mask}")
@@ -32,7 +32,7 @@ else
   echo "${TYPE} - Correct mask: ${incorrect_mask}"
   rm -rf ${FASTQ_DIR}
 fi
-rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
+rm bcl2fastq.log  # templates/demultiplex_bcl2fastq.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 TYPE=6nt_dual_test
 echo "${TYPE}"
@@ -51,7 +51,7 @@ SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleShee
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex_bcl2fastq.sh > ${OUT_FILE}
 expected_mask="use-bases-mask y50n,i6n2,n8,y50n"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_mask}")
 if [[ ! -z ${has_mask} ]]; then
@@ -62,7 +62,7 @@ else
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
-rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
+rm bcl2fastq.log  # templates/demultiplex_bcl2fastq.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 TYPE=i7_test
 echo "${TYPE}"
@@ -81,7 +81,7 @@ SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleShee
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex_bcl2fastq.sh > ${OUT_FILE}
 expected_mask="use-bases-mask y50n,i8,n8,y50n"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_mask}")
 if [[ ! -z ${has_mask} ]]; then
@@ -92,7 +92,7 @@ else
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
-rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
+rm bcl2fastq.log  # templates/demultiplex_bcl2fastq.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 TYPE=DLP_test
 echo "${TYPE}"
@@ -111,7 +111,7 @@ SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleShee
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex_bcl2fastq.sh > ${OUT_FILE}
 expected_lane_split="no-lane-splitting"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_lane_split}")
 if [[ ! -z ${has_mask} ]]; then
@@ -122,7 +122,7 @@ else
   echo "[ERROR] Did not have ${expected_lane_split}"
   exit 1
 fi
-rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
+rm bcl2fastq.log  # templates/demultiplex_bcl2fastq.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
 
 
 TYPE=6nt_single_test
@@ -142,7 +142,7 @@ SAMPLESHEET=$(realpath ../../../bin/test/data/split_sampleSheet/split/SampleShee
   DATA_TEAM_EMAIL=none \
   CMD_FILE=${CMD_FILE} \
   DEMUX_LOG_FILE=${DEMUX_FILE} \
-  ../../../templates/demultiplex.sh > ${OUT_FILE}
+  ../../../templates/demultiplex_bcl2fastq.sh > ${OUT_FILE}
 expected_mask="use-bases-mask y50n,i6n2,y50n"
 has_mask=$(cat ${OUT_FILE} | grep "${expected_mask}")
 if [[ ! -z ${has_mask} ]]; then
@@ -153,4 +153,4 @@ else
   echo "[ERROR] Did not have mask:  ${expected_mask}"
   exit 1
 fi
-rm bcl2fastq.log  # templates/demultiplex.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)
+rm bcl2fastq.log  # templates/demultiplex_bcl2fastq.sh writes a file locally, this is the bcl2fastq output (or echo here, so we need to delete this)

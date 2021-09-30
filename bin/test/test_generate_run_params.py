@@ -248,7 +248,7 @@ class TestSetupStats(unittest.TestCase):
 
     def test_HumanWholeGenome(self):
         params = get_recipe_species_params("HumanWholeGenome", "Human")
-        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa TYPE=WGS"
+        expected_params = "GENOME=/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna GTAG=GRCh38 MD=yes MSKQ=no REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna TYPE=WGS DGN_REFERENCE=/staging/ref/GRCh38.p13___genBank_GCA_000001405.28"
         self.verify_params(params, expected_params, "HumanWholeGenome", "Human")
 
     def test_WholeGenomeSequencing_Bacteria(self):
@@ -308,10 +308,17 @@ class TestSetupStats(unittest.TestCase):
             self.verify_params(params, expected_params, recipe, "Human")
 
     def test_hMap_GRCh38(self):
-        grch38_recipes = [ "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes", "IMPACT341", "HemePACT_v4", "WholeExomeSequencing", "Agilent_v4_51MB_Human", "HumanWholeGenome", "ShallowWGS", "10X_Genomics_WGS", "AmpliconSeq" ]
+        grch38_recipes = [ "IMPACT505", "IDT_Exome_v2_FP_Viral_Probes", "IMPACT341", "HemePACT_v4", "WholeExomeSequencing", "Agilent_v4_51MB_Human", "ShallowWGS", "10X_Genomics_WGS", "AmpliconSeq" ]
         for recipe in grch38_recipes:
             params = get_recipe_species_params(recipe, "Human")
             expected_params = "HAPLOTYPE_MAP=/home/igo/fingerprint_maps/map_files/hg38_igo.map"
+            self.verify_params(params, expected_params, recipe, "Human")
+
+    def test_hMap_GRCh38_human_whole_genome(self):
+        grch38_recipes = [ "HumanWholeGenome" ]
+        for recipe in grch38_recipes:
+            params = get_recipe_species_params(recipe, "Human")
+            expected_params = "HAPLOTYPE_MAP="    # TODO - Create valid haplotype map for GRCh38 human whole genome
             self.verify_params(params, expected_params, recipe, "Human")
 
     def test_hMap_GRCh37(self):

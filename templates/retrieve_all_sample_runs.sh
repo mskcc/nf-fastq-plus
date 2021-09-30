@@ -64,7 +64,8 @@ for run_dir in $(cat ${FILTERED_RUN_FOLDERS}); do
     if [[ -z ${PROCESSED_SAMPLE_SHEET} || ! -f ${PROCESSED_SAMPLE_SHEET} ]]; then
       fail_msg="[PARENT RUN: ${RUNNAME}] No SampleSheet found in ${PROCESSED_SAMPLE_SHEET_DIR} w/ ${REGEX}. Samples on this run will not be included in final sample BAM"
       echo ${fail_msg}
-      echo "${fail_msg}" | mail -s "[SAMPLE BAM CREATION FATAL ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
+      # TODO - debug how to only send once
+      # echo "${fail_msg}" | mail -s "[SAMPLE BAM CREATION FATAL ERROR - Missing Samplesheet] ${NO_SS_RUN}" ${DATA_TEAM_EMAIL}
       continue # exit 1
     else
       RUN_SS=${PROCESSED_SAMPLE_SHEET}

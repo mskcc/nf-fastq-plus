@@ -1,6 +1,6 @@
 // Takes the value of an input directory and outputs all sample sheets that should be individually processed
-process demultiplex_task {
-  label 'BSUB_OPTIONS_DEMUX'
+process demultiplex_dragen_task {
+  label 'DGN'
   tag "$RUNNAME"
 
   input:
@@ -16,5 +16,5 @@ process demultiplex_task {
     env SAMPLESHEET, emit: SAMPLESHEET
 
   shell:
-    template 'demultiplex.sh'
+    template 'demultiplex_dragen.sh'
 }

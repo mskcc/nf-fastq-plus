@@ -1,10 +1,10 @@
 nextflow.preview.dsl=2
 
-include { samplesheet_stats_wkflw } from './modules/samplesheet_stats';
-include { dependency_check_wkflw } from './modules/workflows/dependency_check';
-include { detect_runs_wkflw } from './modules/workflows/detect_runs';
-include { split_sample_sheet_wkflw } from './modules/workflows/split_sample_sheet';
-include { demultiplex_wkflw } from './modules/workflows/demultiplex';
+include { samplesheet_stats_wkflw }     from './modules/samplesheet_stats';
+include { dependency_check_wkflw }      from './modules/tasks/dependency_check';
+include { detect_runs_wkflw }           from './modules/tasks/detect_runs';
+include { split_sample_sheet_wkflw }    from './modules/tasks/split_sample_sheet';
+include { demultiplex_wkflw }           from './modules/workflows/demultiplex';
 
 /**
  * Processes input parameters that are booleans
@@ -58,6 +58,8 @@ workflow {
   dependency_check_wkflw()
   detect_runs_wkflw( RUN, DEMUX_ALL )
   split_sample_sheet_wkflw( detect_runs_wkflw.out.RUNPATH )
-  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, detect_runs_wkflw.out.RUNPATH, DEMUX_ALL, EXECUTOR )
-  samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, STATS_DIR, STATSDONEDIR, FILTER )
+  demultiplex_wkflw( split_sample_sheet_wkflw.out.SPLIT_SAMPLE_SHEETS, detect_runs_wkflw.out.RUNPATH, DEMUX_ALL,
+    EXECUTOR )
+  samplesheet_stats_wkflw( demultiplex_wkflw.out.DEMUXED_DIR, demultiplex_wkflw.out.SAMPLESHEET, STATS_DIR,
+    STATSDONEDIR, FILTER )
 }

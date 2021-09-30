@@ -1,5 +1,10 @@
 # !/bin/bash
-# Configures FASTQ stats from input Runname
+# Generates parameter file, which encapsulates all values needed by all downstream downstream nextflow tasks
+#   Steps:
+#     1. Parse fields from SampleSheet (e.g. project, recipe, species)
+#     2. Create Sample Parms .txt files (*${RUN_PARAMS_FILE}.txt) - different prefixes of these files determine
+#        downstream branching logic in nextflow
+#
 # Nextflow Inputs:
 #   SAMPLE_SHEET_DIR (Config): Absolute path to where Sample Sheet for @DEMUXED_RUN will be found
 #   STATS_DIR (Config): Absolute path to where stats should be written
@@ -10,6 +15,9 @@
 #   RUN_PARAMS_FILE, file: file of lines of param values needed to run entire pipeline for single or paired FASTQs
 # Run: 
 #   Can't be run - relies on ./bin
+
+DGN_DEMUX_ALN_RECIPES="HumanWholeGenome"    # Recipes for which we send to DRAGEN
+DGN_SAMPLE_PARAMS_PREFIX="DGN___"           # Prefix for *sample_params.txt, which nextflow uses for routing
 
 # SAMPLESHEET=$(find ${SAMPLE_SHEET_DIR} -type f -name "SampleShee*$RUN.csv")
 function get_run_type () {
@@ -106,7 +114,7 @@ else
   # TODO - Remove when PED_PEG is integrated in nextflow pipeline
   PPG_REQUESTS=""
 
-  SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS="
+  SKIPPING_SAMPLE_STATS_PRJS=""
   SKIPPING_SAMPLE_STATS_BODY=""
   for psr in $prj_spc_rec; do
     PROJECT=$(echo $psr | awk '{printf"%s\n",$1}' );
@@ -133,8 +141,8 @@ else
     # Extract GTAG value from generate_run_params.py output for ${RUN_TAG}, e.g. "...GTAG=GRCh37..." => "GRCh37"
     GTAG=$(echo ${PROJECT_PARAMS} | tr ' ' '\n' | grep 'GTAG' | cut -d'=' -f2)
 
+    PROJECT_TAG=$(echo ${PROJECT} | sed 's/Project_/P/g')
     PROJECT_DIR=${DEMUXED_DIR}/${PROJECT}
-    echo ${PROJECT_DIR}
     if [[ ! -z ${FILTER} && $(echo ${PROJECT_DIR} | grep -c "${FILTER}$") -eq 0 ]]; then
       echo "${PROJECT_DIR} did not pass filter: ${FILTER}"
       continue
@@ -143,7 +151,6 @@ else
       RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
 
       # TODO - Make "___" a delimiter
-      PROJECT_TAG=$(echo ${PROJECT_DIR} | xargs basename | sed 's/Project_/P/g')
       SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d )
 
       if [[ "${RECIPE}" = "DLP" ]]; then
@@ -156,7 +163,8 @@ else
       fi
 
       for SAMPLE_DIR in $SAMPLE_DIRS; do
-        SAMPLE_TAG=$(echo ${SAMPLE_DIR} | xargs basename | sed 's/Sample_//g')
+        SAMPLESHEET_SAMPLE=$(echo ${SAMPLE_DIR} | xargs basename)
+        SAMPLE_TAG=$(echo ${SAMPLESHEET_SAMPLE} | sed 's/Sample_//g')
         if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
           echo "Skipping Failed Sample: ${SAMPLE_TAG}"
 
@@ -215,13 +223,54 @@ else
         done
         if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
           # "[ACTION-REQUIRED] Skipping Sample Stats (..." + PROJECT_TAG    <- We will close this when we send the email
-          SKIPPING_SAMPLE_STATS_SUBJ+="${PROJECT_TAG} "
-          SKIPPING_SAMPLE_STATS_BODY="(${PROJECT_TAG},${SAMPLE_TAG}) "
+          SKIPPING_SAMPLE_STATS_PRJS+="${PROJECT_TAG} "
+          SKIPPING_SAMPLE_STATS_BODY+="(${PROJECT_TAG},${SAMPLE_TAG}) "
         fi
       done
     else
-      echo "ERROR: Could not locate Request directory w/ FASTQs for Run: ${RUNNAME}, Project: ${PROJECT} at ${PROJECT_DIR}"
-      # TODO - warning?
+      echo "Couldn't find ${PROJECT_DIR}. Checking if '${RECIPE}' is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]..."
+      if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
+        echo "Detected a DRAGEN Recipe and generating params for DRAGEN alignment"
+
+        FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
+        if [[ -z ${FASTQ_LIST_FILE} ]]; then
+          SUBJECT="[ACTION REQUIRED] Skipping DRAGEN sample - Missing fastq_list.csv file"
+          BODY="Sample in ${PROJECT_TAG} in ${DEMUXED_DIR} was identified as a project to run through DRAGEN, but did "
+          BODY+="not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
+          echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+        else  
+          SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2)
+          echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
+          for SAMPLE_TAG in ${SAMPLES}; do
+            RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG is prefix of bam/stats
+
+            # Location of final sample BAM
+            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
+
+            # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
+            echo "${FINAL_BAM}" >> ${RUN_BAMS}
+            if [[ -f ${FINAL_BAM} ]]; then
+              echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
+              continue
+            else
+              echo "BAM needs to be created - ${FINAL_BAM}. Processing."
+            fi
+
+            # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
+            # lane of processing
+            SAMPLE_PARAMS_FILE="DGN___${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
+
+            TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
+            INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM}"
+
+            echo "${SAMPLE_SHEET_PARAMS} ${PROJECT_PARAMS} ${TAGS} ${INFO}" >> ${SAMPLE_PARAMS_FILE}
+          done
+        fi
+      else
+        SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
+        BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} (RUNNAME=${RUNNAME}). Stats were not run for this request"
+        echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+      fi
     fi
   done
 
@@ -233,7 +282,8 @@ else
 
   if [[ ! -z ${SKIPPING_SAMPLE_STATS_BODY} ]]; then
     # IMPORTANT - SKIPPING_SAMPLE_STATS_BODY is only set when a @SAMPLE_PARAMS_FILE was deleted or not created
-    SKIPPING_SAMPLE_STATS_SUBJ+=")"
+    UNIQ_SKIPPING_SAMPLE_STATS_PRJS=$(echo ${SKIPPING_SAMPLE_STATS_PRJS} | sort | uniq)
+    SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS=${UNIQ_SKIPPING_SAMPLE_STATS_PRJS})"
     echo ${SKIPPING_SAMPLE_STATS_BODY} | mail -s "${SKIPPING_SAMPLE_STATS_SUBJ}" ${DATA_TEAM_EMAIL}
   fi
 
