@@ -71,7 +71,7 @@ def getCrisprData(filePath, projectID):
     for file in os.listdir(filePath):
         if file.endswith('.xlsx' or '.xls'):
             # print("Reading sample data from excel file for Project "+ projectID + "\n\n") 
-            excelFile = '/igo/work/nabors/crispresso/data_from_excel/' + projectID + '/' + file
+            excelFile = excel_dir + '/' + projectID + '/' + file
             excelData = pd.read_excel(excelFile, skiprows = [0,1,2])
             excelData = excelData.where(pd.notnull(excelData), None)
             # take care of any blank cells 
@@ -131,8 +131,7 @@ def main():
 
     PYTHON3 = '/igo/work/nabors/tools/venvpy3/bin/python'
     PYTHON2 = '/igo/work/nabors/tools/venvpy2/bin/python'
-    
-    WORK = '/igo/work/nabors/crispresso/'
+
     ACCESS = 0o775
     
     
@@ -141,20 +140,25 @@ def main():
     parser.add_argument('-proj', help = 'Project Number for analysis. Enter project number starting with 0. Example - 07900', required = True)
     parser.add_argument('-lane', help ='Optional - If Project run on multiple lanes, select one lane to run analysis on. Add the lane number you want to run analysis for. Example - L005', default = "")
     parser.add_argument('-subsample', help = 'Enter Y/N. Subsample 100,000 reads from original FASTQ file for analysis.Y/N', default = "N")
+    parser.add_argument('-edir', help = 'TODO', default = "N")
+    parser.add_argument('-outdir', help = 'TODO', default = "N")
 
     args = parser.parse_args()
     runID = str(args.run).strip()
     projectID = str(args.proj).strip()
     lane = str(args.lane).strip()
     subsample = str(args.subsample).strip()
-    
+    excel_dir = str(args.edir).strip()
+    out_dir =  str(args.outdir).strip()
+
+    WORK = out_dir
 
     print("****************************************** Starting CRISPRESSO for Project_" + projectID + " ******************************************")
     print("RUN ID = " + runID)
     print("Project = " + projectID)
     print("Lane = " + lane)
     print("subsample = " + subsample + "\n\n\n") 
-    print("Collecting Sample information from /igo/work/nabors/crispesso/data_from_excel")
+    print("Collecting Sample information from " + excel_dir)
 
     if (lane == None):
         lane = ""
@@ -167,7 +171,7 @@ def main():
 
 
     ################### Start Parsing Excel File with sample and amplicon data ################
-    filePath = '/igo/work/nabors/crispresso/data_from_excel/' + projectID + '/'
+    filePath = excel_dir + '/' + projectID + '/'
     
     # set WORKING DIRECTORY FOR PROJECTS
     projectDir = WORK + projectID + '/'
@@ -221,4 +225,3 @@ if __name__ == "__main__":
 
 
 
-    

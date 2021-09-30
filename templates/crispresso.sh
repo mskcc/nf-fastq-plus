@@ -36,8 +36,12 @@ parse_param() {
 }
 
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
-PROJECT_TAG=$(parse_param ${LANE_PARAM_FILE} PROJECT_TAG)
 RECIPE=$(parse_param ${LANE_PARAM_FILE} RECIPE)
+
+
+RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+PROJECT_TAG=$(parse_param ${LANE_PARAM_FILE} PROJECT_TAG)
+
 
 TARGET_RECIPE="CRISPRSeq"
 if [[ ${RECIPE} != ${TARGET_RECIPE} ]]; then
@@ -81,4 +85,5 @@ fi
 # TODO - verify ampliconSeq & 
 
 echo "Running Crispresso on ${PROJECT_TAG}. Writing to ${CRISPRESSO_DIR}"
-
+cd ${CRISPRESSO_OUTPUT_DIR}
+RunCrisprAnalysis_REMIX.py --run ${RUN_TAG} --proj ${PROJECT_TAG} --edir ${CRISPRESSO_EXCEL_INPUT_DIR}
