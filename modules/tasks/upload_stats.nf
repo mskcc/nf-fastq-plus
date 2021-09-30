@@ -2,6 +2,7 @@ include { log_out as out } from '../utils/log_out'
 
 process task {
   label 'LOCAL'
+  tag "$RUNNAME"
 
   input:
     path MD_METRICS_FILE_CH
@@ -12,6 +13,7 @@ process task {
     path RNA_METRICS_FILE_CH
     path GC_BIAS_METRICS_FILE_CH
     env RUNNAME
+    val RUNNAME
     env STATSDONEDIR
 
   output:
@@ -66,6 +68,7 @@ workflow upload_stats_wkflw {
         WGS_METRICS_FILE_CH,
         RNA_METRICS_FILE_CH,
         GC_BIAS_METRICS_FILE_CH,
+        RUNNAME,
         RUNNAME,
         STATSDONEDIR )
     email(
