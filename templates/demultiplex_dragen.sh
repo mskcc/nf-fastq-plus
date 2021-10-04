@@ -47,7 +47,7 @@ else
     mv ${DEMUXED_DIR} ${BACKUP_DEMUX_DIR}
   fi
 
-  JOB_CMD="/opt/edico/bin/dragen --bcl-conversion-only true --bcl-input-directory ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-directory ${DEMUXED_DIR}"
+  JOB_CMD="/opt/edico/bin/dragen --bcl-conversion-only true --bcl-input-directory ${RUN_TO_DEMUX_DIR} --sample-sheet ${SAMPLESHEET} --output-directory ${DEMUXED_DIR}  --bcl-sampleproject-subdirectories true"
   echo ${JOB_CMD} >> ${CMD_FILE}
 
   # Disable error - we want the output of ${BCL_LOG} logged somewhere. We want to alert on failed demux below
