@@ -10,7 +10,7 @@ include { upload_stats_wkflw }          from './tasks/upload_stats';
 include { fingerprint_wkflw }           from './tasks/fingerprint';
 include { cellranger_wkflw }            from './tasks/cellranger';
 include { upload_cellranger_wkflw }     from './tasks/upload_cellranger';
-include { crispresso_wkflw }            from './workflows/crispresso';
+include { crispresso_wkflw }            from './tasks/crispresso';
 
 workflow samplesheet_stats_wkflw {
   take:
