@@ -91,8 +91,8 @@ fi
 ##### Step 3) Run Command - either Picard or python script  #####
 #################################################################
 echo "Running Crispresso on ${PROJECT_TAG}. Writing to ${CRISPRESSO_OUTPUT_DIR}"
-RunCrisprAnalysis_REMIX.py --run ${RUN_TAG} \
-  --proj ${PROJECT_TAG} \
-  --edir ${CRISPRESSO_EXCEL_INPUT_DIR} \
-  --fdir ${FASTQ_DIR} \
-  --outdir ${CRISPRESSO_OUTPUT_DIR}
+RunCrisprAnalysis_REMIX.py -run ${RUN_TAG} \
+  -proj ${PROJECT_TAG} \
+  -edir ${CRISPRESSO_EXCEL_INPUT_DIR} \
+  -fdir ${FASTQ_DIR} \
+  -outdir ${CRISPRESSO_OUTPUT_DIR}
