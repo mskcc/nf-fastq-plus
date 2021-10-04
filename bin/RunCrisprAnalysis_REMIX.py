@@ -23,6 +23,8 @@ info    = logging.info
 
 __version__ = "0.1.0"
 
+EXCEL_COLUMN_GUIDE_SEQ = 'Guide Sequence (optional)'
+
 class crispr(object):
     #
     def __init__(self, sampleID, ampliconID, ampliconSeq, codingSeq, guideSeq):
@@ -81,7 +83,7 @@ def get_crispr_data(project_dir, projectID):
                 ampliconID = str(excelData['Amplicon Name'].loc[i])
                 ampliconSeq = str(excelData['Amplicon Sequence'].loc[i])
                 codingSeq = excelData['Coding Sequence'].loc[i]
-                guideSeq = '' if 'Guide Sequence' not in excelData else excelData['Guide Sequence'].loc[i]
+                guideSeq = '' if excelData[EXCEL_COLUMN_GUIDE_SEQ] == None else excelData[EXCEL_COLUMN_GUIDE_SEQ].loc[i]
                 print("Sample = " + sampleID + ", amplicon = " + ampliconID + ", amplicon sequence = " + ampliconSeq)
                 print("coding_sequence = " + str(codingSeq) + ", guide_sequence = " + str(guideSeq)) 
                 # check to make sure sampleID or ampliconSeq is not empty or NULL

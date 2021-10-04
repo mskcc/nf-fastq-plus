@@ -1,3 +1,5 @@
+.idea
+
 testPipeline/e2e/test_output__*
 crontab/**/*.log
 .nextflow

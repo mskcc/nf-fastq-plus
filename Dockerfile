@@ -80,10 +80,16 @@ RUN yum -y install bwa
 RUN cd /usr/local/bin && curl -s https://get.nextflow.io | bash
 
 # Download python libraries needed by /bin *.py scripts
-RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  -o get-pip.py && \
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py && \
   python get-pip.py && \
   pip install requests && \
-  pip install pandas
+  pip install pandas && \
+  pip install xlrd && \
+  pip install openpyxl && \
+  pip install glob && \
+  pip install argparse  && \
+  pip install Bio && \
+  pip install numpy
 
 # Get around not having "mail" command. This will just output to stdout
 RUN ln -s /bin/echo /bin/mail
