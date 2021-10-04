@@ -65,14 +65,13 @@ def padSamples(projectID, projectDir, crisprRecord, fastq):
 
 
 
-def getCrisprData(filePath, projectID):
-    #
+def get_crispr_data(project_dir, projectID):
     crisprData = list()
     
-    for file in os.listdir(filePath):
+    for file in os.listdir(project_dir):
         if file.endswith('.xlsx' or '.xls'):
             # print("Reading sample data from excel file for Project "+ projectID + "\n\n") 
-            excelFile = excel_dir + '/' + projectID + '/' + file
+            excelFile = project_dir + '/' + file
             excelData = pd.read_excel(excelFile, skiprows = [0,1,2])
             excelData = excelData.where(pd.notnull(excelData), None)
             # take care of any blank cells 
@@ -82,7 +81,7 @@ def getCrisprData(filePath, projectID):
                 ampliconID = str(excelData['Amplicon Name'].loc[i])
                 ampliconSeq = str(excelData['Amplicon Sequence'].loc[i])
                 codingSeq = excelData['Coding Sequence'].loc[i]
-                guideSeq = excelData['Guide Sequence'].loc[i]
+                guideSeq = '' if excelData['Guide Sequence'] == None else excelData['Guide Sequence'].loc[i]
                 print("Sample = " + sampleID + ", amplicon = " + ampliconID + ", amplicon sequence = " + ampliconSeq)
                 print("coding_sequence = " + str(codingSeq) + ", guide_sequence = " + str(guideSeq)) 
                 # check to make sure sampleID or ampliconSeq is not empty or NULL
@@ -177,7 +176,7 @@ def main():
 
 
     ################### Start Parsing Excel File with sample and amplicon data ################
-    filePath = excel_dir + '/' + projectID + '/'
+    project_dir = excel_dir + '/' + projectID + '/'
     
     # set WORKING DIRECTORY FOR PROJECTS
     projectDir = WORK + projectID + '/'
@@ -189,7 +188,7 @@ def main():
     
     
     # grab the excel data 
-    crisprData = getCrisprData(filePath, projectID)
+    crisprData = get_crispr_data(project_dir, projectID)
     
     # get samples
     sampleDirs = os.listdir(fastqDir)
