@@ -55,8 +55,9 @@ if [[ ${RECIPE} != ${TARGET_RECIPE} ]]; then
   exit 0
 fi
 # Check 2 - Check for only one CRISPRESS input directory & error if not, i.e. NUM_DIRS != 1
-echo "Searching ${CRISPRESSO_EXCEL_INPUT_DIR} for project excel..."
-PROJECT_DIR=$(find ${CRISPRESSO_EXCEL_INPUT_DIR} -type d -name "${PROJECT_TAG}")
+EXCEL_PROJECT_DIRNAME=$(echo ${PROJECT_TAG}| sed 's/^P//g')
+echo "Searching ${CRISPRESSO_EXCEL_INPUT_DIR} for project excel: ${EXCEL_PROJECT_DIRNAME}"
+PROJECT_DIR=$(find ${CRISPRESSO_EXCEL_INPUT_DIR} -type d -name "${EXCEL_PROJECT_DIRNAME}")
 mkdir -p ${CRISPRESSO_OUTPUT_DIR}
 NUM_DIRS=$(echo ${PROJECT_DIR} | tr ' ' '\n' | wc -l)
 # Check dirs
