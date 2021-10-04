@@ -219,6 +219,9 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 				f.close()
 
 def mission_bio(sample_data, header):
+	"""
+	Split input sample sheet between PROTEIN & DNA so that the sample FASTQs are NOT merged (SampleIDs are the same)
+	"""
 	mission_bio = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == True ].copy()
 
 	mb_protein = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == True ].copy()
