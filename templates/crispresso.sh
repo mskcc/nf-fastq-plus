@@ -34,31 +34,31 @@ parse_param() {
 
   cat ${FILE}  | tr ' ' '\n' | grep -e "^${PARAM_NAME}=" | cut -d '=' -f2 | sort | uniq
 }
-
+#################################################################
+##### Step 1) Parse out params from input sample_params.txt #####
+#################################################################
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
 RECIPE=$(parse_param ${LANE_PARAM_FILE} RECIPE)
-
-
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
 PROJECT_TAG=$(parse_param ${LANE_PARAM_FILE} PROJECT_TAG)
 
+CRISPRESSO_OUTPUT_DIR=${STATSDONEDIR}/CRISPRESSO/${PROJECT_TAG}   # Where CRISPRESSO results will be written
 
+
+#################################################################
+#####     Step 2) Perform validation/error-checking         #####
+#################################################################
+# Check 1 - Only run for "CRISPRSeq"
 TARGET_RECIPE="CRISPRSeq"
 if [[ ${RECIPE} != ${TARGET_RECIPE} ]]; then
   echo "Not a ${TARGET_RECIPE}. Skipping..."
   exit 0
 fi
-
-# Find crispresso excel if it exists
+# Check 2 - Check for only one CRISPRESS input directory & error if not, i.e. NUM_DIRS != 1
 echo "Searching ${CRISPRESSO_EXCEL_INPUT_DIR} for project excel..."
 PROJECT_DIR=$(find ${CRISPRESSO_EXCEL_INPUT_DIR} -type d -name "${PROJECT_TAG}")
-
-# Check for only one directory and error if  NUM_DIRS != 1
-NUM_DIRS=$(echo ${PROJECT_DIR} | tr ' ' '\n' | wc -l)
-
-CRISPRESSO_OUTPUT_DIR=${STATSDONEDIR}/CRISPRESSO/${PROJECT_TAG}   # Where CRISPRESSO results will be written
 mkdir -p ${CRISPRESSO_DIR}
-
+NUM_DIRS=$(echo ${PROJECT_DIR} | tr ' ' '\n' | wc -l)
 # Check dirs
 if [[ ${NUM_DIRS} -ne 1 ]]; then
   if [[ -f ${CRISPRESSO_DIR}/checked.txt ]]; then
@@ -71,19 +71,27 @@ if [[ ${NUM_DIRS} -ne 1 ]]; then
     touch ${CRISPRESSO_DIR}/checked.txt
   fi
 fi
-
-# Grab excel file
+# Check 3 - Check for only one EXCEL input file
 EXCEL_FILE=${PROJECT_DIR}/*.xslx
 NUM_EXCELS=$(echo ${EXCEL_FILE} | tr ' ' '\n' | wc -l)
+EXCEL_CHECKED_FILE=${CRISPRESSO_DIR}/checked_excel.txt
 if [[ ${NUM_EXCELS} -ne 1 ]]; then
-
+  if [[ -f ${EXCEL_CHECKED_FILE} ]]; then
+    echo "Already sent email for ambiguous excel ${PROJECT_TAG} - not sending"
+    exit 0
+  else
+    subj="[ACTION REQUIRED] Ambiguous Crispresso Excel for Project ${PROJECT_TAG} (Number: ${NUM_EXCELS})"
+    body="Identified more than one crispresso excel for ${PROJECT_TAG} in ${CRISPRESSO_EXCEL_INPUT_DIR}: ${EXCEL_FILE}"
+    echo ${body} | mail -s "${subj}" ${DATA_TEAM_EMAIL}
+    touch ${EXCEL_CHECKED_FILE}
+  fi
 fi
-# TODO - error if more than one excel
 
-
-# TODO - parse excel
-# TODO - verify ampliconSeq & 
-
+#################################################################
+##### Step 3) Run Command - either Picard or python script  #####
+#################################################################
 echo "Running Crispresso on ${PROJECT_TAG}. Writing to ${CRISPRESSO_DIR}"
-cd ${CRISPRESSO_OUTPUT_DIR}
 RunCrisprAnalysis_REMIX.py --run ${RUN_TAG} --proj ${PROJECT_TAG} --edir ${CRISPRESSO_EXCEL_INPUT_DIR}
+
+# TODO - move CRISPRESSO output to
+# mv ??? ${CRISPRESSO_OUTPUT_DIR}
