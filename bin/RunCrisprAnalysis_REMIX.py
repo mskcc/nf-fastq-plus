@@ -81,7 +81,7 @@ def get_crispr_data(project_dir, projectID):
                 ampliconID = str(excelData['Amplicon Name'].loc[i])
                 ampliconSeq = str(excelData['Amplicon Sequence'].loc[i])
                 codingSeq = excelData['Coding Sequence'].loc[i]
-                guideSeq = '' if excelData['Guide Sequence'] == None else excelData['Guide Sequence'].loc[i]
+                guideSeq = '' if 'Guide Sequence' not in excelData else excelData['Guide Sequence'].loc[i]
                 print("Sample = " + sampleID + ", amplicon = " + ampliconID + ", amplicon sequence = " + ampliconSeq)
                 print("coding_sequence = " + str(codingSeq) + ", guide_sequence = " + str(guideSeq)) 
                 # check to make sure sampleID or ampliconSeq is not empty or NULL
@@ -153,7 +153,7 @@ def main():
     fastq_root = str(args.fdir).strip()
     WORK =  str(args.outdir).strip()
 
-    fastqDir = WORK + "/" + runID + "/Project_" + projectID + '/'
+    fastqDir = fastq_root + "/" + runID + "/Project_" + projectID + '/'
 
     print("****************************************** Starting CRISPRESSO for Project_" + projectID + " ******************************************")
     print("RUN ID = {}".format(runID))

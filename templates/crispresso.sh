@@ -39,7 +39,7 @@ parse_param() {
 #################################################################
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
 RECIPE=$(parse_param ${RUN_PARAMS_FILE} RECIPE)
-RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
+RUNNAME=$(parse_param ${RUN_PARAMS_FILE} RUNNAME)
 PROJECT_TAG=$(parse_param ${RUN_PARAMS_FILE} PROJECT_TAG)
 
 CRISPRESSO_OUTPUT_DIR=${STATSDONEDIR}/CRISPRESSO/${PROJECT_TAG}   # Where CRISPRESSO results will be written
@@ -91,7 +91,7 @@ fi
 ##### Step 3) Run Command - either Picard or python script  #####
 #################################################################
 echo "Running Crispresso on ${EXCEL_PROJECT_DIRNAME}. Writing to ${CRISPRESSO_OUTPUT_DIR}"
-RunCrisprAnalysis_REMIX.py -run ${RUN_TAG} \
+RunCrisprAnalysis_REMIX.py -run ${RUNNAME} \
   -proj ${EXCEL_PROJECT_DIRNAME} \
   -edir ${CRISPRESSO_EXCEL_INPUT_DIR} \
   -fdir ${FASTQ_DIR} \
