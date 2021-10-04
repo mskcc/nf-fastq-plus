@@ -154,7 +154,7 @@ def main():
     fastq_root = str(args.fdir).strip()
     WORK =  str(args.outdir).strip()
 
-    fastqDir = fastq_dir + "/" + runID + "/Project_" + projectID + '/'
+    fastqDir = WORK + "/" + runID + "/Project_" + projectID + '/'
 
     print("****************************************** Starting CRISPRESSO for Project_" + projectID + " ******************************************")
     print("RUN ID = {}".format(runID))
