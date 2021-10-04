@@ -57,24 +57,24 @@ fi
 # Check 2 - Check for only one CRISPRESS input directory & error if not, i.e. NUM_DIRS != 1
 echo "Searching ${CRISPRESSO_EXCEL_INPUT_DIR} for project excel..."
 PROJECT_DIR=$(find ${CRISPRESSO_EXCEL_INPUT_DIR} -type d -name "${PROJECT_TAG}")
-mkdir -p ${CRISPRESSO_DIR}
+mkdir -p ${CRISPRESSO_OUTPUT_DIR}
 NUM_DIRS=$(echo ${PROJECT_DIR} | tr ' ' '\n' | wc -l)
 # Check dirs
 if [[ ${NUM_DIRS} -ne 1 ]]; then
-  if [[ -f ${CRISPRESSO_DIR}/checked.txt ]]; then
+  if [[ -f ${CRISPRESSO_OUTPUT_DIR}/checked.txt ]]; then
     echo "Already sent email for missing ${PROJECT_TAG} - not sending"
     exit 0
   else
     subj="[ACTION REQUIRED] Resolve Crispresso for Project ${PROJECT_TAG}"
     body="Identified more than one directory for ${PROJECT_TAG} in ${CRISPRESSO_EXCEL_INPUT_DIR}"
     echo ${body} | mail -s "${subj}" ${DATA_TEAM_EMAIL}
-    touch ${CRISPRESSO_DIR}/checked.txt
+    touch ${CRISPRESSO_OUTPUT_DIR}/checked.txt
   fi
 fi
 # Check 3 - Check for only one EXCEL input file
 EXCEL_FILE=${PROJECT_DIR}/*.xslx
 NUM_EXCELS=$(echo ${EXCEL_FILE} | tr ' ' '\n' | wc -l)
-EXCEL_CHECKED_FILE=${CRISPRESSO_DIR}/checked_excel.txt
+EXCEL_CHECKED_FILE=${CRISPRESSO_OUTPUT_DIR}/checked_excel.txt
 if [[ ${NUM_EXCELS} -ne 1 ]]; then
   if [[ -f ${EXCEL_CHECKED_FILE} ]]; then
     echo "Already sent email for ambiguous excel ${PROJECT_TAG} - not sending"
@@ -90,5 +90,9 @@ fi
 #################################################################
 ##### Step 3) Run Command - either Picard or python script  #####
 #################################################################
-echo "Running Crispresso on ${PROJECT_TAG}. Writing to ${CRISPRESSO_DIR}"
-RunCrisprAnalysis_REMIX.py --run ${RUN_TAG} --proj ${PROJECT_TAG} --edir ${CRISPRESSO_EXCEL_INPUT_DIR}
+echo "Running Crispresso on ${PROJECT_TAG}. Writing to ${CRISPRESSO_OUTPUT_DIR}"
+RunCrisprAnalysis_REMIX.py --run ${RUN_TAG} \
+  --proj ${PROJECT_TAG} \
+  --edir ${CRISPRESSO_EXCEL_INPUT_DIR} \
+  --fdir ${FASTQ_DIR} \
+  --outdir ${CRISPRESSO_OUTPUT_DIR}
