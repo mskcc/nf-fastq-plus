@@ -37,7 +37,7 @@ workflow samplesheet_stats_wkflw {
     cellranger_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.BAM_CH,
         create_run_bams_wkflw.out.OUTPUT_ID, STATSDONEDIR )
 
-    crispresso_wkflw( create_run_bams_wkflw.out.PARAMS )
+    crispresso_wkflw( create_run_bams_wkflw.out.PARAMS, create_run_bams_wkflw.out.OUTPUT_ID )
 
     upload_cellranger_wkflw( cellranger_wkflw.out.LAUNCHED_CELLRANGER )
     upload_stats_wkflw( create_run_bams_wkflw.out.METRICS_FILE.collect(), alignment_summary_wkflw.out.METRICS_FILE.collect(),

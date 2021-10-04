@@ -1,13 +1,13 @@
 include { log_out as out } from '../utils/log_out'
 
 process task {
-  label 'BSUB_OPTIONS_SMALL'
+  label 'LOCAL'
 
-  tag "$INPUT_ID"
+  tag "$SAMPLE_ID"
 
   input:
     path PARAMS
-    val PARAMS
+    val SAMPLE_ID
 
   output:
     stdout()
@@ -19,8 +19,9 @@ process task {
 workflow crispresso_wkflw {
   take:
     PARAMS
+    SAMPLE_ID
 
   main:
-    task( PARAMS, PARAMS )
+    task( PARAMS, SAMPLE_ID )
     out( task.out[0], "crispresso_wkflw" )
 }

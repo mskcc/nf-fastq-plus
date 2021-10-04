@@ -38,9 +38,9 @@ parse_param() {
 ##### Step 1) Parse out params from input sample_params.txt #####
 #################################################################
 SAMPLE_TAG=$(parse_param ${RUN_PARAMS_FILE} SAMPLE_TAG) # Also the OUTPUT_ID
-RECIPE=$(parse_param ${LANE_PARAM_FILE} RECIPE)
+RECIPE=$(parse_param ${RUN_PARAMS_FILE} RECIPE)
 RUN_TAG=$(parse_param ${RUN_PARAMS_FILE} RUN_TAG)
-PROJECT_TAG=$(parse_param ${LANE_PARAM_FILE} PROJECT_TAG)
+PROJECT_TAG=$(parse_param ${RUN_PARAMS_FILE} PROJECT_TAG)
 
 CRISPRESSO_OUTPUT_DIR=${STATSDONEDIR}/CRISPRESSO/${PROJECT_TAG}   # Where CRISPRESSO results will be written
 
