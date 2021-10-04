@@ -62,11 +62,11 @@ NUM_DIRS=$(echo ${PROJECT_DIR} | tr ' ' '\n' | wc -l)
 # Check dirs
 if [[ ${NUM_DIRS} -ne 1 ]]; then
   if [[ -f ${CRISPRESSO_OUTPUT_DIR}/checked.txt ]]; then
-    echo "Already sent email for missing ${CRISPRESSO_OUTPUT_DIR} - not sending"
+    echo "Already sent email for missing ${EXCEL_PROJECT_DIRNAME} - not sending"
     exit 0
   else
-    subj="[ACTION REQUIRED] Resolve Crispresso for Project ${CRISPRESSO_OUTPUT_DIR}"
-    body="Identified more than one directory for ${CRISPRESSO_OUTPUT_DIR} in ${CRISPRESSO_EXCEL_INPUT_DIR}"
+    subj="[ACTION REQUIRED] Resolve Crispresso for Project ${EXCEL_PROJECT_DIRNAME}"
+    body="Identified more than one directory for ${EXCEL_PROJECT_DIRNAME} in ${CRISPRESSO_EXCEL_INPUT_DIR}"
     echo ${body} | mail -s "${subj}" ${DATA_TEAM_EMAIL}
     touch ${CRISPRESSO_OUTPUT_DIR}/checked.txt
   fi
@@ -77,11 +77,11 @@ NUM_EXCELS=$(echo ${EXCEL_FILE} | tr ' ' '\n' | wc -l)
 EXCEL_CHECKED_FILE=${CRISPRESSO_OUTPUT_DIR}/checked_excel.txt
 if [[ ${NUM_EXCELS} -ne 1 ]]; then
   if [[ -f ${EXCEL_CHECKED_FILE} ]]; then
-    echo "Already sent email for ambiguous excel ${CRISPRESSO_OUTPUT_DIR} - not sending"
+    echo "Already sent email for ambiguous excel ${EXCEL_PROJECT_DIRNAME} - not sending"
     exit 0
   else
-    subj="[ACTION REQUIRED] Ambiguous Crispresso Excel for Project ${CRISPRESSO_OUTPUT_DIR} (Number: ${NUM_EXCELS})"
-    body="Identified more than one crispresso excel for ${CRISPRESSO_OUTPUT_DIR} in ${CRISPRESSO_EXCEL_INPUT_DIR}: ${EXCEL_FILE}"
+    subj="[ACTION REQUIRED] Ambiguous Crispresso Excel for Project ${EXCEL_PROJECT_DIRNAME} (Number: ${NUM_EXCELS})"
+    body="Identified more than one crispresso excel for ${EXCEL_PROJECT_DIRNAME} in ${CRISPRESSO_EXCEL_INPUT_DIR}: ${EXCEL_FILE}"
     echo ${body} | mail -s "${subj}" ${DATA_TEAM_EMAIL}
     touch ${EXCEL_CHECKED_FILE}
   fi
@@ -90,9 +90,9 @@ fi
 #################################################################
 ##### Step 3) Run Command - either Picard or python script  #####
 #################################################################
-echo "Running Crispresso on ${CRISPRESSO_OUTPUT_DIR}. Writing to ${CRISPRESSO_OUTPUT_DIR}"
+echo "Running Crispresso on ${EXCEL_PROJECT_DIRNAME}. Writing to ${CRISPRESSO_OUTPUT_DIR}"
 RunCrisprAnalysis_REMIX.py -run ${RUN_TAG} \
-  -proj ${CRISPRESSO_OUTPUT_DIR} \
+  -proj ${EXCEL_PROJECT_DIRNAME} \
   -edir ${CRISPRESSO_EXCEL_INPUT_DIR} \
   -fdir ${FASTQ_DIR} \
   -outdir ${CRISPRESSO_OUTPUT_DIR}
