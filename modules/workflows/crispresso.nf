@@ -7,6 +7,7 @@ process task {
 
   input:
     path PARAMS
+    val PARAMS
 
   output:
     stdout()
@@ -20,6 +21,6 @@ workflow crispresso_wkflw {
     PARAMS
 
   main:
-    task( PARAMS )
+    task( PARAMS, PARAMS )
     out( task.out[0], "crispresso_wkflw" )
 }
