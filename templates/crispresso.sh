@@ -92,6 +92,3 @@ fi
 #################################################################
 echo "Running Crispresso on ${PROJECT_TAG}. Writing to ${CRISPRESSO_DIR}"
 RunCrisprAnalysis_REMIX.py --run ${RUN_TAG} --proj ${PROJECT_TAG} --edir ${CRISPRESSO_EXCEL_INPUT_DIR}
-
-# TODO - move CRISPRESSO output to
-# mv ??? ${CRISPRESSO_OUTPUT_DIR}

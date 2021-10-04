@@ -140,8 +140,9 @@ def main():
     parser.add_argument('-proj', help = 'Project Number for analysis. Enter project number starting with 0. Example - 07900', required = True)
     parser.add_argument('-lane', help ='Optional - If Project run on multiple lanes, select one lane to run analysis on. Add the lane number you want to run analysis for. Example - L005', default = "")
     parser.add_argument('-subsample', help = 'Enter Y/N. Subsample 100,000 reads from original FASTQ file for analysis.Y/N', default = "N")
-    parser.add_argument('-edir', help = 'TODO', default = "N")
-    parser.add_argument('-outdir', help = 'TODO', default = "N")
+    parser.add_argument('-edir', help = 'Optional - Directory containing project subdirectories w/ excel inputs', default = "/pskis34/LIMS/LIMS_CRISPRSeq")
+    parser.add_argument('-fdir', help = 'Directory to write CRISPRESSO output to', default = "/igo/staging/FASTQ/")
+    parser.add_argument('-outdir', help = 'Directory to write CRISPRESSO output to', default = ".")
 
     args = parser.parse_args()
     runID = str(args.run).strip()
@@ -149,16 +150,20 @@ def main():
     lane = str(args.lane).strip()
     subsample = str(args.subsample).strip()
     excel_dir = str(args.edir).strip()
-    out_dir =  str(args.outdir).strip()
+    fastq_root = str(args.fdir).strip()
+    WORK =  str(args.outdir).strip()
 
-    WORK = out_dir
+    fastqDir = fastq_dir + "/" + runID + "/Project_" + projectID + '/'
 
     print("****************************************** Starting CRISPRESSO for Project_" + projectID + " ******************************************")
-    print("RUN ID = " + runID)
-    print("Project = " + projectID)
-    print("Lane = " + lane)
-    print("subsample = " + subsample + "\n\n\n") 
-    print("Collecting Sample information from " + excel_dir)
+    print("RUN ID = {}".format(runID))
+    print("Project = {}".format(projectID))
+    print("Lane = {}".format(lane))
+    print("subsample = {}".format(subsample))
+    print("Input Excel Directory = {}".format(excel_dir))
+    print("Output Work Directory = {}".format(WORK))
+    print("FASTQ Directory = {}".format(fastqDir))
+    print("\n\n\n")
 
     if (lane == None):
         lane = ""
@@ -186,7 +191,6 @@ def main():
     crisprData = getCrisprData(filePath, projectID)
     
     # get samples
-    fastqDir = "/igo/staging/FASTQ/" + runID + "/Project_" + projectID + '/'
     sampleDirs = os.listdir(fastqDir)
     # print(sampleDirs)
     
