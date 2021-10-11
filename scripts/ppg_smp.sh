@@ -10,7 +10,9 @@ print_usage() {
 while getopts 'f:s:' flag; do
   case "${flag}" in
     s) SAMPLE="${OPTARG}" ;;
-    *) FASTQS+="${FASTQS}${OPTARG} " ;;     # Reference to create liftover file for, e.g. GRCh37
+    f) FASTQS+="${OPTARG} " ;;     # Reference to create liftover file for, e.g. GRCh37
+    *) print_usage
+       exit 1 ;;
   esac
 done
 
