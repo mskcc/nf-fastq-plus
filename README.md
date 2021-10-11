@@ -273,3 +273,25 @@ PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
 ## Docker Container
 * v1.0.0 - First Release
 * v1.0.1 - Using ncbi-genomes-2021-09-23 for GRCh38.p13
+
+## Debug
+### Demultiplexing
+
+I) Samplesheet index length doesn't match `RunInfo.xml` length
+
+BCL2FASTQ
+* Use `use-bases-mask`
+
+DRAGEN   
+    ```
+    ERROR: Sample Sheet Error: SampleSheet.csv sample #1 (index 'GGTGAACC') has an index of length 8 bases, 
+    but a length of 10 was expected based upon RunInfo.xml or the OverrideCycles setting.
+    ```
+Solution: Mask the indices by adding the `OverrideCycles` option to the SampleSheet 
+    
+    ```
+    [Settings],,,,,,,,
+    OverrideCycles,Y151;I8N2;I8N2;Y151
+    ,,,,,,,,
+    ```
+
