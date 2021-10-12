@@ -42,7 +42,7 @@ workflow demultiplex_wkflw {
     reference_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, refr_demux_ch.RUNNAME )
     reference_out( reference_demultiplex_task.out[0], "demultiplex_reference" )
 
-    split_sample_sheets_path.ppg
+    samplesheet_ch.ppg
       .multiMap { it ->
         SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
