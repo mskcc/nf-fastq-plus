@@ -24,7 +24,7 @@ workflow demultiplex_wkflw {
       .branch {
         reference: it.contains("REFERENCE")
         stats: ! it.contains("REFERENCE") && ! it.contains("_WGS.csv")
-        dragen: it.contains("_WGS.csv")
+        dragen: it.contains("_WGS.csv") || it.contains("_PPG.csv")
       }
       .set { samplesheet_ch }
 

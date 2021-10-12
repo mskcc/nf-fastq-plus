@@ -30,6 +30,12 @@ basename ${SAMPLESHEET}
 RUN_BASENAME=$(basename ${SAMPLESHEET} | grep -oP "(?<=[0-9]_)[A-Za-z_0-9-]+") # Capture after "[ANY NUM]_" (- ".csv")
 DEMUXED_DIR="${FASTQ_DIR}/${RUN_BASENAME}"
 
+PPG_CHECK=$(echo ${RUN_BASENAME} | rev | cut -d'_' -f1 | rev)
+if [[ ${PPG_CHECK} == "PPG" ]]; then    # Check for whatever is defined as EXT_PPG in create_multiple_sample_sheets.py
+  # This is to get stats faster - we do not want to deliver this to the user
+  DEMUXED_DIR+="___DGN_RUN___DO_NOT_DELIVER"
+fi
+
 echo "Processing DRAGEN demultiplex Job SampleSheet=${SAMPLESHEET} RUN_BASENAME=${RUN_BASENAME} DEMUX_ALL=${DEMUX_ALL} DEMUXED_DIR=${DEMUXED_DIR}"
 
 if [[ "${DEMUX_ALL}" == "true" && -d ${DEMUXED_DIR}  ]]; then
