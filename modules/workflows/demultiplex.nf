@@ -1,9 +1,13 @@
 include { log_out as reference_out }                                    from '../utils/log_out'
 include { log_out as stats_out }                                        from '../utils/log_out'
+include { log_out as stats_ppg_out }                                    from '../utils/log_out'
 include { log_out as dragen_out }                                       from '../utils/log_out'
+include { log_out as dragen_ppg_out }                                   from '../utils/log_out'
 include { demultiplex_bcl2fastq_task as stats_demultiplex_task }        from '../tasks/demultiplex_bcl2fastq_task'
+include { demultiplex_bcl2fastq_task as stats_ppg_demultiplex_task }    from '../tasks/demultiplex_bcl2fastq_task'
 include { demultiplex_bcl2fastq_task as reference_demultiplex_task }    from '../tasks/demultiplex_bcl2fastq_task'
 include { demultiplex_dragen_task }                                     from '../tasks/demultiplex_dragen_task'
+include { demultiplex_dragen_task as dgn_ppg_demultiplex_task }         from '../tasks/demultiplex_dragen_task'
 
 workflow demultiplex_wkflw {
   take:
@@ -23,8 +27,9 @@ workflow demultiplex_wkflw {
       .splitText()
       .branch {
         reference: it.contains("REFERENCE")
+        ppg: it.contains("_PPG.csv")
         stats: ! it.contains("REFERENCE") && ! it.contains("_WGS.csv")
-        dragen: it.contains("_WGS.csv") || it.contains("_PPG.csv")
+        dragen: it.contains("_WGS.csv")
       }
       .set { samplesheet_ch }
 
@@ -36,6 +41,25 @@ workflow demultiplex_wkflw {
       .set{ refr_demux_ch }
     reference_demultiplex_task( refr_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, refr_demux_ch.RUNNAME )
     reference_out( reference_demultiplex_task.out[0], "demultiplex_reference" )
+
+    split_sample_sheets_path.ppg
+      .multiMap { it ->
+        SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
+        RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
+      }
+      .set{ ppg_demux_ch }
+    stats_ppg_demultiplex_task( ppg_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, ppg_demux_ch.RUNNAME )
+    stats_ppg_out( stats_ppg_demultiplex_task.out[0], "demultiplex_stats_ppg" )
+
+    samplesheet_ch.ppg
+      .multiMap { it ->
+        SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
+        RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
+      }
+      .set{ dgn_ppg_demux_ch }
+    dgn_ppg_demultiplex_task( dgn_ppg_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, dgn_ppg_demux_ch.RUNNAME )
+    dragen_ppg_out( dgn_ppg_demultiplex_task.out[0], "demultiplex_dragen_ppg" )
+
 
     samplesheet_ch.stats
       .multiMap { it ->
@@ -58,9 +82,11 @@ workflow demultiplex_wkflw {
     // COMBINE - Demultiplex Outputs
     stats_demultiplex_task.out.DEMUXED_DIR
       .mix( demultiplex_dragen_task.out.DEMUXED_DIR )
+      .mix( dgn_ppg_demultiplex_task.out.DEMUXED_DIR )
       .set{ DEMUXED_DIR }
     stats_demultiplex_task.out.SAMPLESHEET
       .mix( demultiplex_dragen_task.out.SAMPLESHEET )
+      .mix( dgn_ppg_demultiplex_task.out.SAMPLESHEET )
       .set{ SAMPLESHEET }
 
   emit:
