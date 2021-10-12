@@ -11,6 +11,8 @@ There are two options for running the modules in this pipeline -
 * [Testing](#testing)
 * [Nextflow Config](#nextflow-config)
 * [Crontab Setup](#crontab-setup)
+* [Docker Container](#docker-container)
+* [Troubleshooting/Common-Issues](#debug)
 
 ### Demultiplex and Stats
 **Description**: Runs end-to-end pipeline of demultiplexing and stats. The input of this is the name of the sequencing 
@@ -274,6 +276,16 @@ PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
 * v1.0.0 - First Release
 * v1.0.1 - Using ncbi-genomes-2021-09-23 for GRCh38.p13
 
+Note - Changes to the github actions using the docker file need to be tagged, e.g.
+```
+VERSION_NUMBER=...      # e.g. "v2"
+git add ...
+git commit -m "My change"
+git tag -a -m "very important change" ${VERSION_NUMBER} 
+git push --follow-tags
+```
+[REF](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action)
+
 ## Debug
 ### Demultiplexing
 
@@ -306,5 +318,6 @@ II) Only the `___MD.txt` file is available in the `STATSDONEDIR` for a sample
     * This can happen when the pipeline is interrupted after writing the "final" sample `.bam` to `SAMPLE_BAM_DIR`. The 
     `generate_run_params_wkflw` checks whether this `.bam` file is written
     * Issue to address this [nf-fastq-plus issue 202](https://github.com/mskcc/nf-fastq-plus/issues/202)
-
-
+    
+III) My github action change isn't reflecting in the integrated tests
+* See tag notes in [Docker Container](#docker-container)
