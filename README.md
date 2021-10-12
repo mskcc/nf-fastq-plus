@@ -294,4 +294,17 @@ Solution: Mask the indices by adding the `OverrideCycles` option to the SampleSh
     OverrideCycles,Y151;I8N2;I8N2;Y151
     ,,,,,,,,
     ```
+    
+II) Only the `___MD.txt` file is available in the `STATSDONEDIR` for a sample
+* Delete the "final sample BAM" in `STATSDONEDIR`, e.g.
+    ```
+    RUN_NAME=...        # ROSALIND_0001_AHNKNJDSX2
+    SAMPLE_NAME=....    # 01001_A_1
+    rm /igo/staging/stats/${RUN_NAME}/*${SAMPLE_NAME}*.ba*
+    ```
+* Why? The final sample bam was created, but the stats for that BAM did not finish or were interrupted.
+    * This can happen when the pipeline is interrupted after writing the "final" sample `.bam` to `SAMPLE_BAM_DIR`. The 
+    `generate_run_params_wkflw` checks whether this `.bam` file is written
+    * Issue to address this [nf-fastq-plus issue 202](https://github.com/mskcc/nf-fastq-plus/issues/202)
+
 
