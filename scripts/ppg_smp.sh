@@ -10,7 +10,7 @@ print_usage() {
 while getopts 'f:s:' flag; do
   case "${flag}" in
     s) SAMPLE="${OPTARG}" ;;
-    f) FASTQS+="${OPTARG} " ;;     # Reference to create liftover file for, e.g. GRCh37
+    f) FASTQS="${OPTARG} ${FASTQS}" ;;     # Reference to create liftover file for, e.g. GRCh37
     *) print_usage
        exit 1 ;;
   esac
@@ -40,15 +40,12 @@ OUT=$(pwd)
 echo "SAMPLE_NAME=${SAMPLE} FASTQS=${FASTQS} REF=${REF}"
 
 echo "Aligning (bwa_mem)..."
-/igo/work/nabors/tools/bwamem2/bwa_mem2.pl -fragment 10 \
-  -reference ${REF} \
-  -threads 32 \
-  -map_threads 32 \
-  -sample ${SAMPLE} \
-  -outdir ${OUT} \
-  ${FASTQS} >> ${SAMPLE}_align.out 2>&1
+CMD="/igo/work/nabors/tools/bwamem2/bwa_mem2.pl -fragment 10 -reference ${REF} -threads 32 -map_threads 32 -sample ${SAMPLE} -outdir ${OUT} ${FASTQS} >> ${SAMPLE}_align.out 2>&1"
+echo ${CMD}
+eval ${CMD}
 if [[ $? != 0 ]]; then
   printf "\t...FAILED\n"
+  exit 1
 else
   printf "\t...done.\n"
 fi
