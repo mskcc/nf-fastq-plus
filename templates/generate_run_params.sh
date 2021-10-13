@@ -194,8 +194,24 @@ else
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
-        # lane of processing
-        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
+        # lane of processing.
+        #   - We add the DRAGEN prefix if it is intended for DRAGEN's alignment. DRAGEN projects also need to indicate
+        #     their FASTQ_LIST file
+        echo "Checking if '${RECIPE}' is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]..."
+        if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
+          SAMPLE_PARAMS_FILE="${DGN_SAMPLE_PARAMS_PREFIX}${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
+          FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
+          if [[ -z ${FASTQ_LIST_FILE} ]]; then
+            SUBJECT="[ACTION REQUIRED] Skipping DRAGEN sample - Missing fastq_list.csv file"
+            BODY="Sample in ${PROJECT_TAG} in ${DEMUXED_DIR} was identified as a project to run through DRAGEN, but did "
+            BODY+="not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
+            echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+          fi
+          INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM}"
+        else
+          SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
+          FASTQ_LIST_FILE="NOT_DGN"
+        fi
 
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
@@ -216,7 +232,7 @@ else
             continue
           fi
 
-          FASTQ_PARAMS=""
+          FASTQ_PARAMS="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} "
           # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
           for SOURCE_FASTQ in $FASTQS; do
             FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
@@ -231,49 +247,9 @@ else
         fi
       done
     else
-      echo "Couldn't find ${PROJECT_DIR}. Checking if '${RECIPE}' is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]..."
-      if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
-        echo "Detected a DRAGEN Recipe and generating params for DRAGEN alignment"
-
-        FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
-        if [[ -z ${FASTQ_LIST_FILE} ]]; then
-          SUBJECT="[ACTION REQUIRED] Skipping DRAGEN sample - Missing fastq_list.csv file"
-          BODY="Sample in ${PROJECT_TAG} in ${DEMUXED_DIR} was identified as a project to run through DRAGEN, but did "
-          BODY+="not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
-          echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
-        else  
-          SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2)
-          echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
-          for SAMPLE_TAG in ${SAMPLES}; do
-            RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG is prefix of bam/stats
-
-            # Location of final sample BAM
-            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
-
-            # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
-            echo "${FINAL_BAM}" >> ${RUN_BAMS}
-            if [[ -f ${FINAL_BAM} ]]; then
-              echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
-              continue
-            else
-              echo "BAM needs to be created - ${FINAL_BAM}. Processing."
-            fi
-
-            # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
-            # lane of processing
-            SAMPLE_PARAMS_FILE="DGN___${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
-
-            TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
-            INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM}"
-
-            echo "${SAMPLE_SHEET_PARAMS} ${PROJECT_PARAMS} ${TAGS} ${INFO}" >> ${SAMPLE_PARAMS_FILE}
-          done
-        fi
-      else
-        SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
-        BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} (RUNNAME=${RUNNAME}). Stats were not run for this request"
-        echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
-      fi
+      SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
+      BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} (RUNNAME=${RUNNAME}). Stats were not run for this request"
+      echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
     fi
   done
 
