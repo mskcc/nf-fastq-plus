@@ -255,7 +255,7 @@ else
 
   if [[ ! -z ${PPG_REQUESTS} ]]; then
     SUBJECT="[ACTION-REQUIRED] PED-PEG Requests on ${RUNNAME}"
-    BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}"
+    BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}. DRAGEN stats are currently running..."
     echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
   fi
 
