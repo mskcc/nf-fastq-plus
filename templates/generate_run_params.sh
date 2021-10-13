@@ -148,11 +148,6 @@ else
       continue
     fi
     if [ -d "$PROJECT_DIR" ]; then
-      RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
-
-      # TODO - Make "___" a delimiter
-      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d )
-
       if [[ "${RECIPE}" = "DLP" ]]; then
         echo "DLP requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
         continue
@@ -162,9 +157,17 @@ else
         continue
       fi
 
-      for SAMPLE_DIR in $SAMPLE_DIRS; do
-        SAMPLESHEET_SAMPLE=$(echo ${SAMPLE_DIR} | xargs basename)
-        SAMPLE_TAG=$(echo ${SAMPLESHEET_SAMPLE} | sed 's/Sample_//g')
+      # We want a list of all the samples as they are listed in the samplesheet "Sample_Name" column
+      # NOTE - W/ DRAGEN demultiplexing, there is no Sample_Name directory
+      SAMPLE_TAGS=$(find ${PROJECT_DIR} -type f -name "*.fastq.gz" \
+        -exec basename {} \; \
+        | grep -oP ".*IGO_[0-9]{5}_([A-Z]{1,2}_[0-9]+|[0-9]+)" \
+        | sort \
+        | uniq)
+
+      echo "SAMPLE_TAGS=${SAMPLE_TAGS}"
+
+      for SAMPLE_TAG in ${SAMPLE_TAGS}; do
         if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
           echo "Skipping Failed Sample: ${SAMPLE_TAG}"
 
@@ -201,11 +204,11 @@ else
           TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}" # TODO - replace RGID w/ [INDEX].[LANE]
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
-          FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
+          FASTQS=$(find ${PROJECT_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
             # Pipeline has failed for this sample - Data Team needs to be alerted, which will happen if
             # SAMPLE_PARAMS_FILE is removed and we continue
-            echo "ERROR - Missing FASTQs (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
+            echo "ERROR - Missing FASTQs (regex: ${FASTQ_REGEX}) found in ${PROJECT_DIR} (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
             if [[ -f ${SAMPLE_PARAMS_FILE} ]]; then
               echo "Deleting existing file: ${SAMPLE_PARAMS_FILE}"
               rm ${SAMPLE_PARAMS_FILE}
