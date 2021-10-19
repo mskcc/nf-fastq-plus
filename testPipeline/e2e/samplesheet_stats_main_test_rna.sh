@@ -37,4 +37,4 @@ echo "Writing temporary nextflow.config file (Saving old to ${BACKUP})"
 cp ${ORIGINAL_CONFIG} ${BACKUP}
 mv ${TEMP_FILE} ${ORIGINAL_CONFIG}
 
-${LOCATION}/samplesheet_stats_main_test.sh HWG
+${LOCATION}/samplesheet_stats_main_test.sh RNA
