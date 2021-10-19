@@ -103,6 +103,8 @@ else
   tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR} 2> /dev/null
   rm cellranger-tiny-bcl-1.2.0.tar.gz
   mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
+  # Simulate the rsync from sequencer (Needed to properly detect the run)
+  touch ${TEST_BCL_DIR}/CopyComplete.txt
 fi
 
 RUN_OUT=${RUN}.out
