@@ -159,13 +159,20 @@ else
 
       # We want a list of all the samples as they are listed in the samplesheet "Sample_Name" column
       # NOTE - W/ DRAGEN demultiplexing, there is no Sample_Name directory
+      FASTQ_REGEX=".*IGO_[0-9]{5}_([A-Z]{1,2}_[0-9]+|[0-9]+)"
       SAMPLE_TAGS=$(find ${PROJECT_DIR} -type f -name "*.fastq.gz" \
         -exec basename {} \; \
-        | grep -oP ".*IGO_[0-9]{5}_([A-Z]{1,2}_[0-9]+|[0-9]+)" \
+        | grep -oP "${FASTQ_REGEX}" \
         | sort \
         | uniq)
 
-      echo "SAMPLE_TAGS=${SAMPLE_TAGS}"
+      if [[ -z ${SAMPLE_TAG} ]]; then
+        BODY="No FASTQS - PROJECT_DIR=${PROJECT_DIR} FASTQ_REGEX=${FASTQ_REGEX}"
+        SUBJECT="[ACTION REQUIRED] No FASTQS for $(dirname ${PROJECT_DIR})"
+        echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+        echo ${BODY}
+        exit 1
+      fi
 
       for SAMPLE_TAG in ${SAMPLE_TAGS}; do
         if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
