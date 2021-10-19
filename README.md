@@ -272,4 +272,5 @@ PATH=${PATH}:/igoadmin/lsfigo/lsf10/10.1/linux3.10-glibc2.17-x86_64/bin
 
 ## Docker Container
 * v1.0.0 - First Release
-* v1.0.1 - Using ncbi-genomes-2021-09-23 for GRCh38.p13
+* v1.0.1 - Testing against "ncbi-genomes-2021-09-23" for GRCh38.p13
+* v1.0.2 - Testing against "GRCh38.p13.dna.primary.assembly.fa" for GRCh38.p13

@@ -46,7 +46,7 @@ case $RECIPE in
     RECIPE=RNASeq_PolyA
     echo "RECIPE=${RECIPE}"
     cp_samplesheet $RECIPE $SAMPLESHEET_TEMPLATE $SAMPLESHEET
-    FILE_SUFFIXES=( ___AM.txt ___gc_bias_metrics.txt ___RNA.txt )
+    FILE_SUFFIXES=( ___AM.txt ___gc_bias_metrics.txt ) # ___RNA.txt ) # Should check for RNA, but need to add valid files
     ;;
   ALL)
     cp $SAMPLESHEET_TEMPLATE $SAMPLESHEET

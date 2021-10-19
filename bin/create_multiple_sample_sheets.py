@@ -20,9 +20,10 @@ EXT_PPG = '_PPG.csv'
 EXT_6NT = '_6nt.csv'
 EXT_MB_DNA = '___MISSION_BIO_DNA.csv'
 EXT_MB_PTN = '___MISSION_BIO_PROTEIN.csv'
+EXT_DRAGEN_PPG = '_DGNPPG.csv'
 EXT_REG = '.csv'
 # STEP 2 - ADD EXT_* VARIABLE HERE
-EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_PPG, EXT_6NT, EXT_REG, EXT_MB_DNA, EXT_MB_PTN]
+EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_PPG, EXT_6NT, EXT_REG, EXT_MB_DNA, EXT_MB_PTN, EXT_DRAGEN_PPG]
 # STEP 3 - ADD IDX_* HERE
 DF_IDX_10X = EXTENSIONS.index(EXT_10X)
 DF_IDX_MLT = EXTENSIONS.index(EXT_MLT)
@@ -33,6 +34,7 @@ DF_IDX_PPG = EXTENSIONS.index(EXT_PPG)
 DF_IDX_6NT = EXTENSIONS.index(EXT_6NT)
 DF_IDX_MB_DNA = EXTENSIONS.index(EXT_MB_DNA)
 DF_IDX_MB_PTN = EXTENSIONS.index(EXT_MB_PTN)
+DF_IDX_DGN_PPG = EXTENSIONS.index(EXT_DRAGEN_PPG)
 DF_IDX_REG = EXTENSIONS.index(EXT_REG)
 # CREATES GLOBAL DF - Stores SampleSheet info for each EXT_*
 NO_DATA = pd.DataFrame()    # empty data set for comparison
@@ -109,6 +111,7 @@ def wgs(sample_data, header):
 		DATA_SHEETS[DF_IDX_WGS] = wgs_data
 	if not ped_peg_data.empty:
 		DATA_SHEETS[DF_IDX_PPG] = ped_peg_data
+		DATA_SHEETS[DF_IDX_DGN_PPG] = ped_peg_data.copy()       # We create a copy of PED_PEG and send it to DRAGEN
 
 def is_6nt_index(index_name):
     """ Returns whether the input index_name is an index that should be masked to the first 6 nucleotides
@@ -196,7 +199,7 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 			data_element_list = DATA_SHEETS[y].T.reset_index().values.T.tolist()
 
 			# for BCL CONVERSION on DRAGEN, we must delete the "Adapter" tag in the SETTINGS section ( delete row 14 )
-			if y == DF_IDX_WGS:
+			if y == DF_IDX_WGS or y == DF_IDX_DGN_PPG:
 				# SWAP: SAMPLE_ID and SAMPLE_NAME Rows - This is so DRAGEN outputs files of the same name as bcl2fastq
 				data_element_list[0][1] = 'Sample_Name'
 				data_element_list[0][2] = 'Sample_ID'

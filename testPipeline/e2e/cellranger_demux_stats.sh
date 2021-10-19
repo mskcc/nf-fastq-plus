@@ -55,7 +55,7 @@ echo "Adapter,,,,,,,," >> ${SAMPLE_SHEET}
 echo ",,,,,,,," >> ${SAMPLE_SHEET}
 echo "[Data],,,,,,,," >> ${SAMPLE_SHEET}
 echo "Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Sample_Project,Description" >> ${SAMPLE_SHEET}
-echo "1,Sample_IGO_10001_1,test_sample,Human,10X_Genomics_GeneExpression,SI-GA-A3,SI-GA-A3,Project_10001,Investigator_1" >> ${SAMPLE_SHEET}
+echo "1,Sample_IGO_10001_1,IGO_10001_1_test_sample,Human,10X_Genomics_GeneExpression,SI-GA-A3,SI-GA-A3,Project_10001,Investigator_1" >> ${SAMPLE_SHEET}
 
 # Create nextflow config that 1) runs locally, 2) Has relative directory paths, 3) Has Docker images
 echo "executor {" > ${TEST_NEXTFLOW_CONFIG}
@@ -82,19 +82,11 @@ cat ${LOCATION}/../../nextflow.config | sed -n '/env {/,$p' \
   >> ${TEST_NEXTFLOW_CONFIG}
   # | sed -E "s#=.*#=\"${}\"#" \
 
-10X_REFERENCE=/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa
-REQUIRED_DIR=$(basename ${10X_REFERENCE})
+REFERENCE_10X="/igo/work/genomes/H.sapiens/GRCh38.p13/GRCh38.p13.dna.primary.assembly.fa"
+REQUIRED_DIR=$(dirname ${REFERENCE_10X})
 if [[ ! -d ${REQUIRED_DIR} ]]; then
   echo "Please run on cluster w/ ${REQUIRED_DIR}"
   exit 0
-else
-  echo "Moving WholeGenomeSequencing reference to location for 10X"
-  # TODO - Remove once Human Whole Genome & 10X recipes use the same reference file
-  to_mv=$(find /igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23 -type f -name "GCF_000001405.39_GRCh38.p13_genomic.fna*")
-  for f in ${to_mv}; do
-    renamed_f=${f/GCF_000001405.39_GRCh38.p13_genomic.fna/GRCh38.p13.dna.primary.assembly.fa}
-    mv $f ${REQUIRED_DIR}/${renamed_f}
-  done
 fi
 
 # Unpack the files
@@ -111,6 +103,8 @@ else
   tar -zxvf cellranger-tiny-bcl-1.2.0.tar.gz -C ${TEST_MACHINE_DIR} 2> /dev/null
   rm cellranger-tiny-bcl-1.2.0.tar.gz
   mv ${TEST_MACHINE_DIR}/cellranger-tiny-bcl-1.2.0 ${TEST_BCL_DIR}
+  # Simulate the rsync from sequencer (Needed to properly detect the run)
+  touch ${TEST_BCL_DIR}/CopyComplete.txt
 fi
 
 RUN_OUT=${RUN}.out
