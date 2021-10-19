@@ -166,7 +166,7 @@ else
         | sort \
         | uniq)
 
-      if [[ -z ${SAMPLE_TAG} ]]; then
+      if [[ -z ${SAMPLE_TAGS} ]]; then
         BODY="No FASTQS - PROJECT_DIR=${PROJECT_DIR} FASTQ_REGEX=${FASTQ_REGEX}"
         SUBJECT="[ACTION REQUIRED] No FASTQS for $(dirname ${PROJECT_DIR})"
         echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
