@@ -36,7 +36,7 @@ process task {
   fi
 
   # All bin/*py scripst use the /usr/bin/env python, which require these packages
-  required_python_packages="requests pandas"
+  required_python_packages="requests pandas xlrd openpyxl openpyxl glob argparse Bio numpy"
   for pkg in ${required_python_packages}; do
     if [[ -z ${pkg} ]]; then
       echo "/usr/bin/env python missing package: ${pkg}"
