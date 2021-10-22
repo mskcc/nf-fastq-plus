@@ -178,8 +178,9 @@ else
       present_fastq_check_regex="$(echo ${SAMPLE_TAGS} | sed 's/ /,|/g'),"
 
       echo "Checking ${SAMPLESHEET} for missing fastqs for project ${PROJECT}. REGEX=${present_fastq_check_regex}"
+      set +e  # Ignore failure, which means there are no missing FASTQ files
       missing_samplesheet_entries=$(cat ${SAMPLESHEET} | grep ${PROJECT} | grep -v -P "${present_fastq_check_regex}")
-
+      set -e
       if [[ ! -z ${missing_samplesheet_entries} ]]; then
         # Pipeline has failed for this sample - Data Team needs to be alerted
         SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] Missing FASTQs in ${PROJECT_DIR} (RUNNAME=${RUNNAME} PROJECT_TAG=${PROJECT_TAG})"
