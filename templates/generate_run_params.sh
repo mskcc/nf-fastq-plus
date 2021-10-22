@@ -226,7 +226,7 @@ else
           # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
           TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}" # TODO - replace RGID w/ [INDEX].[LANE]
 
-          FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
+          FASTQ_REGEX="*${SAMPLE_TAG}*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${PROJECT_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
           if [[ -z $FASTQS ]]; then
             # Pipeline has failed for this sample - Data Team needs to be alerted, which will happen if
