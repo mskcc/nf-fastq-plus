@@ -174,18 +174,20 @@ else
         exit 1
       fi
 
+      # Check for missing Samples
+      present_fastq_check_regex="$(echo ${SAMPLE_TAGS} | tr ' ' ',|'),"
+
+      echo "Checking ${SAMPLESHEET} for missing fastqs for project ${PROJECT}. REGEX=${present_fastq_check_regex}"
+      missing_samplesheet_entries=$(cat ${SAMPLESHEET} | grep ${PROJECT} | grep -v -P "${present_fastq_check_regex}")
+
+      if [[ ! -z ${missing_samplesheet_entries} ]]; then
+        # Pipeline has failed for this sample - Data Team needs to be alerted
+        SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] Missing FASTQs in ${PROJECT_DIR} (RUNNAME=${RUNNAME} PROJECT_TAG=${PROJECT_TAG})"
+        echo ${SKIPPING_SAMPLE_STATS_SUBJ}
+        echo ${missing_samplesheet_entries} | mail -s "${SUBJECT}" streidd@mskcc.org
+      fi
+
       for SAMPLE_TAG in ${SAMPLE_TAGS}; do
-        if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
-          echo "Skipping Failed Sample: ${SAMPLE_TAG}"
-
-          # TODO - Remove after verifying in production
-          BODY="Skipping Stat Generation of ${SAMPLE_TAG} on run ${RUNNAME}"
-          SUBJECT="[ACTION REQUIRED] Check Failed Sample ${SAMPLE_TAG} (${RUNNAME})"
-          echo ${BODY} | mail -s "${SUBJECT}" streidd@mskcc.org
-          
-          continue
-        fi
-
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG will determine the name of output stats
         FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
@@ -228,16 +230,6 @@ else
 
           FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
           FASTQS=$(find ${PROJECT_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
-          if [[ -z $FASTQS ]]; then
-            # Pipeline has failed for this sample - Data Team needs to be alerted, which will happen if
-            # SAMPLE_PARAMS_FILE is removed and we continue
-            echo "ERROR - Missing FASTQs (regex: ${FASTQ_REGEX}) found in ${PROJECT_DIR} (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
-            if [[ -f ${SAMPLE_PARAMS_FILE} ]]; then
-              echo "Deleting existing file: ${SAMPLE_PARAMS_FILE}"
-              rm ${SAMPLE_PARAMS_FILE}
-            fi
-            continue
-          fi
 
           FASTQ_PARAMS="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} "
           # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
@@ -247,11 +239,6 @@ else
           # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
           echo "RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
-        if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
-          # "[ACTION-REQUIRED] Skipping Sample Stats (..." + PROJECT_TAG    <- We will close this when we send the email
-          SKIPPING_SAMPLE_STATS_PRJS+="${PROJECT_TAG} "
-          SKIPPING_SAMPLE_STATS_BODY+="(${PROJECT_TAG},${SAMPLE_TAG}) "
-        fi
       done
     else
       SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
@@ -265,13 +252,5 @@ else
     BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}. DRAGEN stats are currently running..."
     echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
   fi
-
-  if [[ ! -z ${SKIPPING_SAMPLE_STATS_BODY} ]]; then
-    # IMPORTANT - SKIPPING_SAMPLE_STATS_BODY is only set when a @SAMPLE_PARAMS_FILE was deleted or not created
-    UNIQ_SKIPPING_SAMPLE_STATS_PRJS=$(echo ${SKIPPING_SAMPLE_STATS_PRJS} | sort | uniq)
-    SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS=${UNIQ_SKIPPING_SAMPLE_STATS_PRJS})"
-    echo ${SKIPPING_SAMPLE_STATS_BODY} | mail -s "${SKIPPING_SAMPLE_STATS_SUBJ}" ${DATA_TEAM_EMAIL}
-  fi
-
   IFS=' \t\n'
 fi
