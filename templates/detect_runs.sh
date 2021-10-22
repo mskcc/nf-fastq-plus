@@ -66,14 +66,16 @@ case $MACHINE in
     DONE_FILE="CopyComplete.txt";; 
   michelle)
     DONE_FILE="CopyComplete.txt";;
+  ruth)
+    DONE_FILE="CopyComplete.txt";;
+  pepe)
+    DONE_FILE="CopyComplete.txt";;
   jax)
-    DONE_FILE="SequencingComplete.txt";;
-  pitt)
     DONE_FILE="SequencingComplete.txt";;
   scott)
     DONE_FILE="RunCompletionStatus.xml";;
   *)
-    DONE_FILE="RTAComplete.txt";;
+    DONE_FILE="CopyComplete.txt";;  
 esac
 
 echo "MACHINE=${MACHINE} RUN=${RUN} RUNNAME=${RUNNAME} DONE_FILE=${DONE_FILE} RUNPATH=${RUNPATH}"
