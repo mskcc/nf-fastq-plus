@@ -55,15 +55,16 @@ BAM=$(realpath *.bam)
 # TODO - Remove this when Memory issues are resolved
 set +e
 CMD="${PICARD} CollectGcBiasMetrics ASSUME_SORTED=true I=${BAM} O=${METRICS_FILE} CHART=${METRICS_PDF} S=${SUMMARY_FILE} R=${REFERENCE}"
-set -e
 run_cmd $CMD
 GC_BIAS_EXIT_CODE=$?
+set -e
 echo "CollectGcBiasMetrics Error Code: ${GC_BIAS_EXIT_CODE}"
 if [[ 137 -eq ${GC_BIAS_EXIT_CODE} || 0 -eq ${GC_BIAS_EXIT_CODE} ]]; then
   echo "CollectGcBiasMetrics succeeded, or ran out of memory. Continuing..."
 else
-  echo "CollectGcBiasMetrics failed for an unexpected reason. Exiting."
-  exit 1
+  # TODO - exit on failure when this file is actually used
+  echo "CollectGcBiasMetrics failed for an unexpected reason."
+  # exit 1
 fi
 
 # TODO - make metrics file available as output for nextlow
