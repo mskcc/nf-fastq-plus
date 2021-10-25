@@ -111,7 +111,7 @@ def wgs(sample_data, header):
 	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not wgs_data.empty:
 		DATA_SHEETS[DF_IDX_WGS] = wgs_data.copy()
-        DATA_SHEETS[DF_IDX_DGN_WGS] = wgs_data                  # We create a copy of WGS and send it to DRAGEN
+		DATA_SHEETS[DF_IDX_DGN_WGS] = wgs_data                  # We create a copy of WGS and send it to DRAGEN
 	if not ped_peg_data.empty:
 		DATA_SHEETS[DF_IDX_PPG] = ped_peg_data
 		DATA_SHEETS[DF_IDX_DGN_PPG] = ped_peg_data.copy()       # We create a copy of PED_PEG and send it to DRAGEN
