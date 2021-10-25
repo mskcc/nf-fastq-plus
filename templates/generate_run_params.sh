@@ -155,6 +155,9 @@ else
         echo "PED-PEG requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
         PPG_REQUESTS="${PROJECT} ${PPG_REQUESTS}"
         continue
+      elif [[ ! -z $(echo ${SAMPLESHEET} | grep ".*_WGS.csv$") ]]; then
+        echo "_WGS.csv samplesheets stats will be skipped to run through DRAGEN PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+        continue
       fi
 
       # We want a list of all the samples as they are listed in the samplesheet "Sample_Name" column
