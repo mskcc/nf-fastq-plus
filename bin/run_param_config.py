@@ -541,7 +541,7 @@ recipe_options_mapping_UNORDERED = {
         HAPLOTYPE_MAP: "", # TODO - Add this
         GENOME: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",  # References that created DRAGEN reference
         REFERENCE: "/igo/work/genomes/H.sapiens/GRCh38.p13/ncbi-genomes-2021-09-23/GCF_000001405.39_GRCh38.p13_genomic.fna",
-        DGN_REFERENCE: "/staging/ref/GRCh38.p13___genBank_GCA_000001405.28"
+        DGN_REFERENCE: "/staging/ref/GRCh38"
     },
     "MouseWholeGenome": {
         MSKQ: "no",
