@@ -62,11 +62,8 @@ echo "CollectGcBiasMetrics Error Code: ${GC_BIAS_EXIT_CODE}"
 if [[ 137 -eq ${GC_BIAS_EXIT_CODE} || 0 -eq ${GC_BIAS_EXIT_CODE} ]]; then
   echo "CollectGcBiasMetrics succeeded, or ran out of memory. Continuing..."
 else
-  # TODO - exit on failure when this file is actually used
-  ERROR="CollectGcBiasMetrics failed for an unexpected reason."
-  echo ${ERROR}
-  echo ${ERROR} >> ${METRICS_FILE}  # We need to write this file for nextflow to emit
-  # exit 1
+  echo "CollectGcBiasMetrics failed for an unexpected reason. Exiting"
+  exit 1
 fi
 
 # TODO - make metrics file available as output for nextlow
