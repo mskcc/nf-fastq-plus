@@ -1,9 +1,6 @@
 # nf-fastq-plus
 Generate IGO fastqs, bams, stats and fingerprinting
 
-## Monitor automated pipeline
-[dashboard](https://igodev.mskcc.org/nf-dashboard/)
-
 ## Run
 There are two options for running the modules in this pipeline - 
 * [Demultiplex and Stats](#demultiplex-and-stats): Includes all demultiplexing and stats for a sequencing run
