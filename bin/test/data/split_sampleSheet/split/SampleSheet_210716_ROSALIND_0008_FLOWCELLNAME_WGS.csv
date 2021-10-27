@@ -12,8 +12,9 @@ Chemistry,Default,,,,,,,
 151,,,,,,,,
 ,,,,,,,,
 [Settings],,,,,,,,
+Adapter,,,,,,,,
 ,,,,,,,,
 [Data],,,,,,,,
-Lane,Sample_Name,Sample_ID,Sample_Plate,Sample_Well,I7_Index_ID,index,index2,Sample_Project,Description
+Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,index2,Sample_Project,Description
 1,Sample_Other_Sample_2,Other_Sample_2,Human,HumanWholeGenome,UDI0066,GTGTCGGA,GCGCAAGC,Project_50001,streidd@mskcc.org
 1,Sample_Other_Sample_1,Other_Sample_1,Human,HumanWholeGenome,UDI0065,ACACTAAG,ATATGGAT,Project_50001,streidd@mskcc.org
