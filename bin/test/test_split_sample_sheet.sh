@@ -17,10 +17,14 @@ function compare_files {
       echo "${TYPE}___${fname}___Not_written"
       exit 1
     fi
-    diffs=$(diff $fname ${f})
+
+    # Accounting for control characters - CRLF vs. LF
+    dos2unix ${fname} > f1.txt 2> /dev/null
+    dos2unix ${f} > f2.txt 2> /dev/null
+    diffs=$(diff f1.txt f2.txt)
+    rm f1.txt
+    rm f2.txt
     if [[ ! -z $diffs ]]; then
-      md5sum $fname >> file.txt
-      md5sum ${f} >> file.txt
       echo "${TYPE}___${fname}___Different"
       exit 1
     fi
@@ -50,10 +54,8 @@ CMD="python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SO
 printf "\t${CMD}\n"
 eval ${CMD} >> ${ERROR_FILE} 2>&1
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
-rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 printf ${ERRORS} | grep -v success
-
-cat file.txt
+rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
 TYPE="i7"
 echo "Testing ${TYPE} split"
@@ -120,8 +122,6 @@ eval ${CMD} >> ${ERROR_FILE} 2>&1
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 printf ${ERRORS} | grep -v success
-
-cat file.txt
 
 TYPE="NO"
 echo "Testing ${TYPE} split"
