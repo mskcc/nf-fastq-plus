@@ -19,6 +19,7 @@ function compare_files {
     fi
     diffs=$(diff $fname ${f})
     if [[ ! -z $diffs ]]; then
+      echo "${diffs}" >> file.txt
       echo "${TYPE}___${fname}___Different"
       exit 1
     fi
@@ -50,6 +51,8 @@ eval ${CMD} >> ${ERROR_FILE} 2>&1
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 printf ${ERRORS} | grep -v success
+
+cat file.txt
 
 TYPE="i7"
 echo "Testing ${TYPE} split"
@@ -116,6 +119,8 @@ eval ${CMD} >> ${ERROR_FILE} 2>&1
 ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 printf ${ERRORS} | grep -v success
+
+cat file.txt
 
 TYPE="NO"
 echo "Testing ${TYPE} split"
