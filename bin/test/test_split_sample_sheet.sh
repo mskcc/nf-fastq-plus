@@ -19,7 +19,8 @@ function compare_files {
     fi
     diffs=$(diff $fname ${f})
     if [[ ! -z $diffs ]]; then
-      echo "${diffs}" >> file.txt
+      md5sum $fname >> file.txt
+      md5sum ${f} >> file.txt
       echo "${TYPE}___${fname}___Different"
       exit 1
     fi
