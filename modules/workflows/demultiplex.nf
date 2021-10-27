@@ -23,7 +23,7 @@ workflow demultiplex_wkflw {
     //         [STANDARD]
     //            stats:        bcl2fastq demultiplexing for stats (most cases)
     //         [SPECIAL CASES]
-    //            wgs:          DRAGEN demultiplexing for WGS-stats
+    //            dgn_wgs:      DRAGEN demultiplexing for WGS-stats  ("_WGS.csv" should go through stats)
     //            dgn_ppg:      DRAGEN demultiplexing for PED-PEG stats ("_PPG.csv" should go through stats)
     //            reference:    bcl2fastq demultiplexing, NOT for stats
     //
@@ -33,7 +33,7 @@ workflow demultiplex_wkflw {
     split_sample_sheets_path
       .splitText()
       .branch {
-        wgs: it.contains("_WGS.csv")
+        dgn_wgs: it.contains("_DGNWGS.csv")
         dgn_ppg: it.contains("_DGNPPG.csv")
         reference: it.contains("REFERENCE")
         stats: ! it.contains("REFERENCE")
@@ -58,7 +58,7 @@ workflow demultiplex_wkflw {
     dgn_ppg_demultiplex_task( dgn_ppg_demux_ch.SAMPLE_SHEET, RUN_TO_DEMUX_DIR, DEMUX_ALL, EXECUTOR, dgn_ppg_demux_ch.RUNNAME )
     dragen_ppg_out( dgn_ppg_demultiplex_task.out[0], "demultiplex_dragen_ppg" )
 
-    samplesheet_ch.wgs                                      // [SPECIAL] We send WGS to DRAGEN for demultiplexing
+    samplesheet_ch.dgn_wgs                                      // [SPECIAL] We send WGS to DRAGEN for demultiplexing
       .multiMap { it ->
         SAMPLE_SHEET: it                                    // Absolute path to SampleSheet     /path/to/SampleSheet.csv
         RUNNAME: it.split('/')[-1].tokenize(".")[0]         // Filename minus extension         SampleSheet
