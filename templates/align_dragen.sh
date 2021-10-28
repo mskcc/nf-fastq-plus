@@ -55,7 +55,8 @@ if [[ -f ${OUTPUT_BAM} ]]; then
   echo "Skipping DRAGEN alignment. BAM already created for ${SAMPLE_TAG}: ${OUTPUT_BAM}" 
 else
   CMD="/opt/edico/bin/dragen --ref-dir ${DGN_REFERENCE} --enable-duplicate-marking true --intermediate-results-dir /staging/temp"
-  CMD+=" --enable-map-align-output true --enable-variant-caller true --output-directory ${OUTPUT_DIR}"
+  CMD+=" --enable-map-align-output true --output-directory ${OUTPUT_DIR}"
+  # CMD+=" --enable-variant-caller true"    # TODO - Was having issues of board-reset in "Variant Caller Execution"
   CMD+=" --output-file-prefix ${OUTPUT_PREFIX} --fastq-list-sample-id ${SAMPLE_TAG} --fastq-list ${FASTQ_LIST_FILE}"
 
   run_cmd "${CMD}"

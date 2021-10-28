@@ -12,10 +12,9 @@ Chemistry,Default,,,,,,,
 151,,,,,,,,
 ,,,,,,,,
 [Settings],,,,,,,,
-Adapter,,,,,,,,
 ,,,,,,,,
 [Data],,,,,,,,
-Lane,Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,index2,Sample_Project,Description
+Lane,Sample_Name,Sample_ID,Sample_Plate,Sample_Well,I7_Index_ID,index,index2,Sample_Project,Description
 3,Sample_XPRO_0422_T2_DNA_IGO_20000_JP_4,XPRO_0422_T2_DNA_IGO_20000_JP_4,Human,HumanWholeGenome,UDI0073,CAATTAAC,ATATCTCG,Project_20000_JP,Investigator_3
 3,Sample_XPRO_0448_N_IGO_20000_JQ_1,XPRO_0448_N_IGO_20000_JQ_1,Human,HumanWholeGenome,UDI0074,TGGCCGGT,GCGCTCTA,Project_20000_JQ,Investigator_3
 3,Sample_XPRO_0448_T_DNA_IGO_20000_JQ_2,XPRO_0448_T_DNA_IGO_20000_JQ_2,Human,HumanWholeGenome,UDI0075,AGTACTCC,AACAGGTT,Project_20000_JQ,Investigator_3

@@ -64,15 +64,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_hwg.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
+      # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/samplesheet_stats_main_test_rna.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
       - name: stats
-        uses: mskcc/nf-fastq-plus@v1.0.1
+        uses: mskcc/nf-fastq-plus@v1.0.2
         with:
-          entrypoint: testPipeline/e2e/samplesheet_stats_main_test_hwg.sh
+          entrypoint: testPipeline/e2e/samplesheet_stats_main_test_rna.sh
           args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus
+      # TOOD - Test HWG when dragen binary becomes available (will fail now until it is)
+      # - uses: actions/checkout@v2
+      # - name: stats
+      #  uses: mskcc/nf-fastq-plus@v1.0.2
+      #  with:
+      #    entrypoint: testPipeline/e2e/samplesheet_stats_main_test_hwg.sh
+      #    args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus
       # docker run --entrypoint /nf-fastq-plus/testPipeline/e2e/cellranger_demux_stats.sh -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus nf-fastq-plus-playground
       - name: main
-        uses: mskcc/nf-fastq-plus@v1.0.1
+        uses: mskcc/nf-fastq-plus@v1.0.2
         with:
           entrypoint: testPipeline/e2e/cellranger_demux_stats.sh
           args: -v $(pwd)/../nf-fastq-plus:/nf-fastq-plus

@@ -148,11 +148,6 @@ else
       continue
     fi
     if [ -d "$PROJECT_DIR" ]; then
-      RUN_DIR=$(echo ${PROJECT_DIR} | xargs dirname)
-
-      # TODO - Make "___" a delimiter
-      SAMPLE_DIRS=$(find ${PROJECT_DIR} -mindepth 1 -maxdepth 1 -type d )
-
       if [[ "${RECIPE}" = "DLP" ]]; then
         echo "DLP requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
         continue
@@ -160,22 +155,43 @@ else
         echo "PED-PEG requests will be skipped for PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
         PPG_REQUESTS="${PROJECT} ${PPG_REQUESTS}"
         continue
+      elif [[ ! -z $(echo ${SAMPLESHEET} | grep ".*_WGS.csv$") ]]; then
+        echo "_WGS.csv samplesheets stats will be skipped to run through DRAGEN PROJECT=${PROJECT} SPECIES=${SPECIES} RECIPE=${RECIPE}"
+        continue
       fi
 
-      for SAMPLE_DIR in $SAMPLE_DIRS; do
-        SAMPLESHEET_SAMPLE=$(echo ${SAMPLE_DIR} | xargs basename)
-        SAMPLE_TAG=$(echo ${SAMPLESHEET_SAMPLE} | sed 's/Sample_//g')
-        if [[ ! -z $(grep ${SAMPLE_TAG} ${FAILED_PRJ_SAMPLES_FILE}) ]]; then
-          echo "Skipping Failed Sample: ${SAMPLE_TAG}"
+      # We want a list of all the samples as they are listed in the samplesheet "Sample_Name" column
+      # NOTE - W/ DRAGEN demultiplexing, there is no Sample_Name directory
+      FASTQ_REGEX=".*IGO_[0-9]{5}_([A-Z]{1,2}_[0-9]+|[0-9]+)"
+      SAMPLE_TAGS=$(find ${PROJECT_DIR} -type f -name "*.fastq.gz" \
+        -exec basename {} \; \
+        | grep -oP "${FASTQ_REGEX}" \
+        | sort \
+        | uniq)
 
-          # TODO - Remove after verifying in production
-          BODY="Skipping Stat Generation of ${SAMPLE_TAG} on run ${RUNNAME}"
-          SUBJECT="[ACTION REQUIRED] Check Failed Sample ${SAMPLE_TAG} (${RUNNAME})"
-          echo ${BODY} | mail -s "${SUBJECT}" streidd@mskcc.org
-          
-          continue
-        fi
+      if [[ -z ${SAMPLE_TAGS} ]]; then
+        BODY="No FASTQS - PROJECT_DIR=${PROJECT_DIR} FASTQ_REGEX=${FASTQ_REGEX}"
+        SUBJECT="[ACTION REQUIRED] No FASTQS for $(dirname ${PROJECT_DIR})"
+        echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+        echo ${BODY}
+        exit 1
+      fi
 
+      # Check for missing Samples
+      present_fastq_check_regex="$(echo ${SAMPLE_TAGS} | sed 's/ /,|/g'),"
+
+      echo "Checking ${SAMPLESHEET} for missing fastqs for project ${PROJECT}. REGEX=${present_fastq_check_regex}"
+      set +e  # Ignore failure, which means there are no missing FASTQ files
+      missing_samplesheet_entries=$(cat ${SAMPLESHEET} | grep ${PROJECT} | grep -v -P "${present_fastq_check_regex}")
+      set -e
+      if [[ ! -z ${missing_samplesheet_entries} ]]; then
+        # Pipeline has failed for this sample - Data Team needs to be alerted
+        SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] Missing FASTQs in ${PROJECT_DIR} (RUNNAME=${RUNNAME} PROJECT_TAG=${PROJECT_TAG})"
+        echo ${SKIPPING_SAMPLE_STATS_SUBJ}
+        echo ${missing_samplesheet_entries} | mail -s "${SKIPPING_SAMPLE_STATS_SUBJ}" ${DATA_QC_ALERTS}
+      fi
+
+      for SAMPLE_TAG in ${SAMPLE_TAGS}; do
         RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG will determine the name of output stats
         FINAL_BAM=${STATS_DIR}/${RUNNAME}/${RUN_TAG}.bam                # Location of final BAM for sample
 
@@ -191,8 +207,24 @@ else
         SAMPLE_LANES=$(get_lanes_of_sample ${SAMPLE_TAG} ${SAMPLESHEET})
 
         # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
-        # lane of processing
-        SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
+        # lane of processing.
+        #   - We add the DRAGEN prefix if it is intended for DRAGEN's alignment. DRAGEN projects also need to indicate
+        #     their FASTQ_LIST file
+        echo "Checking if '${RECIPE}' is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]..."
+        if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
+          SAMPLE_PARAMS_FILE="${DGN_SAMPLE_PARAMS_PREFIX}${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
+          FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
+          if [[ -z ${FASTQ_LIST_FILE} ]]; then
+            SUBJECT="[ACTION REQUIRED] Skipping DRAGEN sample - Missing fastq_list.csv file"
+            BODY="Sample in ${PROJECT_TAG} in ${DEMUXED_DIR} was identified as a project to run through DRAGEN, but did "
+            BODY+="not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
+            echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
+          fi
+          INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM}"
+        else
+          SAMPLE_PARAMS_FILE="${SAMPLE_TAG}___${SPECIES}___${RECIPE}___${RUN_PARAMS_FILE}"
+          FASTQ_LIST_FILE="NOT_DGN"
+        fi
 
         for LANE in $(echo ${SAMPLE_LANES} | tr ' ' '\n'); do
           LANE_TAG="L00${LANE}" # Assuming there's never going to be a lane greater than 9...
@@ -200,20 +232,10 @@ else
           # RUN_TAG="$(echo ${RUN_DIR} | xargs basename)___${PROJECT_TAG}___${SAMPLE_TAG}"
           TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG} LANE_TAG=${LANE_TAG} RGID=${SAMPLE_TAG}_${LANE}" # TODO - replace RGID w/ [INDEX].[LANE]
 
-          FASTQ_REGEX="*_${LANE_TAG}_R[12]_*.fastq.gz"
-          FASTQS=$(find ${SAMPLE_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
-          if [[ -z $FASTQS ]]; then
-            # Pipeline has failed for this sample - Data Team needs to be alerted, which will happen if
-            # SAMPLE_PARAMS_FILE is removed and we continue
-            echo "ERROR - Missing FASTQs (regex: ${FASTQ_REGEX}) found in $SAMPLE_DIR (RUNNAME=${RUNNAME} SAMPLE_TAG=${SAMPLE_TAG} PROJECT_TAG=${PROJECT_TAG})"
-            if [[ -f ${SAMPLE_PARAMS_FILE} ]]; then
-              echo "Deleting existing file: ${SAMPLE_PARAMS_FILE}"
-              rm ${SAMPLE_PARAMS_FILE}
-            fi
-            continue
-          fi
+          FASTQ_REGEX="*${SAMPLE_TAG}*_${LANE_TAG}_R[12]_*.fastq.gz"
+          FASTQS=$(find ${PROJECT_DIR} -type f -name ${FASTQ_REGEX} | sort)	# We sort so that R1 is always before R2
 
-          FASTQ_PARAMS=""
+          FASTQ_PARAMS="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} "
           # Create symbolic links to FASTQs so they can be sent via channel, @FASTQ_CH
           for SOURCE_FASTQ in $FASTQS; do
             FASTQ_PARAMS="${FASTQ_PARAMS} FASTQ=${SOURCE_FASTQ}"
@@ -221,71 +243,18 @@ else
           # Encapsulate all required params to send FASTQ(s) down the statistic pipeline in a single line
           echo "RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM} $SAMPLE_SHEET_PARAMS $PROJECT_PARAMS $TAGS ${FASTQ_PARAMS}" >> ${SAMPLE_PARAMS_FILE}
         done
-        if [ ! -f "$SAMPLE_PARAMS_FILE" ]; then
-          # "[ACTION-REQUIRED] Skipping Sample Stats (..." + PROJECT_TAG    <- We will close this when we send the email
-          SKIPPING_SAMPLE_STATS_PRJS+="${PROJECT_TAG} "
-          SKIPPING_SAMPLE_STATS_BODY+="(${PROJECT_TAG},${SAMPLE_TAG}) "
-        fi
       done
     else
-      echo "Couldn't find ${PROJECT_DIR}. Checking if '${RECIPE}' is a DRAGEN recipe [ ${DGN_DEMUX_ALN_RECIPES} ]..."
-      if [[ ! -z $(echo "${DGN_DEMUX_ALN_RECIPES}" | tr ' ' '\n' | grep -oP "^${RECIPE}$") ]]; then
-        echo "Detected a DRAGEN Recipe and generating params for DRAGEN alignment"
-
-        FASTQ_LIST_FILE=$(find ${DEMUXED_DIR} -type f -name "fastq_list.csv")
-        if [[ -z ${FASTQ_LIST_FILE} ]]; then
-          SUBJECT="[ACTION REQUIRED] Skipping DRAGEN sample - Missing fastq_list.csv file"
-          BODY="Sample in ${PROJECT_TAG} in ${DEMUXED_DIR} was identified as a project to run through DRAGEN, but did "
-          BODY+="not have a DRAGEN demux structure (RUNNAME=${RUNNAME}). Stats were not run for this request"
-          echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
-        else  
-          SAMPLES=$(tail -n +2 ${FASTQ_LIST_FILE} | cut -d',' -f2)
-          echo "FASTQ_LIST_FILE=${FASTQ_LIST_FILE} SAMPLES=[${SAMPLES}]"
-          for SAMPLE_TAG in ${SAMPLES}; do
-            RUN_TAG="${RUNNAME}___${PROJECT_TAG}___${SAMPLE_TAG}___${GTAG}___${RECIPE}" # RUN_TAG is prefix of bam/stats
-
-            # Location of final sample BAM
-            FINAL_BAM=${STATS_DIR}/${RUNNAME}/${SAMPLE_TAG}/${RUN_TAG}.bam
-
-            # We add the final BAM & RUN_TAG so we can check that the BAM was written and stats of name ${RUN_TAG} exist
-            echo "${FINAL_BAM}" >> ${RUN_BAMS}
-            if [[ -f ${FINAL_BAM} ]]; then
-              echo "Final BAM has already been written - ${FINAL_BAM}. Skipping."
-              continue
-            else
-              echo "BAM needs to be created - ${FINAL_BAM}. Processing."
-            fi
-
-            # This will track all the parameters needed to complete the pipeline for a sample - each line will be one
-            # lane of processing
-            SAMPLE_PARAMS_FILE="DGN___${SAMPLE_TAG}___${SPECIES}___${RUN_PARAMS_FILE}"
-
-            TAGS="RUN_TAG=${RUN_TAG} PROJECT_TAG=${PROJECT_TAG} SAMPLE_TAG=${SAMPLE_TAG}"
-            INFO="FASTQ_LIST_FILE=${FASTQ_LIST_FILE} RUNNAME=${RUNNAME} FINAL_BAM=${FINAL_BAM}"
-
-            echo "${SAMPLE_SHEET_PARAMS} ${PROJECT_PARAMS} ${TAGS} ${INFO}" >> ${SAMPLE_PARAMS_FILE}
-          done
-        fi
-      else
-        SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
-        BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} (RUNNAME=${RUNNAME}). Stats were not run for this request"
-        echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
-      fi
+      SUBJECT="[WARNING] Request directory not found: ${PROJECT}"
+      BODY="Directory named '${PROJECT}' was not found in ${DEMUXED_DIR} (RUNNAME=${RUNNAME}). Stats were not run for this request"
+      echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
     fi
   done
 
   if [[ ! -z ${PPG_REQUESTS} ]]; then
     SUBJECT="[ACTION-REQUIRED] PED-PEG Requests on ${RUNNAME}"
-    BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}"
+    BODY="Please Run PED-PEG pipeline on following Requests: ${PPG_REQUESTS}. DRAGEN stats are currently running..."
     echo ${BODY} | mail -s "${SUBJECT}" ${DATA_TEAM_EMAIL}
   fi
-
-  if [[ ! -z ${SKIPPING_SAMPLE_STATS_BODY} ]]; then
-    # IMPORTANT - SKIPPING_SAMPLE_STATS_BODY is only set when a @SAMPLE_PARAMS_FILE was deleted or not created
-    UNIQ_SKIPPING_SAMPLE_STATS_PRJS=$(echo ${SKIPPING_SAMPLE_STATS_PRJS} | sort | uniq)
-    SKIPPING_SAMPLE_STATS_SUBJ="[ACTION-REQUIRED] ${RUNNAME} has skipped sample stats (PROJECTS=${UNIQ_SKIPPING_SAMPLE_STATS_PRJS})"
-    echo ${SKIPPING_SAMPLE_STATS_BODY} | mail -s "${SKIPPING_SAMPLE_STATS_SUBJ}" ${DATA_TEAM_EMAIL}
-  fi
-
   IFS=' \t\n'
 fi
