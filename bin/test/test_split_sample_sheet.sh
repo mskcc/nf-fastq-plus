@@ -57,17 +57,6 @@ ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_F
 printf ${ERRORS} | grep -v success
 rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
 
-TYPE="i7"
-echo "Testing ${TYPE} split"
-SOURCE_FILE=${SOURCE_DIR}/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME.csv
-EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_201105_ROSALIND_0002_FLOWCELLNAME_i7.csv )
-CMD="python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION[@]}"
-printf "\t${CMD}\n"
-eval ${CMD} >> ${ERROR_FILE} 2>&1
-ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
-rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
-printf ${ERRORS} | grep -v success
-
 TYPE="10X"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0003_FLOWCELLNAME.csv
@@ -83,39 +72,6 @@ TYPE="10X_Multiome"
 echo "Testing ${TYPE} split"
 SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME.csv
 EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME_10X_Multiome.csv ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0007_FLOWCELLNAME_10X.csv )
-CMD="python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}"
-printf "\t${CMD}\n"
-eval ${CMD} >> ${ERROR_FILE} 2>&1
-ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
-rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
-printf ${ERRORS} | grep -v success
-
-TYPE="6nt_dual"
-echo "Testing ${TYPE} split"
-SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv
-EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_210421_ROSALIND_0004_FLOWCELLNAME_6nt.csv )
-CMD="python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}"
-printf "\t${CMD}\n"
-eval ${CMD} >> ${ERROR_FILE} 2>&1
-ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
-rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
-printf ${ERRORS} | grep -v success
-
-TYPE="6nt_single"
-echo "Testing ${TYPE} split"
-SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210504_ROSALIND_0006_FLOWCELLNAME.csv
-EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210504_ROSALIND_0006_FLOWCELLNAME.csv ${EXPECTED_DIR}/SampleSheet_210504_ROSALIND_0006_FLOWCELLNAME_6nt.csv )
-CMD="python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}"
-printf "\t${CMD}\n"
-eval ${CMD} >> ${ERROR_FILE} 2>&1
-ERRORS="${ERRORS}$(compare_files ${TYPE} ${SOURCE_FILE} ${LOCATION} ${EXPECTED_FILES[@]})\n"
-rm -rf ${LOCATION}/SampleSheet_*ROSALIND*_FLOWCELLNAME*.csv
-printf ${ERRORS} | grep -v success
-
-TYPE="MB_DNA_PRT"
-echo "Testing ${TYPE} split"
-SOURCE_FILE=${SOURCE_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME.csv
-EXPECTED_FILES=( ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME___MISSION_BIO_DNA.csv ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME___MISSION_BIO_PROTEIN.csv ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME_WGS.csv ${EXPECTED_DIR}/SampleSheet_210716_ROSALIND_0008_FLOWCELLNAME_DGNWGS.csv )
 CMD="python3 ${LOCATION}/../create_multiple_sample_sheets.py --sample-sheet ${SOURCE_FILE} --processed-dir ${LOCATION}"
 printf "\t${CMD}\n"
 eval ${CMD} >> ${ERROR_FILE} 2>&1
