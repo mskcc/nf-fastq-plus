@@ -14,57 +14,25 @@ from functools import reduce
 EXT_10X = '_10X.csv'
 EXT_MLT = '_10X_Multiome.csv'
 EXT_DLP = '_DLP.csv'
-EXT_PAD = '_i7.csv'
 EXT_WGS = '_WGS.csv'
 EXT_PPG = '_PPG.csv'
-EXT_6NT = '_6nt.csv'
-EXT_MB_DNA = '___MISSION_BIO_DNA.csv'
-EXT_MB_PTN = '___MISSION_BIO_PROTEIN.csv'
 EXT_DRAGEN_PPG = '_DGNPPG.csv'
 EXT_DRAGEN_WGS = '_DGNWGS.csv'
 EXT_REG = '.csv'
 # STEP 2 - ADD EXT_* VARIABLE HERE
-EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_PAD, EXT_WGS, EXT_DRAGEN_WGS, EXT_PPG, EXT_6NT, EXT_REG, EXT_MB_DNA, EXT_MB_PTN, EXT_DRAGEN_PPG]
+EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_WGS, EXT_DRAGEN_WGS, EXT_PPG, EXT_REG, EXT_DRAGEN_PPG]
 # STEP 3 - ADD IDX_* HERE
 DF_IDX_10X = EXTENSIONS.index(EXT_10X)
 DF_IDX_MLT = EXTENSIONS.index(EXT_MLT)
 DF_IDX_DLP = EXTENSIONS.index(EXT_DLP)
-DF_IDX_PAD = EXTENSIONS.index(EXT_PAD)
 DF_IDX_WGS = EXTENSIONS.index(EXT_WGS)
 DF_IDX_PPG = EXTENSIONS.index(EXT_PPG)
-DF_IDX_6NT = EXTENSIONS.index(EXT_6NT)
-DF_IDX_MB_DNA = EXTENSIONS.index(EXT_MB_DNA)
-DF_IDX_MB_PTN = EXTENSIONS.index(EXT_MB_PTN)
 DF_IDX_DGN_WGS = EXTENSIONS.index(EXT_DRAGEN_WGS)
 DF_IDX_DGN_PPG = EXTENSIONS.index(EXT_DRAGEN_PPG)
 DF_IDX_REG = EXTENSIONS.index(EXT_REG)
 # CREATES GLOBAL DF - Stores SampleSheet info for each EXT_*
 NO_DATA = pd.DataFrame()    # empty data set for comparison
 DATA_SHEETS = [ NO_DATA for ext in EXTENSIONS ]
-
-#######################################################################################
-######   Set of barcodes that should be masked to just the first 6 nucleotides   ######
-#######################################################################################
-BARCODE_6NT_SET = set()
-BARCODE_6NT_SET.update([ '{}'.format(i) for i in range(7001,7097) ])            # 7001-7096
-BARCODE_6NT_SET.update([ 'BC{}'.format(i) for i in range(1,9) ])                # BC1-8
-BARCODE_6NT_SET.update([ 'BK{}'.format(i) for i in range(25,44) ])              # BK25-43
-BARCODE_6NT_SET.update([ 'BK10{}'.format(i) for i in range(1,10) ])             # BK101-109
-BARCODE_6NT_SET.update([ 'BK{}'.format(i) for i in range(7098,7101) ])          # BK7098-7100
-BARCODE_6NT_SET.update([ 'Vakoc_{}'.format(i/10.0) for i in range(71,109) ])    # Vakoc_7.1-10.8
-BARCODE_6NT_SET.update([ 'TS{}'.format(i) for i in range(1,28) ])               # TS1-27
-BARCODE_6NT_SET.update([ 'Tsou_{}'.format(i) for i in range(1,13) ])            # Tsou_1-12
-BARCODE_6NT_SET.update([ 'RPI{}'.format(i) for i in range(1,49) ])              # RPI1-48
-BARCODE_6NT_SET.update([ 'NEBNext{}'.format(i) for i in range(1,28) ])          # NEBNext1-27
-BARCODE_6NT_SET.update([ 'NF{}'.format(i) for i in range(1,49) ])               # NF1-48
-BARCODE_6NT_SET.update([ 'Overholtzer_{}'.format(i) for i in range(1,5) ])      # Overholtzer_1-4
-BARCODE_6NT_SET.update([ 'KAPA_{}'.format(i) for i in range(1,13) ])            # KAPA_1-12
-BARCODE_6NT_SET.update([ 'Garippa_{}'.format(i) for i in range(2,46) ])         # Garippa_2-45
-BARCODE_6NT_SET.update([ 'IDT-TS{}'.format(i) for i in range(1,49) ])           # IDT-TS1-48
-BARCODE_6NT_SET.update([ 'DMP{}'.format(i) for i in range(1,49) ])              # DMP1-48
-
-RECIPE_MISSION_BIO_REGEX = 'MissionBio*'
-BARCODE_MISSION_BIO_PROTEIN_REGEX = 'MB_Protein_*'
 
 def get_sample_sheet_name(sample_sheet):
 	""" Retrieves the samplesheet filename from the absolute path to the samplesheet
@@ -100,7 +68,6 @@ def dlp(sample_data, header):
 	if not dlp_data.empty:
 		DATA_SHEETS[DF_IDX_DLP] = dlp_data
 
-
 def wgs(sample_data, header):
 	all_hwg_data = sample_data[ sample_data["Sample_Well"].str.match("HumanWholeGenome") == True ].copy()
 	sample_data = sample_data[ sample_data["Sample_Well"].str.match("HumanWholeGenome") == False ].copy()
@@ -115,71 +82,6 @@ def wgs(sample_data, header):
 	if not ped_peg_data.empty:
 		DATA_SHEETS[DF_IDX_PPG] = ped_peg_data
 		DATA_SHEETS[DF_IDX_DGN_PPG] = ped_peg_data.copy()       # We create a copy of PED_PEG and send it to DRAGEN
-
-def is_6nt_index(index_name):
-    """ Returns whether the input index_name is an index that should be masked to the first 6 nucleotides
-    :param index_name, str: value of index name     e.g. "7001"
-    :return: bool                                   e.g. True
-    """
-    return index_name in BARCODE_6NT_SET
-
-def has_6nt(sample_data, header):
-	""" Creates a 6_nt dataframe if 6nt indices are present
-			Side Effects:
-				- Modifies @sample_data in-place (Removes and re-orders indices)
-				- Creates a 6_nt dataframe and adds it to global @DATA_SHEETS
-
-	:param sample_data, df: original sample sheet
-	:param sample_data, header: original sample sheet headers
-
-	:return: bool, was a 6_nt dataframe created
-	"""
-	# create empty data frame for padded requests
-	has_6nt_data = pd.DataFrame(columns = header)
-	for x in range(0, len(sample_data), 1):
-		i7_index = sample_data['index'].loc[x]
-		i7_index_name = sample_data['I7_Index_ID'].loc[x]
-		if (is_6nt_index(i7_index_name) and len(i7_index) > 6):
-			# Mark & modify samplesheet if the i7_index is recognized as a 6nt and the i7 index isn't already length 6
-			has_6nt_data.loc[x] = sample_data.loc[x]
-			has_6nt_data['index'].loc[x] = i7_index[:6]      # We only need the first 6 nucleotides
-			sample_data.drop([x], inplace = True, axis = 0)
-
-	if not has_6nt_data.empty:
-		DATA_SHEETS[DF_IDX_6NT] = has_6nt_data
-		# Reset the index to 0 (if this isn't done, the indices of sample_data will have missing positions that will cause errors)
-		sample_data.index = range(len(sample_data))
-		DATA_SHEETS[DF_IDX_REG] = sample_data
-		return True
-
-	return False
-
-def i7_only(sample_data, header):
-	# create empty data frame for padded requests
-	i7_data = pd.DataFrame(columns = header)
-	# get a list of individual requests
-	requests = set(sample_data['Sample_Project'])
-	# use for testing thew length of 'index2'
-	len_req_samples = 0
-	len_index2 = 0
-	for req in requests:
-		# check index2 to see if the same index, this would indicate padding
-		#  put the groupby step here to avoid random errors from an earlier experience
-		requests_group = sample_data.groupby(['Sample_Project'], as_index = False)
-		req_group = requests_group['Sample_Name'].get_group(req)
-		req_samples = set(req_group)
-		len_req_samples = len(req_samples)
-		len_index2 = len(set(requests_group['index2'].get_group(req)))
-		if (len_req_samples > 1) and (len_index2 == 1):
-			# move the padded project to another data frame
-			i7_data = i7_data.append(requests_group.get_group(req))
-			sample_data.drop(sample_data[sample_data['Sample_Project'] == req].index, inplace = True)
-	# move regular sample sheet to the last element of the list
-	i7_data.index = range(len(i7_data))
-	sample_data.index = range(len(sample_data))
-	DATA_SHEETS[DF_IDX_REG] = sample_data
-	if not i7_data.empty:
-		DATA_SHEETS[DF_IDX_PAD] = i7_data
 
 def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets = None):
 	# Check to see if any samplesheet other than the last one has been populated
@@ -223,20 +125,6 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 				f = open(created_sample_sheets, "a")
 				f.write("{}/{}\n".format(processed_dir, data_element_sample_sheet_name))
 				f.close()
-
-def mission_bio(sample_data, header):
-	"""
-	Split input sample sheet between PROTEIN & DNA so that the sample FASTQs are NOT merged (SampleIDs are the same)
-	"""
-	mission_bio = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == True ].copy()
-
-	mb_protein = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == True ].copy()
-	mb_dna = mission_bio[ sample_data["I7_Index_ID"].str.match(BARCODE_MISSION_BIO_PROTEIN_REGEX) == False ].copy()
-
-	if not mb_protein.empty and not mb_dna.empty:
-		DATA_SHEETS[DF_IDX_REG] = sample_data[ sample_data["Sample_Well"].str.match(RECIPE_MISSION_BIO_REGEX) == False ].copy()
-		DATA_SHEETS[DF_IDX_MB_PTN] = mb_protein
-		DATA_SHEETS[DF_IDX_MB_DNA] = mb_dna
 
 def main():
 	parser = argparse.ArgumentParser(description = 'This script takes a dual indexed sample sheet and splits it if there are DLP, PADDED or 10X indices')
@@ -283,13 +171,6 @@ def main():
 
 	sample_sheet_name = get_sample_sheet_name(sample_sheet)
 
-	# 6nt barcodes
-	made_6nt_sample_sheet = has_6nt(sample_data, header)
-	if made_6nt_sample_sheet:
-	    # RE-ASSIGN 6nt Samples - an input sample_data w/ 6nt samples will have its 6nt samples removed. The remaining
-	    # samples are placed in DATA_SHEETS[6]
-	    sample_data = DATA_SHEETS[DF_IDX_REG]
-
 	# testing to see if we have dual barcodes, if not, we just quit.
 	# first check for 10X samples
 	if dual_index:
@@ -302,14 +183,6 @@ def main():
 		# routine for taking out HumanWholeGenome
 		wgs(DATA_SHEETS[DF_IDX_REG], header)
 
-		# check for padding
-		i7_only(DATA_SHEETS[DF_IDX_REG], header)
-
-		# check for Mission Bio
-		mission_bio(DATA_SHEETS[DF_IDX_REG], header)
-
-	if dual_index or made_6nt_sample_sheet:
-		# did we have to split sample sheets?
 		create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets)
 	
 if __name__ == '__main__':
