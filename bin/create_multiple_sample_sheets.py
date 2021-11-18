@@ -16,19 +16,15 @@ EXT_MLT = '_10X_Multiome.csv'
 EXT_DLP = '_DLP.csv'
 EXT_WGS = '_WGS.csv'
 EXT_PPG = '_PPG.csv'
-EXT_DRAGEN_PPG = '_DGNPPG.csv'
-EXT_DRAGEN_WGS = '_DGNWGS.csv'
 EXT_REG = '.csv'
 # STEP 2 - ADD EXT_* VARIABLE HERE
-EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_WGS, EXT_DRAGEN_WGS, EXT_PPG, EXT_REG, EXT_DRAGEN_PPG]
+EXTENSIONS = [EXT_10X, EXT_MLT, EXT_DLP, EXT_WGS, EXT_PPG, EXT_REG]
 # STEP 3 - ADD IDX_* HERE
 DF_IDX_10X = EXTENSIONS.index(EXT_10X)
 DF_IDX_MLT = EXTENSIONS.index(EXT_MLT)
 DF_IDX_DLP = EXTENSIONS.index(EXT_DLP)
 DF_IDX_WGS = EXTENSIONS.index(EXT_WGS)
 DF_IDX_PPG = EXTENSIONS.index(EXT_PPG)
-DF_IDX_DGN_WGS = EXTENSIONS.index(EXT_DRAGEN_WGS)
-DF_IDX_DGN_PPG = EXTENSIONS.index(EXT_DRAGEN_PPG)
 DF_IDX_REG = EXTENSIONS.index(EXT_REG)
 # CREATES GLOBAL DF - Stores SampleSheet info for each EXT_*
 NO_DATA = pd.DataFrame()    # empty data set for comparison
@@ -78,10 +74,8 @@ def wgs(sample_data, header):
 	DATA_SHEETS[DF_IDX_REG] = sample_data
 	if not wgs_data.empty:
 		DATA_SHEETS[DF_IDX_WGS] = wgs_data.copy()
-		DATA_SHEETS[DF_IDX_DGN_WGS] = wgs_data                  # We create a copy of WGS and send it to DRAGEN
 	if not ped_peg_data.empty:
 		DATA_SHEETS[DF_IDX_PPG] = ped_peg_data
-		DATA_SHEETS[DF_IDX_DGN_PPG] = ped_peg_data.copy()       # We create a copy of PED_PEG and send it to DRAGEN
 
 def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sheets = None):
 	# Check to see if any samplesheet other than the last one has been populated
@@ -102,17 +96,7 @@ def create_csv(top_of_sheet, sample_sheet_name, processed_dir, created_sample_sh
 		else:
 			DATA_SHEETS[y].sort_values('Lane')
 			data_element_list = DATA_SHEETS[y].T.reset_index().values.T.tolist()
-
-			# for BCL CONVERSION on DRAGEN, we must delete the "Adapter" tag in the SETTINGS section ( delete row 14 )
-			if y == DF_IDX_DGN_WGS or y == DF_IDX_DGN_PPG:
-				# SWAP: SAMPLE_ID and SAMPLE_NAME Rows - This is so DRAGEN outputs files of the same name as bcl2fastq
-				data_element_list[0][1] = 'Sample_Name'
-				data_element_list[0][2] = 'Sample_ID'
-				wgs_top_of_sheet = top_of_sheet[:]      # wgs_top_of_sheet = top_of_sheet.copy()  # python 3.3 and later
-				del wgs_top_of_sheet[14]
-				data_element_sample_sheet = wgs_top_of_sheet + data_element_list
-			else:
-				data_element_sample_sheet = top_of_sheet + data_element_list
+			data_element_sample_sheet = top_of_sheet + data_element_list
 
 			data_element_sample_sheet_name = sample_sheet_name + EXTENSIONS[y]
 			print("Writing " + data_element_sample_sheet_name)
