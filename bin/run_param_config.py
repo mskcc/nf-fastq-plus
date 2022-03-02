@@ -148,10 +148,16 @@ genome_reference_mapping_UNORDERED = {
             GTAG: "human_miRNA"
         }
     },
+    "hs37d5": {
+        DEFAULT: {
+            GENOME: "/igo/work/genomes/H.sapiens/hs37d5/hs37d5.fa",
+            REFERENCE: "/igo/work/genomes/H.sapiens/hs37d5/hs37d5.fa"
+        }
+    },
     "grch37": {
         DEFAULT: {
-            GENOME: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta",
-            REFERENCE: "/igo/work/genomes/H.sapiens/GRCh37/GRCh37.fasta",
+            GENOME: '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa',
+            REFERENCE: '/igo/work/nabors/bed_files/GRCh37_RNA_Ensembl/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa',
             HAPLOTYPE_MAP: "/home/igo/fingerprint_maps/map_files/GRCh37_ACCESS.map"
         },
         "RNA": {
